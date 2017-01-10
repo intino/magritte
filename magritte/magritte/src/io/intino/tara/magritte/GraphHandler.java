@@ -9,18 +9,17 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
+import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class GraphHandler {
 
-    protected static final Logger LOG = Logger.getLogger(GraphHandler.class.getName());
     final Store store;
     final Model model = new Model();
     private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
@@ -74,7 +73,7 @@ public abstract class GraphHandler {
         Node node = loadFromLoaders(id);
         if (node == null) node = nodes.get(id);
         if (node == null) node = loadFromStash(id);
-        if (node == null) LOG.warning("A reference to an node named as " + id + " has not been found");
+        if (node == null) getGlobal().warning("A reference to an node named as " + id + " has not been found");
         return node;
     }
 
@@ -86,7 +85,7 @@ public abstract class GraphHandler {
     public URL loadResource(String path) {
         URL url = store.resourceFrom(path);
         if (url == null)
-            LOG.severe("Resource at " + path + " not found");
+            getGlobal().severe("Resource at " + path + " not found");
         return url;
     }
 
@@ -121,7 +120,7 @@ public abstract class GraphHandler {
         try {
             return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, node);
         } catch (IOException e) {
-            LOG.severe("Url at " + url.toString() + " could not be accessed");
+            getGlobal().severe("Url at " + url.toString() + " could not be accessed");
             return null;
         }
     }
@@ -134,7 +133,7 @@ public abstract class GraphHandler {
     Stash stashOf(String source) {
         openedStashes.add(source);
         Stash stash = store.stashFrom(source);
-        if (stash == null) LOG.severe("Stash " + source + " does not exist or cannot be opened");
+        if (stash == null) getGlobal().severe("Stash " + source + " does not exist or cannot be opened");
         return stash;
     }
 
@@ -179,7 +178,7 @@ public abstract class GraphHandler {
     private void doInit(String language) {
         this.languages.add(language);
         Stash stash = stashOf(stashWithExtension(language));
-        if (stash == null) LOG.severe("Language or model corrupt or not found: " + language);
+        if (stash == null) getGlobal().severe("Language or model corrupt or not found: " + language);
         doLoadStashes(stash);
     }
 

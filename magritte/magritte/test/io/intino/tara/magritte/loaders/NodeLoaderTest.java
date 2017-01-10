@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static io.intino.tara.magritte.Graph.use;
 import static io.intino.tara.magritte.TestHelper.emptyStash;
 import static io.intino.tara.magritte.TestHelper.mockStore;
 import static io.intino.tara.magritte.loaders.NodeLoader.load;
@@ -19,7 +20,7 @@ public class NodeLoaderTest {
 
     @Test
     public void load_node() throws Exception {
-        Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash, "mock1");
         graph.createRoot(MockLayer.class, emptyStash, "mock2");
         List<MockLayer> list = load(asList(emptyStash + "#mock1", "$@io.intino.tara.magritte.natives.CodedNode"), MockLayer.class, mockLayer);

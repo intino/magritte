@@ -35,7 +35,7 @@ public class StressTests {
     @Test
     public void loading_stashes_with_magritte() throws Exception {
         long init = System.nanoTime();
-        Graph.load("Members").loadStashes("Facts.stash");
+        Graph.use().load("Members", "Facts");
         long finish = System.nanoTime();
         System.out.println("Loading stashes with magritte: " + ((finish - init) / 1e6) + " ms");
     }

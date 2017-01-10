@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
+import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -24,30 +24,29 @@ public class Graph extends GraphHandler {
         model.typeNames.add("Model");
     }
 
-    public static GraphLoad load() {
-        return load(new ResourcesStore());
+    public static Graph use(Store store, Class<? extends Application> application, Class<? extends Platform> platform) {
+        try {
+            Graph graph = new Graph(store);
+            if (application != null) graph.application = create(application.asSubclass(GraphWrapper.class), graph);
+            if (platform != null) graph.platform = create(platform.asSubclass(GraphWrapper.class), graph);
+            return graph;
+        } catch (ClassCastException e) {
+            throw new MagritteException("Application and Platform classes must extend GraphWrapper");
+        }
     }
 
-    public static GraphLoad load(Store store) {
-        return load("Model", store);
+    public static Graph use(Class<? extends Application> application, Class<? extends Platform> platform) {
+        return use(new ResourcesStore(), application, platform);
     }
 
-    public static GraphLoad load(String stash) {
-        return load(stash, new ResourcesStore());
+
+    public static Graph use() {
+        return use(new ResourcesStore(), null, null);
     }
 
-    public static GraphLoad from(Stash... stashes) {
-        return new Graph(new ResourcesStore()).loadStashes(stashes).modelLoad();
-    }
-
-    public static GraphLoad load(String stash, Store store) {
-        Graph graph = new Graph(store);
-        graph.init(stash);
-        return graph.modelLoad();
-    }
-
-    public Graph loadStashes(String... paths) {
-        doLoadStashes(paths);
+    public Graph load(String... namespaces) {
+        if (namespaces.length == 0) doLoadNamespace("Model");
+        else doLoadNamespace(namespaces);
         return this;
     }
 
@@ -155,17 +154,19 @@ public class Graph extends GraphHandler {
 
     private Node createNode(Concept concept, String namespace, String name) {
         if (!concept.isMain()) {
-            LOG.severe("Concept " + concept.id() + " is not main. The node could not be created.");
+            getGlobal().severe("Concept " + concept.id() + " is not main. The node could not be created.");
             return null;
         }
         if (concept.isAbstract()) {
-            LOG.severe("Concept " + concept.id() + " is abstract. The node could not be created.");
+            getGlobal().severe("Concept " + concept.id() + " is abstract. The node could not be created.");
             return null;
         }
         namespace = namespace == null || namespace.isEmpty() ? "Misc" : namespace;
-        loadStashes(StashHelper.stashWithExtension(namespace));
+        getGlobal().setUseParentHandlers(false);
+        load(StashHelper.stashWithExtension(namespace));
+        getGlobal().setUseParentHandlers(true);
         if (name != null && nodes.containsKey(namespace + "#" + name)) {
-            LOG.warning("Node with id " + namespace + "#" + name + " already exists");
+            getGlobal().warning("Node with id " + namespace + "#" + name + " already exists");
             return null;
         }
         return concept.createNode(namespace, name == null ? createNodeName() : name, model);
@@ -180,39 +181,6 @@ public class Graph extends GraphHandler {
     @Override
     protected void registerRoot(Node root) {
         this.model.add(root);
-    }
-
-    GraphLoad modelLoad() {
-        return new GraphLoad();
-    }
-
-    public class GraphLoad {
-
-        public GraphLoad loadStashes(String... paths) {
-            Graph.this.loadStashes(paths);
-            return this;
-        }
-
-        public GraphLoad loadStashes(Stash... stashes) {
-            Graph.this.loadStashes(stashes);
-            return this;
-        }
-
-        public <T extends Graph> T wrap(Class<? extends GraphWrapper> applicationClass, Class<? extends GraphWrapper> platformClass) {
-            platform = create(platformClass, Graph.this);
-            application = create(applicationClass, Graph.this);
-            return (T) Graph.this;
-        }
-
-        public <T extends Graph> T wrap(Class<? extends GraphWrapper> applicationClass) {
-            application = create(applicationClass, Graph.this);
-            return (T) Graph.this;
-        }
-
-        public <T extends Graph> T platform(Class<? extends GraphWrapper> platformClass) {
-            platform = create(platformClass, Graph.this);
-            return (T) Graph.this;
-        }
     }
 
 }

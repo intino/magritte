@@ -15,10 +15,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
+import static java.util.logging.Logger.getGlobal;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class FileSystemStore implements Store {
-
-	private static final Logger LOG = Logger.getLogger(FileSystemStore.class.getName());
 
     protected final File file;
 
@@ -37,7 +37,7 @@ public class FileSystemStore implements Store {
 		try {
 			return fileOf(path).exists() ? fileOf(path).toURI().toURL() : new ResourcesStore().resourceFrom(path);
 		} catch (MalformedURLException e) {
-			LOG.severe(e.getCause().getMessage());
+			getGlobal().severe(e.getCause().getMessage());
 			return null;
 		}
 	}
@@ -49,7 +49,7 @@ public class FileSystemStore implements Store {
 			Files.write(preparePath(newPath).toPath(), bytesOf(inputStream));
 			return resourceFrom(newPath);
 		} catch (IOException e) {
-			LOG.severe("Resource at " + newPath + "could not be stored. Cause: " + e.getCause().getMessage());
+			getGlobal().severe("Resource at " + newPath + "could not be stored. Cause: " + e.getCause().getMessage());
 			return null;
 		}
 	}
@@ -74,7 +74,7 @@ public class FileSystemStore implements Store {
             if(hasContent(composedStash)) Files.write(preparePath(path).toPath(), StashSerializer.serialize(composedStash));
             else preparePath(path).delete();
 		} catch (IOException e) {
-			LOG.severe("File at " + path + " couldn't be written");
+			getGlobal().severe("File at " + path + " couldn't be written");
 		}
 	}
 

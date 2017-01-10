@@ -11,6 +11,8 @@ import io.intino.tara.magritte.layers.Child;
 import java.io.InputStream;
 import java.net.URL;
 
+import static io.intino.tara.magritte.Graph.use;
+import static io.intino.tara.magritte.TestHelper.emptyStash;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static io.intino.tara.io.Helper.*;
@@ -19,7 +21,7 @@ public class Creation {
 
     @Test
     public void createInstanceOfConceptWithManyParents() throws Exception {
-        Graph graph = Graph.load(mockStore()).wrap(CreationApplication.class);
+        Graph graph = use(mockStore(), CreationApplication.class, null).load(emptyStash);
         Child child = graph.createRoot(Child.class);
         assertThat(child.childVar(), is("child"));
         assertThat(child.fillByChildVar(), is("filledByChild"));

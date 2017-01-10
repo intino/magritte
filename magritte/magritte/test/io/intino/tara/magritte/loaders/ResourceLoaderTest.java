@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.net.URL;
 import java.util.List;
 
+import static io.intino.tara.magritte.Graph.use;
 import static io.intino.tara.magritte.TestHelper.emptyStash;
 import static io.intino.tara.magritte.TestHelper.mockStore;
 import static java.util.Arrays.asList;
@@ -21,7 +22,7 @@ public class ResourceLoaderTest {
 
     @Test
     public void load_node() throws Exception {
-        Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash, "mock1");
         List<URL> list = ResourceLoader.load(asList("oldFile", "$@io.intino.tara.magritte.natives.CodedResource"), mockLayer);
         assertThat(list.size(), is(2));

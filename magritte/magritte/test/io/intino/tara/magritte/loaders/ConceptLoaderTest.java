@@ -12,6 +12,7 @@ import io.intino.tara.magritte.stores.ResourcesStore;
 
 import java.util.List;
 
+import static io.intino.tara.magritte.Graph.use;
 import static io.intino.tara.magritte.TestHelper.emptyStash;
 import static io.intino.tara.magritte.TestHelper.mockStore;
 import static java.util.Arrays.asList;
@@ -25,7 +26,7 @@ public class ConceptLoaderTest {
 
 	@Test
 	public void load_concept() throws Exception {
-		Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+		Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
 		MockLayer mockLayer = graph.createRoot(MockLayer.class);
 		List<Concept> list = load(asList("Mock", "$@io.intino.tara.magritte.natives.CodedConcept"), mockLayer);
 		assertThat(list.size(), is(2));

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+import static io.intino.tara.magritte.GraphHandler.create;
+
 class GraphCloner {
 
 	static Graph doClone(Graph graph, Graph clone) {
@@ -15,8 +17,8 @@ class GraphCloner {
 		clone.layerFactory = new LayerFactory(graph.layerFactory);
 		clone.openedStashes = new HashSet<>(graph.openedStashes);
 		graph.model.componentList().forEach(clone.model::add);
-		if (graph.platform != null) clone.modelLoad().wrap(graph.application.getClass(), graph.platform.getClass());
-		else clone.modelLoad().wrap(graph.application.getClass());
+		if(graph.platform != null) clone.platform = create(graph.platform.getClass(), clone);
+		if(graph.application != null) clone.application = create(graph.application.getClass(), clone);
 		return clone;
 	}
 

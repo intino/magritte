@@ -15,12 +15,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.UUID.randomUUID;
+import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unused")
 public class AdvancedFileSystemStore extends FileSystemStore {
 
-	private static final Logger LOG = Logger.getLogger(AdvancedFileSystemStore.class.getName());
 	private static final String SEP = ";";
 
 	private Map<String, List<ResourceModification>> resources = new HashMap<>();
@@ -35,7 +35,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		List<ResourceModification> list = resources.values().stream().flatMap(Collection::stream).collect(toList());
 		list.forEach(r -> remove(r.newUrl));
 		if (!list.isEmpty())
-			LOG.warning(list.size() + " resources have been removed since owners were not saved before");
+			getGlobal().warning(list.size() + " resources have been removed since owners were not saved before");
 		resources.clear();
 		commitFile().delete();
 	}
@@ -84,9 +84,9 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 			if (oldUrl == null || !oldUrl.getProtocol().contains("file")) return;
 			File oldFile = new File(oldUrl.toURI());
 			if (!oldFile.getAbsolutePath().startsWith(file.getAbsolutePath())) return;
-			if (!oldFile.delete()) LOG.severe("Url " + oldUrl.toString() + " could not be deleted");
+			if (!oldFile.delete()) getGlobal().severe("Url " + oldUrl.toString() + " could not be deleted");
 		} catch (URISyntaxException e) {
-			LOG.severe(e.getCause().getMessage());
+			getGlobal().severe(e.getCause().getMessage());
 		}
 	}
 
@@ -97,7 +97,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		try {
 			Files.write(commitFile().toPath(), content.toString().getBytes());
 		} catch (IOException e) {
-			LOG.severe("Commit file could not be written. Reason: " + e.getCause().getMessage());
+			getGlobal().severe("Commit file could not be written. Reason: " + e.getCause().getMessage());
 		}
 	}
 
@@ -109,7 +109,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 				registerModification(split[0], urlOf(split[1]), urlOf(split[2]));
 			});
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE,"Commit file could not be loaded. Reason: " + e.getMessage(), e);
+			getGlobal().log(Level.SEVERE,"Commit file could not be loaded. Reason: " + e.getMessage(), e);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		try {
 			return !url.equals("null") ? new URL(url) : null;
 		} catch (MalformedURLException e) {
-			LOG.severe("Url is malformed " + url + ". Cause: " + e.getCause().getMessage());
+			getGlobal().severe("Url is malformed " + url + ". Cause: " + e.getCause().getMessage());
 			return null;
 		}
 	}

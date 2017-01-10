@@ -37,7 +37,7 @@ class StashWriter {
 
     private String language() {
         List<String> languages = new ArrayList(model.languages);
-        return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
+        return languages.isEmpty() ? null : languages.get(0);
     }
 
     private List<io.intino.tara.io.Node> nodes(List<Node> nodes) {
