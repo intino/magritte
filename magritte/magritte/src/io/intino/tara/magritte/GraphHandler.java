@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.*;
 
 import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
@@ -56,17 +57,35 @@ public abstract class GraphHandler {
     }
 
     void doLoadStashes(String... paths) {
-        doLoadStashes(stream(paths).filter(p -> !openedStashes.contains(p)).map(this::stashOf).toArray(Stash[]::new));
+        doLoadStashes(stream(paths).map(this::stashOf).toArray(Stash[]::new));
     }
 
     void doLoadStashes(Stash... stashes) {
+        stashes = processUses(stashes);
+        if(stashes.length == 0) return;
         StashReader stashReader = new StashReader(this);
-        of(stashes).filter(Objects::nonNull).forEach(s -> doLoad(stashReader, s));
+        of(stashes).forEach(s -> doLoad(stashReader, s));
         LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
         clone.forEach((node, map) -> {
             map.forEach(node::load);
             variables.remove(node);
         });
+    }
+
+    protected Stash[] processUses(Stash[] stashes){
+        List<Stash> stashList = stream(stashes).filter(Objects::nonNull).collect(toList());
+        int stashListSize = 0;
+        while(stashListSize != stashList.size()){
+            stashListSize = stashList.size();
+            stashList.addAll(processUses(stashList));
+        }
+        return stashList.toArray(new Stash[stashList.size()]);
+    }
+
+    private List<Stash> processUses(List<Stash> stashList) {
+        List<Stash> result = new ArrayList<>();
+        stashList.forEach(s -> s.uses.stream().map(this::stashOf).filter(Objects::nonNull).forEach(result::add));
+        return result;
     }
 
     public Node loadNode(String id) {
@@ -131,6 +150,8 @@ public abstract class GraphHandler {
     }
 
     Stash stashOf(String source) {
+        source = stashWithExtension(source);
+        if(openedStashes.contains(source)) return null;
         openedStashes.add(source);
         Stash stash = store.stashFrom(source);
         if (stash == null) getGlobal().severe("Stash " + source + " does not exist or cannot be opened");
@@ -164,8 +185,7 @@ public abstract class GraphHandler {
     }
 
     private Node loadFromStash(String id) {
-        if (!openedStashes.contains(stashWithExtension(id)))
-            doLoadStashes(stashOf(stashWithExtension(id)));
+        doLoadStashes(stashOf(stashWithExtension(id)));
         return node(id);
     }
 
@@ -177,7 +197,7 @@ public abstract class GraphHandler {
 
     private void doInit(String language) {
         this.languages.add(language);
-        Stash stash = stashOf(stashWithExtension(language));
+        Stash stash = stashOf(language);
         if (stash == null) getGlobal().severe("Language or model corrupt or not found: " + language);
         doLoadStashes(stash);
     }
@@ -193,7 +213,6 @@ public abstract class GraphHandler {
 
     private void doLoad(StashReader stashReader, Stash stash) {
         init(stash.language);
-        if (!stash.uses.isEmpty()) doLoadNamespace(stash.uses.toArray(new String[stash.uses.size()]));
         stashReader.read(stash);
     }
 

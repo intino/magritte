@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.intino.tara.io.Helper.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.asLifoQueue;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
@@ -20,6 +22,7 @@ public class TestHelper {
     public static final String secondStash = "secondStash";
     public static final String thirdStash = "thirdStash";
     public static final String dependantStashByUse = "dependantStashByUse";
+    public static final String cyclicDependantStash = "cyclicDependantStash";
     public static final String independentStash = "subnamespace/independant";
     public static final String m1 = "m1";
     public static final String m2 = "m2";
@@ -36,6 +39,7 @@ public class TestHelper {
                 put(secondStash + Extension, secondStash());
                 put(thirdStash + Extension, thirdStash());
                 put(dependantStashByUse + Extension, dependantStashByUse());
+                put(cyclicDependantStash + Extension, cyclicDependantStash());
                 put(independentStash + Extension, independentStashInSubNamespace());
                 put(m1 + Extension, m1());
                 put(m2 + Extension, m2());
@@ -96,8 +100,15 @@ public class TestHelper {
 
     public static Stash dependantStashByUse() {
         Stash stash = emptyStash();
-        stash.uses.add(oneMockStash);
+        stash.uses.addAll(asList(oneMockStash, cyclicDependantStash));
         stash.nodes.add(newNode(dependantStashByUse + "#x", list("Mock"), emptyList(), emptyList()));
+        return stash;
+    }
+
+    public static Stash cyclicDependantStash() {
+        Stash stash = emptyStash();
+        stash.uses.add(dependantStashByUse);
+        stash.nodes.add(newNode(cyclicDependantStash + "#x", list("Mock"), list(newReference("mockLayer", dependantStashByUse + "#x")), emptyList()));
         return stash;
     }
 

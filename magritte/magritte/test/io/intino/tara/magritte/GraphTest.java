@@ -27,7 +27,7 @@ public class GraphTest {
 
     @Test
     public void new_main_should_be_saved() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         graph.createRoot(MockLayer.class, emptyStash).save();
         assertThat(graph.rootList().size(), is(1));
         assertThat(graph.rootList().get(0).layers.size(), is(1));
@@ -42,7 +42,7 @@ public class GraphTest {
 
     @Test
     public void new_main_should_be_removed() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         assertThat(graph.rootList().size(), is(1));
         mockLayer.delete();
@@ -53,7 +53,7 @@ public class GraphTest {
 
     @Test
     public void a_reference_to_a_removed_element_should_be_warned_without_exiting_application_after_reboot() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         MockLayer toBeRemoved = graph.createRoot(MockLayer.class, emptyStash);
         mockLayer.mockLayer(toBeRemoved);
@@ -75,7 +75,7 @@ public class GraphTest {
 
     @Test
     public void node_should_be_removed_from_parent_when_node_is_removed() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         MockLayer child = mockLayer.newMock();
         assertThat(mockLayer.componentList().size(), is(1));
@@ -85,7 +85,7 @@ public class GraphTest {
 
     @Test
     public void node_should_be_saved_with_its_parent_and_removed() {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         MockLayer child = mockLayer.newMock();
         child.save();
@@ -107,7 +107,7 @@ public class GraphTest {
 
     @Test
     public void should_clear_all_model_platform_and_application() {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         assertThat(graph.rootList().size(), is(0));
         graph.createRoot(MockLayer.class, emptyStash);
         assertThat(graph.rootList().size(), is(1));
@@ -121,7 +121,7 @@ public class GraphTest {
 
     @Test
     public void should_reload_all_model_platform_and_application_when_there_is_one_element() {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.rootList().size(), is(2));
         assertThat(graph.<MockApplication>application().mockLayerList().size(), is(2));
         assertThat(graph.<MockPlatform>platform().mockLayerList().size(), is(2));
@@ -133,7 +133,7 @@ public class GraphTest {
 
     @Test
     public void should_reload_nodes_as_they_are_in_the_stash() {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.rootList().size(), is(2));
         assertNull(graph.rootList(MockLayer.class).get(0).mockLayer());
         graph.rootList(MockLayer.class).get(0).mockLayer(graph.rootList(MockLayer.class).get(1));
@@ -145,7 +145,7 @@ public class GraphTest {
 
     @Test
     public void fields_should_be_kept_the_same() {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
         List<Node> components = new ArrayList<>(graph.model.componentList());
         Set<String> openedStashes = new HashSet<>(graph.openedStashes);
         Set<String> languages = new HashSet<>(graph.languages);
@@ -167,14 +167,14 @@ public class GraphTest {
 
     @Test
     public void stash_must_be_loaded_automatically_when_node_is_created_for_a_given_namespace() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         graph.createRoot(MockLayer.class, oneMockStash, "z");
         assertThat(graph.find(MockLayer.class).size(), is(3));
     }
 
     @Test
     public void node_cannot_be_created_if_already_exists() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         MockLayer y = graph.createRoot(MockLayer.class, oneMockStash, "y");
         assertNull(y);
         assertThat(graph.find(MockLayer.class).size(), is(2));
@@ -182,17 +182,16 @@ public class GraphTest {
 
     @Test
     public void should_remove_whole_namespace() throws Exception {
-        Store store = TestHelper.mockStore();
-        Graph graph = use(store, MockApplication.class, MockPlatform.class).load(oneMockStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.find(MockLayer.class).size(), is(2));
         graph.remove(oneMockStash);
         assertThat(graph.find(MockLayer.class).size(), is(0));
-        assertThat(use(store, MockApplication.class, MockPlatform.class).load(oneMockStash).find(MockLayer.class).size(), is(0));
+        assertThat(use(graph.store, MockApplication.class, MockPlatform.class).load(oneMockStash).find(MockLayer.class).size(), is(0));
     }
 
     @Test
     public void should_load_dependant_stashes() throws Exception {
-        Graph graph = use(TestHelper.mockStore(), MockApplication.class, MockPlatform.class).load(firstStash);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(firstStash);
         List<MockLayer> mockLayers = graph.find(MockLayer.class);
         assertThat(mockLayers.size(), is(3));
         assertThat(mockLayers.get(0).mockLayer(), is(mockLayers.get(1)));
@@ -202,15 +201,13 @@ public class GraphTest {
 
     @Test
     public void should_load_dependant_stashes_by_uses() throws Exception {
-        Store store = TestHelper.mockStore();
-        Graph graph = use(store, MockApplication.class, MockPlatform.class).load(dependantStashByUse);
-        assertThat(graph.find(MockLayer.class).size(), is(3));
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(dependantStashByUse);
+        assertThat(graph.find(MockLayer.class).size(), is(4));
     }
 
     @Test
     public void should_have_just_one_concept() throws Exception {
-        Store store = TestHelper.mockStore();
-        Graph graph = use(store, MockApplication.class, MockPlatform.class).load(dependantStashByUse);
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(dependantStashByUse);
         assertThat(graph.conceptList().size(), is(1));
     }
 
@@ -227,6 +224,12 @@ public class GraphTest {
         store.writeStash(independentStashInSubNamespace(), independentStash + Extension);
         Graph graph = use(new InMemoryFileStore(temp), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.find(MockLayer.class).size(), is(7));
+    }
+
+    @Test
+    public void should_load_all_stashes_with_cyclic_dependency() throws Exception {
+        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(dependantStashByUse);
+        assertNotNull(graph.loadNode(cyclicDependantStash + "#x").as(MockLayer.class).mockLayer());
     }
 
     @Test
