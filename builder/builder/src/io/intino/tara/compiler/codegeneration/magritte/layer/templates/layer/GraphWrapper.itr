@@ -14,7 +14,7 @@ def type(graph)
 		    update();
 		}
 
-		protected void update() {
+		public void update() {
 			$node+update...[$NL]
 		}
 
@@ -118,22 +118,22 @@ def type(graph)
 end
 
 def type(single) !type(instance) trigger(add)
-	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = node.as($qn+reference.class);
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = node.as($qn+reference.class);
 end
 
 def !type(instance) trigger(add)
-	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def trigger(add)
 end
 
 def type(single) !type(instance) trigger(remove)
-	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
+	if (node.is("$$stashQn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
 end
 
 def !type(instance) trigger(remove)
-	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def trigger(remove)
