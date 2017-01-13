@@ -1,32 +1,32 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.lang.model.*;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.AbstractFrame;
-import org.siani.itrules.model.Frame;
-import io.intino.tara.Language;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.composition.NodeCustomRule;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.model.AbstractFrame;
+import org.siani.itrules.model.Frame;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static io.intino.tara.compiler.codegeneration.Format.capitalize;
 import static io.intino.tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
 import static io.intino.tara.compiler.shared.Configuration.Level.Application;
 import static io.intino.tara.lang.model.Tag.*;
+import static java.util.stream.Collectors.toList;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
 	private static final String FacetSeparator = ":";
@@ -68,13 +68,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRulesFrame(node, frame);
+		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRuleFrame(node, frame);
 		else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
 		if (!node.isAnonymous())
 			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
 
-	private void createRulesFrame(Node node, Frame frame) {
+	private void createRuleFrame(Node node, Frame frame) {
 		frame.addFrame(NAME, name(node));
 		addTypes(node, frame);
 		addConstraints(node, frame);
@@ -96,8 +96,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private List<String> collectInstanceConstraints() {
 		return language.catalog().entrySet().stream().
-			filter(entry -> isInstance(entry.getValue())).
-			map(Map.Entry::getKey).collect(toList());
+				filter(entry -> isInstance(entry.getValue())).
+				map(Map.Entry::getKey).collect(toList());
 	}
 
 	private boolean isInstance(Context context) {
@@ -149,7 +149,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
-				new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+					new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
@@ -220,9 +220,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addTerminalConstrains(Node container, Frame frame) {
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
-			filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
-				(c instanceof Constraint.Parameter && ((Constraint.Parameter) c).flags().contains(Tag.Terminal) && !isRedefined((Constraint.Parameter) c, container.variables()))).
-			collect(toList());
+				filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
+						(c instanceof Constraint.Parameter && ((Constraint.Parameter) c).flags().contains(Tag.Terminal) && !isRedefined((Constraint.Parameter) c, container.variables()))).
+				collect(toList());
 		new TerminalConstraintManager(language, container).addConstraints(terminalConstraints, frame);
 	}
 
@@ -242,9 +242,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addRequiredVariableRedefines(Frame constraints, Node node) {
 		node.variables().stream().
-			filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
-			forEach(variable -> constraints.addFrame(CONSTRAINT, new Frame().addTypes("redefine", CONSTRAINT).
-				addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
+				filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
+				forEach(variable -> constraints.addFrame(CONSTRAINT, new Frame().addTypes("redefine", CONSTRAINT).
+						addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
 	}
 
 	private void addAssumptions(Node node, Frame frame) {
@@ -285,23 +285,23 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
-			filter(c -> !(node instanceof NodeRoot) ||
-				!c.is(Component) && !rootFacetOverComponent(c) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
-			forEach(c -> {
-				if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
-				else createComponentConstraint(frames, c);
-			});
-		if (node.facetTarget() != null && node.facetTarget().parent() != null)
-			node.facetTarget().parent().components().stream().
-				filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
+				filter(c -> !(node instanceof NodeRoot) ||
+						!c.is(Component) && !rootFacetOverComponent(c) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
 				forEach(c -> {
 					if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
 					else createComponentConstraint(frames, c);
 				});
+		if (node.facetTarget() != null && node.facetTarget().parent() != null)
+			node.facetTarget().parent().components().stream().
+					filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
+					forEach(c -> {
+						if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
+						else createComponentConstraint(frames, c);
+					});
 	}
 
 	private boolean rootFacetOverComponent(Node node) {
-		return node.type().startsWith(ProteoConstants.FACET + FacetSeparator) && node.facetTarget() != null && node.facetTarget().targetNode().is(Component);
+		return node.type().startsWith(ProteoConstants.FACET + FacetSeparator) && node.facetTarget() != null && (node.facetTarget().targetNode().is(Component) || !(node.facetTarget().targetNode().container() instanceof NodeRoot));
 	}
 
 	private void createMetaFacetComponentConstraint(List<Frame> frames, Node node) {
