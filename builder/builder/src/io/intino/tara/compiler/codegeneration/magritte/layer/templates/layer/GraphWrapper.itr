@@ -11,7 +11,6 @@ def type(graph)
 		public GraphWrapper(io.intino.tara.magritte.Graph graph) {
 			this.graph = graph;
 			this.graph.i18n().register("$name");
-		    update();
 		}
 
 		public void update() {
@@ -140,53 +139,53 @@ def trigger(remove)
 end
 
 def type(node & instance) trigger(declaration)
-    private $conceptLayer $name+firstLowerCase+javaValidWord;
+	private $conceptLayer $name+firstLowerCase+javaValidWord;
 end
 
 def type(node & single) trigger(declaration)
-    private $qn+reference $name+firstLowerCase+javaValidWord;
+	private $qn+reference $name+firstLowerCase+javaValidWord;
 end
 
 def type(node) trigger(declaration)
-    private java.util.List<$qn+reference> $name+firstLowerCase~List;
+	private java.util.List<$qn+reference> $name+firstLowerCase~List;
 end
 
 def type(node & instance) trigger(update)
-    $name+firstLowerCase = this.graph.rootList(r -> r.name().equals("$name")).get(0).as($conceptLayer.class);
+	$name+firstLowerCase = this.graph.rootList(r -> r.name().equals("$name")).get(0).as($conceptLayer.class);
 end
 
 def type(node & single) trigger(update)
-    $name+firstLowerCase = this.graph.rootList($qn+reference.class).stream().findFirst().orElse(null);
+	$name+firstLowerCase = this.graph.rootList($qn+reference.class).stream().findFirst().orElse(null);
 end
 
 def type(node) trigger(update)
-    $name+firstLowerCase~List = this.graph.rootList($qn+reference.class);
+	$name+firstLowerCase~List = this.graph.rootList($qn+reference.class);
 end
 
 def type(node & instance) trigger(getter)
-    public $conceptLayer $name+firstLowerCase+javaValidWord() {
-        return $name+firstLowerCase+javaValidWord;
-    }
+	public $conceptLayer $name+firstLowerCase+javaValidWord() {
+		return $name+firstLowerCase+javaValidWord;
+	}
 end
 
 def type(node & single) trigger(getter)
-    public $qn+reference $name+firstLowerCase+javaValidWord() {
-        return $name+firstLowerCase+javaValidWord;
-    }
+	public $qn+reference $name+firstLowerCase+javaValidWord() {
+		return $name+firstLowerCase+javaValidWord;
+	}
 end
 
 def type(node) trigger(getter)
-    public java.util.List<$qn+reference> $name+firstLowerCase~List() {
-        return $name+firstLowerCase~List;
-    }
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
+		return $name+firstLowerCase~List;
+	}
 end
 
 def type(node) !type(single | instance) trigger(filter)
-    public java.util.List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
-        return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-    }
+	public java.util.List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
+		return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 
-    public $qn+reference $name+firstLowerCase+javaValidWord(int index) {
+	public $qn+reference $name+firstLowerCase+javaValidWord(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
 end
