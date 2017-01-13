@@ -11,7 +11,6 @@ import java.net.URL;
 import java.util.*;
 
 import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
-import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
@@ -38,9 +37,11 @@ public abstract class GraphHandler {
         this.store = store;
     }
 
-    static <T> T create(Class<T> aClass, Graph graph) {
+    static <T extends GraphWrapper> T create(Class<T> aClass, Graph graph) {
         try {
-            return aClass.getConstructor(Graph.class).newInstance(graph);
+            T instance = aClass.getConstructor(Graph.class).newInstance(graph);
+            instance.update();
+            return instance;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
             return null;
@@ -62,7 +63,7 @@ public abstract class GraphHandler {
 
     void doLoadStashes(Stash... stashes) {
         stashes = processUses(stashes);
-        if(stashes.length == 0) return;
+        if (stashes.length == 0) return;
         StashReader stashReader = new StashReader(this);
         of(stashes).forEach(s -> doLoad(stashReader, s));
         LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
@@ -72,10 +73,10 @@ public abstract class GraphHandler {
         });
     }
 
-    protected Stash[] processUses(Stash[] stashes){
+    protected Stash[] processUses(Stash[] stashes) {
         List<Stash> stashList = stream(stashes).filter(Objects::nonNull).collect(toList());
         int stashListSize = 0;
-        while(stashListSize != stashList.size()){
+        while (stashListSize != stashList.size()) {
             stashListSize = stashList.size();
             stashList.addAll(processUses(stashList));
         }
@@ -151,7 +152,7 @@ public abstract class GraphHandler {
 
     Stash stashOf(String source) {
         source = stashWithExtension(source);
-        if(openedStashes.contains(source)) return null;
+        if (openedStashes.contains(source)) return null;
         openedStashes.add(source);
         Stash stash = store.stashFrom(source);
         if (stash == null) getGlobal().severe("Stash " + source + " does not exist or cannot be opened");
