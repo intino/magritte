@@ -151,7 +151,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
 					new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
-		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) addMetaFacetConstraints(node, constraints);
+		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
+			addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
 	}
 
@@ -179,7 +180,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addMetaFacetConstraints(Node node, Frame constraints) {
 		final FacetTarget facetTarget = node.facetTarget();
-		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract()) return;
+		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract())
+			return;
 		final Node target = facetTarget.targetNode();
 		if (target.isAbstract())
 			for (Node child : target.children())
@@ -197,7 +199,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addFacetConstraints(Node node, Frame constraints) {
 		for (String facet : node.allowedFacets()) {
 			Node facetTargetNode = findFacetTargetNode(model, node, facet);
-			if (facetTargetNode == null || facetTargetNode.facetTarget() == null || facetTargetNode.isAbstract()) continue;
+			if (facetTargetNode == null || facetTargetNode.facetTarget() == null || facetTargetNode.isAbstract())
+				continue;
 			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addFrame(VALUE, facet);//TODO FULL FACET REFERENCE
 			constraints.addFrame(CONSTRAINT, frame);
 			final FacetTarget facetTarget = facetTargetNode.facetTarget();
@@ -285,28 +288,40 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
-				filter(c -> !(node instanceof NodeRoot) ||
-						!c.is(Component) && !rootFacetOverComponent(c) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
+				filter(c -> componentCompliant(node, c)).
 				forEach(c -> {
-					if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
+					if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
+						createMetaFacetComponentConstraint(frames, c);
 					else createComponentConstraint(frames, c);
 				});
 		if (node.facetTarget() != null && node.facetTarget().parent() != null)
 			node.facetTarget().parent().components().stream().
 					filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
 					forEach(c -> {
-						if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
+						if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
+							createMetaFacetComponentConstraint(frames, c);
 						else createComponentConstraint(frames, c);
 					});
 	}
 
-	private boolean rootFacetOverComponent(Node node) {
-		return node.type().startsWith(ProteoConstants.FACET + FacetSeparator) && node.facetTarget() != null && (node.facetTarget().targetNode().is(Component) || !(node.facetTarget().targetNode().container() instanceof NodeRoot));
+	private boolean componentCompliant(Node container, Node node) {
+		return !(container instanceof NodeRoot) || rootCompliant(node);
+	}
+
+	private boolean rootCompliant(Node c) {
+		return !c.is(Component) && !rootFacetOverComponentOrAbstract(c) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)));
+	}
+
+	private boolean rootFacetOverComponentOrAbstract(Node node) {
+		final Node targetNode = node.facetTarget() != null ? node.facetTarget().targetNode() : null;
+		return node.type().startsWith(ProteoConstants.FACET + FacetSeparator) && targetNode != null &&
+				(targetNode.is(Component) || !(targetNode.container() instanceof NodeRoot) || targetNode.isAbstract());
 	}
 
 	private void createMetaFacetComponentConstraint(List<Frame> frames, Node node) {
 		final FacetTarget facetTarget = node.facetTarget();
-		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract()) return;
+		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract())
+			return;
 		final Node target = facetTarget.targetNode();
 		if (target.isAbstract())
 			for (Node child : target.children()) {
@@ -328,7 +343,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, allRules));
 			if (!component.isSub()) frames.add(oneOf);
 		} else {
-			frames.addAll(candidates.stream().
+			frames.addAll(candidates.stream().filter(c -> componentCompliant(c.container(), c)).
 					map(c -> createComponentConstraint(c, allRules)).collect(toList()));
 		}
 	}
