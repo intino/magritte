@@ -35,8 +35,16 @@ public class Graph extends GraphHandler {
         }
     }
 
+    public static Graph use(Store store, Class<? extends Application> application) {
+        return use(store, application, null);
+    }
+
     public static Graph use(Class<? extends Application> application, Class<? extends Platform> platform) {
         return use(new ResourcesStore(), application, platform);
+    }
+
+    public static Graph use(Class<? extends Application> application) {
+        return use(new ResourcesStore(), application, null);
     }
 
 
