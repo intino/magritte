@@ -37,7 +37,6 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private FrameContext context;
 	private final Level level;
 
-
 	LayerNodeAdapter(String outDsl, Level level, Language language, Node initNode, String workingPackage, String languageWorkingPackage) {
 		super(language, outDsl, workingPackage, languageWorkingPackage);
 		this.level = level;
@@ -88,7 +87,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 					List<Frame> children = new ArrayList<>();
 					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
 							forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
-					for (Frame child : children) frame.addFrame(CREATE, child);
+					for (Frame child : children) frame.addFrame(CREATE, child.addTypes(NODE, OWNER));
 				});
 	}
 
