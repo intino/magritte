@@ -64,7 +64,9 @@ class NativeTransformationOperation extends ModelOperation {
 	private String wrapValue(Valued v, Object value) {
 		final Template template = ToNativeTransformerTemplate.create().add("url", url -> url.toString().substring(resources.getAbsolutePath().length() + 1));
 		final Frame frame = new Frame().addTypes(v.type().name(), "native");
-		frame.addFrame("value", value);
+		String toAdd = value.toString();
+		if (value instanceof File) toAdd = ((File) value).getAbsolutePath().replace("\\", "/");
+		frame.addFrame("value", toAdd);
 		return template.format(frame);
 	}
 
