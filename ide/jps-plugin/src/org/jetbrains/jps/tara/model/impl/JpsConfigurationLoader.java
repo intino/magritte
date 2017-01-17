@@ -8,7 +8,7 @@ import org.jetbrains.jps.model.module.JpsModule;
 
 import java.util.Map;
 
-import static tara.compiler.shared.TaraBuildConstants.*;
+import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 
 class JpsConfigurationLoader {
 	private final JpsModule module;

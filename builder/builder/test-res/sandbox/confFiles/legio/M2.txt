@@ -1,24 +1,25 @@
 def.file
-/Users/oroncal/workspace/legio/model/src/io/intino/legio/Main.tara#true
+/Users/oroncal/workspace/intino/model/src/io/intino/legio/Main.tara#true
 
 project
-legio
+intino
 module
 model
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/legio/model/gen
+/Users/oroncal/workspace/intino/model/gen
 final_outputpath
-/Users/oroncal/workspace/legio/out/production/model/
+/Users/oroncal/workspace/intino/out/production/model/
 resources
-/Users/oroncal/workspace/legio/model/res
+/Users/oroncal/workspace/intino/model/res
 tara.path
-/Users/oroncal/.tara
+/Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/legio/.tara
+/Users/oroncal/workspace/intino/.tara
 src.path
-/Users/oroncal/workspace/legio/model/src
+/Users/oroncal/workspace/intino/model/src
+/Users/oroncal/workspace/intino/model/gen
 
 level
 Application
@@ -33,7 +34,7 @@ io.intino.legio
 artifactId
 model
 version
-1.0.0
+1.0.2
 working.package
 io.intino.legio
 make
@@ -46,4 +47,5 @@ native.language
 Java
 classpath
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/proteo-alone-1.0.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/proteo-alone-1.0.0.jar

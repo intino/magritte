@@ -5,7 +5,7 @@
   http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.siani.tara</groupId>
+    <groupId>io.intino.tara</groupId>
     <artifactId>plugin</artifactId>
     <version>1.0</version>
 
@@ -13,6 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
 
     <build>
         <outputDirectory>../../out/production/plugin</outputDirectory>
@@ -53,17 +54,17 @@
             <version>3.7</version>
         </dependency>
         <dependency>
-            <groupId>org.siani.tara</groupId>
+            <groupId>io.intino.tara</groupId>
             <artifactId>io</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.siani.tara</groupId>
+            <groupId>io.intino.tara</groupId>
             <artifactId>builder-constants</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.siani.tara</groupId>
+            <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
             <version>1.0</version>
         </dependency>

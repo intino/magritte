@@ -1,10 +1,10 @@
 def.file
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/View.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/monet/Monet.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Mounter.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Data.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/Sumus.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Mounter.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/monet/Monet.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/Sumus.tara#true
 
 project
 sumus

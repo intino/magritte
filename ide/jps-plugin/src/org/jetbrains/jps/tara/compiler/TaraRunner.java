@@ -19,16 +19,16 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static tara.compiler.shared.TaraBuildConstants.*;
+import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
 	private static final String INTINO_PATH = "intino-plugin";
-	private static final String[] INTINO = {"intino-plugin.jar", "proteo-alone-1.0.0.jar"};
+	private static final String[] INTINO = {"intino-plugin.jar", "magritte-lite-1.0.0.jar"};
 	private static final String TARA_CORE_JAR = "tara-plugin.jar";
-	private static final String ANTLR = "antlr4-runtime-4.5.jar";
+	private static final String ANTLR = "antlr4-runtime-4.6.jar";
 	private static final String GSON = "gson-2.4.jar";
 	private static final String[] KRYO = {"asm-5.0.4.jar", "kryo-4.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.2.jar", "reflectasm-1.11.3.jar"};
 	private static final String ITRULES_VERSION = "1.6.0";
@@ -73,7 +73,7 @@ class TaraRunner {
 		if (!conf.groupID.isEmpty()) writer.write(GROUP_ID + NL + conf.groupID + NL);
 		if (!conf.artifactID.isEmpty()) writer.write(ARTIFACT_ID + NL + conf.artifactID + NL);
 		if (!conf.version.isEmpty()) writer.write(VERSION + NL + conf.version + NL);
-		if (!conf.workingPackage.isEmpty()) writer.write(WORKING_PACKAGE + NL + conf.workingPackage + NL);
+		writer.write(WORKING_PACKAGE + NL + (conf.workingPackage.isEmpty() ? conf.outDSL : conf.workingPackage) + NL);
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
@@ -97,7 +97,7 @@ class TaraRunner {
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
+				getJavaExecutable(), "io.intino.tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, statusUpdater -> context.processMessage(new ProgressMessage(statusUpdater))) {
 			@Override
@@ -143,14 +143,14 @@ class TaraRunner {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		root = new File(root.getParentFile(), ANTLR);
 		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
-			new File(root.getParentFile(), LIB + ANTLR);
+				new File(root.getParentFile(), LIB + ANTLR);
 	}
 
 	private File getGsonLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		root = new File(root.getParentFile(), GSON);
 		return (root.exists()) ? new File(root.getParentFile(), GSON) :
-			new File(root.getParentFile(), LIB + GSON);
+				new File(root.getParentFile(), LIB + GSON);
 	}
 
 	private List<File> getItRulesLibs() {
@@ -202,7 +202,7 @@ class TaraRunner {
 	private void addLib(File root, String lib, List<File> libs) {
 		root = new File(root.getParentFile(), lib);
 		libs.add((root.exists()) ?
-			new File(root.getParentFile(), lib) :
-			new File(root.getParentFile(), LIB + lib));
+				new File(root.getParentFile(), lib) :
+				new File(root.getParentFile(), LIB + lib));
 	}
 }

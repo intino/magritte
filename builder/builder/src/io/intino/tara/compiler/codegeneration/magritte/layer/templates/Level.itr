@@ -1,0 +1,73 @@
+def type(platform)
+	package $workingPackage+lowercase;
+
+	import io.intino.tara.magritte.Graph;
+
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Platform extends $workingPackage+lowercase.GraphWrapper implements io.intino.tara.magritte.Platform {
+
+		public $generatedLanguage+javaValidName~Platform(Graph graph) {
+			super(graph);
+		}
+
+		public void execute(String... args) {
+			// Insert execute code here
+		}
+	}
+end
+
+def type(application & ontology)
+	package $workingPackage+lowercase;
+
+	import io.intino.tara.magritte.Graph;
+
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements io.intino.tara.magritte.Application {
+
+		public $generatedLanguage+javaValidName~Application(Graph graph) {
+			super(graph);
+			// Insert code here
+		}
+
+		public void execute(String... args) {
+			// Insert code here
+		}
+	}
+end
+
+def type(application)
+	package $workingPackage+lowercase;
+
+	import io.intino.tara.magritte.Graph;
+
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements io.intino.tara.magritte.Application {
+
+		public $generatedLanguage+javaValidName+FirstUpperCase~Application(Graph graph) {
+			super(graph);
+			// Insert code here
+		}
+	}
+end
+
+def type(launcher & ontology)
+	import io.intino.tara.magritte.Graph;
+
+	public class Main {
+
+		public static void main(String$[$] args) {
+			Graph graph = $dynamic~Graph.load().wrap($language+lowerCase.$language+firstUpperCase~Application.class);
+			graph.application().execute(args);
+		}
+	}
+end
+
+def type(launcher)
+	import io.intino.tara.magritte.Graph;
+
+	public class Main {
+
+		public static void main(String$[$] args) {
+			Graph graph = $dynamic~Graph.load().wrap($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
+			graph.platform().execute(args);
+		}
+	}
+end
+

@@ -1,0 +1,273 @@
+def type(Layer)
+	package $package+javaValidName+lowercase;
+
+	import $workingPackage+javaValidName+lowercase.*;
+	[$imports...[$NL]
+	]
+
+	$node
+end
+
+def type(single & owner) !type(overriden | instance) trigger(add)
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+javaValidName+firstLowerCase+javaValidWord = node.as($qn+reference.class);
+end
+
+def type(owner) !type(overriden | instance) trigger(add)
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
+end
+
+def type(overriden) trigger(add)
+end
+
+def type(single & owner) !type(overriden | instance) trigger(remove)
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+javaValidName+firstLowerCase+javaValidWord = null;
+end
+
+def type(owner) !type(overriden | instance) trigger(remove)
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
+end
+
+def type(overriden) trigger(remove)
+end
+
+def type(node) !type(final | instance | abstract) trigger(new)
+    public $qn+reference $name+javaValidName+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
+        $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
+		$variable+assign...[$NL] |:
+        return newElement;
+    }
+end
+
+def type(node & create) !type(final | instance) trigger(new)
+    public $qn+reference $name+javaValidName+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
+        $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
+		$variable+assign...[$NL] |:
+        return newElement;
+    }
+end
+
+def type(node & owner) trigger(new)
+end
+
+def type(availableFacet) slot(variable) trigger(availableFacet)
+	public $qn+reference as$name+firstUpperCase() {
+		return this.as($qn+reference.class);
+	}
+
+	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
+		$qn+reference newElement = addFacet($qn+reference.class);
+		$variable+assign...[$NL] |:
+        return newElement;
+    }
+
+    public boolean is$name+firstUpperCase() {
+    	return is($qn+reference.class);
+    }
+
+    public void remove$name+firstUpperCase() {
+		this.removeFacet($qn+reference.class);
+    }
+end
+
+def type(availableFacet) trigger(availableFacet)
+	public $qn+reference as$name+firstUpperCase() {
+		io.intino.tara.magritte.Layer as = this.as($qn+reference.class);
+		return as != null ? ($qn+reference) as : [$abstract?addFacet($qn+reference.class)];
+	}
+
+	public boolean is$name+firstUpperCase() {
+		return is($qn+reference.class);
+	}
+end
+
+def type(core) trigger(asCore)
+	public $qn+reference as$name() {
+		return ($qn+reference) this.as($qn+reference.class);
+	}
+end
+
+def type(facetTarget) !type(overriden) trigger(facet)
+	if (layer instanceof $qn+reference) _$name+javaValidName+firstLowerCase = ($qn+reference) layer;
+end
+
+def type(constraint) trigger(facet)
+	if (layer instanceof $qn+reference) _$name+javaValidName+firstLowerCase = ($qn+reference) layer;
+end
+
+def !type(target) type(nodeimpl) !type(instance) trigger(Node)
+	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
+		$variable+declaration...[$NL][
+		$node+declaration...[$NL]][
+		$facetTarget+declaration...[$NL]][
+		$constraint+declaration...[$NL]][
+		$metaType][
+		$metaFacet...[$NL]]
+
+		public $name+javaValidName(io.intino.tara.magritte.Node node) {
+			super(node);[
+			_metaType = node.as($metaType+typeInit.class);][
+			_$metaFacet+name = node.as($metaFacet+typeInit.class);]
+		}[
+
+		$variable+getter...[$NL$NL]][
+
+		$variable+setter...[$NL$NL]][
+
+		$node+getter...[$NL$NL]][
+
+		$node+setter...[$NL$NL]][
+
+		$availableFacet...[$NL$NL]][
+		$asCore][
+
+		public java.util.List<io.intino.tara.magritte.Node> componentList() {
+			java.util.Set<io.intino.tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
+			$node+componentList...[$NL]|:
+			return new java.util.ArrayList<>(components);
+		}]
+
+		@Override
+		public java.util.Map<java.lang.String, java.util.List<?>> variables() {
+			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
+			$variable+list...[$NL]|:
+			return map;
+		}[
+
+		public io.intino.tara.magritte.Concept concept() {
+			return this.graph().concept($qn.class);
+		}][
+
+		@Override
+		protected void addNode(io.intino.tara.magritte.Node node) {
+			super.addNode(node);
+			$node+add...[$NL]
+		}][
+
+		@Override
+        protected void removeNode(io.intino.tara.magritte.Node node) {
+            super.removeNode(node);
+            $node+remove...[$NL]
+        }]
+
+		@Override
+		protected void _load(java.lang.String name, java.util.List<?> values) {
+			super._load(name, values);[
+			$facetTarget+init][
+			$metaType+metaTypeLoad][
+			$metaFacet+metaFacetLoad][
+			$variable+init...[$NL~else ]]
+		}
+
+		@Override
+		protected void _set(java.lang.String name, java.util.List<?> values) {
+			super._set(name, values);[
+			$facetTarget+set][
+			$metaType+metaTypeSet][
+			$metaFacet+metaFacetSet][
+			$variable+set...[$NL~else ]]
+		}[
+
+		@Override
+		protected void _sync(io.intino.tara.magritte.Layer layer) {
+			super._sync(layer);
+		    $facetTarget+facet...[$NL~else ]
+		    $constraint+facet...[$NL~else ]
+		}]
+
+		public Create create() {
+			return new Create(null);
+		}
+
+		public Create create(java.lang.String name) {
+			return new Create(name);
+		}
+
+		public class Create[ extends $parent.Create] {
+			[$parentSuper+parentvariable]
+
+			public Create(java.lang.String name) {
+				[$parentSuper+parentinit]
+			}[
+
+			$node+new...[$NL$NL]]
+			$create+new...[$NL$NL]
+		}
+		[
+		$node...[$NL]
+		]
+		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
+			return (($workingPackage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) graph().$ModelType+firstLowerCase());
+		}
+	}
+
+end
+
+def type(metaFacet) trigger(name)
+	$name+javaValidName+firstLowerCase
+end
+
+def type(metaFacet) trigger(typeInit)
+	$type
+end
+
+def trigger(typeInit)
+	$value
+end
+
+def value(true) trigger(parentinit)
+	super(name);
+end
+
+def value(false) trigger(parentinit)
+	this.name = name;
+end
+
+def value(true) trigger(parentvariable)
+end
+
+def value(false) trigger(parentvariable)
+	protected final java.lang.String name;
+end
+
+def trigger(metaTypeLoad)
+	node().load(_metaType, name, values);
+end
+
+def trigger(metaTypeSet)
+	node().set(_metaType, name, values);
+end
+
+def trigger(metaFacetLoad)
+	node().load(_$name+javaValidName+firstLowerCase, name, values);
+end
+
+def trigger(metaFacetSet)
+	node().set(_$name+javaValidName+firstLowerCase, name, values);
+end
+
+def trigger(metaType)
+	protected $value _metaType;
+end
+
+def trigger(metaFacet)
+	protected $type _$name+javaValidName+firstLowerCase;
+end
+
+def trigger(tag)
+	io.intino.tara.magritte.tags.$value+lowerCase+FirstUpperCase
+end
+
+def value(Layer) trigger(var)
+
+end
+
+def trigger(var)
+	super.variables()
+end
+def value(true) trigger(inner)
+	static
+end
+
+def value(true) trigger(abstract)
+	abstract
+end

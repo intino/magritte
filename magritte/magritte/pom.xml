@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.siani.tara</groupId>
-    <artifactId>proteo</artifactId>
-    <version>1.0</version>
+    <groupId>io.intino.tara</groupId>
+    <artifactId>magritte</artifactId>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -14,18 +14,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.siani.tara</groupId>
+            <groupId>io.intino.tara</groupId>
             <artifactId>io</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- Update on io module pom-->
         <dependency>
-            <groupId>org.siani.tara</groupId>
-            <artifactId>indexer</artifactId>
-            <version>1.0</version>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.0</version>
         </dependency>
 
         <dependency>
-            <groupId>org.siani.tara</groupId>
+            <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
             <version>1.0</version>
         </dependency>
@@ -36,13 +38,27 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>intino-maven</id>
+            <name>intino-maven-releases</name>
+            <url>https://artifactory.intino.io/artifactory/release-libraries</url>
+        </repository>
+    </distributionManagement>
+
     <build>
-        <directory>../../out/build/proteo</directory>
+        <directory>../../out/build/magritte</directory>
         <sourceDirectory>src</sourceDirectory>
-        <outputDirectory>../../out/production/proteo</outputDirectory>
-        <testOutputDirectory>../../out/test/proteo</testOutputDirectory>
+        <outputDirectory>../../out/production/magritte</outputDirectory>
+        <testOutputDirectory>../../out/test/magritte</testOutputDirectory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
@@ -54,6 +70,30 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                            <minimizeJar>false</minimizeJar><!--important-->
+                            <artifactSet>
+                                <includes>
+                                    <include>io.intino.tara:language:*</include>
+                                    <include>io.intino.tara:io:*</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
