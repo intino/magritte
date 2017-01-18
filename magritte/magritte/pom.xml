@@ -50,7 +50,7 @@
         <repository>
             <id>intino-maven</id>
             <name>intino-maven-releases</name>
-            <url>https://artifactory.intino.io/artifactory/release-libraries</url>
+            <url>https://artifactory.intino.io/artifactory/release-frameworks</url>
         </repository>
     </distributionManagement>
 
@@ -64,6 +64,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

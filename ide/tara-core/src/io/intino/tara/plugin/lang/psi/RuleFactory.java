@@ -1,13 +1,13 @@
 package io.intino.tara.plugin.lang.psi;
 
 import com.intellij.psi.PsiElement;
+import io.intino.tara.lang.model.Primitive;
+import io.intino.tara.lang.model.Tag;
 import io.intino.tara.lang.model.rules.variable.*;
-import org.jetbrains.annotations.Nullable;
 import io.intino.tara.plugin.lang.psi.impl.PsiCustomWordRule;
 import io.intino.tara.plugin.lang.psi.impl.TaraIdentifierImpl;
 import io.intino.tara.plugin.lang.psi.impl.TaraMetricImpl;
-import io.intino.tara.lang.model.Primitive;
-import io.intino.tara.lang.model.Tag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class RuleFactory {
 				return createIntegerRule(rule);
 			case STRING:
 				final String value = valueOf(parameters, Collections.singletonList(StringValue.class));
-				return new StringRule(value.substring(1, value.length() - 1));
+				return new StringRule(value.isEmpty() ? "" : value.substring(1, value.length() - 1));
 			case RESOURCE:
 				return new FileRule(valuesOf(parameters));
 			case FUNCTION:

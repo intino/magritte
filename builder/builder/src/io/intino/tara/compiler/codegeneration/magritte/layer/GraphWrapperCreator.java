@@ -47,6 +47,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 		if (node.is(Instance)) frame.addTypes(INSTANCE);
 		if (node.isAbstract()) frame.addTypes(ABSTRACT);
 		frame.addFrame(QN, getQn(node));
+		frame.addFrame(OUT_LANGUAGE, outDsl);
 		frame.addFrame(STASH_QN, NameFormatter.stashQn(node, workingPackage.toLowerCase()).replace(":", ""));
 		addType(node, size, frame);
 		frame.addFrame(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
@@ -56,7 +57,8 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	}
 
 	private void addType(Node node, Size rule, Frame frame) {
-		if (!(language instanceof Proteo) && !(language instanceof Verso)) frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
+		if (!(language instanceof Proteo) && !(language instanceof Verso))
+			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
 		frame.addFrame(TYPE, nodeType(node, rule));
 	}
 
