@@ -116,6 +116,10 @@ def type(graph)
 	}
 end
 
+def type(instance) trigger(add)
+	if(node.id().equals("$generatedLanguage#$name")) this.$name+firstLowercase+javaValidWord = node.as($conceptLayer+reference.class);
+end
+
 def type(single) !type(instance) trigger(add)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = node.as($qn+reference.class);
 end
@@ -127,8 +131,12 @@ end
 def trigger(add)
 end
 
+def type(instance) trigger(remove)
+	if(node.id().equals("$generatedLanguage#$name")) this.$name+firstLowercase+javaValidWord = null;
+end
+
 def type(single) !type(instance) trigger(remove)
-	if (node.is("$$stashQn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
 end
 
 def !type(instance) trigger(remove)
@@ -151,7 +159,8 @@ def type(node) trigger(declaration)
 end
 
 def type(node & instance) trigger(update)
-	$name+firstLowerCase = this.graph.rootList(r -> r.name().equals("$name")).get(0).as($conceptLayer.class);
+    java.util.List<io.intino.tara.magritte.Node> $name+firstLowerCase+javaValidWord~List = this.graph.rootList(r -> r.id().equals("$generatedLanguage#$name"));
+    if(!$name+firstLowerCase+javaValidWord~List.isEmpty()) this.$name+firstLowercase+javaValidWord = $name+firstLowerCase+javaValidWord~List.get(0).as($conceptLayer.class);
 end
 
 def type(node & single) trigger(update)
