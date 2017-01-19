@@ -74,7 +74,7 @@ public class StashCreator {
 			Concept concept = Helper.newConcept(name(node),
 					node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.META_CONCEPT),
 					node.container() instanceof Model && !node.is(Tag.Component),
-					node.name() != null && !node.name().isEmpty() ? NameFormatter.stashQn(node, workingPackage).replace("#","") : null,
+					node.name() != null && !node.name().isEmpty() ? NameFormatter.stashQn(node, workingPackage).replace("#", "") : null,
 					node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
 					StashHelper.collectTypes(node),
 					collectContents(nodeList),
@@ -236,9 +236,7 @@ public class StashCreator {
 	private List<?> convert(Valued valued) {
 		final Primitive type = valued.type();
 		if (type.equals(WORD)) return type.convert(valued.values().toArray());
-		if (type.equals(BOOLEAN)) return type.convert(valued.values().toArray());
-		if (type.equals(RESOURCE))
-			//TODO CHECK VALUE EQUALS RESOURCE FOLDER.IT WILL TRHOW INDEXOUTOFRANGE
+		if (type.equals(RESOURCE)) //TODO CHECK VALUE EQUALS RESOURCE FOLDER.IT WILL TRHOW INDEXOUTOFRANGE
 			return (valued.values()).stream().map(o -> toSystemIndependentName(((File) o).getAbsolutePath()).substring(toSystemIndependentName(resourceFolder.getAbsolutePath()).length() + 1)).collect(toList());
 		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
 	}

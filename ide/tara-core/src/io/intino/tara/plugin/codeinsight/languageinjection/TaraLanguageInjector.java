@@ -108,17 +108,17 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private static String defaultPrefix() {
 		return "package org.sample;\n" +
-			"public class Loading implements tara.magritte.Function {" +
+			"public class Loading implements io.intino.tara.magritte.Function {" +
 			"\tContainer $;" +
 			"public void sample() {";
 	}
 
 	private static String groovySuffix() {
 		return "\n\t}\n\n" +
-			"\tvoid self(tara.magritte.Layer context) {\n" +
+			"\tvoid self(io.intino.tara.magritte.Layer context) {\n" +
 			"\t}\n" +
 			"\n" +
-			"\tClass<? extends tara.magritte.Layer> selfClass() {\n" +
+			"\tClass<? extends io.intino.tara.magritte.Layer> selfClass() {\n" +
 			"\t\treturn null\n" +
 			"\t}\n" +
 			"}";
@@ -129,7 +129,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 			"\tfun self(context: tara.magritte.Layer) {\n" +
 			"\t}\n" +
 			"\n" +
-			"\tfun selfClass(): Class<out tara.magritte.Layer> {\n" +
+			"\tfun selfClass(): Class<out io.intino.tara.magritte.Layer> {\n" +
 			"\t\treturn null\n" +
 			"\t}" +
 			"}";

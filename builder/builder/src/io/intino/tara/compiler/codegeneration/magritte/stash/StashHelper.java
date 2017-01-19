@@ -43,7 +43,7 @@ class StashHelper {
 	}
 
 	static boolean hasToBeConverted(List<Object> values, Primitive type) {
-		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(RESOURCE) || type.equals(BOOLEAN);
+		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(RESOURCE);
 	}
 
 	static List<Object> buildResourceValue(List<Object> values, String filePath) {
