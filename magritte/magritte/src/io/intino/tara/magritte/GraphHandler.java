@@ -63,10 +63,16 @@ public abstract class GraphHandler {
     }
 
     void doLoadStashes(Stash... stashes) {
+        if (stashes == null || stashes.length == 0) return;
         stashes = processUses(stashes);
+        stream(stashes).filter(Objects::nonNull).forEach(s -> init(s.language));
         if (stashes.length == 0) return;
+        readStashes(stashes);
+    }
+
+    private void readStashes(Stash[] stashes) {
         StashReader stashReader = new StashReader(this);
-        of(stashes).forEach(s -> doLoad(stashReader, s));
+        of(stashes).forEach(stashReader::read);
         LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
         clone.forEach((node, map) -> {
             map.forEach(node::load);
@@ -192,8 +198,8 @@ public abstract class GraphHandler {
     }
 
     void init(String language) {
-        if (languages.contains(language)) return;
-        if (language.contains("Verso") || language.contains("Proteo")) return;
+        if (languages.contains(language) || "Verso".equals(language) || "Proteo".equals(language)) return;
+        if (language == null || language.isEmpty())return;
         doInit(language);
     }
 
@@ -211,11 +217,6 @@ public abstract class GraphHandler {
             if (result != null) break;
         }
         return result;
-    }
-
-    private void doLoad(StashReader stashReader, Stash stash) {
-        init(stash.language);
-        stashReader.read(stash);
     }
 
     private void register(Concept concept) {

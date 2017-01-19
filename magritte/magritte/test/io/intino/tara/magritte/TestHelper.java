@@ -10,7 +10,6 @@ import java.util.Map;
 
 import static io.intino.tara.io.Helper.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.asLifoQueue;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
@@ -130,12 +129,12 @@ public class TestHelper {
     }
 
     public static Stash m3() {
-        return emptyStash();
-    }
-
-    static Stash emptyStash() {
         return newStash("Proteo", emptyList(), emptyList(),
                 list(newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
                 emptyList());
+    }
+
+    static Stash emptyStash() {
+        return newStash("m3", list());
     }
 }

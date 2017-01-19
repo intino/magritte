@@ -32,6 +32,7 @@ public class InMemoryFileStore extends FileSystemStore {
         firstLoad = false;
         stash.uses = allStashesInStore();
         stash.uses.remove(path);
+        stash.uses.remove(stash.language + ".stash");
         return stash;
     }
 
