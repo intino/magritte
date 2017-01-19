@@ -1,8 +1,9 @@
 package io.intino.tara.magritte;
 
 import io.intino.tara.io.Stash;
+import io.intino.tara.magritte.types.ResX;
 import io.intino.tara.magritte.utils.I18n;
-import io.intino.tara.magritte.utils.StashHelper;
+import io.intino.tara.magritte.utils.PathHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
-import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
+import static io.intino.tara.magritte.utils.PathHelper.pathWithExtension;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
@@ -53,8 +54,8 @@ public abstract class GraphHandler {
         return unmodifiableList(new ArrayList<>(languages));
     }
 
-    void doLoadNamespace(String... namespaces) {
-        doLoadStashes(stream(namespaces).map(StashHelper::stashWithExtension).toArray(String[]::new));
+    void doLoadPath(String... paths) {
+        doLoadStashes(stream(paths).map(PathHelper::pathWithExtension).toArray(String[]::new));
     }
 
     void doLoadStashes(String... paths) {
@@ -102,11 +103,11 @@ public abstract class GraphHandler {
     }
 
     @SuppressWarnings("unused")
-    public URL loadResource(String path) {
+    public ResX loadResource(String path) {
         URL url = store.resourceFrom(path);
         if (url == null)
             getGlobal().severe("Resource at " + path + " not found");
-        return url;
+        return new ResX(url);
     }
 
     public Set<String> openedStashes() {
@@ -121,24 +122,24 @@ public abstract class GraphHandler {
 
     @SuppressWarnings("UnusedParameters")
     void save(Node node) {
-        save(node.namespace());
+        save(node.path());
     }
 
-    private void save(String namespace) {
+    private void save(String path) {
         if (!store.allowWriting()) return;
         synchronized (this) {
-            StashWriter.write(this, stashWithExtension(namespace), nodesIn(namespace));
+            StashWriter.write(this, pathWithExtension(path), nodesIn(path));
         }
     }
 
-    private List<Node> nodesIn(String namespace) {
-        return model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList());
+    private List<Node> nodesIn(String path) {
+        return model.graph.rootList().stream().filter(i -> i.path().equals(path)).collect(toList());
     }
 
     @SuppressWarnings("UnusedParameters")
-    public synchronized URL save(URL url, String path, URL oldUrl, Node node) {
+    public synchronized ResX save(ResX url, String path, ResX oldUrl, Node node) {
         try {
-            return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, node);
+            return new ResX(store.writeResource(url.openConnection().getInputStream(), path, oldUrl.getURL(), node));
         } catch (IOException e) {
             getGlobal().severe("Url at " + url.toString() + " could not be accessed");
             return null;
@@ -146,12 +147,12 @@ public abstract class GraphHandler {
     }
 
     @SuppressWarnings("UnusedParameters")
-    public synchronized URL save(InputStream inputStream, String path, URL oldUrl, Node node) {
-        return store.writeResource(inputStream, path, oldUrl, node);
+    public synchronized ResX save(InputStream inputStream, String path, ResX oldUrl, Node node) {
+        return new ResX(store.writeResource(inputStream, path, oldUrl.getURL(), node));
     }
 
     Stash stashOf(String source) {
-        source = stashWithExtension(source);
+        source = pathWithExtension(source);
         if (openedStashes.contains(source)) return null;
         openedStashes.add(source);
         Stash stash = store.stashFrom(source);
@@ -186,7 +187,7 @@ public abstract class GraphHandler {
     }
 
     private Node loadFromStash(String id) {
-        doLoadStashes(stashOf(stashWithExtension(id)));
+        doLoadStashes(stashOf(pathWithExtension(id)));
         return node(id);
     }
 
@@ -236,15 +237,15 @@ public abstract class GraphHandler {
     public void remove(Node node) {
         node.owner().remove(node);
         nodes.remove(node.id);
-        save(node.namespace());
+        save(node.path());
     }
 
-    public void remove(String namespace) {
-        nodesIn(namespace).forEach(node -> {
+    public void remove(String path) {
+        nodesIn(path).forEach(node -> {
             node.owner().remove(node);
             nodes.remove(node.id);
         });
-        save(namespace);
+        save(path);
     }
 
     public void reload() {

@@ -23,7 +23,7 @@ public class InMemoryFileStoreTest {
         store.writeStash(secondStash(), secondStash + Extension);
         store.writeStash(thirdStash(), thirdStash + Extension);
         store.writeStash(dependantStashByUse(), dependantStashByUse + Extension);
-        store.writeStash(independentStashInSubNamespace(), independentStash + Extension);
+        store.writeStash(independentStashInSubPath(), independentStash + Extension);
         Stash stash = new InMemoryFileStore(temp).stashFrom(secondStash + Extension);
         assertThat(stash.uses.size(), is(5));
     }

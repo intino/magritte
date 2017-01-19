@@ -1,4 +1,4 @@
-package io.intino.tara.magritte;
+package io.intino.tara.magritte.types;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -8,15 +8,15 @@ import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.*;
 
 @SuppressWarnings("WeakerAccess")
-public class Date {
+public class DateX {
     private final Instant start;
     private final Instant end;
 
-    public static Date parse(String text) {
+    public static DateX parse(String text) {
         return Parser.of(text).date();
     }
 
-    public Date(Instant start, Instant end) {
+    public DateX(Instant start, Instant end) {
         this.start = start;
         this.end = end;
         checkRange();
@@ -46,27 +46,27 @@ public class Date {
             this.text = text;
         }
 
-        Date date() {
+        DateX date() {
             return isRange() ? parseRange() : parseDate();
         }
 
-        private Date parseRange() {
+        private DateX parseRange() {
             String[] split = text.split(",");
-            return new Date(parseText(split[0]), parseText(split[1]));
+            return new DateX(parseText(split[0]), parseText(split[1]));
         }
 
         private Instant parseText(String text) {
             return isInstant(text) ? Instant.parse(text) : instantOf(valuesOf(text));
         }
 
-        private Date parseDate() {
+        private DateX parseDate() {
             return parseDate(valuesOf(text));
         }
 
-        private Date parseDate(int[] values) {
+        private DateX parseDate(int[] values) {
             Instant from = instantOf(values);
             Instant to = instantOf(next(values));
-            return new Date(from, to);
+            return new DateX(from, to);
         }
 
         private int[] valuesOf(String text) {

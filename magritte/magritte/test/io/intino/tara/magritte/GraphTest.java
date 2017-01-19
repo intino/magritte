@@ -166,7 +166,7 @@ public class GraphTest {
     }
 
     @Test
-    public void stash_must_be_loaded_automatically_when_node_is_created_for_a_given_namespace() throws Exception {
+    public void stash_must_be_loaded_automatically_when_node_is_created_for_a_given_path() throws Exception {
         Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
         graph.createRoot(MockLayer.class, oneMockStash, "z");
         assertThat(graph.find(MockLayer.class).size(), is(3));
@@ -181,7 +181,7 @@ public class GraphTest {
     }
 
     @Test
-    public void should_remove_whole_namespace() throws Exception {
+    public void should_remove_whole_path() throws Exception {
         Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.find(MockLayer.class).size(), is(2));
         graph.remove(oneMockStash);
@@ -221,7 +221,7 @@ public class GraphTest {
         store.writeStash(secondStash(), secondStash + Extension);
         store.writeStash(thirdStash(), thirdStash + Extension);
         store.writeStash(dependantStashByUse(), dependantStashByUse + Extension);
-        store.writeStash(independentStashInSubNamespace(), independentStash + Extension);
+        store.writeStash(independentStashInSubPath(), independentStash + Extension);
         Graph graph = use(new InMemoryFileStore(temp), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.find(MockLayer.class).size(), is(7));
     }

@@ -124,12 +124,12 @@ public class Concept extends Predicate {
         return unmodifiableList(nodes);
     }
 
-    Node createNode(String namespace, String name, Node owner) {
+    Node createNode(String path, String name, Node owner) {
         if (isMetaConcept) {
             getGlobal().severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
             return null;
         }
-        return newNode(namespace + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+        return newNode(path + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
     }
 
     public Node createNode(Node owner) {
@@ -141,7 +141,7 @@ public class Concept extends Predicate {
             getGlobal().severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
             return null;
         }
-        return newNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+        return newNode(owner.path() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
     }
 
     private Node newNode(String name, Node owner) {

@@ -2,12 +2,13 @@ package io.intino.tara.magritte;
 
 import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.stores.ResourcesStore;
-import io.intino.tara.magritte.utils.StashHelper;
+import io.intino.tara.magritte.utils.PathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.magritte.utils.PathHelper.canonicalPath;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
@@ -52,9 +53,9 @@ public class Graph extends GraphHandler {
         return use(new ResourcesStore(), null, null);
     }
 
-    public Graph load(String... namespaces) {
-        if (namespaces.length == 0) doLoadNamespace("Model");
-        else doLoadNamespace(namespaces);
+    public Graph load(String... paths) {
+        if (paths.length == 0) doLoadPath("Model");
+        else doLoadPath(paths);
         return this;
     }
 
@@ -137,30 +138,30 @@ public class Graph extends GraphHandler {
         return createRoot(concept, stash, createNodeName());
     }
 
-    public <T extends Layer> T createRoot(Class<T> layerClass, String namespace) {
-        return createRoot(layerClass, namespace, createNodeName());
+    public <T extends Layer> T createRoot(Class<T> layerClass, String path) {
+        return createRoot(layerClass, path, createNodeName());
     }
 
-    public Node createRoot(String type, String namespace) {
-        return createRoot(concept(type), namespace, createNodeName());
+    public Node createRoot(String type, String path) {
+        return createRoot(concept(type), path, createNodeName());
     }
 
-    public <T extends Layer> T createRoot(Class<T> layerClass, String namespace, String name) {
-        Node node = createRoot(concept(layerClass), namespace, name);
+    public <T extends Layer> T createRoot(Class<T> layerClass, String path, String name) {
+        Node node = createRoot(concept(layerClass), path, name);
         return node != null ? node.as(layerClass) : null;
     }
 
-    public Node createRoot(String type, String namespace, String name) {
-        return createRoot(concept(type), namespace, name);
+    public Node createRoot(String type, String path, String name) {
+        return createRoot(concept(type), path, name);
     }
 
-    public Node createRoot(Concept concept, String namespace, String name) {
-        Node newNode = createNode(concept, namespace, name);
+    public Node createRoot(Concept concept, String path, String name) {
+        Node newNode = createNode(concept, path, name);
         if (newNode != null) commit(newNode);
         return newNode;
     }
 
-    private Node createNode(Concept concept, String namespace, String name) {
+    private Node createNode(Concept concept, String path, String name) {
         if (!concept.isMain()) {
             getGlobal().severe("Concept " + concept.id() + " is not main. The node could not be created.");
             return null;
@@ -169,21 +170,21 @@ public class Graph extends GraphHandler {
             getGlobal().severe("Concept " + concept.id() + " is abstract. The node could not be created.");
             return null;
         }
-        namespace = namespace == null || namespace.isEmpty() ? "Misc" : namespace;
+        path = path == null || path.isEmpty() ? "Misc" : path;
         getGlobal().setUseParentHandlers(false);
-        load(StashHelper.stashWithExtension(namespace));
+        load(PathHelper.pathWithExtension(path));
         getGlobal().setUseParentHandlers(true);
-        if (name != null && nodes.containsKey(namespace + "#" + name)) {
-            getGlobal().warning("Node with id " + namespace + "#" + name + " already exists");
+        if (name != null && nodes.containsKey(path + "#" + name)) {
+            getGlobal().warning("Node with id " + path + "#" + name + " already exists");
             return null;
         }
-        return concept.createNode(namespace, name == null ? createNodeName() : name, model);
+        return concept.createNode(canonicalPath(path), name == null ? createNodeName() : name, model);
     }
 
     private void commit(Node node) {
         model.add(node);
         register(node);
-        openedStashes.add(StashHelper.stashWithExtension(node.namespace()));
+        openedStashes.add(PathHelper.pathWithExtension(node.path()));
     }
 
     @Override

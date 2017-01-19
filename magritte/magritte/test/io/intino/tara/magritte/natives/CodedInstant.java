@@ -1,27 +1,25 @@
 package io.intino.tara.magritte.natives;
 
-import io.intino.tara.magritte.Date;
 import io.intino.tara.magritte.Expression;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.NativeCode;
 import io.intino.tara.magritte.layers.MockLayer;
-
-import java.time.Instant;
+import io.intino.tara.magritte.types.InstantX;
 
 @SuppressWarnings("unused")
-public class CodedInstant implements NativeCode, Expression<Instant> {
+public class CodedInstant implements NativeCode, Expression<InstantX> {
 
-	@Override
-	public Instant value() {
-		return Instant.parse("1987-09-17T04:00:00Z");
-	}
+    @Override
+    public InstantX value() {
+        return InstantX.parse("1987-09-17T04:00:00Z");
+    }
 
-	@Override
-	public void self(Layer context) {
-	}
+    @Override
+    public void self(Layer context) {
+    }
 
-	@Override
-	public Class<? extends Layer> selfClass() {
-		return MockLayer.class;
-	}
+    @Override
+    public Class<? extends Layer> selfClass() {
+        return MockLayer.class;
+    }
 }
