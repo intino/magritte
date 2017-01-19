@@ -31,7 +31,7 @@ def type(graph)
 			return graph.i18n().message(language, key, parameters);
 		}
 
-		public java.net.URL resourceAsMessage(String language, String key) {
+		public io.intino.tara.magritte.types.ResX resourceAsMessage(String language, String key) {
 			return graph.loadResource(graph.i18n().message(language, key));
 		}
 

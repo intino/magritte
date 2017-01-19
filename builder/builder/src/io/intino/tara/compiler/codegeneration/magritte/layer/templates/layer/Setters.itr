@@ -37,10 +37,6 @@ def type(variable & resource) !type(multiple | owner | reactive | final) trigger
 	public void $name+javaValidName+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
 		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(stream, destiny);
 	}
-
-	public java.io.OutputStream $name+javaValidName+firstLowerCase+javaValidWord(String destiny) {
-		return this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(destiny);
-	}
 end
 
 def type(Variable & reactive) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
@@ -82,38 +78,28 @@ def type(variable & word) !type(target | inherited | overriden | multiple | fina
 end
 
 def type(variable & resource) !type(target | inherited | overriden | reactive | multiple | final) trigger(setter)
-	public void $name+javaValidName+firstLowerCase+javaValidWord(java.net.URL url, String destiny) {
+	public void $name+javaValidName+firstLowerCase+javaValidWord($type+fulltype+reference url, String destiny) {
 		this.$name+javaValidName+firstLowerCase+javaValidWord = graph().save(url, destiny, this.$name+javaValidName+firstLowerCase+javaValidWord, node());
     }
 
     public void $name+javaValidName+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
 		this.$name+javaValidName+firstLowerCase+javaValidWord = graph().save(stream, destiny, this.$name+javaValidName+firstLowerCase+javaValidWord, node());
 	}
-
-    public java.io.OutputStream $name+javaValidName+firstLowerCase+javaValidWord(String destiny) {
-		this.$name+javaValidName+firstLowerCase+javaValidWord = graph().save((java.io.InputStream)null, destiny, this.$name+javaValidName+firstLowerCase+javaValidWord, node());
-		try {
-			return this.$name+javaValidName+firstLowerCase+javaValidWord.openConnection().getOutputStream();
-		} catch(java.io.IOException e) {
-			java.util.logging.Logger.getGlobal().severe(e.getMessage());
-			return null;
-		}
-	}
 end
 
 def type(variable & resource & multiple) !type(target | inherited | overriden | reactive | final) trigger(setter)
-	public void add$name+firstUpperCase(java.net.URL url, String destiny) {
-		java.net.URL newElement = graph().save(url, destiny, null, node());
+	public void add$name+firstUpperCase($type+fulltype+reference url, String destiny) {
+		$type+fulltype+reference newElement = graph().save(url, destiny, null, node());
 		this.$name+javaValidName+firstLowerCase+javaValidWord.add(newElement);
     }
 
     public void add$name+firstUpperCase(java.io.InputStream stream, String destiny) {
-		java.net.URL newElement = graph().save(stream, destiny, null, node());
+		$type+fulltype+reference newElement = graph().save(stream, destiny, null, node());
 		this.$name+javaValidName+firstLowerCase+javaValidWord.add(newElement);
 	}
 
     public java.io.OutputStream add$name+firstUpperCase+javaValidWord(String destiny) {
-    	java.net.URL newElement = graph().save((java.io.InputStream)null, destiny, null, node());
+    	$type+fulltype+reference newElement = graph().save((java.io.InputStream)null, destiny, null, node());
     	this.$name+javaValidName+firstLowerCase+javaValidWord.add(newElement);
     	try {
 			return newElement.openConnection().getOutputStream();

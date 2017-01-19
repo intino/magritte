@@ -61,7 +61,7 @@ public abstract class Generator implements TemplateTags {
 					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
 					Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
-		else return variable.type().name();
+		else return variable.type().javaName();
 	}
 
 	protected static FacetTarget isInFacet(Node node) {
