@@ -7,7 +7,6 @@ import java.net.*;
 public class ResX {
 
     private URL url;
-    private java.net.URL URL;
 
     public ResX(URL url) {
         this.url = url;
@@ -86,6 +85,6 @@ public class ResX {
     }
 
     public URL getURL() {
-        return URL;
+        return url;
     }
 }

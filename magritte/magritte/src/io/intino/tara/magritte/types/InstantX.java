@@ -3,7 +3,7 @@ package io.intino.tara.magritte.types;
 import java.time.*;
 import java.time.temporal.*;
 
-public class InstantX {
+public class InstantX implements Comparable<InstantX> {
 
     private Instant instant;
 
@@ -127,8 +127,8 @@ public class InstantX {
         return instant.adjustInto(temporal);
     }
 
-    public long until(Temporal endExclusive, TemporalUnit unit) {
-        return instant.until(endExclusive, unit);
+    public long until(InstantX instantX, TemporalUnit unit) {
+        return instant.until(instantX.instant, unit);
     }
 
     public OffsetDateTime atOffset(ZoneOffset offset) {
@@ -143,21 +143,21 @@ public class InstantX {
         return instant.toEpochMilli();
     }
 
-    public int compareTo(Instant otherInstant) {
-        return instant.compareTo(otherInstant);
+    public boolean isAfter(InstantX otherInstant) {
+        return instant.isAfter(otherInstant.instant);
     }
 
-    public boolean isAfter(Instant otherInstant) {
-        return instant.isAfter(otherInstant);
+    public boolean isBefore(InstantX otherInstant) {
+        return instant.isBefore(otherInstant.instant);
     }
 
-    public boolean isBefore(Instant otherInstant) {
-        return instant.isBefore(otherInstant);
+    public LocalDateTime toLocalDateTime(ZoneId zone) {
+        return LocalDateTime.ofInstant(instant, zone);
     }
 
     @Override
     public boolean equals(Object otherInstant) {
-        return instant.equals(otherInstant);
+        return otherInstant instanceof InstantX && instant.equals(((InstantX) otherInstant).instant);
     }
 
     @Override
@@ -168,5 +168,10 @@ public class InstantX {
     @Override
     public String toString() {
         return instant.toString();
+    }
+
+    @Override
+    public int compareTo(InstantX o) {
+        return instant.compareTo(o.instant);
     }
 }
