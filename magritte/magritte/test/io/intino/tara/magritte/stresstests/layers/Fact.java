@@ -1,16 +1,16 @@
 package io.intino.tara.magritte.stresstests.layers;
 
-import io.intino.tara.magritte.Date;
+import io.intino.tara.magritte.types.DateX;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.Node;
-import io.intino.tara.magritte.loaders.DateLoader;
+import io.intino.tara.magritte.loaders.DateXLoader;
 
 import java.util.List;
 
 public class Fact extends Layer {
 
     @SuppressWarnings("unused")
-    private Date instant;
+    private DateX instant;
 
     public Fact(Node node) {
         super(node);
@@ -19,6 +19,6 @@ public class Fact extends Layer {
     @Override
     protected void _load(String name, List<?> object) {
         super._load(name, object);
-        if (name.equals("instant")) instant = DateLoader.load(object, this).get(0);
+        if (name.equals("instant")) instant = DateXLoader.load(object, this).get(0);
     }
 }

@@ -1,6 +1,6 @@
 package io.intino.tara.magritte;
 
-import org.junit.Ignore;
+import io.intino.tara.magritte.types.DateX;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,13 +14,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Parameterized.class)
-public class DateTest {
+public class DateXTest {
 
     private final String input;
     private final int[] from;
     private final int[] to;
 
-    public DateTest(String input, int[] from, int[] to) {
+    public DateXTest(String input, int[] from, int[] to) {
         this.input = input;
         this.from = from;
         this.to = to;
@@ -67,13 +67,13 @@ public class DateTest {
     public void should_parse_text() {
         TemporalField[] fields = { YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY, MINUTE_OF_HOUR, SECOND_OF_MINUTE, MILLI_OF_SECOND };
         try {
-            Date date = Date.parse(input);
+            DateX date = DateX.parse(input);
             for (int i = 0; i < Math.min(from.length,to.length); i++) {
                 String message = "[" + input + " " + fields[i].toString() + "]";
                 assertThat(message, date.from().atZone(UTC).get(fields[i]),is(from[i]));
                 assertThat(message, date.to().atZone(UTC).get(fields[i]),is(to[i]));
             }
-        } catch (Date.ParseException e) {
+        } catch (DateX.ParseException e) {
             assertThat(input, from == null && to == null, is(true));
         }
     }

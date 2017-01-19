@@ -1,6 +1,6 @@
 package io.intino.tara.magritte;
 
-import io.intino.tara.magritte.utils.StashHelper;
+import io.intino.tara.magritte.utils.PathHelper;
 
 import java.util.*;
 
@@ -198,8 +198,8 @@ public class Node extends Predicate {
         return model().graph();
     }
 
-    public String namespace() {
-        return StashHelper.stashName(id);
+    public String path() {
+        return PathHelper.pathOf(id);
     }
 
     private <T> List<T> reverseListOf(List<T> list) {

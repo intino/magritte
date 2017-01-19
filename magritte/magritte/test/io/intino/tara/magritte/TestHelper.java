@@ -10,7 +10,6 @@ import java.util.Map;
 
 import static io.intino.tara.io.Helper.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.asLifoQueue;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
@@ -23,7 +22,7 @@ public class TestHelper {
     public static final String thirdStash = "thirdStash";
     public static final String dependantStashByUse = "dependantStashByUse";
     public static final String cyclicDependantStash = "cyclicDependantStash";
-    public static final String independentStash = "subnamespace/independant";
+    public static final String independentStash = "subpath/independant";
     public static final String m1 = "m1";
     public static final String m2 = "m2";
     public static final String m3 = "m3";
@@ -40,7 +39,7 @@ public class TestHelper {
                 put(thirdStash + Extension, thirdStash());
                 put(dependantStashByUse + Extension, dependantStashByUse());
                 put(cyclicDependantStash + Extension, cyclicDependantStash());
-                put(independentStash + Extension, independentStashInSubNamespace());
+                put(independentStash + Extension, independentStashInSubPath());
                 put(m1 + Extension, m1());
                 put(m2 + Extension, m2());
                 put(m3 + Extension, m3());
@@ -112,7 +111,7 @@ public class TestHelper {
         return stash;
     }
 
-    public static Stash independentStashInSubNamespace() {
+    public static Stash independentStashInSubPath() {
         Stash stash = emptyStash();
         stash.nodes.add(newNode(independentStash + "#x", list("Mock"), emptyList(), emptyList()));
         return stash;
@@ -130,12 +129,29 @@ public class TestHelper {
     }
 
     public static Stash m3() {
-        return emptyStash();
-    }
-
-    static Stash emptyStash() {
         return newStash("Proteo", emptyList(), emptyList(),
                 list(newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
                 emptyList());
+    }
+
+    static Stash emptyStash() {
+        return newStash("m3", list());
+    }
+
+    public static class Test {
+        public static void main(String[] args) {
+            String hex = "4d2";
+            long longHex = parseUnsignedHex(hex);
+            double d = Double.longBitsToDouble(longHex);
+            System.out.println(d);
+        }
+
+        public static long parseUnsignedHex(String text) {
+            if (text.length() == 16) {
+                return (parseUnsignedHex(text.substring(0, 1)) << 60)
+                        | parseUnsignedHex(text.substring(1));
+            }
+            return Long.parseLong(text, 16);
+        }
     }
 }

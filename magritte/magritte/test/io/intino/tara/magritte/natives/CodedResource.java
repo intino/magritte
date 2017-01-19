@@ -4,19 +4,20 @@ import io.intino.tara.magritte.Expression;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.NativeCode;
 import io.intino.tara.magritte.layers.MockLayer;
+import io.intino.tara.magritte.types.ResX;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 @SuppressWarnings("unused")
-public class CodedResource implements NativeCode, Expression<URL> {
+public class CodedResource implements NativeCode, Expression<ResX> {
 
     @Override
-	public URL value() {
+	public ResX value() {
 		try {
-			return new File("test-res/oldFile").toURI().toURL();
-		} catch (MalformedURLException e) {
+            return new ResX(new File("test-res/oldFile").toURI().toURL());
+        } catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}

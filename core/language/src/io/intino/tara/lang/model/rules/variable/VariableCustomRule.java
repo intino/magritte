@@ -22,12 +22,12 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 
 	@Override
 	public boolean accept(List<Object> values) {
-		return loadedClass != null && invokeWith(values) && (!isMetric() && getDefaultUnit() == null);
+		return loadedClass != null && (!isMetric()) && invokeWith(values);
 	}
 
 	@Override
 	public boolean accept(List<Object> values, String metric) {
-		return (isMetric() && (invokeWith(values, metric) || getDefaultUnit() != null)) || accept(values);
+		return isMetric() || accept(values);
 	}
 
 	@Override
@@ -79,14 +79,4 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 		return false;
 	}
 
-	private boolean invokeWith(List<Object> values, String metric) {
-		try {
-			for (Object value : values)
-				if (!((Rule) loadedClass.newInstance()).accept(value, metric)) return false;
-			return true;
-		} catch (IllegalAccessException | InstantiationException e) {
-			LOG.severe(e.getMessage());
-		}
-		return false;
-	}
 }
