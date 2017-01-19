@@ -59,7 +59,7 @@ public class Helper {
 	}
 
 	public static Variable.Boolean newBoolean(String name, List<Boolean> values) {
-		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values.stream().map(Object::toString).collect(toList()));
+		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values);
 	}
 
 	public static Variable.String newString(String name, List<String> values) {
