@@ -70,7 +70,7 @@ public enum Primitive {
 
 	public static Primitive value(String value) {
 		try {
-			return Primitive.valueOf(Primitive.class, value.toUpperCase());
+			return Primitive.valueOf(Primitive.class, value.toUpperCase().replaceAll("x|X", ""));
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
@@ -81,13 +81,13 @@ public enum Primitive {
 	}
 
 	public String javaName() {
-		return capitalize(this.name());
+		final String capitalized = capitalize(super.name());
+		return this.equals(INSTANT) || this.equals(DATE) ? capitalized + "X" : capitalized;
 	}
 
 	private static String capitalize(String type) {
 		return type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
 	}
-
 
 	public static List<Primitive> getPrimitives() {
 		List<Primitive> list = new ArrayList<>();

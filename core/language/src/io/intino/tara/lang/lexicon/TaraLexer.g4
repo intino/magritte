@@ -132,8 +132,8 @@ OBJECT_TYPE         : 'object';
 DOUBLE_TYPE         : 'double';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';
-DATE_TYPE           : 'date';
-INSTANT_TYPE        : 'instant';
+DATE_TYPE           : 'datex';
+INSTANT_TYPE        : 'instantx';
 TIME_TYPE           : 'time';
 EMPTY               : 'empty';
 
