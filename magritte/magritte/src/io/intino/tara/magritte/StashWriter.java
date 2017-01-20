@@ -3,9 +3,9 @@ package io.intino.tara.magritte;
 import io.intino.tara.io.Variable;
 import io.intino.tara.magritte.tags.Terminal;
 import io.intino.tara.magritte.types.DateX;
-import io.intino.tara.magritte.types.InstantX;
-import io.intino.tara.magritte.types.ResX;
 
+import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -67,11 +67,11 @@ class StashWriter {
         if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
         if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
         if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
-        if (value instanceof ResX) return newResource(variable.getKey(), resourceOf(variable.getValue()));
+        if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
         if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
         if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
         if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
-        if (value instanceof InstantX) return newInstant(variable.getKey(), instantOf(variable.getValue()));
+        if (value instanceof Instant) return newInstant(variable.getKey(), instantOf(variable.getValue()));
         if (value instanceof DateX) return newDate(variable.getKey(), dateOf(variable.getValue()));
         if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
         if (value instanceof Concept) return newConcept(variable.getKey(), conceptOf(variable.getValue()));
@@ -84,18 +84,19 @@ class StashWriter {
     }
 
     private List<String> resourceOf(List<?> values) {
-        return values.stream().map(v -> model.store.relativePathOf(((ResX) v).getURL())).collect(toList());
+        return values.stream().map(v -> model.store.relativePathOf(((URL) v))).collect(toList());
     }
 
     private List<String> timeOf(List<?> values) {
         return values.stream().map(v -> ((LocalTime) v).format(ofPattern("HH:mm:ss"))).collect(toList());
     }
 
-    private List<String> instantOf(List<?> values) {
-        return values.stream().map(Object::toString).collect(toList());
+    private List<Long> instantOf(List<?> values) {
+        return values.stream().map(i -> ((Instant) i).toEpochMilli()).collect(toList());
     }
 
     private List<String> dateOf(List<?> values) {
+        // TODO
         return values.stream().map(v -> ((LocalDateTime) v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
     }
 

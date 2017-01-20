@@ -1,7 +1,6 @@
 package io.intino.tara.magritte;
 
 import io.intino.tara.io.Stash;
-import io.intino.tara.magritte.types.ResX;
 import io.intino.tara.magritte.utils.I18n;
 import io.intino.tara.magritte.utils.PathHelper;
 
@@ -109,11 +108,11 @@ public abstract class GraphHandler {
     }
 
     @SuppressWarnings("unused")
-    public ResX loadResource(String path) {
+    public URL loadResource(String path) {
         URL url = store.resourceFrom(path);
         if (url == null)
             getGlobal().severe("Resource at " + path + " not found");
-        return new ResX(url);
+        return url;
     }
 
     public Set<String> openedStashes() {
@@ -143,9 +142,9 @@ public abstract class GraphHandler {
     }
 
     @SuppressWarnings("UnusedParameters")
-    public synchronized ResX save(ResX url, String path, ResX oldUrl, Node node) {
+    public synchronized URL save(URL url, String path, URL oldUrl, Node node) {
         try {
-            return new ResX(store.writeResource(url.openConnection().getInputStream(), path, oldUrl.getURL(), node));
+            return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, node);
         } catch (IOException e) {
             getGlobal().severe("Url at " + url.toString() + " could not be accessed");
             return null;
@@ -153,8 +152,8 @@ public abstract class GraphHandler {
     }
 
     @SuppressWarnings("UnusedParameters")
-    public synchronized ResX save(InputStream inputStream, String path, ResX oldUrl, Node node) {
-        return new ResX(store.writeResource(inputStream, path, oldUrl.getURL(), node));
+    public synchronized URL save(InputStream inputStream, String path, URL oldUrl, Node node) {
+        return store.writeResource(inputStream, path, oldUrl, node);
     }
 
     Stash stashOf(String source) {
@@ -199,7 +198,7 @@ public abstract class GraphHandler {
 
     void init(String language) {
         if (languages.contains(language) || "Verso".equals(language) || "Proteo".equals(language)) return;
-        if (language == null || language.isEmpty())return;
+        if (language == null || language.isEmpty()) return;
         doInit(language);
     }
 
