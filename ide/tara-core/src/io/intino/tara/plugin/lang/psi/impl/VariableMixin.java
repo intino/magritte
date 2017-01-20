@@ -9,11 +9,6 @@ import com.intellij.psi.PsiEnumConstant;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.tree.TokenSet;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
-import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
@@ -21,6 +16,11 @@ import io.intino.tara.lang.model.Tag;
 import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
+import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,7 +55,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public VariableRule rule() {
-		return this.getRule() != null ? RuleFactory.createRule((TaraVariable) this) : null;
+		final Primitive type = type();
+		return this.getRule() != null ? RuleFactory.createRule((TaraVariable) this) : (type != null ? type.defaultRule() : null);
 	}
 
 	public void rule(VariableRule rule) {
@@ -121,7 +122,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		tags.addAll(inheritedFlags);
 		if (((TaraVariable) this).getFlags() != null)
 			tags.addAll(((TaraVariable) this).getFlags().getFlagList().stream().
-				map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
+					map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
 		return Collections.unmodifiableList(tags);
 	}
 

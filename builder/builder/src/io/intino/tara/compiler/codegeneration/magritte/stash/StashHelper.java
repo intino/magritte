@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import static io.intino.tara.lang.model.Primitive.*;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
-import static io.intino.tara.lang.model.Primitive.*;
 
 class StashHelper {
 
@@ -32,7 +32,7 @@ class StashHelper {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
 		final LinkedHashSet<String> facetTypes = new LinkedHashSet<>();
 		facetTypes.add((target.owner().type() + (constraint instanceof Constraint.MetaFacet || constraint == null ? "" : target.targetNode().simpleType())).
-			replace(":", "#"));
+				replace(":", "#"));
 		facetTypes.addAll(target.owner().facets().stream().map(f -> f.type() + "#" + shortType(target)).collect(toCollection(LinkedHashSet::new)));
 		return new ArrayList<>(facetTypes);
 	}
@@ -43,13 +43,13 @@ class StashHelper {
 	}
 
 	static boolean hasToBeConverted(List<Object> values, Primitive type) {
-		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(RESOURCE);
+		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(INSTANT) || type.equals(RESOURCE);
 	}
 
 	static List<Object> buildResourceValue(List<Object> values, String filePath) {
 		return new ArrayList<>(values.stream().
-			map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).
-			collect(toList()));
+				map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).
+				collect(toList()));
 	}
 
 	private static String getPresentableName(String name) {

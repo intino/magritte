@@ -8,7 +8,7 @@ public class ReferenceRule implements VariableRule<String> {
 	public ReferenceRule(Collection<String> allowedReferences) {
 		for (String allowedReference : allowedReferences) {
 			if (!this.allowedReferences.contains(allowedReference)) this.allowedReferences.add(allowedReference);
-			Arrays.asList(allowedReference.split(":")).stream().filter(r -> !this.allowedReferences.contains(r)).forEach(r -> this.allowedReferences.add(r));
+			Arrays.stream(allowedReference.split(":")).filter(r -> !this.allowedReferences.contains(r)).forEach(r -> this.allowedReferences.add(r));
 		}
 	}
 

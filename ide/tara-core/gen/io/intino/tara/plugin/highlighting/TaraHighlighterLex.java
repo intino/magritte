@@ -199,12 +199,12 @@ class TaraHighlighterLex implements FlexLexer {
     "\5\2\1\55\4\2\1\56\1\57\6\2\1\0\1\46"+
     "\1\0\1\2\1\0\4\2\1\60\1\2\1\61\15\2"+
     "\1\62\1\0\1\51\1\63\5\2\1\64\1\65\13\2"+
-    "\1\66\1\2\1\67\3\2\1\70\4\2\1\71\1\2"+
-    "\1\72\1\2\1\73\1\74\1\75\1\76\1\77\1\2"+
+    "\1\66\1\2\1\67\2\2\1\70\1\71\4\2\1\72"+
+    "\1\2\1\73\1\2\1\74\1\75\1\76\1\77\1\2"+
     "\1\100\1\101\1\102\1\2\1\103\1\104\1\105";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[245];
+    int [] result = new int[244];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -256,13 +256,13 @@ class TaraHighlighterLex implements FlexLexer {
     "\0\u2108\0\u2140\0\u2178\0\u02a0\0\u21b0\0\u21b0\0\u02a0\0\u21e8"+
     "\0\u2220\0\u2258\0\u2290\0\u22c8\0\u02a0\0\u02a0\0\u2300\0\u2338"+
     "\0\u2370\0\u23a8\0\u23e0\0\u2418\0\u2450\0\u2488\0\u24c0\0\u24f8"+
-    "\0\u2530\0\u02a0\0\u2568\0\u02a0\0\u25a0\0\u25d8\0\u2610\0\u02a0"+
-    "\0\u2648\0\u2680\0\u26b8\0\u26f0\0\u02a0\0\u2728\0\u02a0\0\u2760"+
-    "\0\u02a0\0\u02a0\0\u02a0\0\u02a0\0\u02a0\0\u2798\0\u02a0\0\u02a0"+
-    "\0\u02a0\0\u27d0\0\u02a0\0\u02a0\0\u02a0";
+    "\0\u2530\0\u02a0\0\u2568\0\u02a0\0\u25a0\0\u25d8\0\u02a0\0\u02a0"+
+    "\0\u2610\0\u2648\0\u2680\0\u26b8\0\u02a0\0\u26f0\0\u02a0\0\u2728"+
+    "\0\u02a0\0\u02a0\0\u02a0\0\u02a0\0\u2760\0\u02a0\0\u02a0\0\u02a0"+
+    "\0\u2798\0\u02a0\0\u02a0\0\u02a0";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[245];
+    int [] result = new int[244];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -568,7 +568,7 @@ class TaraHighlighterLex implements FlexLexer {
     "\1\353\13\15\6\0\1\15\2\0\2\36\7\0\1\15"+
     "\1\71\3\0\4\15\4\0\1\15\3\0\12\15\1\354"+
     "\12\15\6\0\1\15\2\0\2\36\7\0\1\15\1\71"+
-    "\3\0\4\15\4\0\1\15\3\0\6\15\1\355\16\15"+
+    "\3\0\4\15\4\0\1\15\3\0\5\15\1\355\17\15"+
     "\6\0\1\15\2\0\2\36\7\0\1\15\1\71\3\0"+
     "\4\15\4\0\1\15\3\0\5\15\1\356\17\15\6\0"+
     "\1\15\2\0\2\36\7\0\1\15\1\71\3\0\4\15"+
@@ -576,19 +576,17 @@ class TaraHighlighterLex implements FlexLexer {
     "\2\0\2\36\7\0\1\15\1\71\3\0\4\15\4\0"+
     "\1\15\3\0\5\15\1\360\17\15\6\0\1\15\2\0"+
     "\2\36\7\0\1\15\1\71\3\0\4\15\4\0\1\15"+
-    "\3\0\5\15\1\361\17\15\6\0\1\15\2\0\2\36"+
+    "\3\0\10\15\1\361\14\15\6\0\1\15\2\0\2\36"+
     "\7\0\1\15\1\71\3\0\4\15\4\0\1\15\3\0"+
     "\10\15\1\362\14\15\6\0\1\15\2\0\2\36\7\0"+
-    "\1\15\1\71\3\0\4\15\4\0\1\15\3\0\10\15"+
-    "\1\363\14\15\6\0\1\15\2\0\2\36\7\0\1\15"+
-    "\1\71\3\0\4\15\4\0\1\15\3\0\11\15\1\364"+
-    "\13\15\6\0\1\15\2\0\2\36\7\0\1\15\1\71"+
-    "\3\0\4\15\4\0\1\15\3\0\7\15\1\365\15\15"+
-    "\6\0\1\15\2\0\2\36\7\0\1\15\1\71\3\0"+
-    "\4\15\4\0\1\15\2\0";
+    "\1\15\1\71\3\0\4\15\4\0\1\15\3\0\11\15"+
+    "\1\363\13\15\6\0\1\15\2\0\2\36\7\0\1\15"+
+    "\1\71\3\0\4\15\4\0\1\15\3\0\7\15\1\364"+
+    "\15\15\6\0\1\15\2\0\2\36\7\0\1\15\1\71"+
+    "\3\0\4\15\4\0\1\15\2\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[10248];
+    int [] result = new int[10192];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -631,10 +629,10 @@ class TaraHighlighterLex implements FlexLexer {
     "\37\1\3\0\1\1\1\0\2\1\2\0\4\1\1\0"+
     "\37\1\2\11\1\1\2\0\2\11\2\1\1\0\1\11"+
     "\32\1\1\0\1\1\1\0\1\1\1\0\25\1\1\0"+
-    "\60\1";
+    "\57\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[245];
+    int [] result = new int[244];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -836,7 +834,7 @@ class TaraHighlighterLex implements FlexLexer {
    * Reports an error that occured while scanning.
    *
    * In a wellformed scanner (no or only correct usage of
-   * yypushback(int) and a match-all fallback rule) this method
+   * yypushback(int) and a match-all fallback defaultRule) this method
    * will only be called with things that "Can't Possibly Happen".
    * If this method is called, something is seriously wrong
    * (e.g. a JFlex bug producing a faulty scanner etc.).
@@ -1186,35 +1184,35 @@ class TaraHighlighterLex implements FlexLexer {
             }
           case 124: break;
           case 56: 
-            { return TaraTypes.INT_TYPE;
+            { return TaraTypes.INSTANT_TYPE;
             }
           case 125: break;
           case 57: 
-            { return TaraTypes.CONCEPT;
+            { return TaraTypes.INT_TYPE;
             }
           case 126: break;
           case 58: 
-            { return TaraTypes.PRIVATE;
+            { return TaraTypes.CONCEPT;
             }
           case 127: break;
           case 59: 
-            { return TaraTypes.FEATURE;
+            { return TaraTypes.PRIVATE;
             }
           case 128: break;
           case 60: 
-            { return TaraTypes.ABSTRACT;
+            { return TaraTypes.FEATURE;
             }
           case 129: break;
           case 61: 
-            { return TaraTypes.ENCLOSED;
+            { return TaraTypes.ABSTRACT;
             }
           case 130: break;
           case 62: 
-            { return TaraTypes.TERMINAL;
+            { return TaraTypes.ENCLOSED;
             }
           case 131: break;
           case 63: 
-            { return TaraTypes.INSTANT_TYPE;
+            { return TaraTypes.TERMINAL;
             }
           case 132: break;
           case 64: 

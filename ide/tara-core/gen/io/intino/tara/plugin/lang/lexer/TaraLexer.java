@@ -195,12 +195,12 @@ class TaraLexer implements FlexLexer {
     "\1\55\2\5\1\56\1\57\1\5\1\60\7\5\1\0"+
     "\1\5\1\0\10\5\1\61\1\62\12\5\1\63\1\0"+
     "\1\52\1\64\10\5\1\65\3\5\1\66\5\5\1\67"+
-    "\6\5\1\70\1\5\1\71\1\5\1\72\1\5\1\73"+
-    "\1\5\1\74\1\75\1\5\1\76\1\77\1\100\1\101"+
-    "\1\102\1\103\1\5\1\104\1\105\1\106";
+    "\6\5\1\70\1\71\1\72\1\5\1\73\1\5\1\74"+
+    "\1\5\1\75\1\76\1\5\1\77\1\100\1\101\1\102"+
+    "\1\103\1\5\1\104\1\105\1\106";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[241];
+    int [] result = new int[240];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -252,13 +252,12 @@ class TaraLexer implements FlexLexer {
     "\0\u219f\0\u219f\0\u0390\0\u21d8\0\u2211\0\u224a\0\u2283\0\u22bc"+
     "\0\u22f5\0\u232e\0\u2367\0\u0390\0\u23a0\0\u23d9\0\u2412\0\u0390"+
     "\0\u244b\0\u2484\0\u24bd\0\u24f6\0\u252f\0\u0390\0\u2568\0\u25a1"+
-    "\0\u25da\0\u2613\0\u264c\0\u2685\0\u0390\0\u26be\0\u0390\0\u26f7"+
-    "\0\u0390\0\u2730\0\u0390\0\u2769\0\u0390\0\u0390\0\u27a2\0\u0390"+
-    "\0\u0390\0\u0390\0\u0390\0\u0390\0\u0390\0\u27db\0\u0390\0\u0390"+
-    "\0\u0390";
+    "\0\u25da\0\u2613\0\u264c\0\u2685\0\u0390\0\u0390\0\u0390\0\u26be"+
+    "\0\u0390\0\u26f7\0\u0390\0\u2730\0\u0390\0\u0390\0\u2769\0\u0390"+
+    "\0\u0390\0\u0390\0\u0390\0\u0390\0\u27a2\0\u0390\0\u0390\0\u0390";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[241];
+    int [] result = new int[240];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -550,20 +549,19 @@ class TaraLexer implements FlexLexer {
     "\7\23\1\352\15\23\10\0\2\23\1\0\2\52\5\0"+
     "\1\74\2\0\4\23\4\0\1\23\6\0\10\23\1\353"+
     "\14\23\10\0\2\23\1\0\2\52\5\0\1\74\2\0"+
-    "\4\23\4\0\1\23\6\0\20\23\1\354\4\23\10\0"+
+    "\4\23\4\0\1\23\6\0\11\23\1\354\13\23\10\0"+
     "\2\23\1\0\2\52\5\0\1\74\2\0\4\23\4\0"+
-    "\1\23\6\0\11\23\1\355\13\23\10\0\2\23\1\0"+
+    "\1\23\6\0\15\23\1\355\7\23\10\0\2\23\1\0"+
     "\2\52\5\0\1\74\2\0\4\23\4\0\1\23\6\0"+
     "\15\23\1\356\7\23\10\0\2\23\1\0\2\52\5\0"+
-    "\1\74\2\0\4\23\4\0\1\23\6\0\15\23\1\357"+
-    "\7\23\10\0\2\23\1\0\2\52\5\0\1\74\2\0"+
-    "\4\23\4\0\1\23\6\0\10\23\1\360\14\23\10\0"+
+    "\1\74\2\0\4\23\4\0\1\23\6\0\10\23\1\357"+
+    "\14\23\10\0\2\23\1\0\2\52\5\0\1\74\2\0"+
+    "\4\23\4\0\1\23\6\0\14\23\1\360\10\23\10\0"+
     "\2\23\1\0\2\52\5\0\1\74\2\0\4\23\4\0"+
-    "\1\23\6\0\14\23\1\361\10\23\10\0\2\23\1\0"+
-    "\2\52\5\0\1\74\2\0\4\23\4\0\1\23\1\0";
+    "\1\23\1\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[10260];
+    int [] result = new int[10203];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -605,10 +603,10 @@ class TaraLexer implements FlexLexer {
     "\3\1\1\11\4\1\2\11\2\1\1\11\4\1\1\0"+
     "\2\1\1\0\41\1\1\0\2\1\3\0\4\1\1\0"+
     "\37\1\3\11\2\1\1\11\1\0\32\1\1\0\1\1"+
-    "\1\0\25\1\1\0\60\1";
+    "\1\0\25\1\1\0\57\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[241];
+    int [] result = new int[240];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -840,7 +838,7 @@ class TaraLexer implements FlexLexer {
    * Reports an error that occured while scanning.
    *
    * In a wellformed scanner (no or only correct usage of
-   * yypushback(int) and a match-all fallback rule) this method
+   * yypushback(int) and a match-all fallback defaultRule) this method
    * will only be called with things that "Can't Possibly Happen".
    * If this method is called, something is seriously wrong
    * (e.g. a JFlex bug producing a faulty scanner etc.).
@@ -969,7 +967,7 @@ class TaraLexer implements FlexLexer {
             case YYINITIAL: {
               return eof();
             }
-            case 242: break;
+            case 241: break;
             default:
         return null;
         }
@@ -1201,43 +1199,43 @@ class TaraLexer implements FlexLexer {
             }
           case 126: break;
           case 57: 
-            { return TaraTypes.INT_TYPE;
+            { return TaraTypes.INSTANT_TYPE;
             }
           case 127: break;
           case 58: 
-            { return TaraTypes.CONCEPT;
+            { return TaraTypes.INT_TYPE;
             }
           case 128: break;
           case 59: 
-            { return TaraTypes.PRIVATE;
+            { return TaraTypes.CONCEPT;
             }
           case 129: break;
           case 60: 
-            { return TaraTypes.FEATURE;
+            { return TaraTypes.PRIVATE;
             }
           case 130: break;
           case 61: 
-            { return TaraTypes.ABSTRACT;
+            { return TaraTypes.FEATURE;
             }
           case 131: break;
           case 62: 
-            { return TaraTypes.VOLATILE;
+            { return TaraTypes.ABSTRACT;
             }
           case 132: break;
           case 63: 
-            { return TaraTypes.RESOURCE_TYPE;
+            { return TaraTypes.VOLATILE;
             }
           case 133: break;
           case 64: 
-            { return TaraTypes.REACTIVE;
+            { return TaraTypes.RESOURCE_TYPE;
             }
           case 134: break;
           case 65: 
-            { return TaraTypes.ENCLOSED;
+            { return TaraTypes.REACTIVE;
             }
           case 135: break;
           case 66: 
-            { return TaraTypes.INSTANT_TYPE;
+            { return TaraTypes.ENCLOSED;
             }
           case 136: break;
           case 67: 

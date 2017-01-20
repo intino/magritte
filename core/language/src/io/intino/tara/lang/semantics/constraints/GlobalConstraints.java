@@ -5,20 +5,20 @@ import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.constraints.flags.FlagChecker;
 import io.intino.tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
-import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.*;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.lang.model.Tag.Reactive;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class GlobalConstraints {
 
@@ -171,7 +171,7 @@ public class GlobalConstraints {
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
-		else if (!values.isEmpty() && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
+		else if (!values.isEmpty() && !(values.get(0) instanceof EmptyNode) && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
 			final String message = variable.rule().errorMessage();
 			error(message == null || message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
 		}
@@ -200,7 +200,8 @@ public class GlobalConstraints {
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
-				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
+				if (tag.equals(Instance))
+					error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
 		Variable parentVariable = findParentVariable(variable);
 		if (parentVariable != null) checkParentVariables(variable, parentVariable);

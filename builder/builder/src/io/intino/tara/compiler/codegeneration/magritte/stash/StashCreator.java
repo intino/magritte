@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
 import static io.intino.tara.compiler.shared.Configuration.Level.System;
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Tag.*;
@@ -220,7 +221,7 @@ public class StashCreator {
 
 	private List<Object> getValue(io.intino.tara.lang.model.Variable variable) {
 		if (variable.values().get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(StashHelper.hasToBeConverted(variable.values(), variable.type()) ?
+		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ?
 				convert(variable) : variable.rule() instanceof NativeRule ? formatNativeReferenceOfVariable(variable.values()) : variable.values());
 	}
 
@@ -230,12 +231,14 @@ public class StashCreator {
 
 	private List<Object> getValue(Parameter parameter) {
 		if (parameter.values().get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(StashHelper.hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
+		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
 	}
 
 	private List<?> convert(Valued valued) {
 		final Primitive type = valued.type();
-		if (type.equals(WORD)) return type.convert(valued.values().toArray());
+		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
+		else if (type.equals(INSTANT))
+			return INSTANT.convert(valued.values().toArray(new String[valued.values().size()]));
 		if (type.equals(RESOURCE)) //TODO CHECK VALUE EQUALS RESOURCE FOLDER.IT WILL TRHOW INDEXOUTOFRANGE
 			return (valued.values()).stream().map(o -> toSystemIndependentName(((File) o).getAbsolutePath()).substring(toSystemIndependentName(resourceFolder.getAbsolutePath()).length() + 1)).collect(toList());
 		else return type.convert(valued.values().toArray(new String[valued.values().size()]));

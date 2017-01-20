@@ -1207,10 +1207,10 @@ public class TaraParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (LEFT_CURLY (classTypeValue | identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference
   public static boolean rule(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule")) return false;
-    if (!nextTokenIs(b, "<rule>", IDENTIFIER_KEY, LEFT_CURLY)) return false;
+    if (!recursion_guard_(b, l, "defaultRule")) return false;
+    if (!nextTokenIs(b, "<defaultRule>", IDENTIFIER_KEY, LEFT_CURLY)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, RULE, "<rule>");
+    Marker m = enter_section_(b, l, _NONE_, RULE, "<defaultRule>");
     r = rule_0(b, l + 1);
     if (!r) r = identifierReference(b, l + 1);
     exit_section_(b, l, m, r, false, null);
@@ -1288,7 +1288,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COLON rule
+  // COLON defaultRule
   public static boolean ruleContainer(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ruleContainer")) return false;
     if (!nextTokenIs(b, COLON)) return false;

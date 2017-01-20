@@ -1,7 +1,12 @@
 package io.intino.tara.compiler.parser.antlr;
 
 import io.intino.tara.Language;
+import io.intino.tara.compiler.codegeneration.Format;
+import io.intino.tara.compiler.core.errorcollection.SyntaxException;
 import io.intino.tara.compiler.model.*;
+import io.intino.tara.lang.grammar.TaraGrammar;
+import io.intino.tara.lang.grammar.TaraGrammar.*;
+import io.intino.tara.lang.grammar.TaraGrammarBaseListener;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.composition.NodeCustomRule;
@@ -9,16 +14,13 @@ import io.intino.tara.lang.model.rules.variable.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import io.intino.tara.compiler.codegeneration.Format;
-import io.intino.tara.compiler.core.errorcollection.SyntaxException;
-import io.intino.tara.lang.grammar.TaraGrammar;
-import io.intino.tara.lang.grammar.TaraGrammar.*;
-import io.intino.tara.lang.grammar.TaraGrammarBaseListener;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.lang.model.Primitive.*;
+import static io.intino.tara.lang.model.Primitive.RESOURCE;
+import static io.intino.tara.lang.model.Primitive.WORD;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -267,7 +269,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Size size = createSize(ctx);
 		if (!variable.values().isEmpty()) size = new Size(0, size.max(), size.into());
 		variable.size(size);
-		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : null);
+		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : variable.type().defaultRule());
 		final List<Tag> tags = resolveTags(ctx.flags());
 		variable.addFlags(tags.toArray(new Tag[tags.size()]));
 		container.add(variable);
@@ -349,7 +351,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private boolean isNamedSize(List<ParseTree> params) {
 		for (ParseTree param : params)
-			if (!param.getText().equalsIgnoreCase("single") && !param.getText().equalsIgnoreCase("required")) return false;
+			if (!param.getText().equalsIgnoreCase("single") && !param.getText().equalsIgnoreCase("required"))
+				return false;
 		return true;
 	}
 
