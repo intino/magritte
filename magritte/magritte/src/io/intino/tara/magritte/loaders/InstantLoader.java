@@ -1,31 +1,23 @@
 package io.intino.tara.magritte.loaders;
 
 import io.intino.tara.magritte.Layer;
-import io.intino.tara.magritte.MagritteException;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unused")
 public class InstantLoader {
 
     public static List<Instant> load(List<?> instants, Layer layer) {
-        return instants.stream().map((date) -> processInstant((String) date, layer)).collect(Collectors.toList());
+        return instants.stream().map(i -> processInstant(i, layer)).collect(toList());
     }
 
-    private static Instant processInstant(String instant, Layer layer) {
-        if (instant.isEmpty()) return null;
-        Object dateObject = ListProcessor.process((Object) instant, layer);
-        return dateObject instanceof Instant ? (Instant) dateObject : parseInstant(instant);
-    }
-
-    private static Instant parseInstant(String instant) {
-        try {
-            return Instant.parse(instant);
-        } catch (Exception e) {
-            throw new MagritteException(e.getMessage());
-        }
+    private static Instant processInstant(Object instant, Layer layer) {
+        if (instant == null) return null;
+        Object dateObject = ListProcessor.process(instant, layer);
+        return dateObject instanceof Instant ? (Instant) dateObject : Instant.ofEpochMilli((long) instant);
     }
 
 }
