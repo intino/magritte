@@ -54,6 +54,10 @@ public class Helper {
 		return (Variable.Integer) fillVariable(new Variable.Integer(), name, values);
 	}
 
+	public static Variable.Long newLong(String name, List<Long> values) {
+		return (Variable.Long) fillVariable(new Variable.Long(), name, values);
+	}
+
 	public static Variable.Double newDouble(String name, List<Double> values) {
 		return (Variable.Double) fillVariable(new Variable.Double(), name, values);
 	}
@@ -104,6 +108,10 @@ public class Helper {
 
 	public static Variable.Integer newInteger(String name, Integer... values) {
 		return newInteger(name, list(values));
+	}
+
+	public static Variable.Long newLong(String name, Long... values) {
+		return newLong(name, list(values));
 	}
 
 	public static Variable.Double newDouble(String name, Double... values) {

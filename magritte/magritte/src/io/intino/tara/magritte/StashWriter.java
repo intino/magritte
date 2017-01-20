@@ -64,6 +64,7 @@ class StashWriter {
     private Variable variableOf(Map.Entry<String, List<?>> variable) {
         Object value = variable.getValue().get(0);
         if (value instanceof Integer) return newInteger(variable.getKey(), (List<Integer>) variable.getValue());
+        if (value instanceof Long) return newLong(variable.getKey(), (List<Long>) variable.getValue());
         if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
         if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
         if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());

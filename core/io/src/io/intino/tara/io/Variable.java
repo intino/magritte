@@ -11,6 +11,9 @@ public abstract class Variable {
 	public static class Integer extends Variable {
 	}
 
+	public static class Long extends Variable {
+	}
+
 	public static class Double extends Variable {
 	}
 
