@@ -1,9 +1,9 @@
 def.file
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/View.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Data.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/monet/Monet.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Insight.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Mounter.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/monet/Monet.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/Sumus.tara#true
 
 project
@@ -28,6 +28,8 @@ src.path
 
 version
 1.0.0
+working.package
+
 make
 false
 test.module
@@ -39,4 +41,4 @@ Java
 classpath
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/proteo-alone-1.0.0.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/magritte-lite-1.0.0.jar

@@ -3,7 +3,7 @@ package io.intino.tara.lang.semantics.constraints;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
-import io.intino.tara.lang.model.rules.variable.NativeRule;
+import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.constraints.flags.FlagChecker;
@@ -192,10 +192,11 @@ public class GlobalConstraints {
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		if (variable.flags().contains(Reactive) && variable.type().equals(Primitive.FUNCTION))
 			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
-		if (!Primitive.WORD.equals(variable.type()) && variable.flags().contains(Reactive) && variable.rule() != null && !(variable.rule() instanceof NativeRule)) {
-			if (variable.values().isEmpty() || variable.values().get(0) instanceof Primitive.Expression)
+		if (!Primitive.WORD.equals(variable.type()) && variable.flags().contains(Reactive) && variable.rule() != null && (variable.rule() instanceof VariableCustomRule)) {
+			if (variable.values().isEmpty() || hasExpressionValue(variable))
 				error("reject.reactive.variable.with.rules", variable, asList(Reactive.name(), variable.name()));
-			else error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
+			else if (variable.rule() instanceof VariableCustomRule || !hasExpressionValue(variable))
+				error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
 		}
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
@@ -205,6 +206,10 @@ public class GlobalConstraints {
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
 		Variable parentVariable = findParentVariable(variable);
 		if (parentVariable != null) checkParentVariables(variable, parentVariable);
+	}
+
+	private boolean hasExpressionValue(Variable variable) {
+		return variable.values().get(0) instanceof Primitive.Expression || variable.values().get(0) instanceof Primitive.MethodReference;
 	}
 
 	private void checkParentVariables(Variable variable, Variable parentVariable) throws SemanticException {

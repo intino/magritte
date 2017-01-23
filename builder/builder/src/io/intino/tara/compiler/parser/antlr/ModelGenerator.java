@@ -316,7 +316,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private VariableRule processLambdaRule(Variable var, RuleValueContext rule) {
-		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+		List<ParseTree> params = rule.children.subList(1, rule.children.size() - 1);
 		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params));
 		else if (INTEGER.equals(var.type()))
 			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));

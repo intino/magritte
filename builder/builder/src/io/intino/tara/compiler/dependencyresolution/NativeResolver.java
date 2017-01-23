@@ -59,7 +59,7 @@ public class NativeResolver {
 		else if (valued.rule() instanceof ReferenceRule)
 			valued.rule(new NativeReferenceRule(((ReferenceRule) valued.rule()).allowedReferences()));
 		else if (valued.rule() instanceof WordRule) valued.rule(new NativeWordRule(((WordRule) valued.rule()).words()));
-		else if (!(valued.rule() instanceof NativeRule)) valued.rule(null);
+		else if (!(valued.rule() instanceof NativeRule)) valued.rule(new NativeRule("", "", new ArrayList<>()));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 
