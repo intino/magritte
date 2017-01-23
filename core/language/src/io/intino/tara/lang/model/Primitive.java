@@ -1,6 +1,11 @@
 package io.intino.tara.lang.model;
 
+import io.intino.tara.lang.model.rules.variable.InstantRule;
+import io.intino.tara.lang.model.rules.variable.TimeRule;
+import io.intino.tara.lang.model.rules.variable.VariableRule;
+
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +18,6 @@ public enum Primitive {
 			for (String o : value) objects.add(Integer.valueOf(o));
 			return objects;
 		}
-
 	},
 	DOUBLE {
 		@Override
@@ -22,7 +26,6 @@ public enum Primitive {
 			for (String o : value) list.add(Double.valueOf(o));
 			return list;
 		}
-
 	},
 	BOOLEAN {
 		@Override
@@ -31,14 +34,12 @@ public enum Primitive {
 			for (String o : value) list.add(Boolean.valueOf(o));
 			return list;
 		}
-
 	},
 	STRING {
 		@Override
 		public List<String> convert(String... value) {
 			return Arrays.asList(value);
 		}
-
 	},
 	RESOURCE {
 		@Override
@@ -53,13 +54,35 @@ public enum Primitive {
 	FUNCTION,
 	OBJECT,
 	DATE,
-	TIME,
-	INSTANT,
+	TIME {
+		@Override
+		public TimeRule defaultRule() {
+			return new TimeRule();
+
+		}
+	},
+	INSTANT {
+		@Override
+		public List<Long> convert(String... value) {
+			List<Long> list = new ArrayList<>();
+			for (String o : value) list.add(Instant.parse(o).toEpochMilli());
+			return list;
+		}
+
+		@Override
+		public InstantRule defaultRule() {
+			return new InstantRule();
+		}
+	},
 	EMPTY;
 
 
 	public List<?> convert(String... value) {
 		return Arrays.asList(value);
+	}
+
+	public VariableRule defaultRule() {
+		return null;
 	}
 
 	public List<String> convert(Object... value) {
@@ -82,7 +105,7 @@ public enum Primitive {
 
 	public String javaName() {
 		final String capitalized = capitalize(super.name());
-		return this.equals(INSTANT) || this.equals(DATE) ? capitalized + "X" : capitalized;
+		return this.equals(DATE) ? capitalized + "X" : capitalized;
 	}
 
 	private static String capitalize(String type) {

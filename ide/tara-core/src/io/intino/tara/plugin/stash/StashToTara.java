@@ -13,9 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static io.intino.tara.io.StashDeserializer.stashFrom;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
-import static io.intino.tara.io.StashDeserializer.stashFrom;
 
 class StashToTara {
 
@@ -44,9 +44,9 @@ class StashToTara {
 	private void writeComponentConceptsDefinedAsMain(Stash stash, int level) {
 		List<String> mainTypes = stash.contentRules.stream().map(r -> r.type).collect(toList());
 		writeContentRules(stash.concepts.stream()
-			.filter(c -> !c.name.contains("$"))
-			.filter(c -> !mainTypes.contains(c.name))
-			.map(c -> new Concept.Content(c.name, 0, 0)).collect(toList()), level, stash.concepts);
+				.filter(c -> !c.name.contains("$"))
+				.filter(c -> !mainTypes.contains(c.name))
+				.map(c -> new Concept.Content(c.name, 0, 0)).collect(toList()), level, stash.concepts);
 	}
 
 	private void writeContentRules(List<Concept.Content> contentRules, int level, List<Concept> directory) {
@@ -65,13 +65,13 @@ class StashToTara {
 
 	private void writeContentRules(Concept concept, int level, List<Concept> directory) {
 		concept.contentRules.stream()
-			.filter(r -> !r.type.startsWith(concept.name + "$"))
-			.forEach(r -> {
-				newLine(level + 1);
-				write("has", cardinalityOf(r), r.type.replace("$", "."));
-			});
+				.filter(r -> !r.type.startsWith(concept.name + "$"))
+				.forEach(r -> {
+					newLine(level + 1);
+					write("has", cardinalityOf(r), r.type.replace("$", "."));
+				});
 		writeContentRules(concept.contentRules.stream()
-			.filter(r -> r.type.startsWith(concept.name) && !r.type.equals(concept.name)).collect(toList()), level, directory);
+				.filter(r -> r.type.startsWith(concept.name) && !r.type.equals(concept.name)).collect(toList()), level, directory);
 	}
 
 	private void writeHeader(Concept.Content rule, Concept concept) {
@@ -85,7 +85,7 @@ class StashToTara {
 
 	private String coreType(Concept concept) {
 		return concept.types.get(0).startsWith("MetaFacet") ? "MetaFacet" :
-			concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
+				concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
 	}
 
 	private void writeComponents(List<? extends Node> instances, int level) {
@@ -149,16 +149,17 @@ class StashToTara {
 		else if (variable instanceof Variable.Function) format(variable);
 		else if (variable instanceof Variable.Object) format(variable);
 		else if (variable instanceof Variable.Date) formatWithQuotes(variable);
+		else if (variable instanceof Variable.Instant) formatWithQuotes(variable);
 		else if (variable instanceof Variable.Time) formatWithQuotes(variable);
 	}
 
 	private void format(Variable variable) {
 		if (variable instanceof Variable.Object) write("@reference ");
-		variable.values.stream().forEach(v -> write(v, " "));
+		variable.values.forEach(v -> write(v, " "));
 	}
 
 	private void formatWithQuotes(Variable variable) {
-		variable.values.stream().forEach(v -> write("\"", v, "\" "));
+		variable.values.forEach(v -> write("\"", v.toString(), "\" "));
 	}
 
 	private void addNewLine() {
@@ -187,6 +188,6 @@ class StashToTara {
 	}
 
 	private Concept conceptOf(String type, List<Concept> directory) {
-		return directory.stream().filter(c -> c.name.equals(type)).findFirst().get();
+		return directory.stream().filter(c -> c.name.equals(type)).findFirst().orElseGet(null);
 	}
 }

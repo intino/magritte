@@ -30,22 +30,6 @@ def type(variable & function & owner) !type(inherited | overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values, this, $workingPackage.functions.$rule+interfaceClass~.class).get(0);
 end
 
-def type(variable & owner & multiple) type(time | date) !type(concept | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.$type~Loader.load(values, this);
-end
-
-def type(variable & owner) type(time | date) !type(concept | multiple | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.$type~Loader.load(values, this).get(0);
-end
-
-def type(variable & resource & owner) !type(multiple | concept | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.ResXLoader.load(values, this).get(0);
-end
-
-def type(variable & resource & owner & multiple) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.ResXLoader.load(values, this);
-end
-
 def type(variable & owner & multiple) !type(inherited | overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.$type~Loader.load(values, this);
 end

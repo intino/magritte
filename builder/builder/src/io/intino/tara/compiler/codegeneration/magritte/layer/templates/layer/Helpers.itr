@@ -2,8 +2,8 @@ def value(datex) trigger(variableType)
 	io.intino.tara.magritte.type.DateX
 end
 
-def value(instantx) trigger(variableType)
-	io.intino.tara.magritte.types.InstantX
+def value(instant) trigger(variableType)
+	java.time.Instant
 end
 
 def value(time) trigger(variableType)
@@ -35,7 +35,7 @@ def value(boolean) trigger(variableType)
 end
 
 def value(resource) trigger(variableType)
-	io.intino.tara.magritte.types.ResX
+	java.net.URL
 end
 
 def value(integer) trigger(fulltype)
@@ -47,7 +47,7 @@ def value(double) trigger(fulltype)
 end
 
 def value(resource) trigger(fulltype)
-	io.intino.tara.magritte.types.ResX
+	java.net.URL
 end
 
 def value(boolean) trigger(fulltype)
@@ -62,8 +62,8 @@ def value(datex) trigger(fullType)
 	io.intino.tara.magritte.types.DateX
 end
 
-def value(instantx) trigger(fullType)
-	io.intino.tara.magritte.types.InstantX
+def value(instant) trigger(fullType)
+	java.time.Instant
 end
 
 def value(time) trigger(fullType)

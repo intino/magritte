@@ -133,7 +133,7 @@ DOUBLE_TYPE         : 'double';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';
 DATE_TYPE           : 'datex';
-INSTANT_TYPE        : 'instantx';
+INSTANT_TYPE        : 'instant';
 TIME_TYPE           : 'time';
 EMPTY               : 'empty';
 

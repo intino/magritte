@@ -1,11 +1,31 @@
 package io.intino.tara.lang.model.rules.variable;
 
-public class TimeRule implements VariableRule<String> {
+import java.time.LocalTime;
+import java.util.List;
 
-	private String regex = "";
+public class TimeRule implements VariableRule<List<String>> {
 
 	@Override
-	public boolean accept(String value) {
-		return false;
+	public boolean accept(List<String> values, String metric) {
+		return accept(values);
+	}
+
+	@Override
+	public boolean accept(List<String> values) {
+		for (String time : values) {
+			if (time.isEmpty()) return false;
+			try {
+				LocalTime.parse(time);
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	public String errorMessage() {
+		return "Time must match ISO pattern";
 	}
 }

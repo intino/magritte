@@ -3,22 +3,22 @@ package io.intino.tara.lang.semantics.constraints;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
-import io.intino.tara.lang.model.rules.variable.NativeRule;
+import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.constraints.flags.FlagChecker;
 import io.intino.tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
-import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.*;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.lang.model.Tag.Reactive;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class GlobalConstraints {
 
@@ -171,7 +171,7 @@ public class GlobalConstraints {
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
-		else if (!values.isEmpty() && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
+		else if (!values.isEmpty() && !(values.get(0) instanceof EmptyNode) && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
 			final String message = variable.rule().errorMessage();
 			error(message == null || message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
 		}
@@ -192,18 +192,24 @@ public class GlobalConstraints {
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		if (variable.flags().contains(Reactive) && variable.type().equals(Primitive.FUNCTION))
 			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
-		if (!Primitive.WORD.equals(variable.type()) && variable.flags().contains(Reactive) && variable.rule() != null && !(variable.rule() instanceof NativeRule)) {
-			if (variable.values().isEmpty() || variable.values().get(0) instanceof Primitive.Expression)
+		if (!Primitive.WORD.equals(variable.type()) && variable.flags().contains(Reactive) && variable.rule() != null && (variable.rule() instanceof VariableCustomRule)) {
+			if (variable.values().isEmpty() || hasExpressionValue(variable))
 				error("reject.reactive.variable.with.rules", variable, asList(Reactive.name(), variable.name()));
-			else error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
+			else if (variable.rule() instanceof VariableCustomRule || !hasExpressionValue(variable))
+				error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
 		}
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
-				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
+				if (tag.equals(Instance))
+					error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
 		Variable parentVariable = findParentVariable(variable);
 		if (parentVariable != null) checkParentVariables(variable, parentVariable);
+	}
+
+	private boolean hasExpressionValue(Variable variable) {
+		return variable.values().get(0) instanceof Primitive.Expression || variable.values().get(0) instanceof Primitive.MethodReference;
 	}
 
 	private void checkParentVariables(Variable variable, Variable parentVariable) throws SemanticException {

@@ -54,12 +54,16 @@ public class Helper {
 		return (Variable.Integer) fillVariable(new Variable.Integer(), name, values);
 	}
 
+	public static Variable.Long newLong(String name, List<Long> values) {
+		return (Variable.Long) fillVariable(new Variable.Long(), name, values);
+	}
+
 	public static Variable.Double newDouble(String name, List<Double> values) {
 		return (Variable.Double) fillVariable(new Variable.Double(), name, values);
 	}
 
 	public static Variable.Boolean newBoolean(String name, List<Boolean> values) {
-		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values.stream().map(Object::toString).collect(toList()));
+		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values);
 	}
 
 	public static Variable.String newString(String name, List<String> values) {
@@ -86,7 +90,7 @@ public class Helper {
 		return (Variable.Function) fillVariable(new Variable.Function(), name, values);
 	}
 
-	public static Variable.Instant newInstant(String name, List<String> values) {
+	public static Variable.Instant newInstant(String name, List<Long> values) {
 		return (Variable.Instant) fillVariable(new Variable.Instant(), name, values);
 	}
 
@@ -104,6 +108,10 @@ public class Helper {
 
 	public static Variable.Integer newInteger(String name, Integer... values) {
 		return newInteger(name, list(values));
+	}
+
+	public static Variable.Long newLong(String name, Long... values) {
+		return newLong(name, list(values));
 	}
 
 	public static Variable.Double newDouble(String name, Double... values) {
@@ -134,7 +142,7 @@ public class Helper {
 		return newFunction(name, list(values));
 	}
 
-	public static Variable.Instant newInstant(String name, String... values) {
+	public static Variable.Instant newInstant(String name, Long... values) {
 		return newInstant(name, list(values));
 	}
 
