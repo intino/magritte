@@ -84,7 +84,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	private void checkParameter(Element element, List<io.intino.tara.lang.model.Parameter> parameters) throws SemanticException {
 		io.intino.tara.lang.model.Parameter parameter = findParameter(parameters, facet, name, position);
 		if (parameter == null) {
-			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element))) error(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
+				error(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (isCompatible(parameter)) {
@@ -133,6 +134,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	protected void error(Element element, io.intino.tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
+		if (parameter == null) return;
 		switch (errorType) {
 			case TYPE:
 				throw new SemanticException(new SemanticNotification(SemanticNotification.Level.ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));

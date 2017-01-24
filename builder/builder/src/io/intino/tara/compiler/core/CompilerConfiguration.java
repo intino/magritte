@@ -265,11 +265,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return "1.0.0";
 	}
 
-	@Override
-	public String behaviorVersion() {
-		return "1.0.0";
-	}
-
 	public void systemStashName(String name) {
 		outDSL = name;
 	}
