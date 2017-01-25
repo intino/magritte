@@ -20,7 +20,6 @@ public class FixFactory {
 	static {
 		fixes.put("reject.type.not.exists", new Class[]{RemoveElementFix.class});
 		fixes.put("duplicated.dsl.declaration", new Class[]{ConfigureModuleFix.class});
-		fixes.put("required.anchor", new Class[]{AddAnchorFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});
 		fixes.put("required.parameter.in.context", new Class[]{AddRequiredParameterFix.class});
 		fixes.put("required.type.in.context", new Class[]{AddRequiredElementFix.class});

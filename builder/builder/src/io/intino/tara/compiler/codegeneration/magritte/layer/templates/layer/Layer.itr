@@ -195,8 +195,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		[
 		$node...[$NL]
 		]
-		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
-			return (($workingPackage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) graph().$ModelType+firstLowerCase());
+		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~$ModelType $ModelType+lowerCase() {
+			return (($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~$ModelType) graph().$ModelType+firstLowerCase());
 		}
 	}
 

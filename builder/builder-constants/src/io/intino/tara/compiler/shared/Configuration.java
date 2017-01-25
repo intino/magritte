@@ -88,6 +88,4 @@ public interface Configuration {
 
 	String interfaceVersion();
 
-	String behaviorVersion();
-
 }

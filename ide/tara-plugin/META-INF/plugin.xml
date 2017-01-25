@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <change-notes>
     </change-notes>
     <idea-version since-build="145"/>
