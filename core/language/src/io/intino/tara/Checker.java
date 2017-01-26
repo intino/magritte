@@ -1,10 +1,10 @@
 package io.intino.tara;
 
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static java.util.Collections.singletonList;
 
 public class Checker {
 
@@ -44,7 +44,7 @@ public class Checker {
 	}
 
 	private void assume(Node node) {
-		if (node == null || node.type() == null) return;
+		if (node == null || node.type() == null || language == null) return;
 		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions != null) assume(node, assumptions);
 		for (String type : node.secondaryTypes()) {
