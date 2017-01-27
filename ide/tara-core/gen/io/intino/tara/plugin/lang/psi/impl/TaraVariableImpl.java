@@ -27,12 +27,6 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
 
   @Override
   @Nullable
-  public TaraAnchor getAnchor() {
-    return findChildByClass(TaraAnchor.class);
-  }
-
-  @Override
-  @Nullable
   public TaraBodyValue getBodyValue() {
     return findChildByClass(TaraBodyValue.class);
   }

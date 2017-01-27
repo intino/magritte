@@ -20,9 +20,8 @@ public class TaracRunner {
 		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
 		try {
 			File argsFile;
-			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null) {
+			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)
 				throw new TaraException("Error finding args file");
-			}
 			new TaraCompilerRunner(verbose).run(argsFile);
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString() : e.getMessage());

@@ -1,7 +1,6 @@
 package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.text.StringUtil;
@@ -14,28 +13,28 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.documentation.TaraDocumentationFormatter;
-import io.intino.tara.plugin.lang.TaraIcons;
-import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.lang.model.*;
-import io.intino.tara.lang.model.Rule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.model.Rule;
+import io.intino.tara.plugin.documentation.TaraDocumentationFormatter;
+import io.intino.tara.plugin.lang.TaraIcons;
+import io.intino.tara.plugin.lang.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.unmodifiableList;
-import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase;
 import static io.intino.tara.lang.model.Node.ANONYMOUS;
 import static io.intino.tara.lang.model.Tag.Abstract;
 import static io.intino.tara.lang.model.Tag.Terminal;
+import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase;
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.unmodifiableList;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -279,15 +278,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public TaraAnchor getAnchor() {
-		return getSignature().getAnchor();
-	}
-
-	public String anchor() {
-		final TaraAnchor address = getSignature().getAnchor();
-		return address != null ? address.getText() : null;
-	}
-
 	public List<Node> subs() {
 		ArrayList<Node> subs = new ArrayList<>();
 		List<Node> children = TaraPsiImplUtil.getBodyComponents(this.getBody());
@@ -317,11 +307,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		FacetTarget facetTarget = this.getSignature().getFacetTarget();
 		if (facetTarget == null && parent() != null) facetTarget = parent().facetTarget();
 		return facetTarget;
-	}
-
-	public String tableName() {
-		return this.getSignature().getWithTable() != null && this.getSignature().getWithTable().getIdentifierReference() != null ?
-			this.getSignature().getWithTable().getIdentifierReference().getText() : "";
 	}
 
 	public List<String> types() {
@@ -424,16 +409,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public void language(String language) {
 	}
-
-	public void anchor(String anchor) {
-		final TaraAnchor psiAnchor = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
-		final TreeElement copy = ChangeUtil.copyToElement(psiAnchor);
-		PsiElement psi = copy.getPsi();
-		TaraSignature taraSignature = PsiTreeUtil.getChildrenOfType(this, TaraSignature.class)[0];
-		taraSignature.getNode().addChild(ASTFactory.whitespace(" "));
-		taraSignature.add(psi);
-	}
-
 
 	public List<Node> children() {
 		return Collections.emptyList();

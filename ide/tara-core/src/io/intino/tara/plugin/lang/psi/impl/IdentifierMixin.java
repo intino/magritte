@@ -47,7 +47,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		else if (isContract()) return createOutDefinedResolver();
 		else if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return createFileResolver();
-		else if (isTableReference()) return createTableResolver();
 		else if (isNodeReference()) return createNodeResolver();
 		else return null;
 	}
@@ -140,11 +139,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	private boolean isFileReference() {
 		return this.getParent() instanceof TaraHeaderReference;
 	}
-
-	private boolean isTableReference() {
-		return TaraPsiImplUtil.getContainerByType(this, TaraWithTable.class) != null;
-	}
-
 
 	@Nullable
 	public PsiElement getNameIdentifier() {

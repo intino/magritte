@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/core/language/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.6
+// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.6
 package io.intino.tara.lang.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -431,18 +431,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDoubleValue(TaraGrammar.DoubleValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAnchor(TaraGrammar.AnchorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAnchor(TaraGrammar.AnchorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

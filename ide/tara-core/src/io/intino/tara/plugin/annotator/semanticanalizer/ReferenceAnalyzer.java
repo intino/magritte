@@ -12,39 +12,37 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import io.intino.tara.plugin.annotator.fix.CreateTableQuickFix;
+import io.intino.tara.Language;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Primitive;
+import io.intino.tara.lang.model.Variable;
+import io.intino.tara.plugin.annotator.TaraAnnotator.AnnotateAndFix;
+import io.intino.tara.plugin.annotator.fix.CreateClassFromMethodReferenceFix;
+import io.intino.tara.plugin.annotator.fix.CreateMetricClassIntention;
 import io.intino.tara.plugin.annotator.fix.CreateVariableRuleClassIntention;
+import io.intino.tara.plugin.annotator.imports.AlternativesForReferenceFix;
+import io.intino.tara.plugin.annotator.imports.CreateNodeQuickFix;
 import io.intino.tara.plugin.annotator.imports.ImportQuickFix;
+import io.intino.tara.plugin.annotator.imports.TaraReferenceImporter;
 import io.intino.tara.plugin.codeinsight.languageinjection.CreateFunctionInterfaceIntention;
 import io.intino.tara.plugin.highlighting.TaraSyntaxHighlighter;
 import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.MethodReferenceSolver;
-import io.intino.tara.plugin.lang.psi.resolve.TaraTableReferenceSolver;
-import io.intino.tara.plugin.messages.MessageProvider;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.Language;
-import io.intino.tara.plugin.annotator.TaraAnnotator.AnnotateAndFix;
-import io.intino.tara.plugin.annotator.fix.CreateClassFromMethodReferenceFix;
-import io.intino.tara.plugin.annotator.fix.CreateMetricClassIntention;
-import io.intino.tara.plugin.annotator.imports.AlternativesForReferenceFix;
-import io.intino.tara.plugin.annotator.imports.CreateNodeQuickFix;
-import io.intino.tara.plugin.annotator.imports.TaraReferenceImporter;
 import io.intino.tara.plugin.lang.psi.resolve.OutDefinedReferenceSolver;
 import io.intino.tara.plugin.lang.psi.resolve.TaraNodeReferenceSolver;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.Primitive;
-import io.intino.tara.lang.model.Variable;
+import io.intino.tara.plugin.messages.MessageProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.INSTANCE;
+import static java.util.Collections.singletonList;
 
 public class ReferenceAnalyzer extends TaraAnalyzer {
 
@@ -75,7 +73,6 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private void setError(PsiReference aReference, Identifier element) {
 		if (aReference instanceof TaraNodeReferenceSolver) createNodeError(element);
-		else if (aReference instanceof TaraTableReferenceSolver) createTableReferenceError(element);
 		else if (aReference instanceof MethodReferenceSolver) createMethodReferenceError(element);
 		else if (aReference instanceof OutDefinedReferenceSolver) createOutDefinedReferenceError(element);
 		else createGeneralError(element);
@@ -87,10 +84,6 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private void createNodeError(Identifier element) {
 		results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), TaraSyntaxHighlighter.UNRESOLVED_ACCESS, createNodeReferenceFixes(element)));
-	}
-
-	private void createTableReferenceError(Identifier element) {
-		results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), TaraSyntaxHighlighter.UNRESOLVED_ACCESS, createTableReferenceFixes(element)));
 	}
 
 	private void createMethodReferenceError(Identifier element) {
@@ -121,10 +114,6 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		return actions.toArray(new IntentionAction[actions.size()]);
 	}
 
-	private IntentionAction[] createTableReferenceFixes(Identifier element) {
-		List<IntentionAction> actions = new ArrayList<>(createTableFix(element));
-		return actions.toArray(new IntentionAction[actions.size()]);
-	}
 
 	private IntentionAction[] createMethodReferenceFixes(Identifier element) {
 		List<IntentionAction> actions = new ArrayList<>(createMethodFix(element));
@@ -137,11 +126,6 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		return Collections.emptyList();
 	}
 
-	private List<CreateTableQuickFix> createTableFix(Identifier element) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-		if (node != null) return singletonList(new CreateTableQuickFix(TaraPsiImplUtil.getContainerByType(element, TaraWithTable.class)));
-		return Collections.emptyList();
-	}
 
 	private List<IntentionAction> createMethodFix(Identifier element) {
 		Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);

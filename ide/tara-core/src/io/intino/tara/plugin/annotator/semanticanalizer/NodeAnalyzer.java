@@ -30,10 +30,6 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		try {
 			Language language = TaraUtil.getLanguage((PsiElement) node);
 			if (language == null) return;
-			if (isTableInstance()) {
-				node.resolve();
-				return;
-			}
 			new Checker(language).check(node);
 		} catch (SemanticFatalException fatal) {
 			for (SemanticException e : fatal.exceptions()) {
@@ -47,10 +43,6 @@ public class NodeAnalyzer extends TaraAnalyzer {
 				}
 			}
 		}
-	}
-
-	private boolean isTableInstance() {
-		return !node.tableName().isEmpty();
 	}
 
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {

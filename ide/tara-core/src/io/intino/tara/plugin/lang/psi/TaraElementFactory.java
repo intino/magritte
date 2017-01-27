@@ -53,8 +53,6 @@ public abstract class TaraElementFactory {
 
 	public abstract PsiElement createMetaWordIdentifier(String module, String node, String name);
 
-	public abstract TaraAnchor createAnchor(String address);
-
 	public abstract TaraFlag createFlag(String name);
 
 	public abstract TaraFlags createFlags(String name);

@@ -5,9 +5,9 @@ import io.intino.tara.lang.model.*;
 
 import java.util.*;
 
-import static java.util.Collections.unmodifiableList;
 import static io.intino.tara.lang.model.Tag.Abstract;
 import static io.intino.tara.lang.model.Tag.Terminal;
+import static java.util.Collections.unmodifiableList;
 
 public class NodeReference implements Node {
 
@@ -151,15 +151,6 @@ public class NodeReference implements Node {
 	@Override
 	public boolean into(Tag tag) {
 		return destiny.into(tag) || annotations().contains(tag);
-	}
-
-	@Override
-	public String anchor() {
-		return destiny.anchor();
-	}
-
-	@Override
-	public void anchor(String anchor) {
 	}
 
 	@Override
@@ -323,11 +314,6 @@ public class NodeReference implements Node {
 	@Override
 	public FacetTarget facetTarget() {
 		return destiny.facetTarget();
-	}
-
-	@Override
-	public String tableName() {
-		return "";
 	}
 
 	@Override

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                               http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.intino.tara</groupId>
     <artifactId>builder</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -20,16 +21,23 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>intino-maven</id>
+            <url>https://artifactory.intino.io/artifactory/release-builders</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <outputDirectory>../../out/production/builder</outputDirectory>
         <testOutputDirectory>../../out/test/builder</testOutputDirectory>
         <directory>../../out/build/builder</directory>
-
+        <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
+                <version>1.12</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -45,13 +53,38 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
+                            </dependencyReducedPomLocation>
+                            <minimizeJar>false</minimizeJar><!--important-->
+                            <artifactSet>
+                                <includes>
+                                    <include>io.intino.tara:builder-constants:*</include>
+                                    <include>io.intino.legio:model:*</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>io.intino.tara</groupId>
-            <artifactId>io</artifactId>
-            <version>1.0</version>
+            <artifactId>magritte</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -59,6 +92,13 @@
             <artifactId>builder-constants</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.intino.legio</groupId>
+            <artifactId>model</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.siani.itrules</groupId>
             <artifactId>itrules</artifactId>
@@ -78,28 +118,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>io.intino.tara</groupId>
-            <artifactId>language</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.intino.legio</groupId>
-            <artifactId>model</artifactId>
-            <version>2.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
-            <version>LATEST</version>
+            <version>1.9.5</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -1,12 +1,12 @@
 package io.intino.tara.plugin.lang.psi;
 
 import com.intellij.psi.PsiInvalidElementAccessException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.lang.psi.impl.TaraModelImpl;
 import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
+import io.intino.tara.plugin.lang.psi.impl.TaraModelImpl;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -44,10 +44,4 @@ public interface Signature extends TaraPsiElement {
 
 	@Nullable
 	Annotations getAnnotations();
-
-	@Nullable
-	TaraAnchor getAnchor();
-
-	@Nullable
-	TaraWithTable getWithTable();
 }

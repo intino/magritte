@@ -15,6 +15,7 @@ import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -26,17 +27,12 @@ class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
 	private static final String INTINO_PATH = "intino-plugin";
-	private static final String[] INTINO = {"intino-plugin.jar", "magritte-lite-1.0.0.jar"};
+	private static final String[] INTINO = {"intino-plugin.jar", "magritte-1.0.0.jar"};
 	private static final String TARA_CORE_JAR = "tara-plugin.jar";
-	private static final String ANTLR = "antlr4-runtime-4.6.jar";
-	private static final String GSON = "gson-2.4.jar";
-	private static final String[] KRYO = {"asm-5.0.4.jar", "kryo-4.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.2.jar", "reflectasm-1.11.3.jar"};
-	private static final String ITRULES_VERSION = "1.6.0";
-	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
-	private static final String[] CSV_READER = {"opencsv-3.7.jar"};
 	private static final String LIB = "lib/";
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
+	private List<String> classpath;
 
 	TaraRunner(final String projectName, final String moduleName, JpsModuleConfiguration conf, String nativeLanguage, boolean isMake,
 			   final Map<String, Boolean> sources,
@@ -44,10 +40,12 @@ class TaraRunner {
 			   final boolean isTest,
 			   List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", false);
+		loadClassPath(paths.get(4), moduleName);
 		LOG.info("args file: " + argsFile.getAbsolutePath());
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(SRC_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			for (Map.Entry<String, Boolean> file : sources.entrySet())
+				writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
@@ -59,10 +57,14 @@ class TaraRunner {
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
-			writer.write(CLASSPATH + NL);
-			writer.write(join(generateClasspath()));
 			writer.close();
 		}
+	}
+
+	private void loadClassPath(String projectConfigurationDirectory, String moduleName) throws IOException {
+		final File classPathFile = new File(projectConfigurationDirectory, "misc" + File.separator + moduleName);
+		if (!classPathFile.exists()) throw new IOException("Unable to find builder classpath.");
+		this.classpath = Arrays.asList(new String(Files.readAllBytes(classPathFile.toPath())).split(":"));
 	}
 
 	private void fillConfiguration(JpsModuleConfiguration conf, Writer writer) throws IOException {
@@ -90,7 +92,6 @@ class TaraRunner {
 	}
 
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
-		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		LOG.info("Tarac classpath: " + String.join("\n", classpath));
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
@@ -120,58 +121,12 @@ class TaraRunner {
 		return SystemProperties.getJavaHome() + "/bin/java";
 	}
 
-	private Collection<String> generateRunnerClasspath() {
-		final Set<String> classPath = new LinkedHashSet<>();
-		classPath.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
-		classPath.addAll(getIntinoLib().stream().map(File::getPath).collect(Collectors.toList()));
-		classPath.add(getAntlrLib().getPath());
-		classPath.add(getGsonLib().getPath());
-		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
-		classPath.addAll(getKryoLibs().stream().map(File::getPath).collect(Collectors.toList()));
-		classPath.addAll(getCsvReaderLibs().stream().map(File::getPath).collect(Collectors.toList()));
-		return classPath;
-	}
 
 	private Collection<String> generateClasspath() {
 		final Set<String> cp = new LinkedHashSet<>();
 		cp.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		cp.addAll(getIntinoLib().stream().map(File::getPath).collect(Collectors.toList()));
 		return cp;
-	}
-
-	private File getAntlrLib() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), ANTLR);
-		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
-				new File(root.getParentFile(), LIB + ANTLR);
-	}
-
-	private File getGsonLib() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), GSON);
-		return (root.exists()) ? new File(root.getParentFile(), GSON) :
-				new File(root.getParentFile(), LIB + GSON);
-	}
-
-	private List<File> getItRulesLibs() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		List<File> libs = new ArrayList<>();
-		for (String lib : ITRULES) addLib(root, lib, libs);
-		return libs;
-	}
-
-	private List<File> getKryoLibs() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		List<File> libs = new ArrayList<>();
-		for (String lib : KRYO) addLib(root, lib, libs);
-		return libs;
-	}
-
-	private List<File> getCsvReaderLibs() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		List<File> libs = new ArrayList<>();
-		for (String lib : CSV_READER) addLib(root, lib, libs);
-		return libs;
 	}
 
 	private List<File> getIntinoLib() {

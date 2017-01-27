@@ -3,6 +3,7 @@ package io.intino.tara.lang.semantics.constraints;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
+import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
@@ -171,7 +172,7 @@ public class GlobalConstraints {
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
-		else if (!values.isEmpty() && !(values.get(0) instanceof EmptyNode) && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
+		else if (!values.isEmpty() && !(values.get(0) instanceof EmptyNode) && variable.rule() != null && !(variable.rule() instanceof NativeRule) && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
 			final String message = variable.rule().errorMessage();
 			error(message == null || message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
 		}

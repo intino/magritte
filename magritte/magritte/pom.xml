@@ -19,12 +19,12 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- Update on io module pom-->
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>4.0.0</version>
+            <groupId>io.intino.tara</groupId>
+            <artifactId>language</artifactId>
+            <version>1.0</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -68,29 +68,29 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-                            <minimizeJar>false</minimizeJar><!--important-->
-                            <artifactSet>
-                                <includes>
-                                    <include>io.intino.tara:language:*</include>
-                                    <include>io.intino.tara:io:*</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-shade-plugin</artifactId>-->
+                <!--<version>2.4.3</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>shade</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>-->
+                            <!--<minimizeJar>false</minimizeJar>&lt;!&ndash;important&ndash;&gt;-->
+                            <!--<artifactSet>-->
+                                <!--<includes>-->
+                                    <!--<include>io.intino.tara:language:*</include>-->
+                                    <!--<include>io.intino.tara:io:*</include>-->
+                                <!--</includes>-->
+                            <!--</artifactSet>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

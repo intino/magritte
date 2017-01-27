@@ -6,14 +6,13 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraAnchor;
+import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.lang.psi.TaraStringValue;
 import io.intino.tara.plugin.lang.psi.TaraValue;
 import io.intino.tara.plugin.lang.psi.impl.TaraModelImpl;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.lang.model.Node;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -27,7 +26,6 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 											boolean quick) {
 		for (final Node node : TaraUtil.getAllNodesOfFile((TaraModelImpl) root)) {
 			processNode(descriptors, node);
-			processAnchor(descriptors, node);
 			processStrings(descriptors, node);
 		}
 	}
@@ -36,8 +34,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node) {
 		final PsiElement value = node.getPsi().getParent();
 		return value instanceof TaraStringValue ||
-			(value instanceof TaraValue && ((TaraValue) value).values().size() >= StringFoldingBuilder.VALUE_MAX_SIZE) ||
-			node.getPsi() instanceof TaraAnchor;
+			(value instanceof TaraValue && ((TaraValue) value).values().size() >= StringFoldingBuilder.VALUE_MAX_SIZE);
 	}
 
 	@Override
@@ -58,16 +55,6 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 					return buildNodeHolderText(node);
 				}
 			});
-	}
-
-	private void processAnchor(List<FoldingDescriptor> descriptors, Node node) {
-		TaraAnchor anchor = ((TaraNode) node).getSignature().getAnchor();
-		if (anchor == null) return;
-		descriptors.add(new FoldingDescriptor(anchor.getNode(), getRange(anchor)) {
-			public String getPlaceholderText() {
-				return "*";
-			}
-		});
 	}
 
 	private void processStrings(@NotNull List<FoldingDescriptor> descriptors, Node node) {

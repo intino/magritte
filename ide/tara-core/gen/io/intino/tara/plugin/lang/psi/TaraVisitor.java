@@ -21,10 +21,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitImport(o);
   }
 
-  public void visitAnchor(@NotNull TaraAnchor o) {
-    visitPsiElement(o);
-  }
-
   public void visitAnnotation(@NotNull TaraAnnotation o) {
     visitAnnotation(o);
   }
@@ -173,10 +169,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitStringValue(o);
   }
 
-  public void visitTableParameters(@NotNull TaraTableParameters o) {
-    visitPsiElement(o);
-  }
-
   public void visitTags(@NotNull TaraTags o) {
     visitTags(o);
   }
@@ -198,10 +190,6 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitVariableType(@NotNull TaraVariableType o) {
-    visitPsiElement(o);
-  }
-
-  public void visitWithTable(@NotNull TaraWithTable o) {
     visitPsiElement(o);
   }
 
