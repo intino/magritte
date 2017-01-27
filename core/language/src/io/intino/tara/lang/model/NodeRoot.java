@@ -35,16 +35,6 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default String anchor() {
-		return null;
-	}
-
-	@Override
-	default void anchor(String anchor) {
-
-	}
-
-	@Override
 	default String cleanQn() {
 		return "";
 	}
@@ -182,11 +172,6 @@ public interface NodeRoot extends Node, Element {
 	@Override
 	default List<Facet> facets() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	default String tableName() {
-		return null;
 	}
 
 	@Override

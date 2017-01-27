@@ -8,7 +8,6 @@ import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +15,10 @@ public class SemanticAnalyzer {
 	private final Model model;
 	private final Resolver resolver;
 	private Checker checker;
-	private TableChecker tableChecker;
 	private List<SemanticException> notifications;
 
-	public SemanticAnalyzer(Model model, File resources) {
+	public SemanticAnalyzer(Model model) {
 		this.model = model;
-		tableChecker = new TableChecker(model.getLanguage(), resources);
 		resolver = new Resolver(model.getLanguage());
 		checker = new Checker(model.getLanguage());
 		notifications = new ArrayList<>();
@@ -49,10 +46,7 @@ public class SemanticAnalyzer {
 
 	private void checkNode(Node node) {
 		try {
-			if (node instanceof NodeImpl && ((NodeImpl) node).table() != null) {
-				tableChecker.check((NodeImpl) node);
-				return;
-			} else checker.check(node);
+			checker.check(node);
 			if (node instanceof NodeImpl) check(node);
 		} catch (SemanticFatalException e) {
 			notifications.addAll(e.exceptions());

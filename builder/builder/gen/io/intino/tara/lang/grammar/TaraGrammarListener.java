@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/core/language/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.6
+// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.6
 package io.intino.tara.lang.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -357,16 +357,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDoubleValue(TaraGrammar.DoubleValueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#anchor}.
-	 * @param ctx the parse tree
-	 */
-	void enterAnchor(TaraGrammar.AnchorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#anchor}.
-	 * @param ctx the parse tree
-	 */
-	void exitAnchor(TaraGrammar.AnchorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#metric}.
 	 * @param ctx the parse tree

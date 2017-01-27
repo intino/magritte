@@ -1,15 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package io.intino.tara.plugin.lang.psi;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
 import io.intino.tara.plugin.lang.psi.impl.*;
 
 public interface TaraTypes {
 
-	IElementType ANCHOR = new TaraElementType("ANCHOR");
 	IElementType ANNOTATION = new TaraElementType("ANNOTATION");
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
@@ -48,17 +47,14 @@ public interface TaraTypes {
 	IElementType SIZE = new TaraElementType("SIZE");
 	IElementType SIZE_RANGE = new TaraElementType("SIZE_RANGE");
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
-	IElementType TABLE_PARAMETERS = new TaraElementType("TABLE_PARAMETERS");
 	IElementType TAGS = new TaraElementType("TAGS");
 	IElementType TUPLE_VALUE = new TaraElementType("TUPLE_VALUE");
 	IElementType VALUE = new TaraElementType("VALUE");
 	IElementType VARIABLE = new TaraElementType("VARIABLE");
 	IElementType VARIABLE_TYPE = new TaraElementType("VARIABLE_TYPE");
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
-	IElementType WITH_TABLE = new TaraElementType("WITH_TABLE");
 
 	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
-	IElementType ANCHOR_VALUE = new TaraTokenType("ANCHOR_VALUE");
 	IElementType ANY = new TaraTokenType("ANY");
 	IElementType AS = new TaraTokenType("AS");
 	IElementType AT = new TaraTokenType("AT");
@@ -97,7 +93,6 @@ public interface TaraTypes {
 	IElementType LEFT_CURLY = new TaraTokenType("LEFT_CURLY");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
-	IElementType LIST = new TaraTokenType("LIST");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -130,9 +125,7 @@ public interface TaraTypes {
 	class Factory {
 		public static PsiElement createElement(ASTNode node) {
 			IElementType type = node.getElementType();
-			if (type == ANCHOR) {
-				return new TaraAnchorImpl(node);
-			} else if (type == ANNOTATION) {
+			if (type == ANNOTATION) {
 				return new TaraAnnotationImpl(node);
 			} else if (type == ANNOTATIONS) {
 				return new TaraAnnotationsImpl(node);
@@ -208,8 +201,6 @@ public interface TaraTypes {
 				return new TaraSizeRangeImpl(node);
 			} else if (type == STRING_VALUE) {
 				return new TaraStringValueImpl(node);
-			} else if (type == TABLE_PARAMETERS) {
-				return new TaraTableParametersImpl(node);
 			} else if (type == TAGS) {
 				return new TaraTagsImpl(node);
 			} else if (type == TUPLE_VALUE) {
@@ -222,8 +213,6 @@ public interface TaraTypes {
 				return new TaraVariableTypeImpl(node);
 			} else if (type == VAR_INIT) {
 				return new TaraVarInitImpl(node);
-			} else if (type == WITH_TABLE) {
-				return new TaraWithTableImpl(node);
 			}
 			throw new AssertionError("Unknown element type: " + type);
 		}

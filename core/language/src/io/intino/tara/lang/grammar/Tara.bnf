@@ -38,15 +38,11 @@ node ::= doc? signature body? {
 	implements='io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | (metaIdentifier ruleContainer* parameters? identifier? facets? parent?)) (withTable | facetTarget? tags? anchor?)  {
+signature::= (subNode | (metaIdentifier ruleContainer* parameters? identifier? facets? parent?)) (facetTarget? tags?)  {
 	pin = 1
 	mixin= 'io.intino.tara.plugin.lang.psi.impl.SignatureMixin'
 	implements='io.intino.tara.plugin.lang.psi.Signature'
 }
-withTable ::= LIST WITH identifierReference tableParameters {
-	pin = 1
-}
-tableParameters ::=LEFT_PARENTHESIS (IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*)? RIGHT_PARENTHESIS
 
 private subNode ::= SUB ruleContainer* parameters? identifier facets?
 {pin = 1}
@@ -74,8 +70,6 @@ facetApply ::= metaIdentifier parameters? {
     implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Facet, com.intellij.pom.Navigatable'
 }
 
-anchor ::= ANCHOR_VALUE
-
 body ::= (NEW_LINE_INDENT NEWLINE? | INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
 	pin = 1
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.BodyMixin'
@@ -90,7 +84,7 @@ nodeReference ::= HAS ruleContainer* identifierReference tags? {
 	implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Node, com.intellij.pom.Navigatable'
 }
 
-variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? anchor? bodyValue? {
+variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? bodyValue? {
 	pin = 2
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.VariableMixin'
 	implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Variable, io.intino.tara.plugin.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'

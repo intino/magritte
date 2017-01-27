@@ -3,7 +3,7 @@ package io.intino.tara.lang.model;
 import java.util.Collections;
 import java.util.List;
 
-public interface Node extends Parametrized, NodeContainer, Refactorizable {
+public interface Node extends Parametrized, NodeContainer {
 
 	String ANONYMOUS = "anonymous@";
 
@@ -102,12 +102,6 @@ public interface Node extends Parametrized, NodeContainer, Refactorizable {
 	}
 
 	default void facetTarget(FacetTarget target) {
-	}
-
-	String tableName();
-
-	default void table(String table, List<String> parameters) {
-
 	}
 
 	@Override

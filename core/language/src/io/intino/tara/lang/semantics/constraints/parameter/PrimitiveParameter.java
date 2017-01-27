@@ -133,8 +133,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	protected void error(Element element, io.intino.tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
-		if (parameter == null) return;
 		switch (errorType) {
 			case TYPE:
 				throw new SemanticException(new SemanticNotification(SemanticNotification.Level.ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));

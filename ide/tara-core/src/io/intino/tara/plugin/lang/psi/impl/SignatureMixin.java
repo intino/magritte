@@ -57,7 +57,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		return ReferenceManager.resolveToNode(parentReference);
 	}
 
-	@Nullable
+	@NotNull
 	public List<TaraFacetApply> facets() {
 		if (((TaraSignature) this).getFacets() == null) return Collections.emptyList();
 		return ((TaraSignature) this).getFacets().getFacetApplyList();

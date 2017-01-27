@@ -27,12 +27,6 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
   @Override
   @Nullable
-  public TaraAnchor getAnchor() {
-    return findChildByClass(TaraAnchor.class);
-  }
-
-  @Override
-  @Nullable
   public TaraFacetTarget getFacetTarget() {
     return findChildByClass(TaraFacetTarget.class);
   }
@@ -77,12 +71,6 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   @Nullable
   public TaraTags getTags() {
     return findChildByClass(TaraTags.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraWithTable getWithTable() {
-    return findChildByClass(TaraWithTable.class);
   }
 
 }

@@ -24,7 +24,6 @@ public class NodeImpl implements Node {
 	private Map<Node, List<Rule>> components = new LinkedHashMap<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
-	private String anchor;
 	private String name;
 	private String parentName;
 	private Node parent;
@@ -39,7 +38,6 @@ public class NodeImpl implements Node {
 	private List<String> context = new ArrayList<>();
 	private boolean dirty;
 	private boolean virtual;
-	private Table table;
 
 	@Override
 	public String name() {
@@ -144,20 +142,6 @@ public class NodeImpl implements Node {
 
 	public boolean into(Tag tag) {
 		return annotations.contains(tag);
-	}
-
-	@Override
-	public String anchor() {
-		return anchor;
-	}
-
-	@Override
-	public void anchor(String anchor) {
-		this.anchor = anchor;
-	}
-
-	public Table table() {
-		return table;
 	}
 
 	@Override
@@ -398,16 +382,6 @@ public class NodeImpl implements Node {
 	@Override
 	public void facetTarget(FacetTarget target) {
 		this.facetTarget = target;
-	}
-
-	@Override
-	public String tableName() {
-		return table != null ? table.name() : "";
-	}
-
-	@Override
-	public void table(String table, List<String> parameters) {
-		this.table = new Table(table, parameters);
 	}
 
 	@Override

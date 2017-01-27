@@ -13,7 +13,7 @@ doc: DOC+;
 node: doc? signature body?;
 
 signature: ((SUB ruleContainer* parameters? IDENTIFIER facets*) |
-			(metaidentifier ruleContainer* parameters? IDENTIFIER? facets* parent?)) (withTable | facetTarget? tags anchor?);
+			(metaidentifier ruleContainer* parameters? IDENTIFIER? facets* parent?)) (facetTarget? tags);
 
 parent : EXTENDS identifierReference;
 
@@ -44,7 +44,7 @@ body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DE
 facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer* identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
-variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? anchor? bodyValue?;
+variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? bodyValue?;
 
 bodyValue : NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT;
 
@@ -80,7 +80,6 @@ booleanValue : BOOLEAN_VALUE;
 tupleValue   : stringValue COLON doubleValue;
 integerValue : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue  : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
-anchor       : ANCHOR_VALUE;
 
 metric       : IDENTIFIER | MEASURE_VALUE;
 

@@ -43,12 +43,16 @@ public class StashBuilder {
 	}
 
 	public Stash build() {
-		new TaraCompilerRunner(false).run(createConfiguration(), file);
-		final File createdStash = findCreatedStash();
-		if (createdStash == null || !createdStash.exists()) return null;
-		final Stash stash = StashDeserializer.stashFrom(createdStash);
-		createdStash.delete();
-		return stash;
+		try {
+			new TaraCompilerRunner(false).run(createConfiguration(), file);
+			final File createdStash = findCreatedStash();
+			if (createdStash == null || !createdStash.exists()) return null;
+			final Stash stash = StashDeserializer.stashFrom(createdStash);
+			createdStash.delete();
+			return stash;
+		} catch (Throwable e) {
+			return null;
+		}
 	}
 
 	private File findCreatedStash() {

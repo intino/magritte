@@ -197,14 +197,6 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return params.substring(separator.length());
 	}
 
-	public TaraAnchor createAnchor(String value) {
-		final TaraModelImpl file = createDummyFile(
-			DUMMY_CONCEPT + " *" + value + "*\n"
-		);
-		final Node next = file.components().iterator().next();
-		return ((TaraNode) next).getSignature().getAnchor();
-	}
-
 	@Override
 	public TaraFlag createFlag(String flag) {
 		final TaraModelImpl file = createDummyFile(

@@ -97,7 +97,6 @@ COLON               = ":"
 EQUALS              = "="
 STAR                = "*"
 SEMICOLON           = ";"
-LIST	            = "..."
 QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
@@ -130,7 +129,6 @@ AT					= "@"
 STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
 CLASS_TYPE   		= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} ({COMMA} {SP}* {IDENTIFIER_KEY})? {MAYOR}
-ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
 METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]
 
@@ -193,7 +191,6 @@ NEWLINE             = [\n]+
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 
-	{ANCHOR_VALUE}                 	{   return TaraTypes.ANCHOR_VALUE; }
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }
 
@@ -230,7 +227,6 @@ NEWLINE             = [\n]+
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }
-	{LIST}                          {   return TaraTypes.LIST; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

@@ -72,16 +72,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String anchor() {
-		return null;
-	}
-
-	@Override
-	public void anchor(String anchor) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<Tag> annotations() {
 		return Collections.emptyList();
 	}
@@ -276,11 +266,6 @@ public class EmptyNode implements Node {
 	@Override
 	public FacetTarget facetTarget() {
 		return null;
-	}
-
-	@Override
-	public String tableName() {
-		return "";
 	}
 
 	@Override

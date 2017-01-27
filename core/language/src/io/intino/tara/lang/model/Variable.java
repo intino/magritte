@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface Variable extends Valued, Refactorizable, Cloneable {
+public interface Variable extends Valued, Cloneable {
 
 	String name();
 

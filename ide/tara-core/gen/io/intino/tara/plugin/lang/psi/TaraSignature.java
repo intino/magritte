@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraSignature extends Signature {
 
   @Nullable
-  TaraAnchor getAnchor();
-
-  @Nullable
   TaraFacetTarget getFacetTarget();
 
   @Nullable
@@ -33,8 +30,5 @@ public interface TaraSignature extends Signature {
 
   @Nullable
   TaraTags getTags();
-
-  @Nullable
-  TaraWithTable getWithTable();
 
 }

@@ -1,13 +1,11 @@
 package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiEnumConstant;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.tree.TokenSet;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.lang.model.Node;
@@ -198,18 +196,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public String getUID() {
 		return null;
-	}
-
-	public String anchor() {
-		final TaraAnchor anchor = ((TaraVariable) this).getAnchor();
-		return anchor != null ? anchor.getText() : "";
-	}
-
-	public void anchor(String anchor) {
-		final TaraAnchor psiAnchor = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
-		PsiElement psi = ChangeUtil.copyToElement(psiAnchor).getPsi();
-		this.getNode().addChild(ASTFactory.whitespace(" "));
-		this.add(psi);
 	}
 
 	public String file() {

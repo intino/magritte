@@ -117,7 +117,6 @@ QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
 UNDERDASH           = "_"
-LIST	            = "..."
 DASHES              = {DASH} {DASH}+
 DOT                 = "."
 BY                  = "·"
@@ -151,7 +150,6 @@ BOOLEAN_VALUE_KEY   = "true" | "false"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
-ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
 CLASS_TYPE   		= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} ({COMMA} {SP}* {IDENTIFIER_KEY})? {INLINE}
 METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 COMMENT = {TraditionalComment} | {LINE_COMMENT} | {DocumentationComment}
@@ -217,7 +215,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{SINGLE_QUOTE}					{   yybegin(EXPRESSION); return TaraTypes.EXPRESSION_BEGIN; }
 	{NATIVE_MULTILINE_VALUE}		{   yybegin(EXPRESSION_MULTILINE); return TaraTypes.EXPRESSION_BEGIN; }
 
-	{ANCHOR_VALUE}                 	{   return TaraTypes.ANCHOR_VALUE; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
@@ -232,7 +229,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {RIGHT_CURLY}                   {   return TaraTypes.RIGHT_CURLY; }
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-	{LIST}                          {   return TaraTypes.LIST; }
 
 	{WORD_TYPE}                     {   return TaraTypes.WORD_TYPE; }
 	{OBJECT_TYPE}                   {   return TaraTypes.OBJECT_TYPE; }

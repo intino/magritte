@@ -45,7 +45,6 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelResolutionOperation(), Phases.MODEL_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new MetricResolutionOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
-		addPhaseOperation(new TableProfilingOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new NativeTransformationOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.STASH_GENERATION);
@@ -86,7 +85,7 @@ public final class CompilationUnit extends ProcessingUnit {
 	public static void cleanOut(CompilerConfiguration configuration) {
 		final String generationPackage = (configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage()).replace(".", File.separator);
 		File out = new File(configuration.getOutDirectory(), generationPackage.toLowerCase());
-//		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out); TODO avoid removing pandora directory
+//		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out); TODO avoid removing konos directory
 	}
 
 	private void compile(int throughPhase) throws CompilationFailedException {
