@@ -1,11 +1,11 @@
 package io.intino.tara.compiler.core.operation.sourceunit;
 
+import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.SourceUnit;
+import io.intino.tara.compiler.core.errorcollection.ErrorCollector;
 import io.intino.tara.compiler.core.errorcollection.SyntaxException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.errorcollection.message.Message;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.errorcollection.ErrorCollector;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

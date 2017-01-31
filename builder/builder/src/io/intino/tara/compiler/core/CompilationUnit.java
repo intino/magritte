@@ -1,5 +1,6 @@
 package io.intino.tara.compiler.core;
 
+import io.intino.tara.Language;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.operation.LayerGenerationOperation;
 import io.intino.tara.compiler.core.operation.Operation;
@@ -24,7 +25,7 @@ import java.util.Map;
 public final class CompilationUnit extends ProcessingUnit {
 
 	private Map<String, SourceUnit> sourceUnits;
-	private Model model;
+	private Map<Language, Model> models = new HashMap<>();
 	private List<Operation>[] phaseOperations;
 	private Map<String, List<String>> outputItems = new HashMap<>();
 
@@ -52,10 +53,9 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	private void addPhaseOperation(Operation operation, int phase) {
-		if ((phase < Phases.FIRST) || (phase > Phases.LAST))
+		if (phase < Phases.FIRST || phase > Phases.LAST)
 			throw new IllegalArgumentException("phase " + phase + " is unknown");
-		if (isExcludedPhase(phase)) return;
-		this.phaseOperations[phase].add(operation);
+		if (!isExcludedPhase(phase)) this.phaseOperations[phase].add(operation);
 	}
 
 	private boolean isExcludedPhase(int phase) {
@@ -119,18 +119,20 @@ public final class CompilationUnit extends ProcessingUnit {
 			applyToSourceUnits((SourceUnitOperation) operation);
 		else if (operation instanceof ModuleUnitOperation)
 			((ModuleUnitOperation) operation).call(sourceUnits.values());
-		else if (operation instanceof ModelOperation)
-			((ModelOperation) operation).call(model);
+		else if (operation instanceof ModelCollectionOperation) {
+			((ModelCollectionOperation) operation).call(models.values());
+		} else if (operation instanceof ModelOperation)
+			models.values().forEach(((ModelOperation) operation)::call);
 		else if (operation instanceof SetupOperation)
 			((SetupOperation) operation).call();
 	}
 
-	public Model getModel() {
-		return model;
+	public Map<Language, Model> models() {
+		return models;
 	}
 
-	public void setModel(Model model) {
-		this.model = model;
+	public void addModel(Language language, Model model) {
+		this.models.put(language, model);
 	}
 
 	public Map<String, List<String>> getOutputItems() {

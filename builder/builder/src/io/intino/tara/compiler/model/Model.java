@@ -19,8 +19,11 @@ public class Model implements NodeRoot {
 	private Map<String, Class<?>> rules;
 	private File resourcesRoot;
 
-	public Model(String file, Language language) {
+	public Model(String file) {
 		this.file = file;
+	}
+
+	public void setLanguage(Language language) {
 		this.language = language;
 	}
 
@@ -88,7 +91,7 @@ public class Model implements NodeRoot {
 
 	@Override
 	public String language() {
-		return language.languageName();
+		return language != null ? language.languageName() : "";
 	}
 
 	public void setUses(List<String> uses) {

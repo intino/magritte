@@ -9,6 +9,8 @@ public class Url implements VariableRule<List<String>> {
 
 	private String REGEX = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 
+
+
 	@Override
 	public boolean accept(List<String> values) {
 		for (String value : values)

@@ -1,13 +1,14 @@
 package io.intino.tara.compiler.core.operation;
 
+import io.intino.tara.Language;
+import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.stash.StashCreator;
+import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
+import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.codegeneration.Format;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.io.Stash;
 import io.intino.tara.io.StashSerializer;
@@ -46,7 +47,7 @@ public class StashGenerationOperation extends ModelOperation {
 			if (conf.isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
 			if (conf.isTest()) createTestStashes(model);
-			else createStash(model.components());
+			else createStash(model);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -56,17 +57,17 @@ public class StashGenerationOperation extends ModelOperation {
 	private void createTestStashes(Model model) throws TaraException {
 		for (List<Node> nodes : pack(model)) {
 			if (nodes.isEmpty()) continue;
-			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes));
+			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.getLanguage()));
 		}
 	}
 
-	private void createStash(List<Node> nodes) throws TaraException {
-		if (nodes.isEmpty()) return;
-		writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes));
+	private void createStash(Model model) throws TaraException {
+		if (model.components().isEmpty()) return;
+		writeStashTo(stashDestiny(new File(model.components().get(0).file())), stashOf(model.components(), model.getLanguage()));
 	}
 
-	private Stash stashOf(List<Node> nodes) throws TaraException {
-		return new StashCreator(nodes, conf.language(), outDSL, conf).create();
+	private Stash stashOf(List<Node> nodes, Language language) throws TaraException {
+		return new StashCreator(nodes, language, outDSL, conf).create();
 	}
 
 	private String writeStashTo(File taraFile, Stash stash) {
@@ -87,8 +88,8 @@ public class StashGenerationOperation extends ModelOperation {
 		final File destiny = conf.resourcesDirectory();
 		destiny.mkdirs();
 		return !conf.isTest() ?
-			new File(destiny, Format.firstUpperCase().format(conf.level().equals(Configuration.Level.System) ? "Model" : conf.outDSL()).toString() + STASH) :
-			new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
+				new File(destiny, Format.firstUpperCase().format(conf.level().equals(Configuration.Level.System) ? "Model" : conf.outDSL()).toString() + STASH) :
+				new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
 	}
 
 	private List<List<Node>> pack(Model model) {

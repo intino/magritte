@@ -1,10 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
-import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
+import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
@@ -12,6 +10,8 @@ import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
 import io.intino.tara.lang.model.Variable;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.model.Frame;
 
 import java.util.AbstractMap;
 import java.util.HashSet;
@@ -40,8 +40,8 @@ public class LayerFrameCreator implements TemplateTags {
 		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage));
 	}
 
-	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.outDSL(), conf.language(), conf.level(), conf.workingPackage(), conf.dslWorkingPackage());
+	public LayerFrameCreator(CompilerConfiguration conf, String language) {
+		this(conf.outDSL(), ((CompilerConfiguration.DSL) conf.language(d -> d.name().equals(language))).get(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(language)).generationPackage());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -71,7 +71,7 @@ public class LayerFrameCreator implements TemplateTags {
 		createFrame(frame, facetTarget);
 		addFacetImports(frame);
 		return new AbstractMap.SimpleEntry<>(addPackage(facetTarget, frame) + DOT +
-			Format.javaValidName().format(owner.name() + facetTarget.targetNode().name()).toString(), frame);
+				Format.javaValidName().format(owner.name() + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void addNodeImports(Frame frame) {

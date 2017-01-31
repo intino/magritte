@@ -20,8 +20,9 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
-import static java.io.File.separator;
+import static io.intino.tara.compiler.semantic.LanguageLoader.getLanguagePath;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.WORKING_PACKAGE;
+import static java.io.File.separator;
 
 public class CompilerConfiguration implements Cloneable, Configuration {
 	private static final Logger LOG = Logger.getGlobal();
@@ -46,14 +47,11 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private File outDirectory;
 	private boolean debug;
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
-	private boolean stashGeneration = false;
 	private List<File> sourceDirectories = new ArrayList<>();
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
-	private String dslName;
-	private String dslVersion;
-	private Language dsl;
+	private List<DSL> languages = new ArrayList<>();
 	private String outDSL;
 	private String groupID;
 	private String artifactID;
@@ -66,7 +64,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private File taraDirectory;
 	private boolean test;
 	private String workingPackage;
-	private String languageWorkingPackage = "";
 	private String nativeLanguage = "java";
 
 	public CompilerConfiguration() {
@@ -143,16 +140,36 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.taraDirectory = taraDirectory;
 	}
 
+	public String groupId() {
+		return groupID;
+	}
+
+	public void groupId(String groupID) {
+		this.groupID = groupID;
+	}
+
+	public String artifactId() {
+		return artifactID;
+	}
+
+	public void artifactId(String artifactID) {
+		this.artifactID = artifactID;
+	}
+
+	public String version() {
+		return version;
+	}
+
+	public void version(String version) {
+		this.version = version;
+	}
+
 	public void workingPackage(String workingPackage) {
 		this.workingPackage = workingPackage;
 	}
 
 	public String workingPackage() {
 		return workingPackage == null || workingPackage.isEmpty() ? outDSL() : workingPackage;
-	}
-
-	public String dslWorkingPackage() {
-		return languageWorkingPackage;
 	}
 
 	public String dslGroupId() {
@@ -191,41 +208,22 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.semanticRulesLib = semanticRulesURL;
 	}
 
-	public Language language(String language) {
-		this.dslName = language;
-		return dslVersion == null || dslName == null ? null : (this.dsl = loadLanguage());
-	}
-
-	public Language language(Language language) {
-		this.dslName = language.languageName();
-		this.dsl = language;
+	public LanguageLibrary addLanguage(String name, String version) {
+		final LanguageLibrary language = this.languages.stream().filter(d -> d.name().equalsIgnoreCase(name)).findFirst().orElse(null);
+		if (language == null) {
+			final DSL dsl = new DSL(name, version);
+			languages.add(dsl);
+			return dsl;
+		}
 		return language;
 	}
 
-	public void dslVersion(String version) {
-		this.dslVersion = version;
-		if (dslName != null) this.dsl = loadLanguage();
-	}
-
-	public String dslVersion() {
-		return this.dslVersion;
-	}
-
-	@Override
-	public String dslEffectiveVersion() {
-		return dslVersion();
-	}
-
-	public Language language() {
-		return this.dsl;
-	}
-
-	public String dslName() {
-		return dslName;
-	}
-
-	public String dsl() {
-		return this.dsl.languageName();
+	public void addLanguage(Language taraLanguage) {
+		final LanguageLibrary language = this.languages.stream().filter(d -> d.name().equalsIgnoreCase(taraLanguage.languageName())).findFirst().orElse(null);
+		if (language == null) {
+			final DSL dsl = new DSL(taraLanguage);
+			languages.add(dsl);
+		}
 	}
 
 	public String outDSL() {
@@ -234,30 +232,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public String outDSL(String outDSL) {
 		return this.outDSL = outDSL;
-	}
-
-	public String groupId() {
-		return groupID;
-	}
-
-	public void groupId(String groupID) {
-		this.groupID = groupID;
-	}
-
-	public String artifactId() {
-		return artifactID;
-	}
-
-	public void artifactId(String artifactID) {
-		this.artifactID = artifactID;
-	}
-
-	public String modelVersion() {
-		return version;
-	}
-
-	public void modelVersion(String version) {
-		this.version = version;
 	}
 
 	@Override
@@ -269,27 +243,9 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		outDSL = name;
 	}
 
-	private Language loadLanguage() {
-		try {
-			final Language language = LanguageLoader.load(dslName, dslVersion, languagesDirectory().getAbsolutePath());
-			if (language != null)
-				dslWorkingPackage(LanguageLoader.getLanguagePath(dslName, dslVersion, languagesDirectory().getAbsolutePath()));
-			return language;
-		} catch (TaraException e) {
-			LOG.info("Language " + dslName + " cannot be load");
-			return null;
-		}
-	}
-
-	private void dslWorkingPackage(File language) {
-		try {
-			if (language.isDirectory()) return;
-			Manifest manifest = new JarFile(language).getManifest();
-			final Attributes tara = manifest.getAttributes("tara");
-			if (tara == null) return;
-			this.languageWorkingPackage = tara.getValue(WORKING_PACKAGE.replace(".", "-"));
-		} catch (IOException ignored) {
-		}
+	@Override
+	public List<DSL> languages() {
+		return languages;
 	}
 
 	private File languagesDirectory() {
@@ -318,14 +274,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public void setExcludedPhases(List<Integer> excludedPhases) {
 		this.excludedPhases = excludedPhases;
-	}
-
-	public boolean isStashGeneration() {
-		return stashGeneration;
-	}
-
-	public void setStashGeneration(boolean stashGeneration) {
-		this.stashGeneration = stashGeneration;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -401,6 +349,79 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		} catch (CloneNotSupportedException e) {
 			LOG.info(e.getMessage());
 			return null;
+		}
+	}
+
+	public class DSL implements LanguageLibrary {
+		io.intino.tara.Language language;
+		String name;
+		String version;
+		String effectiveVersion;
+		String generationPackage;
+
+		public DSL(String name, String version) {
+			this.name = name;
+			this.version = version;
+		}
+
+		public DSL(Language language) {
+			this.language = language;
+			this.name = this.language.languageName();
+		}
+
+		public io.intino.tara.Language get() {
+			return language == null ? (language = loadLanguage()) : language;
+		}
+
+		@Override
+		public String name() {
+			return language == null ? name : language.languageName();
+		}
+
+		@Override
+		public String version() {
+			return version;
+		}
+
+		@Override
+		public String effectiveVersion() {
+			return effectiveVersion;
+		}
+
+		@Override
+		public void version(String version) {
+			this.version = version;
+		}
+
+		@Override
+		public String generationPackage() {
+			return this.generationPackage;
+		}
+
+		void generationPackage(File language) {
+			if (language.isDirectory() || !language.exists()) {
+				this.generationPackage = name;
+			} else {
+				try {
+					Manifest manifest = new JarFile(language).getManifest();
+					final Attributes tara = manifest.getAttributes("tara");
+					this.generationPackage = tara == null ? name : tara.getValue(WORKING_PACKAGE.replace(".", "-"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		private io.intino.tara.Language loadLanguage() {
+			try {
+				final io.intino.tara.Language language = LanguageLoader.load(name, version, languagesDirectory().getAbsolutePath());
+				if (language != null)
+					generationPackage(getLanguagePath(name, version, languagesDirectory().getAbsolutePath()));
+				return language;
+			} catch (TaraException e) {
+				LOG.info("Language " + name() + " cannot be load");
+				return null;
+			}
 		}
 	}
 }

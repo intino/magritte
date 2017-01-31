@@ -14,6 +14,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.plugin.actions.utils.TaraTemplates;
 import io.intino.tara.plugin.actions.utils.TaraTemplatesFactory;
 import io.intino.tara.plugin.lang.TaraIcons;
@@ -26,7 +27,6 @@ import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
-import io.intino.tara.compiler.shared.Configuration;
 
 import java.util.List;
 import java.util.Map;
@@ -41,9 +41,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(MessageProvider.message("new.model.dlg.prompt"));
 		final Module module = ModuleProvider.moduleOf(directory);
-		if (!TaraModuleType.isTara(module)) throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));
+		if (!TaraModuleType.isTara(module))
+			throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));
 		final Configuration conf = TaraUtil.configurationOf(module);
-		if (!conf.dsl().isEmpty()) builder.addKind(conf.dsl(), TaraIcons.ICON_16, conf.dsl());
+		for (Configuration.LanguageLibrary languageLibrary : conf.languages()) {
+			if (!languageLibrary.name().isEmpty()) builder.addKind(languageLibrary.name(), TaraIcons.ICON_16, languageLibrary.name());
+
+		}
 	}
 
 	@Override
@@ -72,8 +76,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		String fileName = newName + "." + TaraFileType.instance().getDefaultExtension();
 		PsiFile file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
 		final Module module = ModuleProvider.moduleOf(directory);
-		if (isTest(directory, module) && dsl.equals(TaraUtil.configurationOf(module).dsl()))
-			TestClassCreator.creteTestClass(module, dsl, newName);
+		if (isTest(directory, module)) TestClassCreator.creteTestClass(module, dsl, newName);
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}
 

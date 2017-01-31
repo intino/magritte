@@ -74,9 +74,6 @@ public class CompilationInfoExtractor {
 			case EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
 				break;
-			case STASH_GENERATION:
-				setStashGeneration(configuration, reader);
-				break;
 			case SEMANTIC_LIB:
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
@@ -90,7 +87,7 @@ public class CompilationInfoExtractor {
 				configuration.artifactId(reader.readLine());
 				break;
 			case VERSION:
-				configuration.modelVersion(reader.readLine());
+				configuration.version(reader.readLine());
 				break;
 			case MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
@@ -114,10 +111,8 @@ public class CompilationInfoExtractor {
 				configuration.nativeLanguage(reader.readLine());
 				break;
 			case DSL:
-				configuration.language(reader.readLine());
-				break;
-			case DSL_VERSION:
-				configuration.dslVersion(reader.readLine());
+				final String[] dsl = reader.readLine().trim().split(":");
+				configuration.addLanguage(dsl[0], dsl[1]);
 				break;
 			default:
 				break;
@@ -129,11 +124,6 @@ public class CompilationInfoExtractor {
 		while (!"".equals(line = reader.readLine()))
 			srcPaths.add(new File(line));
 		return line;
-	}
-
-	private static void setStashGeneration(CompilerConfiguration conf, BufferedReader reader) throws IOException {
-		final boolean stashGeneration = Boolean.parseBoolean(reader.readLine());
-		conf.setStashGeneration(stashGeneration);
 	}
 
 	private static List<Integer> parseToInt(String[] phases) throws IOException {

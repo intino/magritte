@@ -188,6 +188,6 @@ class StashToTara {
 	}
 
 	private Concept conceptOf(String type, List<Concept> directory) {
-		return directory.stream().filter(c -> c.name.equals(type)).findFirst().orElseGet(null);
+		return directory.stream().filter(c -> c.name.equals(type)).findFirst().orElse(null);
 	}
 }

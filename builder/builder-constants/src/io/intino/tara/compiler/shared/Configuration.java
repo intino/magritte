@@ -30,15 +30,27 @@ public interface Configuration {
 	default void reload() {
 	}
 
-	Level level();
+	String groupId();
 
 	String artifactId();
 
-	String groupId();
+	String version();
+
+	void version(String newVersion);
 
 	String workingPackage();
 
-	String dslWorkingPackage();
+	Level level();
+
+	List<? extends LanguageLibrary> languages();
+
+	default LanguageLibrary language(java.util.function.Predicate<LanguageLibrary> predicate) {
+		return languages().stream().filter(predicate).findFirst().orElse(null);
+	}
+
+	String outDSL();
+
+	String interfaceVersion();
 
 	default List<String> repositories() {
 		return Collections.emptyList();
@@ -72,20 +84,17 @@ public interface Configuration {
 		return "";
 	}
 
-	String dsl();
+	interface LanguageLibrary {
 
-	String outDSL();
+		String name();
 
-	String dslVersion();
+		String version();
 
-	String dslEffectiveVersion();
+		String effectiveVersion();
 
-	void dslVersion(String version);
+		void version(String version);
 
-	String modelVersion();
-
-	void modelVersion(String newVersion);
-
-	String interfaceVersion();
+		String generationPackage();
+	}
 
 }

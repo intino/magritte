@@ -1,19 +1,19 @@
 package io.intino.tara;
 
 import io.intino.tara.compiler.TaraCompiler;
-import io.intino.tara.compiler.core.CompilerMessage;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
+import io.intino.tara.compiler.core.CompilerMessage;
 import io.intino.tara.compiler.core.SourceUnit;
-import io.intino.tara.compiler.shared.Configuration;
+import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.compiler.shared.TaraBuildConstants;
 import io.intino.tara.compiler.shared.TaraCompilerMessageCategories;
 
 import java.io.File;
 import java.util.*;
 
-import static java.lang.System.out;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
+import static java.lang.System.out;
 
 class TaraCompilerRunner {
 	private final boolean verbose;
@@ -76,9 +76,9 @@ class TaraCompilerRunner {
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
 		CompilerConfiguration testConf = config.clone();
 		testConf.setTest(true);
-		testConf.dslVersion(config.modelVersion());
-		testConf.language(config.outDSL());
-		if (config.level() != null) testConf.level(Configuration.Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
+		if (config.outDSL() != null) testConf.addLanguage(config.outDSL(), config.version());
+		if (config.level() != null)
+			testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);
