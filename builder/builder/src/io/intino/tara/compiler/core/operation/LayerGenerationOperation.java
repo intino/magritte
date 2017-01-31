@@ -15,12 +15,12 @@ import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
-import org.siani.itrules.Template;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
+import org.siani.itrules.Template;
+import org.siani.itrules.model.Frame;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,9 +30,9 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static java.io.File.separator;
 import static java.lang.System.out;
-import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class LayerGenerationOperation extends ModelOperation implements TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
@@ -78,7 +78,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.dslWorkingPackage()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(model.getLanguage(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.language())).generationPackage()).create(model)));
 		if (conf.level().equals(Level.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}
@@ -131,14 +131,14 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
 		if (node.facetTarget() != null) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node.facetTarget(), node);
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf,node.language()).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
-		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node);
+		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.language()).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 	}
@@ -207,7 +207,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		List<File> list = new ArrayList<>();
 		if (!out.isDirectory() && !out.getName().equals(WRAPPER + JAVA)) list.add(out);
 		else if (!out.isDirectory())
-			for (File file : out.listFiles(f -> !f.getName().equals("natives")))
+			for (File file : out.listFiles(f -> !"natives".equals(f.getName())))
 				list.addAll(collectAllLayers(file));
 		return list;
 	}

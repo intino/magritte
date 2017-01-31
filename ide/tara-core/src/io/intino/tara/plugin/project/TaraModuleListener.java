@@ -55,8 +55,9 @@ public class TaraModuleListener implements ModuleComponent {
 	private void addDSLNameToDictionary() {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(module);
-			if (conf != null)
-				if (!conf.dsl().isEmpty()) SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(conf.dsl(), project);
+			if (conf != null) for (Configuration.LanguageLibrary lang : conf.languages())
+				if (!lang.name().isEmpty())
+					SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(lang.name(), project);
 		}
 	}
 

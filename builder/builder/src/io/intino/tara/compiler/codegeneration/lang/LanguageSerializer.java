@@ -24,10 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static java.io.File.separator;
 import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
 import static io.intino.tara.compiler.codegeneration.Format.reference;
 import static io.intino.tara.compiler.core.CompilerConfiguration.REPOSITORY;
+import static java.io.File.separator;
 
 public class LanguageSerializer {
 	private static final Logger LOG = Logger.getGlobal();
@@ -35,27 +35,31 @@ public class LanguageSerializer {
 	private static final String JAR = ".jar";
 	private static final String TARA_LANG_PACKAGE = "tara.lang";
 
-	private CompilerConfiguration conf;
+	private final CompilerConfiguration conf;
+	private final Collection<Model> models;
 
-	public LanguageSerializer(CompilerConfiguration conf) {
+	public LanguageSerializer(CompilerConfiguration conf, Collection<Model> models) {
 		this.conf = conf;
+		this.models = models;
 	}
 
-	public void write(Model model) throws TaraException {
+	public void write() throws TaraException {
 		conf.getTaraProjectDirectory().mkdirs();
-		LanguageCreator creator = new LanguageCreator(conf, model);
-		write(creator.create(), getDslDestiny(), collectRules(model));
+		write(new LanguageCreator(conf, models).create(), getDslDestiny(), collectRules(models));
 	}
 
-	private List<Class<?>> collectRules(Model model) {
-		Set<Class<?>> classes = new HashSet<>(model.getRules().values());
-		classes.addAll(collectLanguageRules());
+	private List<Class<?>> collectRules(Collection<Model> models) {
+		Set<Class<?>> classes = new HashSet<>();
+		for (Model model : models) {
+			classes.addAll(model.getRules().values());
+			classes.addAll(collectLanguageRules(model));
+		}
 		return new ArrayList<>(classes);
 	}
 
-	private List<Class<?>> collectLanguageRules() {
+	private List<Class<?>> collectLanguageRules(Model model) {
 		List<Class<?>> classes = new ArrayList<>();
-		for (Context context : conf.language().catalog().values())
+		for (Context context : model.getLanguage().catalog().values())
 			classes.addAll(getRulesOfNode(context));
 		return classes;
 
@@ -63,15 +67,15 @@ public class LanguageSerializer {
 
 	private List<Class<?>> getRulesOfNode(Context context) {
 		return context.constraints().stream().
-			filter(constraint -> constraint instanceof Constraint.Parameter &&
-				((Constraint.Parameter) constraint).rule() != null &&
-				!((Constraint.Parameter) constraint).rule().getClass().getName().startsWith(TARA_LANG_PACKAGE)).
-			map(constraint -> (((Constraint.Parameter) constraint).rule()).getClass()).collect(Collectors.toList());
+				filter(constraint -> constraint instanceof Constraint.Parameter &&
+						((Constraint.Parameter) constraint).rule() != null &&
+						!((Constraint.Parameter) constraint).rule().getClass().getName().startsWith(TARA_LANG_PACKAGE)).
+				map(constraint -> (((Constraint.Parameter) constraint).rule()).getClass()).collect(Collectors.toList());
 	}
 
 	private File getDslDestiny() {
 		final File file = new File(conf.getTaraDirectory(), REPOSITORY + separator + conf.dslGroupId().replace(".", separator) + separator +
-			reference().format(conf.outDSL()).toString().toLowerCase() + separator + conf.modelVersion());
+				reference().format(conf.outDSL()).toString().toLowerCase() + separator + conf.version());
 		file.mkdirs();
 		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
 	}
@@ -92,13 +96,11 @@ public class LanguageSerializer {
 	private Collection<String> collectClassPath(Collection<Class<?>> values) throws IOException {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
-		if (!(conf.language() instanceof Proteo) && !(conf.language() instanceof Verso)) {
-			try {
-				final String path = Paths.get(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " ");
-				dependencies.add(path);
+		for (Model model : models)
+			if (!(model.getLanguage() instanceof Proteo) && !(model.getLanguage() instanceof Verso)) try {
+				dependencies.add(Paths.get(model.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " "));
 			} catch (URISyntaxException ignored) {
 			}
-		}
 		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
 		return dependencies;
 	}
@@ -106,10 +108,10 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.modelVersion());
+		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
 		manifest.getEntries().put("tara", createTaraProperties());
 		JarOutputStream target = new JarOutputStream(
-			new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.modelVersion() + JAR)), manifest);
+				new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.version() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
@@ -122,29 +124,31 @@ public class LanguageSerializer {
 		final Attributes taraAttributes = new Attributes();
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactId());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.modelVersion());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outDSL());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.level().name());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.modelVersion());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.version());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.WORKING_PACKAGE.replace(".", "-")), conf.workingPackage());
 		return taraAttributes;
 	}
 
 	private void addInheritedRules(JarOutputStream target) throws IOException {
-		if (conf.language() instanceof Proteo || conf.language() instanceof Verso) return;
-		final File tempDirectory = conf.getTempDirectory();
-		conf.cleanTemp();
-		FileSystemUtils.extractJar(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), tempDirectory);
-		final File[] languageDirectories = languageDirectory(tempDirectory);
-		List<File> rules = new ArrayList<>();
-		for (File d : languageDirectories) FileSystemUtils.getAllFiles(d, rules);
-		rules.stream().filter(f -> f.getName().endsWith(".class")).forEach(r -> {
-			try {
-				add(conf.getTempDirectory(), r, target);
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
-			}
-		});
+		for (Model model : models) {
+			if (model.getLanguage() instanceof Proteo || model.getLanguage() instanceof Verso) return;
+			final File tempDirectory = conf.getTempDirectory();
+			conf.cleanTemp();
+			FileSystemUtils.extractJar(model.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), tempDirectory);
+			final File[] languageDirectories = languageDirectory(tempDirectory);
+			List<File> rules = new ArrayList<>();
+			for (File d : languageDirectories) FileSystemUtils.getAllFiles(d, rules);
+			rules.stream().filter(f -> f.getName().endsWith(".class")).forEach(r -> {
+				try {
+					add(conf.getTempDirectory(), r, target);
+				} catch (IOException e) {
+					LOG.log(Level.SEVERE, e.getMessage(), e);
+				}
+			});
+		}
 	}
 
 	private File[] languageDirectory(File tempDirectory) {

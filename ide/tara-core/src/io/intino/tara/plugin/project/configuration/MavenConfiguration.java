@@ -3,13 +3,13 @@ package io.intino.tara.plugin.project.configuration;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
+import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.plugin.project.configuration.maven.MavenHelper;
 import io.intino.tara.plugin.project.configuration.maven.MavenTags;
 import io.intino.tara.plugin.project.configuration.maven.ModuleMavenCreator;
 import org.jetbrains.idea.maven.model.MavenRemoteRepository;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import io.intino.tara.compiler.shared.Configuration;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +60,36 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
+	public List<LanguageLibrary> languages() {
+		return Collections.singletonList(new LanguageLibrary() {
+			@Override
+			public String name() {
+				return maven.getProperties().getProperty(MavenTags.DSL);
+			}
+
+			@Override
+			public String version() {
+				return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
+			}
+
+			@Override
+			public String effectiveVersion() {
+				return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
+			}
+
+			@Override
+			public void version(String version) {
+				new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, name()), version);//TODO
+			}
+
+			@Override
+			public String generationPackage() {
+				return name();
+			}
+		});
+	}
+
+	@Override
 	public String artifactId() {
 		return maven.getMavenId().getArtifactId();
 	}
@@ -73,11 +103,6 @@ public class MavenConfiguration implements Configuration {
 	public String workingPackage() {
 		final String property = maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
 		return property == null ? outDSL() : property;
-	}
-
-	@Override
-	public String dslWorkingPackage() {
-		return dsl();
 	}
 
 	@Override
@@ -115,38 +140,18 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public String dsl() {
-		return maven.getProperties().getProperty(MavenTags.DSL);
-	}
-
-	@Override
 	public String outDSL() {
 		final String outDSL = maven.getProperties().getProperty(MavenTags.OUT_DSL);
 		return outDSL != null ? outDSL : "";
 	}
 
 	@Override
-	public String dslVersion() {
-		return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
-	}
-
-	@Override
-	public String dslEffectiveVersion() {
-		return dslVersion();
-	}
-
-	@Override
-	public void dslVersion(String version) {
-		new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl()), version);//TODO
-	}
-
-	@Override
-	public String modelVersion() {
+	public String version() {
 		return maven.getMavenId().getVersion();
 	}
 
 	@Override
-	public void modelVersion(String newVersion) {
+	public void version(String newVersion) {
 		mavenHelper.version(newVersion);
 	}
 

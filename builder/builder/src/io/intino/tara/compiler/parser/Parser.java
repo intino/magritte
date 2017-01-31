@@ -1,17 +1,18 @@
 package io.intino.tara.compiler.parser;
 
-import io.intino.tara.compiler.parser.antlr.ModelGenerator;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import io.intino.tara.Language;
+import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.SyntaxException;
 import io.intino.tara.compiler.model.Model;
+import io.intino.tara.compiler.parser.antlr.ModelGenerator;
 import io.intino.tara.compiler.parser.antlr.TaraErrorStrategy;
 import io.intino.tara.lang.grammar.TaraGrammar;
 import io.intino.tara.lang.grammar.TaraLexer;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,14 +21,14 @@ public class Parser {
 	private static final Logger LOG = Logger.getGlobal();
 
 	private final File file;
-	private final Language language;
+	private final List<CompilerConfiguration.DSL> languages;
 	private final String outDsl;
 	private TaraGrammar grammar;
 	private TaraGrammar.RootContext rootContext;
 
-	public Parser(File file, Language language, String sourceEncoding, String outDsl) throws IOException {
+	public Parser(File file, List<CompilerConfiguration.DSL> languages, String sourceEncoding, String outDsl) throws IOException {
 		this.file = file;
-		this.language = language;
+		this.languages = languages;
 		this.outDsl = outDsl;
 		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), sourceEncoding);
 		TaraLexer lexer = new TaraLexer(input);
@@ -40,7 +41,7 @@ public class Parser {
 	public Model convert() throws SyntaxException {
 		try {
 			ParseTreeWalker walker = new ParseTreeWalker();
-			ModelGenerator extractor = new ModelGenerator(file.getPath(), language, outDsl);
+			ModelGenerator extractor = new ModelGenerator(file.getPath(), languages, outDsl);
 			walker.walk(extractor, rootContext);
 			if (!extractor.getErrors().isEmpty())
 				throw extractor.getErrors().get(0);

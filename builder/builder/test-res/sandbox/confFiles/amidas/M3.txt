@@ -1,9 +1,9 @@
 def.file
-/Users/oroncal/workspace/sandbox/amidas/platform/src/amidas/definitions/WorkForce.tara#true
-/Users/oroncal/workspace/sandbox/amidas/platform/src/amidas/definitions/Works.tara#true
-/Users/oroncal/workspace/sandbox/amidas/platform/src/amidas/Amidas.tara#true
-/Users/oroncal/workspace/sandbox/amidas/platform/src/amidas/definitions/Device.tara#true
-/Users/oroncal/workspace/sandbox/amidas/platform/src/amidas/definitions/Authentication.tara#true
+/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/Amidas.tara#true
+/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/Authentication.tara#true
+/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/Device.tara#true
+/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/WorkForce.tara#true
+/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/Works.tara#true
 
 project
 amidas
@@ -37,7 +37,3 @@ encoding
 UTF-8
 native.language
 Java
-classpath
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/magritte-lite-1.0.0.jar

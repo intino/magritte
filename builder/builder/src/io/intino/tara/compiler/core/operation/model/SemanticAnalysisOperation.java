@@ -1,6 +1,5 @@
 package io.intino.tara.compiler.core.operation.model;
 
-import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.SourceUnit;
@@ -9,6 +8,7 @@ import io.intino.tara.compiler.core.errorcollection.SemanticException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.errorcollection.message.Message;
 import io.intino.tara.compiler.core.errorcollection.message.WarningMessage;
+import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.semantic.SemanticAnalyzer;
 import io.intino.tara.lang.model.Element;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
@@ -34,7 +34,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		try {
 			if (conf.isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.getConfiguration().outDSL() + "]" + " Analyzing semantic...");
-			if (conf.language() == null) throw new TaraException("Error finding language.", true);
+			if (model.language() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model).analyze();
 		} catch (TaraException e) {
 			error(e);

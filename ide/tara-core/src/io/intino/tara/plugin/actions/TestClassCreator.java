@@ -24,7 +24,7 @@ class TestClassCreator {
 		final PsiDirectory psiDirectory = testDirectory(module);
 		if (psiDirectory == null) return;
 		final Configuration conf = TaraUtil.configurationOf(module);
-		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "Tara" + (conf.dsl().equals(ProteoConstants.PROTEO) ? "Ontology" : "") + "Test", false, templateParameters(module, conf, dsl, newName));
+		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "Tara" + (dsl.equals(ProteoConstants.PROTEO) ? "Ontology" : "") + "Test", false, templateParameters(module, conf, dsl, newName));
 		assert aClass != null;
 		VfsUtil.markDirtyAndRefresh(true, true, true, psiDirectory.getVirtualFile());
 	}

@@ -64,18 +64,16 @@ public class StashBuilder {
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
 		configuration.level(CompilerConfiguration.Level.System);
-		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".tara"));
+		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".m2"));
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);
-		configuration.setStashGeneration(true);
 		configuration.setModule(module);
 		configuration.setExcludedPhases(Arrays.asList(1, 8, 10, 11));
 		configuration.setMake(true);
 		configuration.systemStashName(module);
 		if (language == null) {
-			configuration.language(dsl);
-			configuration.dslVersion(dslVersion);
-		} else configuration.language(language);
+			configuration.addLanguage(dsl, dslVersion);
+		} else configuration.addLanguage(language);
 		return configuration;
 	}
 }

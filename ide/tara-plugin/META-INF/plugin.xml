@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
     <change-notes>
     </change-notes>
     <idea-version since-build="145"/>
@@ -122,11 +122,6 @@
         <!--<lang.formatter language="Tara" implementationClass="TaraFormattingModelBuilder"/>-->
         <!--<webBrowserUrlProvider implementation="WebBrowserProvider"/>-->
 >>>>>>> release/1.0.1
-        <intentionAction>
-            <className>io.intino.tara.plugin.codeinsight.intentions.chart.ChartFromTable</className>
-            <category>Chart Viewer</category>
-            <descriptionDirectoryName>ChartFromTable</descriptionDirectoryName>
-        </intentionAction>
         <intentionAction>
             <className>io.intino.tara.plugin.codeinsight.intentions.FromBodyToExplicitParameters</className>
             <category>Move To parameters</category>

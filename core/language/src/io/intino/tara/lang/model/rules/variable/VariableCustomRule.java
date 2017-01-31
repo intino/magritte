@@ -71,12 +71,22 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 
 	private boolean invokeWith(List<Object> values) {
 		try {
-			for (Object value : values) if (!((Rule) loadedClass.newInstance()).accept(value)) return false;
+			final Rule rule = (Rule) loadedClass.newInstance();
+			if (acceptAsList(rule)) return rule.accept(values);
+			else for (Object value : values) if (!rule.accept(value)) return false;
 			return true;
 		} catch (IllegalAccessException | InstantiationException e) {
 			LOG.severe(e.getMessage());
 		}
 		return false;
+	}
+
+	private boolean acceptAsList(Rule rule) {
+		try {
+			return rule.getClass().getMethod("accept", List.class) != null;
+		} catch (NoSuchMethodException e) {
+			return false;
+		}
 	}
 
 }

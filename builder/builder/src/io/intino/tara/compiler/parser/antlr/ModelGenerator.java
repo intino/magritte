@@ -1,7 +1,7 @@
 package io.intino.tara.compiler.parser.antlr;
 
-import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
+import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.SyntaxException;
 import io.intino.tara.compiler.model.*;
 import io.intino.tara.lang.grammar.TaraGrammar;
@@ -28,17 +28,18 @@ import static java.util.stream.Collectors.toList;
 public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
+	private List<CompilerConfiguration.DSL> languages;
 	private final String outDsl;
 	private final Deque<Node> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
 	private List<SyntaxException> errors = new ArrayList<>();
 
-	public ModelGenerator(String file, Language language, String outDsl) {
+	public ModelGenerator(String file, List<CompilerConfiguration.DSL> languages, String outDsl) {
 		this.file = file;
+		this.languages = languages;
 		this.outDsl = outDsl;
-		model = new Model(file, language);
-		deque.add(model);
+		deque.add(model = new Model(file));
 	}
 
 	@Override
@@ -48,7 +49,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterDslDeclaration(TaraGrammar.DslDeclarationContext ctx) {
-		if (ctx.headerReference() != null) model.language(ctx.headerReference().getText());
+		if (ctx.headerReference() != null) {
+			final String langName = ctx.headerReference().getText();
+			for (CompilerConfiguration.DSL language : languages)
+				if (language.name().equals(langName)) model.setLanguage(language.get());
+		}
 	}
 
 	@Override

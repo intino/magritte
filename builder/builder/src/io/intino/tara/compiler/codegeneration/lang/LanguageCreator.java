@@ -1,19 +1,21 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 import org.siani.itrules.Template;
 import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.AbstractFrame;
-import io.intino.tara.compiler.codegeneration.Format;
+import org.siani.itrules.model.Frame;
+
+import java.util.Collection;
 
 class LanguageCreator {
 	private final CompilerConfiguration conf;
-	private Model model;
+	private Collection<Model> models;
 
-	LanguageCreator(CompilerConfiguration conf, Model model) {
+	LanguageCreator(CompilerConfiguration conf, Collection<Model> models) {
 		this.conf = conf;
-		this.model = model;
+		this.models = models;
 	}
 
 	public String create() {
@@ -21,12 +23,22 @@ class LanguageCreator {
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
-		return template.format(createFrame(model)).replace("$", "");
+		Frame frame = null;
+		for (Model model : models) {
+			if (frame == null) frame = createFrame(model);
+			else merge(frame, createFrame(model));
+		}
+		return template.format(frame).replace("$", "");
 	}
 
-	private AbstractFrame createFrame(final Model model) {
+	private void merge(Frame main, Frame newFrame) {
+		newFrame.frames("node").forEachRemaining(n -> main.addFrame("node", n));
+	}
+
+	private Frame createFrame(final Model model) {
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new LanguageModelAdapter(conf.outDSL(), conf.getLocale(), conf.language(), conf.level(), conf.workingPackage(), conf.dslWorkingPackage()));
-		return builder.build(model);
+		final CompilerConfiguration.DSL dsl = conf.languages().stream().filter(d -> d.name().equals(model.language())).findFirst().orElse(null);
+		builder.register(Model.class, new LanguageModelAdapter(conf.outDSL(), conf.getLocale(), model.getLanguage(), conf.level(), conf.workingPackage(), dsl.generationPackage()));
+		return (Frame) builder.build(model);
 	}
 }

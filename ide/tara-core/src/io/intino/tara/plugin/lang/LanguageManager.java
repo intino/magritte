@@ -53,7 +53,9 @@ public class LanguageManager {
 	public static Language getLanguage(@NotNull PsiFile file) {
 		if (file.getFileType() instanceof TaraFileType) {
 			final Configuration configuration = TaraUtil.configurationOf(file);
-			return getLanguage(file.getProject(), ((TaraModel) file).dsl(), configuration == null ? LATEST : configuration.dslVersion());
+			final String dslName = ((TaraModel) file).dsl();
+			final String version = configuration == null || configuration.language(d -> d.name().equals(dslName)) == null ? LATEST : configuration.language(d -> d.name().equals(dslName)).version();
+			return getLanguage(file.getProject(), dslName, version);
 		} else return null;
 	}
 

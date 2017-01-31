@@ -1,14 +1,14 @@
 package io.intino.tara.compiler.codegeneration.magritte.natives;
 
+import io.intino.tara.compiler.codegeneration.Format;
+import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
+import io.intino.tara.compiler.model.NodeImpl;
+import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.lang.model.*;
 import org.siani.itrules.Template;
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
-import io.intino.tara.compiler.codegeneration.Format;
-import io.intino.tara.compiler.core.CompilerConfiguration;
-import io.intino.tara.compiler.model.NodeImpl;
-import io.intino.tara.compiler.model.NodeReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static io.intino.tara.lang.model.Primitive.FUNCTION;
 import static java.io.File.separator;
 import static java.util.stream.Collectors.toList;
-import static io.intino.tara.lang.model.Primitive.FUNCTION;
 
 public class NativesCreator {
 
@@ -65,7 +65,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(conf.language(), outDSL, conf.level(), conf.workingPackage(), conf.dslWorkingPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(model.getLanguage(), outDSL, conf.level(), conf.workingPackage(), conf.language(l -> l.name().equals(model.language())).generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
 			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
@@ -80,7 +80,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), outDSL, conf.workingPackage(), conf.dslWorkingPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(model.getLanguage(), outDSL, conf.workingPackage(), conf.language(d -> d.name().equals(model.language())).generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());
@@ -125,7 +125,7 @@ public class NativesCreator {
 		if (node instanceof NodeReference || (node instanceof NodeImpl && node.container() instanceof NodeRoot && !((NodeImpl) node).isDirty()))
 			return;
 		natives.addAll(node.parameters().stream().
-			filter(p -> FUNCTION.equals(p.type()) || isExpression(p)).collect(toList()));
+				filter(p -> FUNCTION.equals(p.type()) || isExpression(p)).collect(toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
 	}
@@ -134,7 +134,7 @@ public class NativesCreator {
 		if (node instanceof NodeReference || (node instanceof NodeImpl && node.container() instanceof NodeRoot && !((NodeImpl) node).isDirty()))
 			return;
 		natives.addAll(node.variables().stream().
-			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).collect(toList()));
+				filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).collect(toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
 	}
 
