@@ -15,7 +15,7 @@ import static java.util.Collections.singletonList;
 
 public class JpsTaraSerializerExtension extends JpsModelSerializerExtension {
 	private static final String TARA_MODULE_OPTION_NAME = "io.intino.tara.isTaraModule";
-	private static final String CONFIGURATION_PROVIDER_OPTION_NAME = "org.siani.tara.configuration.provided";
+	private static final String CONFIGURATION_PROVIDER_OPTION_NAME = "io.intino.tara.configuration.provided";
 
 
 	@NotNull

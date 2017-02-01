@@ -79,8 +79,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
 		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(model.getLanguage(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.language())).generationPackage()).create(model)));
-		if (conf.level().equals(Level.Platform)) writePlatform(createPlatform());
-		else writeApplication(createApplication());
+		writeWrapper(createWrapper());
 	}
 
 	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
@@ -105,19 +104,13 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		outMap.get(key).add(value);
 	}
 
-	private String createPlatform() {
-		Frame frame = new Frame().addTypes("platform");
+	private String createWrapper() {
+		Frame frame = new Frame().addTypes("wrapper");
 		frame.addFrame(OUT_LANGUAGE, conf.outDSL());
 		frame.addFrame(WORKING_PACKAGE, conf.workingPackage());
 		return Format.customize(LevelTemplate.create()).format(frame);
 	}
 
-	private String createApplication() {
-		Frame frame = new Frame().addTypes("application");
-		frame.addFrame(WORKING_PACKAGE, conf.workingPackage());
-		frame.addFrame(OUT_LANGUAGE, conf.outDSL());
-		return Format.customize(LevelTemplate.create()).format(frame);
-	}
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
@@ -164,13 +157,8 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
-	private String writeApplication(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + TemplateTags.APPLICATION + JAVA);
-		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
-	}
-
-	private String writePlatform(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + TemplateTags.PLATFORM + JAVA);
+	private String writeWrapper(String text) {
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 

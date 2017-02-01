@@ -70,7 +70,7 @@ class TaraRunner {
 	private void fillConfiguration(JpsModuleConfiguration conf, Writer writer) throws IOException {
 		if (!conf.level.isEmpty()) writer.write(LEVEL + NL + conf.level + NL);
 		if (!conf.dsl.isEmpty() && !conf.dslVersion.isEmpty())
-			writer.write(DSL + NL + conf.dsl + ":" + conf.dslVersion);
+			writer.write(DSL + NL + conf.dsl + NL);
 		if (!conf.outDSL.isEmpty()) writer.write(OUT_DSL + NL + conf.outDSL + NL);
 		if (!conf.groupID.isEmpty()) writer.write(GROUP_ID + NL + conf.groupID + NL);
 		if (!conf.artifactID.isEmpty()) writer.write(ARTIFACT_ID + NL + conf.artifactID + NL);
