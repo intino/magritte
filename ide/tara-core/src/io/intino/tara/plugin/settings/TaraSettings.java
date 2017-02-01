@@ -9,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @State(
-	name = "Tara.Settings",
-	storages = {
-		@Storage(id = "TaraSettings", file = "$PROJECT_FILE$"),
-		@Storage(file = "$PROJECT_CONFIG_DIR$/taraSettings.xml", scheme = StorageScheme.DIRECTORY_BASED)
-	}
+		name = "Tara.Settings",
+		storages = {
+				@Storage(id = "TaraSettings", file = "$PROJECT_FILE$"),
+				@Storage(file = "$PROJECT_CONFIG_DIR$/taraSettings.xml", scheme = StorageScheme.DIRECTORY_BASED)
+		}
 )
 public class TaraSettings implements PersistentStateComponent<TaraSettings.State> {
 
@@ -33,13 +33,9 @@ public class TaraSettings implements PersistentStateComponent<TaraSettings.State
 		return artifactories == null ? artifactories = new ArtifactoryCredentialsManager().loadCredentials() : artifactories;
 	}
 
-	public void addArtifactory(ArtifactoryCredential artifactory) {
-		ArtifactoryCredential saved = artifactories.stream().filter(a -> a.serverId.equals(artifactory.serverId)).findFirst().orElse(null);
-		if (saved == null) artifactories.add(artifactory);
-		else {
-			saved.username = artifactory.username;
-			saved.password = artifactory.password;
-		}
+	public void artifactories(List<ArtifactoryCredential> artifactories) {
+		this.artifactories.clear();
+		this.artifactories.addAll(artifactories);
 	}
 
 	public String trackerProjectId() {
