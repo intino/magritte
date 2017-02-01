@@ -73,10 +73,8 @@ class ArtifactoryCredentialsManager {
 
 	private void setCredentials(List<ArtifactoryCredential> credentials) {
 		removeServers();
-		for (ArtifactoryCredential credential : credentials) {
-			Node server = createServer(credential.serverId);
-			setCredentials(server, credential.username, credential.password);
-		}
+		for (ArtifactoryCredential credential : credentials)
+			setCredentials(createServer(credential.serverId), credential.username, credential.password);
 		commit(doc);
 	}
 
@@ -84,16 +82,6 @@ class ArtifactoryCredentialsManager {
 		final NodeList elementsByTagName = doc.getElementsByTagName(SERVERS);
 		if (elementsByTagName.getLength() == 0) return;
 		elementsByTagName.item(0).getParentNode().removeChild(elementsByTagName.item(0));
-	}
-
-	private Node findServer(String serverID) {
-		NodeList nodeList = doc != null ? doc.getElementsByTagName(SERVER) : null;
-		if (nodeList == null) return null;
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			if (get(nodeList.item(i).getChildNodes(), ID).getTextContent().equals(serverID))
-				return nodeList.item(i);
-		}
-		return null;
 	}
 
 	private void setCredentials(Node server, String user, String password) {
