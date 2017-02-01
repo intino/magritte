@@ -13,7 +13,7 @@ public class TimeRule implements VariableRule<List<String>> {
 	@Override
 	public boolean accept(List<String> values) {
 		for (String time : values) {
-			if (time.isEmpty()) return false;
+			if (time.isEmpty()) return true;
 			try {
 				LocalTime.parse(time);
 			} catch (Exception e) {

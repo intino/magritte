@@ -4,6 +4,6 @@ public class DateRule implements VariableRule<String> {
 
 	@Override
 	public boolean accept(String value) {
-		return Date.parse(value) != null;
+		return value.isEmpty() || Date.parse(value) != null;
 	}
 }

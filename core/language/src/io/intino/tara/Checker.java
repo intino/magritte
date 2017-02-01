@@ -1,5 +1,6 @@
 package io.intino.tara;
 
+import io.intino.tara.lang.model.Element;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
@@ -39,6 +40,8 @@ public class Checker {
 	}
 
 	private void checkConstraints(Node node) throws SemanticFatalException {
+		if (node == null)
+			throw new SemanticFatalException(new SemanticNotification(SemanticNotification.Level.ERROR, "Node is null", (Element) null));
 		assume(node);
 		checkNodeConstrains(node);
 	}
