@@ -14,14 +14,12 @@ class Model extends Node {
     @Override
     public void add(Node node) {
         super.add(node);
-        if(graph.application != null) graph.application.addNode(node);
-        if(graph.platform != null) graph.platform.addNode(node);
+        graph.wrappers.values().forEach(wrapper -> wrapper.addNode(node));
     }
 
     @Override
     protected void remove(Node node) {
         super.remove(node);
-        if(graph.application != null) graph.application.removeNode(node);
-        if(graph.platform != null) graph.platform.removeNode(node);
+        graph.wrappers.values().forEach(wrapper -> wrapper.removeNode(node));
     }
 }

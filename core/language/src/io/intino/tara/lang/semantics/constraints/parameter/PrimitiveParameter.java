@@ -127,7 +127,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 
 	private boolean accept(io.intino.tara.lang.model.Parameter parameter, Rule rule) {
 		try {
-			return rule instanceof NativeRule || rule.accept(parameter.values(), parameter.metric());
+			return rule instanceof NativeRule || parameter.values().isEmpty() ||
+					parameter.values().get(0) instanceof EmptyNode || rule.accept(parameter.values(), parameter.metric());
 		} catch (Exception e) {
 			return false;
 		}

@@ -24,17 +24,12 @@ src.path
 level
 Application
 dsl
-Proteo
-dsl.version
-1.0.0
-out.dsl
-Legio
-groupId
+Proteo:1.0.0:1.0.0groupId
 io.intino.legio
 artifactId
 model
 version
-1.0.2
+2.1.0
 working.package
 io.intino.legio
 make
@@ -45,7 +40,3 @@ encoding
 UTF-8
 native.language
 Java
-classpath
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/proteo-alone-1.0.0.jar

@@ -17,7 +17,7 @@ public class MagritteExceptionTest {
     @Test
     public void should_provide_a_magritte_exception_concept_not_found() throws Exception {
         try {
-            Graph.use(store(), null, null).load();
+            Graph.use(store()).load();
             assertFalse(true);
         }catch (MagritteException e){
             assertThat(e.getMessage(), is("Concept Mock not found"));

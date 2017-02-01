@@ -6,6 +6,7 @@ import io.intino.tara.magritte.modelwrappers.MockPlatform;
 import io.intino.tara.magritte.stores.FileSystemStore;
 import io.intino.tara.magritte.stores.InMemoryFileStore;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +19,7 @@ import static io.intino.tara.magritte.Graph.use;
 import static io.intino.tara.magritte.TestHelper.*;
 import static java.util.logging.Logger.getGlobal;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -120,24 +122,24 @@ public class GraphTest {
         assertThat(graph.rootList().size(), is(0));
         graph.createRoot(MockLayer.class, emptyStash);
         assertThat(graph.rootList().size(), is(1));
-        assertThat(graph.<MockApplication>application().mockLayerList().size(), is(1));
-        assertThat(graph.<MockPlatform>platform().mockLayerList().size(), is(1));
+        assertThat(graph.wrapper(MockApplication.class).mockLayerList().size(), is(1));
+        assertThat(graph.wrapper(MockPlatform.class).mockLayerList().size(), is(1));
         graph.clear();
         assertThat(graph.rootList().size(), is(0));
-        assertThat(graph.<MockApplication>application().mockLayerList().size(), is(0));
-        assertThat(graph.<MockPlatform>platform().mockLayerList().size(), is(0));
+        assertThat(graph.wrapper(MockApplication.class).mockLayerList().size(), is(0));
+        assertThat(graph.wrapper(MockPlatform.class).mockLayerList().size(), is(0));
     }
 
     @Test
     public void should_reload_all_model_platform_and_application_when_there_is_one_element() {
         Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(oneMockStash);
         assertThat(graph.rootList().size(), is(2));
-        assertThat(graph.<MockApplication>application().mockLayerList().size(), is(2));
-        assertThat(graph.<MockPlatform>platform().mockLayerList().size(), is(2));
+        assertThat(graph.wrapper(MockApplication.class).mockLayerList().size(), is(2));
+        assertThat(graph.wrapper(MockPlatform.class).mockLayerList().size(), is(2));
         graph.reload();
         assertThat(graph.rootList().size(), is(2));
-        assertThat(graph.<MockApplication>application().mockLayerList().size(), is(2));
-        assertThat(graph.<MockPlatform>platform().mockLayerList().size(), is(2));
+        assertThat(graph.wrapper(MockApplication.class).mockLayerList().size(), is(2));
+        assertThat(graph.wrapper(MockPlatform.class).mockLayerList().size(), is(2));
     }
 
     @Test
@@ -161,8 +163,8 @@ public class GraphTest {
         Map<String, Concept> concepts = new HashMap<>(graph.concepts);
         Map<String, Node> nodes = new HashMap<>(graph.nodes);
         List<NodeLoader> loaders = new ArrayList<>(graph.loaders);
-        List<MockLayer> mockLayersInPlatform = new ArrayList<>(graph.<MockPlatform>platform().mockLayerList());
-        List<MockLayer> mockLayersInApplication = new ArrayList<>(graph.<MockApplication>application().mockLayerList());
+        List<MockLayer> mockLayersInPlatform = new ArrayList<>(graph.wrapper(MockPlatform.class).mockLayerList());
+        List<MockLayer> mockLayersInApplication = new ArrayList<>(graph.wrapper(MockApplication.class).mockLayerList());
         graph.reload();
         assertThat(components.size(), is(graph.model.componentList().size()));
         assertThat(openedStashes.size(), is(graph.openedStashes.size()));
@@ -170,8 +172,8 @@ public class GraphTest {
         assertThat(concepts.size(), is(graph.concepts.size()));
         assertThat(nodes.size(), is(graph.nodes.size()));
         assertThat(loaders.size(), is(graph.loaders.size()));
-        assertThat(mockLayersInPlatform.size(), is(graph.<MockPlatform>platform().mockLayerList().size()));
-        assertThat(mockLayersInApplication.size(), is(graph.<MockApplication>application().mockLayerList().size()));
+        assertThat(mockLayersInPlatform.size(), is(graph.wrapper(MockPlatform.class).mockLayerList().size()));
+        assertThat(mockLayersInApplication.size(), is(graph.wrapper(MockApplication.class).mockLayerList().size()));
     }
 
     @Test
@@ -245,8 +247,19 @@ public class GraphTest {
     @Test
     public void should_choose_correct_language_when_writing_stash() throws Exception {
         Store store = mockStore();
-        Graph graph = Graph.use(store, null, null).load("m1");
+        Graph graph = Graph.use(store).load("m1");
         graph.loadNode(m1 + "#x").save();
         assertThat(store.stashFrom(m1 + ".stash").language, is("m2"));
+    }
+
+    @Test
+    public void should_not_log_an_error_if_language_was_previously_loaded() throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        StreamHandler handler = new StreamHandler(outputStream, new SimpleFormatter());
+        getGlobal().addHandler(handler);
+        Graph graph = Graph.use(mockStore()).load("m2");
+        graph.load("m1");
+        handler.flush();
+        assertThat(outputStream.toString(), not(containsString("m2")));
     }
 }

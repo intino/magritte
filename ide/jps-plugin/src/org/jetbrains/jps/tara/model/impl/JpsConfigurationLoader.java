@@ -39,6 +39,7 @@ class JpsConfigurationLoader {
 		conf.level = props.getOrDefault(TARA + LEVEL, "");
 		conf.dsl = props.getOrDefault(TARA + DSL, "") + ":" + props.getOrDefault(TARA + DSL_VERSION, "");
 		conf.dslVersion = props.getOrDefault(TARA + DSL_VERSION, "");
+		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
 		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
 	}
 }

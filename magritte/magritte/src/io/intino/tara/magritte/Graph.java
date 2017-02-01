@@ -6,9 +6,11 @@ import io.intino.tara.magritte.utils.PathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.magritte.utils.PathHelper.canonicalPath;
+import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
@@ -25,32 +27,16 @@ public class Graph extends GraphHandler {
         model.typeNames.add("Model");
     }
 
-    public static Graph use(Store store, Class<? extends Application> application, Class<? extends Platform> platform) {
-        try {
-            Graph graph = new Graph(store);
-            if (application != null) graph.application = create(application.asSubclass(GraphWrapper.class), graph);
-            if (platform != null) graph.platform = create(platform.asSubclass(GraphWrapper.class), graph);
-            return graph;
-        } catch (ClassCastException e) {
-            throw new MagritteException("Application and Platform classes must extend GraphWrapper");
-        }
+    @SafeVarargs
+    public static Graph use(Store store, Class<? extends GraphWrapper>... wrapperClasses) {
+        Graph graph = new Graph(store);
+        stream(wrapperClasses).filter(Objects::nonNull).forEach(c -> graph.wrappers.put(c, create(c, graph)));
+        return graph;
     }
 
-    public static Graph use(Store store, Class<? extends Application> application) {
-        return use(store, application, null);
-    }
-
-    public static Graph use(Class<? extends Application> application, Class<? extends Platform> platform) {
-        return use(new ResourcesStore(), application, platform);
-    }
-
-    public static Graph use(Class<? extends Application> application) {
-        return use(new ResourcesStore(), application, null);
-    }
-
-
-    public static Graph use() {
-        return use(new ResourcesStore(), null, null);
+    @SafeVarargs
+    public static Graph use(Class<? extends GraphWrapper>... wrapperClasses) {
+        return use(new ResourcesStore(), wrapperClasses);
     }
 
     public Graph load(String... paths) {

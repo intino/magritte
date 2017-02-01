@@ -17,8 +17,7 @@ class GraphCloner {
 		clone.layerFactory = new LayerFactory(graph.layerFactory);
 		clone.openedStashes = new HashSet<>(graph.openedStashes);
 		graph.model.componentList().forEach(clone.model::add);
-		if(graph.platform != null) clone.platform = create(graph.platform.getClass(), clone);
-		if(graph.application != null) clone.application = create(graph.application.getClass(), clone);
+		graph.wrappers.values().forEach(w -> clone.wrappers.put(w.getClass(), create(w.getClass(), clone)));
 		return clone;
 	}
 

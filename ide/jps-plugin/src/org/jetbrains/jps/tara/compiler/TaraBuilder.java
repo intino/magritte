@@ -79,9 +79,11 @@ class TaraBuilder extends ModuleLevelBuilder {
 			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
-			if (e.getStackTrace().length != 0)
+			if (e.getStackTrace().length != 0) {
+				LOG.error(e.getMessage());
 				LOG.error(e.getStackTrace()[0].getClassName() + " " + e.getStackTrace()[0].getLineNumber());
-			throw new ProjectBuildException(e);
+			}
+			throw new ProjectBuildException(e.getMessage());
 		} finally {
 			if (start > 0 && LOG.isDebugEnabled())
 				LOG.debug(builderName + " took " + (System.currentTimeMillis() - start) + " on " + chunk.getName());
@@ -261,7 +263,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA_DIRECTORY).getAbsolutePath());
 		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
 		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
-		else list.addAll(getSourceRoots(module).stream().map(root -> root.getFile().getAbsolutePath()).collect(Collectors.toList()));
+		else
+			list.addAll(getSourceRoots(module).stream().map(root -> root.getFile().getAbsolutePath()).collect(Collectors.toList()));
 		return list;
 	}
 

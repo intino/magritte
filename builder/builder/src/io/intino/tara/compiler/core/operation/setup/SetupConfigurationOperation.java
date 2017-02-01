@@ -51,7 +51,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			final Stash stash = StashDeserializer.stashFrom(file);
 			final Graph graph = Graph.use(LegioApplication.class, null).loadStashes(stash);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
-			LegioApplication legio = graph.application();
+			LegioApplication legio = graph.wrapper(LegioApplication.class);
 			if (legio == null) return checkConfiguration();
 			extractConfiguration(legio);
 			return checkConfiguration();

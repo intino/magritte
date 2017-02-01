@@ -13,7 +13,7 @@ public class InstantRule implements VariableRule<List<String>> {
 	@Override
 	public boolean accept(List<String> values) {
 		for (String instant : values) {
-			if (instant.isEmpty()) return false;
+			if (instant.isEmpty()) return true;
 			try {
 				Instant.parse(instant);
 			} catch (Exception e) {
