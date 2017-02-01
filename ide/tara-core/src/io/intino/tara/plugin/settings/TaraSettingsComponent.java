@@ -15,7 +15,7 @@ import javax.swing.*;
 
 public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
-	private static final String TARA_CONTROL_PLUGIN_NAME = "Tara Plugin";
+	private static final String TARA_CONTROL_PLUGIN_NAME = "Intino Plugin";
 	private static final String TARA_CONTROL_COMPONENT_NAME = "ArtifactComponent";
 
 	private final TaraSettings taraSettings;

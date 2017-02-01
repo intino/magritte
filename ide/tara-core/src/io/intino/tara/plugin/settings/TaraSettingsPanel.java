@@ -77,7 +77,6 @@ public class TaraSettingsPanel {
 		table = new StripeTable(tableModel);
 		table.setEnableAntialiasing(true);
 		table.getEmptyText().setText("No artifactories");
-//		table.setPreferredScrollableViewportSize(new Dimension(300, table.getRowHeight() * 6));
 		table.setAutoResizeMode(AUTO_RESIZE_LAST_COLUMN);
 		table.getColumn(ARTIFACTORY_FIELDS[0]).setPreferredWidth(150);
 		table.getColumn(ARTIFACTORY_FIELDS[1]).setPreferredWidth(150);
