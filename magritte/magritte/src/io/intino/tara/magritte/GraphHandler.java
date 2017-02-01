@@ -197,7 +197,7 @@ public abstract class GraphHandler {
 
     void init(String language) {
         if (openedStashes.contains(pathWithExtension(language))){
-            language.contains(language);
+            languages.add(language);
             return;
         }
         if (languages.contains(language) || "Verso".equals(language) || "Proteo".equals(language)) return;
