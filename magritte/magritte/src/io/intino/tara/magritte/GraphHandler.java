@@ -23,8 +23,7 @@ public abstract class GraphHandler {
     final Store store;
     final Model model = new Model();
     private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
-    GraphWrapper platform;
-    GraphWrapper application;
+    protected Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers = new HashMap<>();
     LayerFactory layerFactory = new LayerFactory();
     Set<String> openedStashes = new HashSet<>();
     Set<String> languages = new LinkedHashSet<>();
@@ -197,6 +196,10 @@ public abstract class GraphHandler {
     }
 
     void init(String language) {
+        if (openedStashes.contains(pathWithExtension(language))){
+            language.contains(language);
+            return;
+        }
         if (languages.contains(language) || "Verso".equals(language) || "Proteo".equals(language)) return;
         if (language == null || language.isEmpty()) return;
         doInit(language);
@@ -226,12 +229,8 @@ public abstract class GraphHandler {
         nodes.put(node.id, node);
     }
 
-    public <T extends Platform> T platform() {
-        return (T) platform;
-    }
-
-    public <T extends Application> T application() {
-        return (T) application;
+    public <T extends GraphWrapper> T wrapper(Class<T> aClass) {
+        return (T) wrappers.get(aClass);
     }
 
     public void remove(Node node) {
@@ -252,8 +251,7 @@ public abstract class GraphHandler {
         Set<String> openedStashes = new HashSet<>(this.openedStashes);
         clear();
         openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
-        if (platform != null) platform.update();
-        if (application != null) application.update();
+        wrappers.values().forEach(GraphWrapper::update);
     }
 
     public void clear() {
@@ -263,8 +261,7 @@ public abstract class GraphHandler {
         concepts.clear();
         nodes.clear();
         loaders.clear();
-        if (platform != null) platform.update();
-        if (application != null) application.update();
+        wrappers.values().forEach(GraphWrapper::update);
         layerFactory.clear();
     }
 
