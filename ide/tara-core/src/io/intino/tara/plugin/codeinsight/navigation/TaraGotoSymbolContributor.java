@@ -29,10 +29,10 @@ public class TaraGotoSymbolContributor extends GotoSymbolContributor {
 		return items.toArray(new NavigationItem[items.size()]);
 	}
 
-	public List<Node> getNodes(Project project) {
+	private List<Node> getNodes(Project project) {
 		List<Node> names = new ArrayList<>();
 		for (Module module : ModuleManager.getInstance(project).getModules())
-			TaraUtil.getTaraFilesOfModule(module).stream().forEach(model -> names.addAll(TaraUtil.getAllNodesOfFile(model)));
+			TaraUtil.getTaraFilesOfModule(module).forEach(model -> names.addAll(TaraUtil.getAllNodesOfFile(model)));
 		return names;
 	}
 

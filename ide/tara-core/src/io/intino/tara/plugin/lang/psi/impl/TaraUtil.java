@@ -2,6 +2,7 @@ package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -12,21 +13,21 @@ import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
-import io.intino.tara.plugin.lang.file.TaraFileType;
-import io.intino.tara.plugin.project.configuration.ConfigurationManager;
-import io.intino.tara.lang.model.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.plugin.lang.LanguageManager;
+import io.intino.tara.plugin.lang.file.TaraFileType;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.lang.psi.TaraVarInit;
 import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.plugin.project.configuration.ConfigurationManager;
 import io.intino.tara.plugin.project.module.ModuleProvider;
-import io.intino.tara.lang.semantics.Constraint;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -149,7 +150,7 @@ public class TaraUtil {
 		List<Constraint.Parameter> parameters = parameterConstraintsOf(parameter.container());
 		if (parameters.isEmpty() || parameters.size() <= parameter.position()) return null;
 		return !parameter.name().isEmpty() || parameter instanceof TaraVarInit ?
-			findParameter(parameters, parameter.name()) : getParameterByIndex(parameter, parameters);
+				findParameter(parameters, parameter.name()) : getParameterByIndex(parameter, parameters);
 	}
 
 	private static Constraint.Parameter getParameterByIndex(Parameter parameter, List<Constraint.Parameter> parameterConstraints) {
@@ -190,7 +191,7 @@ public class TaraUtil {
 	private static TaraModel[] getModuleFiles(PsiFile psiFile) {
 		Module module = ModuleProvider.moduleOf(psiFile);
 		if (module == null) return new TaraModelImpl[0];
-		List<TaraModel> taraFiles = getTaraFilesOfModule(module);
+		List<TaraModel> taraFiles = getFilesOfModuleByFileType(module, psiFile.getFileType());
 		return taraFiles.toArray(new TaraModel[taraFiles.size()]);
 	}
 
@@ -198,7 +199,18 @@ public class TaraUtil {
 		List<TaraModel> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.instance(), GlobalSearchScope.moduleScope(module));
-		files.stream().filter(file -> file != null).forEach(file -> {
+		files.stream().filter(Objects::nonNull).forEach(file -> {
+			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
+			if (taraFile != null) taraFiles.add(taraFile);
+		});
+		return taraFiles;
+	}
+
+	public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
+		List<TaraModel> taraFiles = new ArrayList<>();
+		if (module == null) return taraFiles;
+		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, fileType, GlobalSearchScope.moduleScope(module));
+		files.stream().filter(Objects::nonNull).forEach(file -> {
 			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
 			if (taraFile != null) taraFiles.add(taraFile);
 		});

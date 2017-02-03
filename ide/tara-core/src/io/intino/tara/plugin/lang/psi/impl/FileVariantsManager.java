@@ -1,6 +1,7 @@
 package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 
@@ -18,6 +19,7 @@ public class FileVariantsManager {
 	}
 
 	public void resolveVariants() {
-		variants.addAll(TaraUtil.getTaraFilesOfModule(ModuleProvider.moduleOf(myElement.getContainingFile().getOriginalFile())).stream().collect(Collectors.toList()));
+		final PsiFile file = myElement.getContainingFile().getOriginalFile();
+		variants.addAll(TaraUtil.getFilesOfModuleByFileType(ModuleProvider.moduleOf(file), file.getFileType()).stream().collect(Collectors.toList()));
 	}
 }
