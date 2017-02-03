@@ -4,19 +4,20 @@ import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraModel;
+import com.intellij.structuralsearch.plugin.util.SmartPsiPointer;
 import io.intino.tara.lang.model.Node;
+import io.intino.tara.plugin.lang.psi.TaraModel;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	private final String anImport;
-	private final TaraModel file;
+	private final SmartPsiPointer file;
 
-	public ImportQuickFix(TaraModel fileDestiny, Node nodeToImport) {
-		this.file = fileDestiny;
+	ImportQuickFix(TaraModel fileDestiny, Node nodeToImport) {
+		this.file = new SmartPsiPointer(fileDestiny);
 		String fileName = new File(nodeToImport.file()).getName();
 		anImport = fileName.substring(0, fileName.lastIndexOf('.'));
 	}
@@ -38,7 +39,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 
 	public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-		file.addImport(anImport);
+		((TaraModel) file.getElement()).addImport(anImport);
 	}
 
 

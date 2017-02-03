@@ -72,7 +72,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement resolveHeaderReference(Identifier identifier) {
-		return resolveBoxPath(identifier);
+		return resolveModelPath(identifier);
 	}
 
 	private static List<Identifier> getIdentifiersOfReference(Identifier identifier) {
@@ -121,7 +121,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
-		TaraModel model = resolveBoxPath(path.get(0));
+		TaraModel model = resolveModelPath(path.get(0));
 		if (model == null || path.isEmpty()) return null;
 		List<Identifier> qn = path.subList(1, path.size());
 		if (qn.isEmpty()) return null;
@@ -206,11 +206,11 @@ public class ReferenceManager {
 		return path.indexOf(identifier) == path.size() - 1;
 	}
 
-	private static TaraModel resolveBoxPath(Identifier identifier) {
+	private static TaraModel resolveModelPath(Identifier identifier) {
 		TaraModel containingFile = (TaraModel) identifier.getContainingFile().getOriginalFile();
 		if (containingFile.getVirtualFile() == null) return null;
 		Module moduleOfDocument = ModuleProvider.moduleOf(containingFile);
-		for (TaraModel taraBoxFile : TaraUtil.getTaraFilesOfModule(moduleOfDocument))
+		for (TaraModel taraBoxFile : TaraUtil.getFilesOfModuleByFileType(moduleOfDocument, containingFile.getFileType()))
 			if (taraBoxFile.getPresentableName().equals(identifier.getText())) return taraBoxFile;
 		return null;
 	}

@@ -1,10 +1,10 @@
 package io.intino.tara.plugin.settings;
 
 public class ArtifactoryCredential {
-	private static final String RESET_STR_VALUE = "";
-	public String serverId = RESET_STR_VALUE;
-	public String username = RESET_STR_VALUE;
-	public String password = RESET_STR_VALUE;
+	private static final String EMPTY = "";
+	public String serverId = EMPTY;
+	public String username = EMPTY;
+	public String password = EMPTY;
 
 
 	public ArtifactoryCredential(String serverId, String username, String password) {

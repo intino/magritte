@@ -1,6 +1,6 @@
 package io.intino.tara.compiler.core.operation.setup;
 
-import io.intino.legio.LegioApplication;
+import io.intino.legio.Legio;
 import io.intino.legio.Project;
 import io.intino.legio.Project.Factory;
 import io.intino.tara.compiler.core.CompilationUnit;
@@ -49,14 +49,13 @@ public class SetupConfigurationOperation extends SetupOperation {
 			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
 			if (!file.exists()) return checkConfiguration();
 			final Stash stash = StashDeserializer.stashFrom(file);
-			final Graph graph = Graph.use(LegioApplication.class, null).loadStashes(stash);
+			final Graph graph = Graph.use(Legio.class, null).loadStashes(stash);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
-			LegioApplication legio = graph.wrapper(LegioApplication.class);
+			Legio legio = graph.wrapper(Legio.class);
 			if (legio == null) return checkConfiguration();
 			extractConfiguration(legio);
 			return checkConfiguration();
 		} catch (Throwable t) {
-			t.printStackTrace();
 			throw new TaraException(t.getMessage());
 		}
 	}
@@ -69,7 +68,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 		return true;
 	}
 
-	private void extractConfiguration(LegioApplication legio) {
+	private void extractConfiguration(Legio legio) {
 		Project project = legio.project();
 		Factory factory = project.factory();
 		final Level level = Level.valueOf(factory.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));

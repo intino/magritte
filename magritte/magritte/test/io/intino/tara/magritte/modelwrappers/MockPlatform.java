@@ -3,13 +3,12 @@ package io.intino.tara.magritte.modelwrappers;
 import io.intino.tara.magritte.Graph;
 import io.intino.tara.magritte.GraphWrapper;
 import io.intino.tara.magritte.Node;
-import io.intino.tara.magritte.Platform;
 import io.intino.tara.magritte.layers.MockLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockPlatform extends GraphWrapper implements Platform {
+public class MockPlatform extends GraphWrapper{
 
 	private final Graph graph;
 	private List<MockLayer> mockLayerList = new ArrayList<>();
@@ -20,7 +19,6 @@ public class MockPlatform extends GraphWrapper implements Platform {
 		execute();
 	}
 
-	@Override
 	public void execute(String... args) {
 		mockLayerList = graph.rootList(MockLayer.class);
 	}

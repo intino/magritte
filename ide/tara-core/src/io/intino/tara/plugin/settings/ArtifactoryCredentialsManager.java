@@ -30,6 +30,7 @@ class ArtifactoryCredentialsManager {
 
 	private static final String USERNAME = "username";
 	private static final String ID = "id";
+	private static final String SETTINGS = "settings";
 	private static final String PASSWORD = "password";
 	private static final String SERVER = "server";
 	private static final String SERVERS = "servers";
@@ -55,7 +56,7 @@ class ArtifactoryCredentialsManager {
 	}
 
 	void saveCredentials(List<ArtifactoryCredential> credentials) {
-		if (settingsFile().exists()) modifyCredentials(credentials);
+		if (settingsFile().exists()) setCredentials(credentials);
 		else createSettingsFile(credentials);
 	}
 
@@ -70,33 +71,27 @@ class ArtifactoryCredentialsManager {
 		return doc != null ? asList(doc.getElementsByTagName(SERVER)) : Collections.emptyList();
 	}
 
-	private void modifyCredentials(List<ArtifactoryCredential> credentials) {
-		for (ArtifactoryCredential credential : credentials) {
-			Node server = findServer(credential.serverId);
-			if (server == null) server = createServer(credential.serverId);
-			modifyCredentials(server, credential.username, credential.password);
-		}
+	private void setCredentials(List<ArtifactoryCredential> credentials) {
+		removeServers();
+		for (ArtifactoryCredential credential : credentials)
+			setCredentials(createServer(credential.serverId), credential.username, credential.password);
 		commit(doc);
 	}
 
-	private Node findServer(String serverID) {
-		NodeList nodeList = doc != null ? doc.getElementsByTagName(SERVER) : null;
-		if (nodeList == null) return null;
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			if (get(nodeList.item(i).getChildNodes(), ID).getTextContent().equals(serverID))
-				return nodeList.item(i);
-		}
-		return null;
+	private void removeServers() {
+		final NodeList elementsByTagName = doc.getElementsByTagName(SERVERS);
+		if (elementsByTagName.getLength() == 0) return;
+		elementsByTagName.item(0).getParentNode().removeChild(elementsByTagName.item(0));
 	}
 
-	private void modifyCredentials(Node server, String user, String password) {
+	private void setCredentials(Node server, String user, String password) {
 		get(server.getChildNodes(), USERNAME).setTextContent(user);
 		get(server.getChildNodes(), PASSWORD).setTextContent(password);
 	}
 
 	private Node createServer(String name) {
 		final NodeList servers = doc.getElementsByTagName(SERVERS);
-		if (servers.getLength() == 0) return null;
+		Node serversNode = (servers.getLength() > 0) ? servers.item(0) : createServers();
 		Element serverNode = doc.createElement(SERVER);
 		Element serverId = doc.createElement(ID);
 		serverId.setTextContent(name);
@@ -105,8 +100,11 @@ class ArtifactoryCredentialsManager {
 		serverNode.appendChild(serverId);
 		serverNode.appendChild(userNode);
 		serverNode.appendChild(passwordNode);
-		servers.item(0).appendChild(serverNode);
-		return serverNode;
+		return serversNode.appendChild(serverNode);
+	}
+
+	private Node createServers() {
+		return doc.getElementsByTagName(SETTINGS).item(0).appendChild(doc.createElement(SERVERS));
 	}
 
 	private static void commit(Document doc) {
@@ -127,7 +125,7 @@ class ArtifactoryCredentialsManager {
 	private static void createSettingsFile(List<ArtifactoryCredential> credentials) {
 		Frame artifactory = new Frame().addTypes("artifactory");
 		List<Frame> credentialFrames = credentials.stream().
-			map(credential -> new Frame().addTypes("server").addFrame("name", credential.serverId).addFrame(USERNAME, credential.username).addFrame(PASSWORD, credential.password)).collect(Collectors.toList());
+				map(credential -> new Frame().addTypes("server").addFrame("name", credential.serverId).addFrame(USERNAME, credential.username).addFrame(PASSWORD, credential.password)).collect(Collectors.toList());
 		artifactory.addFrame("server", credentialFrames.toArray(new Frame[credentialFrames.size()]));
 		final String settings = ArtifactorySettingsTemplate.create().format(artifactory);
 		write(settings);
