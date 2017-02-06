@@ -7,9 +7,9 @@ import java.util.LinkedHashSet;
 
 import static io.intino.tara.magritte.GraphHandler.create;
 
-class GraphCloner {
+public class GraphCloner {
 
-	static Graph doClone(Graph graph, Graph clone) {
+	public static Graph doClone(Graph graph, Graph clone) {
 		clone.loaders = new ArrayList<>(graph.loaders);
 		clone.languages = new LinkedHashSet<>(graph.languages);
 		clone.concepts = new HashMap<>(graph.concepts);

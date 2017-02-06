@@ -98,7 +98,7 @@ public abstract class GraphHandler {
         Node node = loadFromLoaders(id);
         if (node == null) node = nodes.get(id);
         if (node == null) node = loadFromStash(id);
-        if (node == null) getGlobal().warning("A reference to an node named as " + id + " has not been found");
+        if (node == null) getGlobal().warning("A reference to a node named as " + id + " has not been found");
         return node;
     }
 
