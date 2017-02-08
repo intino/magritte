@@ -75,7 +75,7 @@ public class Component implements Constraint.Component {
 	}
 
 	private void checkRequired(Element element, List<Node> accepted) throws SemanticException {
-		if (rules instanceof Size && ((Size) rules).isRequired() && !isAccepted(accepted, type())) {
+		if (rules.get(0) instanceof Size && ((Size) rules.get(0)).isRequired() && !isAccepted(accepted, type())) {
 			String message = "required.type.in.context";
 			List<?> parameters = Collections.singletonList(this.type.replace(":", " on "));
 			throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
