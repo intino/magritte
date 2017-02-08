@@ -24,7 +24,10 @@ src.path
 level
 Application
 dsl
-Proteo:1.0.0:1.0.0groupId
+Proteo:1.0.0
+out.dsl
+Legio
+groupId
 io.intino.legio
 artifactId
 model

@@ -65,7 +65,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 </project>

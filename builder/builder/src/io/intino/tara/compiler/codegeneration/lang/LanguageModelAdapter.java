@@ -292,7 +292,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				forEach(c -> {
 					if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
 						createMetaFacetComponentConstraint(frames, c);
-					else createComponentConstraint(frames, c);
+					else if (!c.isSub()) createComponentConstraint(frames, c);
 				});
 		if (node.facetTarget() != null && node.facetTarget().parent() != null)
 			node.facetTarget().parent().components().stream().
@@ -338,14 +338,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final List<Node> candidates = collectCandidates(component);
 		final Size size = component.container().sizeOf(component);
 		final List<Rule> allRules = component.container().rulesOf(component);
-		if ((size.isSingle() || component.isReference()) && candidates.size() > 1) {
+		if ((size.isSingle() || size.isRequired() || component.isReference()) && candidates.size() > 1) {
 			final Frame oneOf = createOneOf(candidates, allRules);
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, allRules));
 			if (!component.isSub()) frames.add(oneOf);
-		} else {
-			frames.addAll(candidates.stream().filter(c -> componentCompliant(c.container(), c)).
-					map(c -> createComponentConstraint(c, allRules)).collect(toList()));
-		}
+		} else frames.addAll(candidates.stream().filter(c -> componentCompliant(c.container(), c)).
+				map(c -> createComponentConstraint(c, allRules)).collect(toList()));
 	}
 
 	private Frame createComponentConstraint(Node component, List<Rule> rules) {
