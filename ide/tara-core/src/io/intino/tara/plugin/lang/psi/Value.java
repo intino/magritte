@@ -24,7 +24,7 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 	List<Object> values();
 
 	static List<Object> makeUp(List<Object> values, Primitive type, PsiElement scope) {
-		if (values.isEmpty() || values.get(0) instanceof Primitive.Expression) return values;
+		if (values.isEmpty() || values.get(0) instanceof Primitive.Expression || values.get(0) instanceof Primitive.MethodReference) return values;
 		if (type == null) tryAsReference(values);
 		if (RESOURCE.equals(type)) return values.stream().map(o -> asResource(scope, o)).collect(toList());
 		if (values.get(0) instanceof EmptyNode) return values;
