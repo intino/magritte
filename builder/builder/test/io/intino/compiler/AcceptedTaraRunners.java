@@ -25,9 +25,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void legioM2() {
-//		Stash stash = new StashBuilder(new File("/Users/oroncal/workspace/sandbox/tafat-platform/platform/configuration.legio"), new Legio(), "platform").build();
-//		Assert.assertNotNull(stash);
-//		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
+		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
 	}
 
 
