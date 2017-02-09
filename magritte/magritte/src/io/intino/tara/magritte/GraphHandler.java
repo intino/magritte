@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.*;
 
 import static io.intino.tara.magritte.utils.PathHelper.pathWithExtension;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
@@ -24,11 +25,11 @@ public abstract class GraphHandler {
     final Model model = new Model();
     private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
     protected Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers = new HashMap<>();
+    protected Map<String, Node> nodes = new HashMap<>();
     LayerFactory layerFactory = new LayerFactory();
     Set<String> openedStashes = new HashSet<>();
     Set<String> languages = new LinkedHashSet<>();
     Map<String, Concept> concepts = new HashMap<>();
-    Map<String, Node> nodes = new HashMap<>();
     List<NodeLoader> loaders = new ArrayList<>();
     private I18n i18n = new I18n();
 
@@ -36,7 +37,7 @@ public abstract class GraphHandler {
         this.store = store;
     }
 
-    static <T extends GraphWrapper> T create(Class<T> aClass, Graph graph) {
+    protected static <T extends GraphWrapper> T create(Class<T> aClass, Graph graph) {
         try {
             T instance = aClass.getConstructor(Graph.class).newInstance(graph);
             instance.update();
@@ -52,15 +53,15 @@ public abstract class GraphHandler {
         return unmodifiableList(new ArrayList<>(languages));
     }
 
-    void doLoadPath(String... paths) {
+    protected void doLoadPath(String... paths) {
         doLoadStashes(stream(paths).map(PathHelper::pathWithExtension).toArray(String[]::new));
     }
 
-    void doLoadStashes(String... paths) {
+    protected void doLoadStashes(String... paths) {
         doLoadStashes(stream(paths).map(this::stashOf).toArray(Stash[]::new));
     }
 
-    void doLoadStashes(Stash... stashes) {
+    protected void doLoadStashes(Stash... stashes) {
         if (stashes == null || stashes.length == 0) return;
         stashes = processUses(stashes);
         stream(stashes).filter(Objects::nonNull).forEach(s -> init(s.language));
@@ -129,10 +130,31 @@ public abstract class GraphHandler {
         save(node.path());
     }
 
-    private void save(String path) {
+    public void save(String... paths) {
         if (!store.allowWriting()) return;
         synchronized (this) {
-            StashWriter.write(this, pathWithExtension(path), nodesIn(path));
+            Set<String> set = new HashSet(asList(paths));
+            Map<String, List<Node>> pathNodes = new HashMap<>();
+            set.forEach(p -> pathNodes.put(p, new ArrayList<>()));
+            for (Node node : model.graph.rootList())
+                if (set.contains(node.path())) pathNodes.get(node.path()).add(node);
+            for (Map.Entry<String, List<Node>> entry : pathNodes.entrySet())
+                StashWriter.write(this, pathWithExtension(entry.getKey()), entry.getValue());
+        }
+    }
+
+    public void saveAll(String... excludedPaths) {
+        if (!store.allowWriting()) return;
+        synchronized (this) {
+            Set<String> set = new HashSet(asList(excludedPaths));
+            Map<String, List<Node>> pathNodes = new HashMap<>();
+            for (Node node : model.graph.rootList()) {
+                if (set.contains(node.path())) continue;
+                if (!pathNodes.containsKey(node.path())) pathNodes.put(node.path(), new ArrayList<>());
+                pathNodes.get(node.path()).add(node);
+            }
+            for (Map.Entry<String, List<Node>> entry : pathNodes.entrySet())
+                StashWriter.write(this, pathWithExtension(entry.getKey()), entry.getValue());
         }
     }
 
@@ -186,17 +208,17 @@ public abstract class GraphHandler {
         return node;
     }
 
-    Node node(String name) {
+    protected Node node(String name) {
         return nodes.get(name);
     }
 
-    private Node loadFromStash(String id) {
+    protected Node loadFromStash(String id) {
         doLoadStashes(stashOf(pathWithExtension(id)));
         return node(id);
     }
 
     void init(String language) {
-        if (openedStashes.contains(pathWithExtension(language))){
+        if (openedStashes.contains(pathWithExtension(language))) {
             languages.add(language);
             return;
         }
