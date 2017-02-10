@@ -6,7 +6,6 @@ import io.intino.tara.magritte.modelwrappers.MockPlatform;
 import io.intino.tara.magritte.stores.FileSystemStore;
 import io.intino.tara.magritte.stores.InMemoryFileStore;
 import org.apache.commons.io.FileUtils;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
