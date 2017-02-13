@@ -203,6 +203,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	private Rule createSize(TaraRule rule) {
+		if (rule == null) Size.MULTIPLE();
 		final TaraRange range = rule.getRange();
 		if (!rule.isLambda() || range == null) return Size.MULTIPLE();
 		return new Size(min(range), max(range));

@@ -1,8 +1,8 @@
 def.file
-/Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Processes.tara#true
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Analysis.tara#true
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Model.tara#true
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Data.tara#true
+/Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Processes.tara#true
 
 project
 happy-sense
@@ -17,14 +17,17 @@ final_outputpath
 resources
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/res
 tara.path
-/Users/oroncal/.tara
+/Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/sandbox/happysense-sumus/.tara
 src.path
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src
+/Users/oroncal/workspace/sandbox/happysense-sumus/application/gen
 
 version
 1.0.0
+working.package
+
 make
 false
 test.module
@@ -33,7 +36,3 @@ encoding
 UTF-8
 native.language
 Java
-classpath
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/legio-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/proteo-alone-1.0.0.jar
