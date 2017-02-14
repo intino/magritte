@@ -192,8 +192,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void happySenseM1() {
-		main(new String[]{home + "sandbox/confFiles/happysense/M1.txt"});
+	public void happySensePre() {
+		main(new String[]{home + "sandbox/confFiles/happysense/pre.txt"});
 	}
 
 	@Test
