@@ -6,7 +6,7 @@
 
     <groupId>io.intino.tara</groupId>
     <artifactId>builder</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>magritte</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <dependency>
