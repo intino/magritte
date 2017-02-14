@@ -76,9 +76,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	private PsiReference createTableResolver() {
-		return new TaraTableReferenceSolver(this, getRange());
-	}
 
 	private PsiReference createOutDefinedResolver() {
 		return new OutDefinedReferenceSolver(this, getRange());

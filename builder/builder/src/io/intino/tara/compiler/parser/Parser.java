@@ -36,6 +36,7 @@ public class Parser {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		grammar = new TaraGrammar(tokens);
 		grammar.setErrorHandler(new TaraErrorStrategy());
+		grammar.addErrorListener(new GrammarErrorListener());
 	}
 
 	public Model convert() throws SyntaxException {

@@ -84,6 +84,14 @@ public interface Configuration {
 		return "";
 	}
 
+	default List<RunConfiguration> preRunConfigurations() {
+		return Collections.emptyList();
+	}
+
+	default List<RunConfiguration> deployRunConfigurations() {
+		return Collections.emptyList();
+	}
+
 	interface LanguageLibrary {
 
 		String name();
@@ -95,6 +103,20 @@ public interface Configuration {
 		void version(String version);
 
 		String generationPackage();
+	}
+
+	interface RunConfiguration {
+		String name();
+
+		List<Parameter> parameters();
+
+		interface Parameter {
+			String name();
+
+			String type();
+
+			String value();
+		}
 	}
 
 }

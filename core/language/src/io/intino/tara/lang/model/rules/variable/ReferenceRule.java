@@ -1,8 +1,11 @@
 package io.intino.tara.lang.model.rules.variable;
 
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Primitive;
+
 import java.util.*;
 
-public class ReferenceRule implements VariableRule<String> {
+public class ReferenceRule implements VariableRule<List<Primitive.Reference>> {
 	private List<String> allowedReferences = new ArrayList<>();
 
 	public ReferenceRule(Collection<String> allowedReferences) {
@@ -12,9 +15,18 @@ public class ReferenceRule implements VariableRule<String> {
 		}
 	}
 
-	@Override
-	public boolean accept(String value) {
-		return allowedReferences.contains(value);
+
+	public boolean accept(List<Primitive.Reference> values, String metric) {
+		return accept(values);
+	}
+
+	public boolean accept(List<Primitive.Reference> values) {
+		for (Primitive.Reference v : values) {
+			final Node reference = v.reference();
+			for (String type : reference.types())
+				if (allowedReferences.contains(type) || allowedReferences.contains(type.split(":")[0])) return true;
+		}
+		return false;
 	}
 
 	public List<String> allowedReferences() {

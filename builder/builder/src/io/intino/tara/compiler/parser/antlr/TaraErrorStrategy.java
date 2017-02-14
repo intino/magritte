@@ -21,6 +21,31 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 	}
 
 	@Override
+	protected void reportNoViableAlternative(Parser recognizer, NoViableAltException e) {
+		reportError(recognizer, null);
+	}
+
+	@Override
+	protected void reportInputMismatch(Parser recognizer, InputMismatchException e) {
+		reportError(recognizer, null);
+	}
+
+	@Override
+	protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e) {
+		reportError(recognizer, null);
+	}
+
+	@Override
+	protected void reportUnwantedToken(Parser recognizer) {
+		reportError(recognizer, null);
+	}
+
+	@Override
+	protected void reportMissingToken(Parser recognizer) {
+		reportError(recognizer, null);
+	}
+
+	@Override
 	public void reportError(Parser recognizer, RecognitionException e) {
 		printParameters(recognizer);
 		throw new InputMismatchException(recognizer);

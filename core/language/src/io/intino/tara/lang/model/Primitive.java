@@ -160,13 +160,27 @@ public enum Primitive {
 		boolean isToInstance = false;
 		List<String> declarationTypes = new ArrayList<>();
 		private String path;
+		Node reference;
 
 		public Reference(String value) {
 			this.destiny = value;
 		}
 
+		public Reference(Node reference) {
+			this.reference = reference;
+			this.destiny = reference.name();
+		}
+
 		public String get() {
-			return destiny;
+			return reference == null ? destiny : reference.name();
+		}
+
+		public Node reference() {
+			return reference;
+		}
+
+		public void reference(Node destiny) {
+			this.reference = destiny;
 		}
 
 		public List<String> instanceTypes() {
@@ -174,7 +188,7 @@ public enum Primitive {
 		}
 
 		public boolean isToInstance() {
-			return isToInstance;
+			return reference != null ? reference.is(Tag.Instance) : isToInstance;
 		}
 
 		public void setToInstance(boolean toInstance) {
