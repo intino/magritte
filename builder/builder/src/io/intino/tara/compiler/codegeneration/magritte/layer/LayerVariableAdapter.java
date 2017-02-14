@@ -1,19 +1,19 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
-import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
-import io.intino.tara.lang.model.*;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
+import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
+import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.NativeWordRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.model.rules.variable.WordRule;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.model.Frame;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,9 +49,10 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		if (variable.values().stream().filter(Objects::nonNull).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
-		frame.addFrame(TYPE, getType(variable, workingPackage));
+		frame.addFrame(TYPE, getType(variable));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive)) fillNativeVariable(frame, variable);
+		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive))
+			fillNativeVariable(frame, variable);
 		return frame;
 	}
 

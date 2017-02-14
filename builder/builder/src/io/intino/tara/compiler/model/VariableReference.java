@@ -8,6 +8,7 @@ public class VariableReference extends VariableImpl {
 
 	private Node destiny;
 	private String destinyName;
+	private boolean typeReference = false;
 
 	public VariableReference(Node container, String type, String name, String scope) {
 		super(container, Primitive.REFERENCE, name, scope);
@@ -24,6 +25,14 @@ public class VariableReference extends VariableImpl {
 
 	public void setDestiny(Node destiny) {
 		this.destiny = destiny;
+	}
+
+	public boolean isTypeReference() {
+		return typeReference;
+	}
+
+	public void setTypeReference() {
+		this.typeReference = true;
 	}
 
 	@Override

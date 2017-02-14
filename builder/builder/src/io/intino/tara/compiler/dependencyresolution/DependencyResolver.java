@@ -246,6 +246,7 @@ public class DependencyResolver {
 		if (language == null) return false;
 		final List<String> types = language.types(variable.destinyName());
 		if (types != null) {
+			variable.setTypeReference();
 			variable.setDestiny(new LanguageNodeReference(types, variable.destinyName()));
 			return true;
 		}

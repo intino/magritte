@@ -1,4 +1,3 @@
-
 def type(Variable & multiple & owner) !type(reactive | inherited | overriden | volatile) trigger(list)
 	map.put("$name+firstLowerCase", this.$name+javaValidName+firstLowerCase+javaValidWord);
 end

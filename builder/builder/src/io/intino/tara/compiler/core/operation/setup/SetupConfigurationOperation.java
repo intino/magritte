@@ -63,6 +63,8 @@ public class SetupConfigurationOperation extends SetupOperation {
 	private boolean checkConfiguration() throws TaraException {
 		if (configuration.languages().isEmpty())
 			throw new TaraException("Language not defined or not found:");
+		if (configuration.artifactId() == null || configuration.artifactId().isEmpty())
+			throw new TaraException("Project name not found. Reload configuration");
 		else if (configuration.languages().get(0).get() == null)
 			throw new TaraException("Language not defined or not found: " + configuration.languages().get(0).name() + "-" + configuration.languages().get(0).version());
 		return true;

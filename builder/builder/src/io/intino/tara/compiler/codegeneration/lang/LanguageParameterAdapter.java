@@ -1,30 +1,27 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
-import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
+import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.VariableReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.Rule;
-import io.intino.tara.lang.model.Tag;
-import io.intino.tara.lang.model.Variable;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
 import static io.intino.tara.compiler.shared.Configuration.Level.Application;
 import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.lang.model.Tag.Reactive;
+import static java.util.Collections.emptyList;
 
 class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
@@ -47,7 +44,11 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		Collection<Constraint> constraints = language.constraints(node.type());
 		if (constraints == null) return 0;
 		for (Constraint c : constraints) {
-			if (c instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) c) && !isRedefined((Constraint.Parameter) c, node.variables()) && !isRequired((Constraint.Parameter) c)) {
+			if (c instanceof Constraint.Parameter &&
+					isTerminal((Constraint.Parameter) c) &&
+					!isRedefined((Constraint.Parameter) c, node.variables()) &&
+					!isRequired((Constraint.Parameter) c) &&
+					!isFilled(node, (Constraint.Parameter) c)) {
 				addTerminalParameter(allowsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
 				index++;
 			}
@@ -61,6 +62,12 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		else frame.addFrame(type, primitiveParameter(parameter, position, type));
 	}
 
+	private boolean isTerminal(Constraint.Parameter constraint) {
+		for (Tag flag : constraint.flags())
+			if (flag.equals(Tag.Terminal)) return true;
+		return false;
+	}
+
 	private boolean isRequired(Constraint.Parameter constraint) {
 		return constraint.size().isRequired();
 	}
@@ -70,9 +77,10 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		return false;
 	}
 
-	private boolean isTerminal(Constraint.Parameter constraint) {
-		for (Tag flag : constraint.flags())
-			if (flag.equals(Tag.Terminal)) return true;
+	private boolean isFilled(Node node, Constraint.Parameter constraint) {
+		for (Parameter parameter : node.parameters())
+			if (parameter.name().equals(constraint.name()) && (constraint.size() == null || constraint.size().accept(parameter.values())))
+				return true;
 		return false;
 	}
 
