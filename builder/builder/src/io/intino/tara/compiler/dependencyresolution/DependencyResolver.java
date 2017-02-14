@@ -2,12 +2,9 @@ package io.intino.tara.compiler.dependencyresolution;
 
 import io.intino.tara.Language;
 import io.intino.tara.compiler.core.errorcollection.DependencyException;
-import io.intino.tara.compiler.model.Model;
-import io.intino.tara.lang.model.*;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
-import io.intino.tara.compiler.model.NodeImpl;
-import io.intino.tara.compiler.model.NodeReference;
-import io.intino.tara.compiler.model.VariableReference;
+import io.intino.tara.compiler.model.*;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.CustomRule;
 import io.intino.tara.lang.model.rules.variable.ReferenceRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
@@ -184,8 +181,8 @@ public class DependencyResolver {
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
-				loadedRules.get(source) :
-				CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
+					loadedRules.get(source) :
+					CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
 		}
@@ -200,7 +197,7 @@ public class DependencyResolver {
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
-				loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
+					loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", node, rule.getSource(), e.getMessage().split("\n")[0]);
 		}
@@ -210,7 +207,8 @@ public class DependencyResolver {
 	}
 
 	private void updateRule(Class<?> aClass, Variable variable) {
-		if (aClass != null) variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
+		if (aClass != null)
+			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
 	}
 
 	private List<String> collectEnums(List<Field> fields) {
@@ -225,10 +223,33 @@ public class DependencyResolver {
 
 	private void resolveVariable(VariableReference variable, Node container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
-		if (destiny == null)
+		if (destiny != null) variable.setDestiny(destiny);
+		else if (!tryAsLanguageReference(variable))
 			throw new DependencyException("reject.reference.variable.not.found", container, variable.destinyName());
-		else variable.setDestiny(destiny);
 		variable.rule(createReferenceRule(variable));
+		resolveVariableDefaultValue(variable, container);
+	}
+
+	private void resolveVariableDefaultValue(VariableReference variable, Node container) throws DependencyException {
+		if (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Reference)) return;
+		final List<Primitive.Reference> collect = variable.values().stream().map(v -> ((Primitive.Reference) v)).collect(Collectors.toList());
+		for (Primitive.Reference v : collect) {
+			Node destiny = manager.resolve(v.get(), container);
+			if (destiny == null)
+				throw new DependencyException("reject.reference.variable.not.found", container, variable.destinyName());
+			v.reference(destiny);
+		}
+	}
+
+	private boolean tryAsLanguageReference(VariableReference variable) {
+		final Language language = model.getLanguage();
+		if (language == null) return false;
+		final List<String> types = language.types(variable.destinyName());
+		if (types != null) {
+			variable.setDestiny(new LanguageNodeReference(types, variable.destinyName()));
+			return true;
+		}
+		return false;
 	}
 
 	private ReferenceRule createReferenceRule(VariableReference variable) {

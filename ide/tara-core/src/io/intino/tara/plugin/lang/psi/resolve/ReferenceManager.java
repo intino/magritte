@@ -4,18 +4,20 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPackage;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.plugin.codeinsight.JavaHelper;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import io.intino.tara.plugin.project.TaraModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
-import io.intino.tara.lang.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.project.TaraModuleType;
 
 import java.io.File;
 import java.util.*;
@@ -53,20 +55,11 @@ public class ReferenceManager {
 		return JavaHelper.getJavaHelper(project).findClass(path.trim());
 	}
 
-	public static PsiElement resolveTable(PsiElement tableName) {
-		final VirtualFile dataRoot = TaraUtil.getResourcesRoot(tableName);
-		if (dataRoot == null) return null;
-		final VirtualFile tableFile = dataRoot.findChild(tableName.getText() + ".table");
-		if (tableFile == null) return null;
-		return PsiManager.getInstance(tableName.getProject()).findFile(tableFile);
-	}
-
 	private static PsiElement internalResolve(Identifier identifier) {
 		if (identifier.getParent() instanceof IdentifierReference)
 			return resolveNode(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
-			return identifier.getParent().getParent() instanceof TaraDslDeclaration ?
-				identifier : resolveHeaderReference(identifier);
+			return identifier.getParent().getParent() instanceof TaraDslDeclaration ? identifier : resolveHeaderReference(identifier);
 		if (identifier.getParent() instanceof Signature) return identifier;
 		return null;
 	}
@@ -149,8 +142,8 @@ public class ReferenceManager {
 	private static void collectParentComponents(Identifier identifier, Set<Node> set, Node parent) {
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		set.addAll(parent.components().stream().
-			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
-			collect(Collectors.toList()));
+				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
+				collect(Collectors.toList()));
 	}
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
@@ -158,8 +151,8 @@ public class ReferenceManager {
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		while (container != null) {
 			set.addAll(collectCandidates(container).stream().
-				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
-				collect(Collectors.toList()));
+					filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
+					collect(Collectors.toList()));
 			container = container.container();
 		}
 	}
@@ -187,7 +180,7 @@ public class ReferenceManager {
 		Node reference = null;
 		for (Identifier identifier : path) {
 			reference = reference == null ? areNamesake(identifier, node) ? node : null :
-				findIn(reference, identifier);
+					findIn(reference, identifier);
 			if (reference == null || reference.is(Tag.Enclosed) && !isLast(identifier, path))
 				return null;
 		}
@@ -249,7 +242,7 @@ public class ReferenceManager {
 	private static PsiElement resolveRuleToClass(io.intino.tara.plugin.lang.psi.Rule rule) {
 		if (!TaraModuleType.isTara(ModuleProvider.moduleOf(rule))) return null;
 		final String workingPackage = TaraUtil.workingPackage(rule);
-		if (workingPackage== null) return null;
+		if (workingPackage == null) return null;
 		return resolveJavaClassReference(rule.getProject(), workingPackage.toLowerCase() + ".rules." + rule.getText());
 	}
 
@@ -278,7 +271,8 @@ public class ReferenceManager {
 	public static PsiElement resolveTaraNativeImplementationToJava(io.intino.tara.plugin.lang.psi.Valued valued) {
 		String workingPackage = TaraUtil.workingPackage(valued);
 		if (ModuleProvider.moduleOf(valued) == null) return null;
-		if (workingPackage == null || workingPackage.isEmpty())workingPackage = ModuleProvider.moduleOf(valued).getName();
+		if (workingPackage == null || workingPackage.isEmpty())
+			workingPackage = ModuleProvider.moduleOf(valued).getName();
 		for (PsiClass aClass : getCandidates(valued, workingPackage.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), io.intino.tara.plugin.lang.psi.Valued.class)))
 				return aClass;
@@ -313,7 +307,7 @@ public class ReferenceManager {
 		if (document.getLineCount() <= start) return null;
 		final PsiElement elementAt = taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
 		return elementAt != null && (elementAt.getNode().getElementType().equals(TaraTypes.NEWLINE) ||
-			elementAt.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)) ? elementAt.getNextSibling() : elementAt;
+				elementAt.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)) ? elementAt.getNextSibling() : elementAt;
 	}
 
 	private static String capitalize(String name) {

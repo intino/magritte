@@ -160,14 +160,14 @@ public class GlobalConstraints {
 	private void checkVariable(Variable variable) throws SemanticException {
 		final List<Object> values = variable.values();
 		if (variable.container().is(Instance)) error("reject.variable.in.node", variable);
-		else if (!Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
-			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable) && variable.rule() != null)
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		else if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type().javaName()));
 		else if (Primitive.REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
+		else if (!Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
+			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
@@ -183,7 +183,7 @@ public class GlobalConstraints {
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
 		for (Object value : variable.values())
-			if (!(value instanceof EmptyNode) && !hasExpressionValue(variable.values()))
+			if (!(value instanceof EmptyNode || hasInstanceValue(variable.values()) || hasExpressionValue(variable.values())))
 				return false;
 		return true;
 	}
@@ -255,6 +255,18 @@ public class GlobalConstraints {
 
 	private boolean hasExpressionValue(List<Object> values) {
 		return !values.isEmpty() && (values.get(0) instanceof Primitive.Expression || values.get(0) instanceof Primitive.MethodReference);
+	}
+
+	private boolean hasInstanceValue(List<Object> values) {
+		return !values.isEmpty() && asPrimitiveReference(values) || asNode(values);
+	}
+
+	private boolean asNode(List<Object> values) {
+		return (values.get(0) instanceof Node) && (((Node) values.get(0)).is(Instance));
+	}
+
+	private boolean asPrimitiveReference(List<Object> values) {
+		return (values.get(0) instanceof Primitive.Reference) && (((Primitive.Reference) values.get(0)).reference().is(Instance));
 	}
 
 	private Constraint nodeName() {

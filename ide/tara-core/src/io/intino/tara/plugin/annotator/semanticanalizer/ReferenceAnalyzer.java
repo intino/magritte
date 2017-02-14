@@ -63,7 +63,13 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		if (resolve != null) return;
 		if (isInstanceReference() && aReference instanceof TaraNodeReferenceSolver)
 			results.put(reference, new AnnotateAndFix(INSTANCE, MessageProvider.message("node.reference")));
-		else setError(aReference, element);
+		if (TaraPsiImplUtil.contextOf(reference, TaraVariableType.class) == null || !isConceptReference())
+			setError(aReference, element);
+	}
+
+	private boolean isConceptReference() {
+		final Language language = TaraUtil.getLanguage(reference);
+		return language != null && language.types(reference.getText()) != null;
 	}
 
 	private boolean isInstanceReference() {
@@ -94,15 +100,18 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		Variable variable = TaraPsiImplUtil.getContainerByType(element, Variable.class);
 		if (variable == null) return;
 		Rule rule = TaraPsiImplUtil.getContainerByType(element, Rule.class);
-		if (rule == null) results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS));
+		if (rule == null)
+			results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS));
 		else
 			results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS, collectFixes(variable, rule)));
 	}
 
 	private IntentionAction[] collectFixes(Variable variable, Rule rule) {
 		if (variable == null) return new IntentionAction[0];
-		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateFunctionInterfaceIntention(variable)};
-		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateVariableRuleClassIntention(rule)};
+		if (Primitive.FUNCTION.equals(variable.type()))
+			return new IntentionAction[]{new CreateFunctionInterfaceIntention(variable)};
+		if (Primitive.WORD.equals(variable.type()))
+			return new IntentionAction[]{new CreateVariableRuleClassIntention(rule)};
 		return new IntentionAction[]{new CreateVariableRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 	}
 
@@ -122,7 +131,8 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private List<CreateNodeQuickFix> createNewElementFix(Identifier element) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-		if (node != null) return singletonList(new CreateNodeQuickFix(element.getText(), (TaraModel) element.getContainingFile()));
+		if (node != null)
+			return singletonList(new CreateNodeQuickFix(element.getText(), (TaraModel) element.getContainingFile()));
 		return Collections.emptyList();
 	}
 
@@ -150,7 +160,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	private IntentionAction toIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};
 		CommonProblemDescriptorImpl descriptor = new ProblemDescriptorImpl(node, node, message,
-			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
+				quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
 		return QuickFixWrapper.wrap((ProblemDescriptor) descriptor, 0);
 	}
 

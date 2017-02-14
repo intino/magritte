@@ -115,7 +115,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values)
 			if (value instanceof Node && !areCompatibleReference((Node) value) ||
-				value instanceof Primitive.Reference && !isCompatibleInstanceReference((Primitive.Reference) value)) {
+					value instanceof Primitive.Reference && !isCompatibleInstanceReference((Primitive.Reference) value)) {
 				error = ParameterError.RULE;
 				return false;
 			} else if (!(value instanceof Node) && !(value instanceof Primitive.Reference)) return false;
@@ -136,9 +136,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 	}
 
 	private boolean areCompatibleReference(Node node) {
-		for (String type : node.resolve().types())
-			if (rule.accept(type)|| rule.accept(type.split(":")[0])) return true;
-		return false;
+		return rule.accept(Collections.singletonList(new Primitive.Reference(node)));
 	}
 
 	protected void error(Element element, io.intino.tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
