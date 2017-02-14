@@ -114,8 +114,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 		if (values.isEmpty()) return false;
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values)
-			if (value instanceof Node && !areCompatibleReference((Node) value) ||
-					value instanceof Primitive.Reference && !isCompatibleInstanceReference((Primitive.Reference) value)) {
+			if (value instanceof Primitive.Reference && !areCompatibleReference(((Primitive.Reference) value).reference()) && !isCompatibleInstanceReference((Primitive.Reference) value)) {
 				error = ParameterError.RULE;
 				return false;
 			} else if (!(value instanceof Node) && !(value instanceof Primitive.Reference)) return false;

@@ -2,17 +2,17 @@ package io.intino.tara.compiler.codegeneration.magritte.natives;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.tara.lang.model.*;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
+import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.VariableReference;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.semantics.Constraint;
+import org.siani.itrules.model.Frame;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,7 +68,8 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!slots.contains(SCOPE.toLowerCase())) frame.addFrame(SCOPE, workingPackage);
 		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase())) frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
+			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, variable.container().qualifiedName());
@@ -93,7 +94,8 @@ public class NativeFormatter implements TemplateTags {
 		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, parameter.container().qualifiedName());
 		if (!slots.contains(SCOPE.toLowerCase())) frame.addFrame(SCOPE, workingPackageScope(parameter, workingPackage));
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase())) frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
+			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(parameter)));
 		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
 		imports.addAll(collectImports(parameter));
@@ -123,7 +125,8 @@ public class NativeFormatter implements TemplateTags {
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
 		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl);
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase())) frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
+			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable));
 		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, typeFrame(type(variable), variable.isMultiple()));
 		frame.addFrame(UID, variable.getUID());
@@ -144,15 +147,17 @@ public class NativeFormatter implements TemplateTags {
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
 		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase())) frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
+		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
+			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!slots.contains(TYPE.toLowerCase()))
+			frame.addFrame(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
 		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
 	}
 
 	public String type(Variable variable) {
 		final boolean multiple = variable.isMultiple();
 		if (variable.isReference()) {
-			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), workingPackage);
+			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), ((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage);
 		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
 		else if (Primitive.WORD.equals(variable.type()))
 			return NameFormatter.getQn(variable.container(), workingPackage) + "." + Format.firstUpperCase().format(variable.name());
@@ -275,7 +280,8 @@ public class NativeFormatter implements TemplateTags {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
 			if (scope.is(Instance)) return getTypeAsScope(scope, trueWorkingPackage);
-			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, workingPackage);
+			if (scope.facetTarget() != null)
+				return NameFormatter.getQn(((Node) scope).facetTarget(), scope, workingPackage);
 			else return getQn(scope, (Node) owner, workingPackage, false);
 		} else if (owner instanceof FacetTarget)
 			return NameFormatter.getQn((FacetTarget) owner, workingPackage);
@@ -315,7 +321,8 @@ public class NativeFormatter implements TemplateTags {
 	private static Node firstNoFeature(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).is(Feature)) return (Node) container;
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).is(Feature))
+				return (Node) container;
 			container = container.container();
 		}
 		return owner instanceof Node ? (Node) owner : (Node) owner.container();

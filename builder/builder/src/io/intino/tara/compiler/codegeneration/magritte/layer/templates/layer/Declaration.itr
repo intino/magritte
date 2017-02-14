@@ -58,7 +58,7 @@ def type(Variable & owner) !type(concept) type(multiple) !type(inherited) !type(
 	protected java.util.List<$type+fullType+reference> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
 end
 
-def type(Variable) type(owner) !type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable & owner) !type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected $type+reference+variableType $name+javaValidName+firstLowerCase+javaValidWord;
 end
 
@@ -70,7 +70,7 @@ def type(constraint) trigger(declaration)
 	protected $qn+reference _$name+javaValidName+firstLowerCase;
 end
 
-def type(Variable) type(owner) type(concept) !type(multiple | inherited | overriden | instance) trigger(declaration)
+def type(Variable & owner) type(concept) !type(multiple | inherited | overriden | instance) trigger(declaration)
 	protected io.intino.tara.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord;
 end
 

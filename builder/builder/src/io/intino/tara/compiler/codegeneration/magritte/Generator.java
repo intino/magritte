@@ -53,9 +53,9 @@ public abstract class Generator implements TemplateTags {
 				});
 	}
 
-	protected String getType(Variable variable, String workingPackage) {
+	protected String getType(Variable variable) {
 		if (variable instanceof VariableReference)
-			return NameFormatter.cleanQn(NameFormatter.getQn(((VariableReference) variable).getDestiny(), workingPackage.toLowerCase()));
+			return NameFormatter.cleanQn(NameFormatter.getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
 					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :

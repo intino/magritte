@@ -250,11 +250,13 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Object o) {
-		if (o instanceof Primitive.Reference) {
-			io.intino.tara.lang.model.Node reference = ((Reference) o).reference();
-			return (((reference).is(Instance)) ? getStash(reference) + "#" : "") + (reference).cleanQn();
-		}
+		if (o instanceof Primitive.Reference) return noName(((Reference) o).reference());
+		else if (o instanceof io.intino.tara.lang.model.Node) return noName((io.intino.tara.lang.model.Node) o);
 		return StashHelper.buildInstanceReference(o);
+	}
+
+	private String noName(io.intino.tara.lang.model.Node reference) {
+		return (((reference).is(Instance)) ? getStash(reference) + "#" : "") + (reference).cleanQn();
 	}
 
 	private static String toSystemIndependentName(String fileName) {
