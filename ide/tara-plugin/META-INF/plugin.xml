@@ -115,10 +115,8 @@
         <!--<statementUpDownMover implementation="TaraNodeMover" id="node" order="before line"/>-->
         <!--<psi.referenceContributor implementation="io.intino.tara.plugin.model.psi.resolve.TaraReferenceContributor"/>-->
         <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
-        <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
+        <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
         <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
-        <!--<lang.formatter language="Tara" implementationClass="TaraFormattingModelBuilder"/>-->
-        <!--<webBrowserUrlProvider implementation="WebBrowserProvider"/>-->
         <intentionAction>
             <className>io.intino.tara.plugin.codeinsight.intentions.FromBodyToExplicitParameters</className>
             <category>Move To parameters</category>
