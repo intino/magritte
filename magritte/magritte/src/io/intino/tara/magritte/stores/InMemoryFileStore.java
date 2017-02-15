@@ -30,7 +30,7 @@ public class InMemoryFileStore extends FileSystemStore {
 
     private Stash includeAllTheStore(Stash stash, String path) {
         firstLoad = false;
-        stash.uses = allStashesInStore();
+        stash.uses.addAll(allStashesInStore());
         stash.uses.remove(path);
         stash.uses.remove(stash.language + ".stash");
         return stash;
@@ -38,6 +38,7 @@ public class InMemoryFileStore extends FileSystemStore {
 
     private List<String> allStashesInStore() {
         try {
+            if(!file.exists()) return new ArrayList<>();
             List<String> result = new ArrayList<>();
             Files.walkFileTree(file.toPath(), new SimpleFileVisitor<Path>() {
 
