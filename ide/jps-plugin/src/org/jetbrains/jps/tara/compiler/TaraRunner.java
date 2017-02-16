@@ -63,8 +63,9 @@ class TaraRunner {
 
 	private void loadClassPath(String projectConfigurationDirectory, String moduleName) throws IOException {
 		final File classPathFile = new File(projectConfigurationDirectory, "misc" + File.separator + moduleName);
-		if (!classPathFile.exists()) throw new IOException("Unable to find builder classpath. Please reload configuration");
-		this.classpath = Arrays.asList(new String(Files.readAllBytes(classPathFile.toPath())).split(":"));
+		if (!classPathFile.exists())
+			throw new IOException("Unable to find builder classpath. Please reload configuration");
+		this.classpath = Arrays.asList(new String(Files.readAllBytes(classPathFile.toPath())).replace("$HOME", System.getProperty("user.home")).split(":"));
 	}
 
 	private void fillConfiguration(JpsModuleConfiguration conf, Writer writer) throws IOException {
