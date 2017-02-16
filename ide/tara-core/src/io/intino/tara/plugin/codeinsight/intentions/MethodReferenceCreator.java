@@ -2,22 +2,8 @@ package io.intino.tara.plugin.codeinsight.intentions;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import io.intino.tara.Language;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.NativeExtractor;
-import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
-import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.plugin.project.module.ModuleProvider;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Checker;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
-import io.intino.tara.plugin.lang.psi.TaraRule;
-import io.intino.tara.plugin.lang.psi.TaraVariable;
-import io.intino.tara.plugin.lang.psi.impl.TaraVariableImpl;
-import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.Language;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
@@ -27,6 +13,20 @@ import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.NativeExtractor;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
+import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
+import io.intino.tara.plugin.lang.psi.TaraRule;
+import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.plugin.lang.psi.Valued;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraVariableImpl;
+import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
+import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.module.ModuleProvider;
+import org.siani.itrules.model.Frame;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,7 +47,7 @@ public class MethodReferenceCreator {
 
 	public MethodReferenceCreator(Valued valued, String reference) {
 		this.valued = valued;
-		this.reference = reference;
+		this.reference = reference.replace("@", "");
 		module = ModuleProvider.moduleOf(valued);
 		workingPackage = TaraUtil.workingPackage(valued);
 	}
@@ -83,7 +83,8 @@ public class MethodReferenceCreator {
 		final String[] parameters = findParameters();
 		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
 		if (valued.getValue() != null) {
-			if (!type.equalsIgnoreCase("void") && methodBody.startsWith("return ")) methodBody = "return " + methodBody;
+			if (!type.equalsIgnoreCase("void") && !methodBody.startsWith("return "))
+				methodBody = "return " + methodBody;
 			if (!methodBody.endsWith(";")) methodBody += ";";
 		}
 		frame.addFrame("body", methodBody);

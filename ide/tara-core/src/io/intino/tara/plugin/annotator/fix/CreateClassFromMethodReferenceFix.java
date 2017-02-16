@@ -9,10 +9,10 @@ import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.codeinsight.intentions.MethodReferenceCreator;
 import io.intino.tara.plugin.lang.psi.IdentifierReference;
 import io.intino.tara.plugin.lang.psi.TaraModel;
+import io.intino.tara.plugin.lang.psi.TaraTypes;
 import io.intino.tara.plugin.lang.psi.Valued;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraTypes;
 
 public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 	private final Valued valued;
@@ -50,7 +50,7 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 		}
 	}
 
-	public boolean isReference(@NotNull PsiElement element) {
+	private boolean isReference(@NotNull PsiElement element) {
 		return element instanceof IdentifierReference || element.getNode().getElementType().equals(TaraTypes.IDENTIFIER_KEY);
 	}
 
