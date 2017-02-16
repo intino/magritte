@@ -31,6 +31,7 @@
             <groupId>org.siani.itrules</groupId>
             <artifactId>itrules</artifactId>
             <version>1.6.0</version>
+            <!--TODO UPDATE-->
         </dependency>
         <dependency>
             <groupId>com.github.rjeschke</groupId>
@@ -65,7 +66,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
-            <version>1.0.1</version>
+            <version>[1.0.2,2.0.0)</version>
         </dependency>
     </dependencies>
 </project>
