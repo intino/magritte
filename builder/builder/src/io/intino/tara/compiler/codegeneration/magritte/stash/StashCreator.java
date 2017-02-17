@@ -43,7 +43,7 @@ public class StashCreator {
 	public StashCreator(List<io.intino.tara.lang.model.Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
 		this.nodes = nodes;
 		this.language = language;
-		this.generatedLanguage = Format.javaValidName().format(genLanguage).toString();
+		this.generatedLanguage = Format.javaValidName().format(Format.firstUpperCase().format(genLanguage)).toString();
 		this.workingPackage = conf.workingPackage();
 		this.resourceFolder = conf.resourcesDirectory();
 		this.level = conf.level();
@@ -207,12 +207,12 @@ public class StashCreator {
 	//TODO change native package
 	private List<Object> createNativeReference(io.intino.tara.lang.model.Variable variable) {
 		final String aPackage = NativeFormatter.calculatePackage(variable.container());
-		return new ArrayList<>(singletonList(reactivePrefix(variable) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
+		return new ArrayList<>(singletonList(reactivePrefix(variable) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(Format.firstUpperCase().format(variable.name())).toString() + "_" + variable.getUID()));
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
-		return new ArrayList<>(singletonList(reactivePrefix(parameter) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+		return new ArrayList<>(singletonList(reactivePrefix(parameter) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(Format.firstUpperCase().format(parameter.name())).toString() + "_" + parameter.getUID()));
 	}
 
 	private String reactivePrefix(Valued variable) {
