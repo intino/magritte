@@ -18,6 +18,7 @@ public class Format {
 		template.add("string", string());
 		template.add("reference", reference());
 		template.add("toCamelCase", toCamelCase());
+		template.add("snakeCaseToCamelCase", snakeCaseToCamelCase());
 		template.add("withDollar", withDollar());
 		template.add("noPackage", noPackage());
 		template.add("key", key());
@@ -25,7 +26,6 @@ public class Format {
 		template.add("WithoutType", nativeParameterWithoutType());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
-		template.add("taraValidWord", javaValidWord());
 		template.add("withoutGeneric", withoutGeneric());
 		return template;
 	}
@@ -46,10 +46,6 @@ public class Format {
 		};
 	}
 
-	private static String firstLowerCase(String val) {
-		return val.substring(0, 1).toLowerCase() + val.substring(1);
-	}
-
 	public static Formatter qualifiedName() {
 		return value -> {
 			String val = value.toString();
@@ -63,12 +59,25 @@ public class Format {
 		};
 	}
 
+	private static String firstLowerCase(String val) {
+		return val.substring(0, 1).toLowerCase() + val.substring(1);
+	}
+
 	private static String referenceFormat(String val) {
 		return javaValidName().format(val).toString().replace(":", "");
 	}
 
 
 	public static Formatter toCamelCase() {
+		return s -> {
+			String value = s.toString();
+			if (value.isEmpty()) return "";
+			if (value.contains("_")) value = value.toLowerCase();
+			return snakeCaseToCamelCase().format(toCamelCase(value, "-"));
+		};
+	}
+
+	public static Formatter snakeCaseToCamelCase() {
 		return s -> {
 			String value = s.toString();
 			if (value.isEmpty()) return "";
@@ -101,21 +110,23 @@ public class Format {
 	public static Formatter javaValidName() {
 		return s -> {
 			final String value = s.toString();
-			return toCamelCase(value, "-");
+			return javaValidWord().format(toCamelCaseWithoutFirstChange(value, "-"));
 		};
 	}
 
-	public static Formatter taraValidWord() {
-		return s -> {
-			final String value = s.toString();
-			return NamesValidator.isKeyword(value) || NamesValidator.isTaraKeyword(value) ? value + "$" : value;
-		};
+	private static Object toCamelCaseWithoutFirstChange(String value, String regex) {
+		if (value.isEmpty()) return "";
+		String[] parts = value.split(regex);
+		if (parts.length == 1) return value;
+		String caseString = parts[0];
+		for (int i = 1; i < parts.length; i++) caseString = caseString + capitalize(parts[i]);
+		return caseString;
 	}
 
 	public static Formatter javaValidWord() {
 		return s -> {
 			final String value = s.toString();
-			return NamesValidator.isKeyword(value) ? value + "$" : value;
+			return NamesValidator.isKeyword(value) || NamesValidator.isTaraKeyword(value) ? value + "$" : value;
 		};
 	}
 

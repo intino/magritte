@@ -1,6 +1,6 @@
 def.file
-/Users/oroncal/workspace/cesar/application/src/io/intino/cesar/Operations.tara#true
 /Users/oroncal/workspace/cesar/application/src/io/intino/cesar/Ontology.tara#true
+/Users/oroncal/workspace/cesar/application/src/io/intino/cesar/Operations.tara#true
 
 project
 cesar
@@ -18,14 +18,13 @@ tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/cesar/.tara
-working.package
-io.intino.cesar
 src.path
 /Users/oroncal/workspace/cesar/application/src
-/Users/oroncal/workspace/cesar/application/lib
 
 version
 1.0.0
+working.package
+
 make
 false
 test.module
@@ -34,7 +33,3 @@ encoding
 UTF-8
 native.language
 Java
-classpath
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/magritte-lite-1.0.0.jar

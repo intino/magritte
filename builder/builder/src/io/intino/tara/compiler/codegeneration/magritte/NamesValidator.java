@@ -64,8 +64,7 @@ public class NamesValidator {
 		taraKeywords.add("name");
 		taraKeywords.add("id");
 		taraKeywords.add("components");
-		taraKeywords.add("platform");
-		taraKeywords.add("application");
+		taraKeywords.add("node");
 	}
 
 	public static boolean isKeyword(final String name) {
@@ -73,7 +72,7 @@ public class NamesValidator {
 	}
 
 	public static boolean isTaraKeyword(final String name) {
-		return javaKeywords.contains(name);
+		return taraKeywords.contains(name);
 	}
 
 	public static boolean isIdentifier(final String name) {

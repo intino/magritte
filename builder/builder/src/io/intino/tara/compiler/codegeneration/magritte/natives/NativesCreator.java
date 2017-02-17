@@ -103,11 +103,11 @@ public class NativesCreator {
 	}
 
 	private String nativeName(Variable variable) {
-		return Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID() + nativeExtension;
+		return Format.javaValidName().format(Format.firstUpperCase().format(variable.name())).toString() + "_" + variable.getUID() + nativeExtension;
 	}
 
 	private String nativeName(Parameter parameter) {
-		return Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID() + nativeExtension;
+		return Format.javaValidName().format(Format.firstUpperCase().format(parameter.name())).toString() + "_" + parameter.getUID() + nativeExtension;
 	}
 
 	private File writeJavaCode(File file, String nativeText) {

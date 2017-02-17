@@ -1,9 +1,10 @@
 package io.intino.tara.plugin.lang;
 
 import com.intellij.openapi.diagnostic.Logger;
+import io.intino.tara.Language;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.Language;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -32,7 +33,7 @@ class LanguageLoader {
 			if (!jar.exists()) return null;
 			final ClassLoader classLoader = createClassLoader(jar);
 			if (classLoader == null) return null;
-			Class cls = classLoader.loadClass(LANGUAGES_PACKAGE + "." + name);
+			Class cls = classLoader.loadClass(LANGUAGES_PACKAGE + "." + Format.snakeCasetoCamelCase().format(name).toString());
 			return (Language) cls.newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | Error e) {
 			return null;

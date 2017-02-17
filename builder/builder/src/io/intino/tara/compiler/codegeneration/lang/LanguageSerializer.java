@@ -75,7 +75,7 @@ public class LanguageSerializer {
 
 	private File getDslDestiny() {
 		final File file = new File(conf.getTaraDirectory(), REPOSITORY + separator + conf.dslGroupId().replace(".", separator) + separator +
-				reference().format(conf.outDSL()).toString().toLowerCase() + separator + conf.version());
+				conf.outDSL().toLowerCase() + separator + conf.version());
 		file.mkdirs();
 		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
 	}
@@ -111,7 +111,7 @@ public class LanguageSerializer {
 		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
 		manifest.getEntries().put("tara", createTaraProperties());
 		JarOutputStream target = new JarOutputStream(
-				new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.version() + JAR)), manifest);
+				new FileOutputStream(new File(dslDir, conf.outDSL() + "-" + conf.version() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);

@@ -48,6 +48,13 @@ public class Format {
 		};
 	}
 
+	public static Formatter snakeCasetoCamelCase() {
+		return s -> {
+			final String value = s.toString();
+			return toCamelCase(value, "-");
+		};
+	}
+
 
 	public static Formatter firstUpperCase() {
 		return s -> {

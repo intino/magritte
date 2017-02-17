@@ -95,8 +95,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonetRegistroSolicitantes() {
-		main(new String[]{home + "sandbox/confFiles/registroSolicitantes/m2.txt"});
+	public void exampleM3() {
+		main(new String[]{home + "sandbox/confFiles/example/m3.txt"});
+	}
+
+	@Test
+	public void exampleM2() {
+		main(new String[]{home + "sandbox/confFiles/example/m2.txt"});
 	}
 
 	@Test
