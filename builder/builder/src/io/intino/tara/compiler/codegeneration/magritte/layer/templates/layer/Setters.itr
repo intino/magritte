@@ -24,7 +24,7 @@ def type(Variable & word & outDefined) !type(inherited | overriden | owner | con
 end
 
 def type(variable & word) !type(multiple | owner | reactive | final | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidName($qn+reference.$name+firstLowerCase+javaValidName+reference value) {
+	public void $name+firstLowerCase+javaValidName($qn+reference.$name+firstUpperCase+javaValidName+reference value) {
 		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
 	}
 end
