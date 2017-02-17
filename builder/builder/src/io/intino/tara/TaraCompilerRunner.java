@@ -37,11 +37,12 @@ class TaraCompilerRunner {
 	}
 
 
-	boolean run(CompilerConfiguration config, File source) {
+	boolean run(CompilerConfiguration config, List<File> files) {
 		config.setVerbose(verbose);
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final List<CompilerMessage> messages = new ArrayList<>();
-		final Map<File, Boolean> sources = Collections.singletonMap(source, true);
+		final Map<File, Boolean> sources = new LinkedHashMap<>();
+		files.forEach(f -> sources.put(f, Boolean.TRUE));
 		List<TaraCompiler.OutputItem> compiled = compile(config, sources, messages);
 		if (verbose) report(sources, compiled);
 		processErrors(messages);

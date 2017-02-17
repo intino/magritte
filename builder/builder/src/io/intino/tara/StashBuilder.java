@@ -8,21 +8,22 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
 
 public class StashBuilder {
 
 	private final String dsl;
 	private final String dslVersion;
 	private final String module;
-	private final File file;
+	private final List<File> files;
 	private final Language language;
 	private File workingDirectory;
 
-	public StashBuilder(File source, String dsl, String dslVersion, String module) {
+	public StashBuilder(List<File> files, String dsl, String dslVersion, String module) {
+		this.files = files;
 		this.dsl = dsl;
 		this.dslVersion = dslVersion;
 		this.module = module;
-		this.file = source;
 		this.language = null;
 		try {
 			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
@@ -30,8 +31,8 @@ public class StashBuilder {
 		}
 	}
 
-	public StashBuilder(File source, Language language, String module) {
-		file = source;
+	public StashBuilder(List<File> files, Language language, String module) {
+		this.files = files;
 		this.language = language;
 		this.dsl = language.languageName();
 		this.dslVersion = null;
@@ -44,7 +45,7 @@ public class StashBuilder {
 
 	public Stash build() {
 		try {
-			new TaraCompilerRunner(false).run(createConfiguration(), file);
+			new TaraCompilerRunner(false).run(createConfiguration(), files);
 			final File createdStash = findCreatedStash();
 			if (createdStash == null || !createdStash.exists()) return null;
 			final Stash stash = StashDeserializer.stashFrom(createdStash);
