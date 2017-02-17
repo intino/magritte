@@ -1,10 +1,10 @@
 def type(function & java)
-	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName+javaValidWord_$uid implements [$scope+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	public class $name+FirstUpperCase+javaValidName_$uid implements [$scope+lowercase+javaValidName.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -25,12 +25,12 @@ def type(function & java)
 end
 
 def type(java) !type(function)
-	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
+	public class $name+FirstUpperCase+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -51,12 +51,12 @@ def type(java) !type(function)
 end
 
 def type(function & groovy)
-	package $workingPackage+lowercase+javaValidName+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
+	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName]
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName+javaValidWord_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+firstUpperCase+javaValidName_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
 		private $nativeContainer+reference self
 
 		$signature {
@@ -74,12 +74,12 @@ def type(function & groovy)
 end
 
 def type(groovy) !type(function)
-	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
+	class $name+FirstUpperCase+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
 		private $nativeContainer+reference self;
 
 		public $type value() {
@@ -98,12 +98,12 @@ end
 
 
 def type(function & kotlin)
-	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
+	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName]
 
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
 		internal var self: $nativeContainer+reference? = null
 
 		$signature {
@@ -121,12 +121,12 @@ def type(function & kotlin)
 end
 
 def type(kotlin)
-	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
 
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : io.intino.tara.magritte.Expression<$type> {
+	class $name+FirstUpperCase+javaValidName_$uid : io.intino.tara.magritte.Expression<$type> {
 		internal var self: $nativeContainer+reference? = null
 
 		override fun value():$type {

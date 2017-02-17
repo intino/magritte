@@ -5,7 +5,7 @@ def type(wrapper)
 
 	public class $generatedLanguage+javaValidName+FirstUpperCase extends $workingPackage+lowercase.GraphWrapper {
 
-		public $generatedLanguage+javaValidName(Graph graph) {
+		public $generatedLanguage+javaValidName+FirstUpperCase(Graph graph) {
 			super(graph);
 		}
 	}

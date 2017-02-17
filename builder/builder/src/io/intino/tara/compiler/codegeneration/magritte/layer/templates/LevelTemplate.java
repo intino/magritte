@@ -18,7 +18,7 @@ public class LevelTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "wrapper"))).add(literal("package ")).add(mark("workingPackage", "lowercase")).add(literal(";\n\nimport io.intino.tara.magritte.Graph;\n\npublic class ")).add(mark("generatedLanguage", "javaValidName", "FirstUpperCase")).add(literal(" extends ")).add(mark("workingPackage", "lowercase")).add(literal(".GraphWrapper {\n\n\tpublic ")).add(mark("generatedLanguage", "javaValidName")).add(literal("(Graph graph) {\n\t\tsuper(graph);\n\t}\n}"))
+			rule().add((condition("type", "wrapper"))).add(literal("package ")).add(mark("workingPackage", "lowercase")).add(literal(";\n\nimport io.intino.tara.magritte.Graph;\n\npublic class ")).add(mark("generatedLanguage", "javaValidName", "FirstUpperCase")).add(literal(" extends ")).add(mark("workingPackage", "lowercase")).add(literal(".GraphWrapper {\n\n\tpublic ")).add(mark("generatedLanguage", "javaValidName", "FirstUpperCase")).add(literal("(Graph graph) {\n\t\tsuper(graph);\n\t}\n}"))
 		);
 		return this;
 	}

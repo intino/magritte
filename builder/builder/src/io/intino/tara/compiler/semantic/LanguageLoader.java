@@ -31,7 +31,7 @@ public class LanguageLoader {
 				File jar = getLanguagePath(name, version, languagesDirectory);
 				if (!jar.exists()) errorMessage[0] = "Language file not found: " + jar.getPath();
 				ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
-				Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.firstUpperCase().format(name));
+				Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.toCamelCase().format(name));
 				return (Language) cls.newInstance();
 			} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
 				LOG.info(e1.getMessage());

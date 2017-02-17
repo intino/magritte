@@ -9,29 +9,29 @@ def type(Layer)
 end
 
 def type(single & owner) !type(overriden | instance) trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+javaValidName+firstLowerCase+javaValidWord = node.as($qn+reference.class);
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = node.as($qn+reference.class);
 end
 
 def type(owner) !type(overriden | instance) trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(add)
 end
 
 def type(single & owner) !type(overriden | instance) trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+javaValidName+firstLowerCase+javaValidWord = null;
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = null;
 end
 
 def type(owner) !type(overriden | instance) trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(remove)
 end
 
 def type(node) !type(final | instance | abstract) trigger(new)
-    public $qn+reference $name+javaValidName+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
+    public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
 		$variable+assign...[$NL] |:
         return newElement;
@@ -39,7 +39,7 @@ def type(node) !type(final | instance | abstract) trigger(new)
 end
 
 def type(node & create) !type(final | instance) trigger(new)
-    public $qn+reference $name+javaValidName+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
+    public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
 		$variable+assign...[$NL] |:
         return newElement;
