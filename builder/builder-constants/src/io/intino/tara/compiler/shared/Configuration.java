@@ -84,11 +84,11 @@ public interface Configuration {
 		return "";
 	}
 
-	default List<RunConfiguration> preRunConfigurations() {
+	default List<RunConfiguration> preConfigurations() {
 		return Collections.emptyList();
 	}
 
-	default List<RunConfiguration> deployRunConfigurations() {
+	default List<RunConfiguration> deployConfigurations() {
 		return Collections.emptyList();
 	}
 
@@ -110,12 +110,22 @@ public interface Configuration {
 
 		List<Parameter> parameters();
 
+		List<Service> services();
+
+		String store();
+
 		interface Parameter {
 			String name();
 
 			String type();
 
 			String value();
+		}
+
+		interface Service {
+			String name();
+
+			List<Parameter> parameters();
 		}
 	}
 
