@@ -302,7 +302,7 @@ def type(Node & owner & final) !type(single | inherited | overriden) trigger(get
 	}
 
 	public java.util.List<$qn+reference> $name+toCamelCase+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
-		return $name+toCamelCase~firstLowerCase+~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+		return $name+toCamelCase+firstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
