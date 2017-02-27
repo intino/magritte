@@ -1,47 +1,47 @@
 def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$externalClass> values) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(values);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(values);
 	}
 end
 
 def type(Variable & word & outDefined & multiple) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(values);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(values);
 	}
 end
 
 
 def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidName($workingPackage.rules.$externalClass value) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 	}
 end
 
 def type(Variable & word & outDefined) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidName($workingPackage.rules.$rule+externalWordClass value) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 	}
 end
 
 def type(variable & word) !type(multiple | owner | reactive | final | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidName($qn+reference.$name+firstUpperCase+javaValidName+reference value) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 	}
 end
 
 def type(variable & resource) !type(multiple | owner | reactive | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidName($type+variableType value, String destiny) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value, destiny);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value, destiny);
 	}
 
 	public void $name+firstLowerCase+javaValidName(java.io.InputStream stream, String destiny) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(stream, destiny);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(stream, destiny);
 	}
 end
 
 def type(Variable & reactive) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidName(io.intino.tara.magritte.Expression<$type+fullType+reference> value) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 	}
 end
 
@@ -53,13 +53,13 @@ end
 
 def type(variable) !type(multiple | owner | concept | function | resource | reactive | final | word) trigger(setter)
 	public void $name+firstLowerCase+javaValidName($type+variableType value) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 	}
 end
 
 def type(variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
 	public void $name+firstLowerCase+javaValidName(io.intino.tara.magritte.Concept value) {
-		this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName(value);
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 	}
 end
 

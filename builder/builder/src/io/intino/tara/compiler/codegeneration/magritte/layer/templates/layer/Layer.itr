@@ -87,11 +87,11 @@ def type(core) trigger(asCore)
 end
 
 def type(facetTarget) !type(overriden) trigger(facet)
-	if (layer instanceof $qn+reference) _$name+javaValidName+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def type(constraint) trigger(facet)
-	if (layer instanceof $qn+reference) _$name+javaValidName+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def !type(target) type(nodeimpl) !type(instance) trigger(Node)
@@ -238,11 +238,11 @@ def trigger(metaTypeSet)
 end
 
 def trigger(metaFacetLoad)
-	node().load(_$name+javaValidName+firstLowerCase, name, values);
+	node().load(_$name+firstLowerCase, name, values);
 end
 
 def trigger(metaFacetSet)
-	node().set(_$name+javaValidName+firstLowerCase, name, values);
+	node().set(_$name+firstLowerCase, name, values);
 end
 
 def trigger(metaType)
@@ -250,7 +250,7 @@ def trigger(metaType)
 end
 
 def trigger(metaFacet)
-	protected $type _$name+javaValidName+firstLowerCase;
+	protected $type _$name+firstLowerCase;
 end
 
 def trigger(tag)

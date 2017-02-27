@@ -19,15 +19,15 @@ def type(Variable & owner) !type(inherited | overriden | volatile) trigger(list)
 end
 
 def type(Variable & metaType & multiple) !type(inherited | overriden | volatile) trigger(list)
-	map.put("$name+firstLowerCase", _$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName());
+	map.put("$name+firstLowerCase", _$containerName+firstLowerCase.$name+firstLowerCase+javaValidName());
 end
 
 def type(Variable & metaType) type(function | reactive) !type(inherited | overriden | volatile) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(io.intino.tara.magritte.utils.NativeExtractor.extract("$name", _$containerName+firstLowerCase+javaValidName))));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(io.intino.tara.magritte.utils.NativeExtractor.extract("$name", _$containerName+firstLowerCase))));
 end
 
 def type(Variable & metaType) !type(inherited | overriden | volatile) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(this._$containerName+firstLowerCase+javaValidName.$name+firstLowerCase+javaValidName())));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName())));
 end
 
 def type(Node & single & owner) !type(inherited | overriden | instance) trigger(list)
