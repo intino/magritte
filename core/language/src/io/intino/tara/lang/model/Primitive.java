@@ -168,7 +168,7 @@ public enum Primitive {
 
 		public Reference(Node reference) {
 			this.reference = reference;
-			this.destiny = reference.name();
+			this.destiny = reference == null ? null : reference.name();
 		}
 
 		public String get() {
