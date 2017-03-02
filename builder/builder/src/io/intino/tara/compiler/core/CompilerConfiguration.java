@@ -313,7 +313,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	}
 
 	public File srcDirectory() {
-		return sourceDirectories.stream().filter(f -> f.getName().equals("src")).findAny().orElse(null);
+		return sourceDirectories.stream().filter(f -> f.getName().equals("src")).findAny().orElse(sourceDirectories.isEmpty() ? null : sourceDirectories.get(0));
 	}
 
 	public File rulesDirectory() {
