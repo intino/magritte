@@ -1,5 +1,5 @@
 def.file
-/Users/oroncal/IdeaProjects/example/src/Example.tara#true
+/Users/oroncal/IdeaProjects/example/test/Instance.tara#true
 
 project
 example
@@ -8,17 +8,17 @@ example
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/IdeaProjects/example/gen
+/Users/oroncal/IdeaProjects/example/test-gen
 final_outputpath
-/Users/oroncal/IdeaProjects/example/out/production/example/
+/Users/oroncal/IdeaProjects/example/out/test/example/
 resources
-/Users/oroncal/IdeaProjects/example/res
+/Users/oroncal/IdeaProjects/example/test-res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/IdeaProjects/example/.tara
 src.path
-/Users/oroncal/IdeaProjects/example/src
+/Users/oroncal/IdeaProjects/example/test
 
 version
 1.0.0
@@ -27,7 +27,7 @@ working.package
 make
 false
 test.module
-false
+true
 encoding
 UTF-8
 native.language

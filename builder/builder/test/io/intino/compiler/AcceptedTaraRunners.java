@@ -100,6 +100,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void exampleM1() {
+		main(new String[]{home + "sandbox/confFiles/example/m1.txt"});
+	}
+
+	@Test
 	public void exampleM2() {
 		main(new String[]{home + "sandbox/confFiles/example/m2.txt"});
 	}

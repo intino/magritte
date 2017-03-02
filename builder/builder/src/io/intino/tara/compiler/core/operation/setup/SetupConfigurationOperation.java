@@ -75,7 +75,8 @@ public class SetupConfigurationOperation extends SetupOperation {
 		Factory factory = project.factory();
 		final Level level = Level.valueOf(factory.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
 		configuration.outDSL(project.name());
-		configuration.workingPackage(factory.inPackage() != null ? factory.inPackage() : project.name().toLowerCase());
+		final String workingPackage = factory.inPackage() != null ? factory.inPackage() : project.name().toLowerCase();
+		configuration.workingPackage(configuration.isTest() ? workingPackage + ".test" : workingPackage);
 		configuration.artifactId(project.name().toLowerCase());
 		configuration.groupId(project.groupId());
 		configuration.version(project.version());
@@ -83,7 +84,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.addLanguage(project.name(), project.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else for (Factory.Language language : factory.languageList()) {
-			configuration.addLanguage(language.name(), language.version());
+			configuration.addLanguage(language.name$(), language.version());
 			configuration.level(level);
 		}
 	}
