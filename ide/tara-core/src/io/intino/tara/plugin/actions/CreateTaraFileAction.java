@@ -44,10 +44,11 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		if (!TaraModuleType.isTara(module))
 			throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));
 		final Configuration conf = TaraUtil.configurationOf(module);
-		for (Configuration.LanguageLibrary languageLibrary : conf.languages()) {
-			if (!languageLibrary.name().isEmpty()) builder.addKind(languageLibrary.name(), TaraIcons.ICON_16, languageLibrary.name());
-
-		}
+		if (isTest(directory, module))
+			builder.addKind(conf.outDSL(), TaraIcons.ICON_16, conf.outDSL());
+		else for (Configuration.LanguageLibrary languageLibrary : conf.languages())
+			if (!languageLibrary.name().isEmpty())
+				builder.addKind(languageLibrary.name(), TaraIcons.ICON_16, languageLibrary.name());
 	}
 
 	@Override

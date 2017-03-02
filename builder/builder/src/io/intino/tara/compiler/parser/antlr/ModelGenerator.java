@@ -52,12 +52,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.headerReference() != null) {
 			final String langName = ctx.headerReference().getText();
 			for (CompilerConfiguration.DSL language : languages)
-				if (language.name().equals(langName)) model.setLanguage(language.get());
+				if (language.name().equalsIgnoreCase(langName)) model.setLanguage(language.get());
 			if (model.language().isEmpty())
 				addError("Language " + langName + " not found", ctx);
 		} else addError("Language not found", ctx);
-
-
 	}
 
 	@Override

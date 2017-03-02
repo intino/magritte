@@ -8,10 +8,10 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
 import io.intino.tara.Language;
-import io.intino.tara.plugin.lang.LanguageManager;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.plugin.lang.LanguageManager;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +33,8 @@ class TestClassCreator {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
 		final Language language = LanguageManager.getLanguage(module.getProject(), dsl);
-		map.put("APPLICATION", conf.outDSL());
-		map.put("WORKING_PACKAGE", conf.workingPackage());
+		map.put("APPLICATION", io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase().format(conf.outDSL()).toString());
+		map.put("WORKING_PACKAGE", conf.workingPackage().toLowerCase());
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;
 	}
