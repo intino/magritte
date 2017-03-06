@@ -8,7 +8,7 @@ import java.util.List;
 
 import static io.intino.tara.lang.model.Primitive.*;
 
-public interface Valued extends Navigatable, TaraPsiElement {
+public interface Valued extends Navigatable, TaraPsiElement, io.intino.tara.lang.model.Valued{
 
 	io.intino.tara.lang.model.Rule rule();
 

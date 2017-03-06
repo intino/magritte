@@ -27,7 +27,7 @@ public interface Valued extends Element {
 	}
 
 
-	VariableRule rule();
+	Rule rule();
 
 	void rule(VariableRule rule);
 

@@ -151,6 +151,19 @@ end
 
 ----- OWN GETTERS -----
 
+def type(variable & reference & concept & multiple & reactive) !type(inherited | overriden) trigger(getter)
+	public java.util.List<io.intino.tara.magritte.Concept> $name+firstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList($name+firstLowercase+javaValidName);
+	}
+end
+
+def type(variable & reference & concept & reactive) !type(inherited | overriden | overriden) trigger(getter)
+	public io.intino.tara.magritte.Concept $name+firstLowerCase+javaValidName() {
+		return this.$name+firstLowerCase+javaValidName.value();
+	}
+end
+
+
 def type(variable & reference & concept & multiple) !type(inherited | overriden) trigger(getter)
 	public java.util.List<io.intino.tara.magritte.Concept> $name+firstLowerCase+javaValidName() {
 		return java.util.Collections.unmodifiableList($name+firstLowercase+javaValidName);
