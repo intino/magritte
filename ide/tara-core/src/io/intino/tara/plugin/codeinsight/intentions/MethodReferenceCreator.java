@@ -4,10 +4,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 import io.intino.tara.Checker;
 import io.intino.tara.Language;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.Parameter;
-import io.intino.tara.lang.model.Primitive;
-import io.intino.tara.lang.model.Variable;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -122,6 +119,7 @@ public class MethodReferenceCreator {
 			if (node != null) new Checker(TaraUtil.getLanguage(valued)).check(node.resolve());
 		} catch (SemanticFatalException ignored) {
 		}
+		if (valued.flags().contains(Tag.Concept)) return "io.intino.tara.magritte.Concept";
 		if (Primitive.FUNCTION.equals(valued.type()) && valued.rule() instanceof NativeRule)
 			return getFunctionReturnType().getPresentableText();
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();

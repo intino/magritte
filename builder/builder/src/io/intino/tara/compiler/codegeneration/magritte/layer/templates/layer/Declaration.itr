@@ -46,6 +46,10 @@ def type(Variable & reactive & owner & multiple) !type(inherited) !type(override
 	protected io.intino.tara.magritte.Expression<java.util.List<$type+fullType+reference>> $name+firstLowerCase+javaValidName;
 end
 
+def type(Variable & reactive & owner & concept) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
+	protected io.intino.tara.magritte.Expression<io.intino.tara.magritte.Concept> $name+firstLowerCase+javaValidName;
+end
+
 def type(Variable & reactive & owner) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
 	protected io.intino.tara.magritte.Expression<$type+fullType+reference> $name+firstLowerCase+javaValidName;
 end
