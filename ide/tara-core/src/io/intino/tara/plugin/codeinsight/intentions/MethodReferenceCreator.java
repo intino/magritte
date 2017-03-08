@@ -104,7 +104,7 @@ public class MethodReferenceCreator {
 		final PsiElement reference = ReferenceManager.resolveRule(rule);
 		if (!(reference instanceof PsiClass)) return new String[0];
 		final PsiParameterList parameterList = ((PsiClass) reference).getAllMethods()[0].getParameterList();
-		final List<String> collect = Arrays.asList(parameterList.getParameters()).stream().map(PsiParameter::getText).collect(Collectors.toList());
+		final List<String> collect = Arrays.stream(parameterList.getParameters()).map(PsiParameter::getText).collect(Collectors.toList());
 		return collect.toArray(new String[collect.size()]);
 	}
 

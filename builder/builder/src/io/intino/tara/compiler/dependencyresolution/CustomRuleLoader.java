@@ -30,7 +30,7 @@ class CustomRuleLoader {
 
 	private static Class<?> tryAsProvided(CustomRule rule) {
 		try {
-			return Class.forName(Url.class.getPackage().getName() + "." + Format.reference().format(rule.getSource()));
+			return Class.forName(Url.class.getPackage().getName() + "." + Format.firstUpperCase().format(rule.getSource()));
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
