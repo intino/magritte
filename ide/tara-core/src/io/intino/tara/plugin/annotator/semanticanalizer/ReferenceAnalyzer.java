@@ -63,7 +63,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		if (resolve != null) return;
 		if (isInstanceReference() && aReference instanceof TaraNodeReferenceSolver)
 			results.put(reference, new AnnotateAndFix(INSTANCE, MessageProvider.message("node.reference")));
-		if (TaraPsiImplUtil.contextOf(reference, TaraVariableType.class) == null || !isConceptReference())
+		else if (TaraPsiImplUtil.contextOf(reference, TaraVariableType.class) == null || !isConceptReference())
 			setError(aReference, element);
 	}
 

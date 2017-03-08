@@ -168,7 +168,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void AmidasM1() {
-		main(new String[]{home + "sandbox/confFiles/amidas/M1-Community.txt"});
+		main(new String[]{home + "sandbox/confFiles/amidas/Comnunity-test.txt"});
 	}
 
 	@Test
@@ -253,7 +253,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM1Dwellings() {
-		main(new String[]{home + "sandbox/confFiles/sumus/M1-Community.txt"});
+		main(new String[]{home + "sandbox/confFiles/sumus/Comnunity-test.txt"});
 	}
 
 	@Test
