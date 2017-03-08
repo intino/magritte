@@ -52,7 +52,7 @@ public class SubmitFeedbackAction extends AnAction implements DumbAware {
 	}
 
 	private void sendReport(Project project, String reportTitle, String reportDescription, String type) {
-		IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("siani.dev.tara"));
+		IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("io.intino.tara"));
 		final Properties properties = createErrorProperties(plugin, reportTitle, reportDescription, type);
 		final TaraSettings settings = TaraSettings.getSafeInstance(project);
 		PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(properties, settings.trackerProjectId(), settings.trackerApiToken());
