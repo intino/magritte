@@ -1,7 +1,7 @@
 def.file
-/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/Amidas.tara#true
 /Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/Authentication.tara#true
 /Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/Device.tara#true
+/Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/Setup.tara#true
 /Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/WorkForce.tara#true
 /Users/oroncal/workspace/sandbox/amidas/platform/src/io/intino/amidas/definitions/Works.tara#true
 
@@ -23,7 +23,6 @@ tara.project.path
 /Users/oroncal/workspace/sandbox/amidas/.tara
 src.path
 /Users/oroncal/workspace/sandbox/amidas/platform/src
-/Users/oroncal/workspace/sandbox/amidas/platform/templates
 
 version
 1.0.0

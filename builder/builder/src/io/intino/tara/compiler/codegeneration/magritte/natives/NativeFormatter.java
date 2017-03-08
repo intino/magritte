@@ -24,6 +24,7 @@ import static io.intino.tara.Resolver.shortType;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.tara.dsl.Proteo.FACET_SEPARATOR;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
+import static io.intino.tara.lang.model.Tag.Concept;
 import static io.intino.tara.lang.model.Tag.Feature;
 import static io.intino.tara.lang.model.Tag.Instance;
 
@@ -156,6 +157,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public String type(Variable variable) {
 		final boolean multiple = variable.isMultiple();
+		if (variable.flags().contains(Concept)) return "io.intino.tara.magritte.Concept";
 		if (variable.isReference()) {
 			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), ((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage);
 		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
