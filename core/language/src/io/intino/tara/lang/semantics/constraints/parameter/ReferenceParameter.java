@@ -135,7 +135,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 	}
 
 	private boolean areCompatibleReference(Node node) {
-		return rule.accept(Collections.singletonList(new Primitive.Reference(node)));
+		return node != null && rule.accept(Collections.singletonList(new Primitive.Reference(node)));
 	}
 
 	protected void error(Element element, io.intino.tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
