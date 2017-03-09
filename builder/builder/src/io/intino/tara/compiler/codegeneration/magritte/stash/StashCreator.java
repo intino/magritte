@@ -185,7 +185,7 @@ public class StashCreator {
 			variable.values = buildReferenceValues(modelVariable.values());
 		else if (modelVariable.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(modelVariable);
-		else if (modelVariable.values().get(0).toString().startsWith("$"))
+		else if (modelVariable.type().equals(RESOURCE) && modelVariable.values().get(0).toString().startsWith("$"))
 			variable.values = StashHelper.buildResourceValue(modelVariable.values(), modelVariable.file());
 		else variable.values = getValue(modelVariable);
 		return variable;
@@ -198,7 +198,7 @@ public class StashCreator {
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
 		else if (parameter.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(parameter);
-		else if (parameter.values().get(0).toString().startsWith("$"))
+		else if (parameter.type().equals(RESOURCE) && parameter.values().get(0).toString().startsWith("$"))
 			variable.values = StashHelper.buildResourceValue(parameter.values(), parameter.file());
 		else variable.values = getValue(parameter);
 		return variable;
