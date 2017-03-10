@@ -18,18 +18,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
-	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
-	private static final String INTINO_PATH = "intino-plugin";
-	private static final String[] INTINO = {"intino-plugin.jar", "magritte-1.0.0.jar"};
 	private static final String TARA_CORE_JAR = "tara-plugin.jar";
-	private static final String LIB = "lib/";
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 	private List<String> classpath;
@@ -50,9 +45,7 @@ class TaraRunner {
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
 			writePaths(paths, writer);
-
 			if (conf != null) fillConfiguration(conf, writer);
-
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
@@ -62,7 +55,9 @@ class TaraRunner {
 	}
 
 	private void loadClassPath(String projectConfigurationDirectory, String moduleName) throws IOException {
-		final File classPathFile = new File(projectConfigurationDirectory, "misc" + File.separator + moduleName);
+		File misc = new File(projectConfigurationDirectory, "misc");
+		final File classPathFile = new File(misc, "compiler.classpath");
+		if (!classPathFile.exists()) new File(misc, moduleName);
 		if (!classPathFile.exists())
 			throw new IOException("Unable to find builder classpath. Please reload configuration");
 		this.classpath = Arrays.asList(new String(Files.readAllBytes(classPathFile.toPath())).replace("$HOME", System.getProperty("user.home")).split(":"));
@@ -112,53 +107,12 @@ class TaraRunner {
 		return handler;
 	}
 
-	private String join(Collection<String> array) {
-		StringBuilder message = new StringBuilder();
-		for (String s : array) message.append(s).append(NL);
-		return message.toString();
-	}
-
 	private String getJavaExecutable() {
 		return SystemProperties.getJavaHome() + "/bin/java";
-	}
-
-
-	private Collection<String> generateClasspath() {
-		final Set<String> cp = new LinkedHashSet<>();
-		cp.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
-		cp.addAll(getIntinoLib().stream().map(File::getPath).collect(Collectors.toList()));
-		return cp;
-	}
-
-	private List<File> getIntinoLib() {
-		File root = new File(pluginsDirectory(), INTINO_PATH + File.separator + LIB);
-		List<File> libs = new ArrayList<>();
-		for (String lib : INTINO) addLib(root, lib, libs);
-		if (!libs.get(0).exists()) return Collections.singletonList(getTaraJar(root));
-		return libs;
-	}
-
-	private File pluginsDirectory() {
-		return ClasspathBootstrap.getResourceFile(TaraBuilder.class).getParentFile().getParentFile().getParentFile();
-	}
-
-	private List<File> getTaraBuilderRoot() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		List<File> libs = new ArrayList<>();
-		for (String lib : TARA_BUILDER) addLib(root, lib, libs);
-		if (!libs.get(0).exists()) return Collections.singletonList(getTaraJar(root));
-		return libs;
 	}
 
 	@NotNull
 	private File getTaraJar(File root) {
 		return new File(root.getParentFile(), TARA_CORE_JAR);
-	}
-
-	private void addLib(File root, String lib, List<File> libs) {
-		root = new File(root.getParentFile(), lib);
-		libs.add((root.exists()) ?
-				new File(root.getParentFile(), lib) :
-				new File(root.getParentFile(), LIB + lib));
 	}
 }
