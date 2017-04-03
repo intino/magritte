@@ -106,6 +106,11 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
+	public String nativeLanguage() {
+		return "java";
+	}
+
+	@Override
 	public List<String> repositories() {
 		return maven.getRemoteRepositories().stream().
 				map(MavenRemoteRepository::getUrl).collect(Collectors.toList());

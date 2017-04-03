@@ -67,7 +67,8 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(SIGNATURE, getSignature((PsiClass) nativeInterface));
 		frame.addFrame(GENERATED_LANGUAGE, workingPackage.toLowerCase());
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
-		if (!(language instanceof Proteo) && !(language instanceof Verso)) frame.addFrame(LANGUAGE, language.languageName());
+		if (!(language instanceof Proteo) && !(language instanceof Verso))
+			frame.addFrame(LANGUAGE, language.languageName());
 		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
 		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
 		if (!aReturn.isEmpty() && !isMultiline) frame.addFrame(RETURN, aReturn);
@@ -83,7 +84,8 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(GENERATED_LANGUAGE, workingPackage.toLowerCase());
 		frame.addFrame(SCOPE, parameter.scope());
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
-		if (!(language instanceof Proteo) && !(language instanceof Verso)) frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
+		if (!(language instanceof Proteo) && !(language instanceof Verso))
+			frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
 		if (signature != null) frame.addFrame(SIGNATURE, signature);
 		final String anInterface = getInterface(parameter);
 		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
@@ -124,9 +126,11 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private String type(Variable variable) {
-		if (variable.isReference()) return QualifiedNameFormatter.getQn(variable.destinyOfReference(), workingPackage, false);
+		if (variable.isReference())
+			return QualifiedNameFormatter.getQn(variable.destinyOfReference(), workingPackage, false);
 		if (variable.type().equals(WORD)) return wordType(variable);
-		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
+		else if (OBJECT.equals(variable.type()))
+			return variable.rule() == null ? "" : ((NativeObjectRule) variable.rule()).type();
 		else return variable.type().javaName();
 	}
 
@@ -140,7 +144,7 @@ public class NativeFormatter implements TemplateTags {
 	private Set<String> collectImports(Valued valued) {
 		final Node containerOf = TaraPsiImplUtil.getContainerNodeOf(valued);
 		if (containerOf == null || allImports.get(TaraUtil.importsFile(valued)) == null ||
-			!allImports.get(TaraUtil.importsFile(valued)).containsKey(composeQn(valued, containerOf)))
+				!allImports.get(TaraUtil.importsFile(valued)).containsKey(composeQn(valued, containerOf)))
 			return emptySet();
 		else {
 			if (allImports.get(TaraUtil.importsFile(valued)) == null) return emptySet();
@@ -254,7 +258,7 @@ public class NativeFormatter implements TemplateTags {
 		NodeContainer container = owner;
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
-				!((Node) container).is(Feature))
+					!((Node) container).is(Feature))
 				return (Node) container;
 			container = container.container();
 		}
@@ -272,8 +276,8 @@ public class NativeFormatter implements TemplateTags {
 		if (body.isEmpty()) return body;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (nativeInterface.getMethods()[0].getReturnType() != null &&
-			!("void".equals(nativeInterface.getMethods()[0].getReturnType().getCanonicalText())) &&
-			!body.contains("\n") && body.split(";").length == 1 && !body.startsWith(RETURN))
+				!("void".equals(nativeInterface.getMethods()[0].getReturnType().getCanonicalText())) &&
+				!body.contains("\n") && body.split(";").length == 1 && !body.startsWith(RETURN))
 			return RETURN + " ";
 		return "";
 	}

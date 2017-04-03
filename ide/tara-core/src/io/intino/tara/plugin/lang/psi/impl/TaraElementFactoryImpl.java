@@ -176,8 +176,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraModelImpl file = createDummyFile(
 			"Concept(" + assigns + ")" + " DummyInstance\n"
 		);
-		final Node next = file.components().iterator().next();
-		return ((TaraNode) next).getSignature().getParameters();
+		if(file.components().isEmpty()) return null;
+		return ((TaraNode) file.components().get(0)).getSignature().getParameters();
 	}
 
 	@Override
