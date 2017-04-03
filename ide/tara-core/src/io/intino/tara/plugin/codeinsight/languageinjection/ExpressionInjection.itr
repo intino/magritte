@@ -3,7 +3,7 @@ def type(java) !type(function)
 
 	$imports...[$NL]
 
-	public class $name+firstUpperCase implements Expression<$type> {
+	class $name+firstUpperCase implements io.intino.tara.magritte.Expression<$type> {
 		$nativeContainer self;
 
 		public $type value() {$NL[\t\t$return]
@@ -14,7 +14,7 @@ def type(function & java)
 
 	$imports...[$NL]
 
-	public class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
+	class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
 		$nativeContainer self;
 
 		@Override
@@ -28,7 +28,7 @@ def type(groovy) !type(function)
 	$imports...[$NL]
 
 	@SuppressWarnings("UnnecessaryQualifiedReference")
-	class $name+firstUpperCase implements Expression<$type> {
+	class $name+firstUpperCase implements io.intino.tara.magritte.Expression<$type> {
 		$nativeContainer self;
 
 		public $type value() {$NL[\n\n$return]
@@ -52,7 +52,7 @@ def type(kotlin) !type(function)
 
 	$imports...[$NL]
 
-	class $name+firstUpperCase : Expression<$type> {
+	class $name+firstUpperCase : io.intino.tara.magritte.Expression<$type> {
 		internal var self: $nativeContainer+reference
 
 		override fun value():$type {$NL$TAB$TAB$return
