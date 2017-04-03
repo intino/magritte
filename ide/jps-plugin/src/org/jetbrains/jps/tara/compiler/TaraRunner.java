@@ -29,7 +29,7 @@ class TaraRunner {
 	private static File argsFile;
 	private List<String> classpath;
 
-	TaraRunner(final String projectName, final String moduleName, JpsModuleConfiguration conf, String nativeLanguage, boolean isMake,
+	TaraRunner(final String projectName, final String moduleName, JpsModuleConfiguration conf, boolean isMake,
 			   final Map<String, Boolean> sources,
 			   final String encoding,
 			   final boolean isTest,
@@ -49,7 +49,6 @@ class TaraRunner {
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
-			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
 			writer.close();
 		}
 	}

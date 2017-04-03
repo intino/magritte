@@ -54,7 +54,8 @@ public class LanguageManager {
 		if (file.getFileType() instanceof TaraFileType) {
 			final Configuration configuration = TaraUtil.configurationOf(file);
 			final String dslName = ((TaraModel) file).dsl();
-			final String version = configuration == null || configuration.language(d -> d.name().equalsIgnoreCase(dslName)) == null ? LATEST : configuration.language(d -> d.name().equals(dslName)).version();
+			if (dslName == null) return null;
+			final String version = configuration == null || configuration.language(d -> dslName.equalsIgnoreCase(d.name())) == null ? LATEST : configuration.language(d -> dslName.equalsIgnoreCase(d.name())).version();
 			return getLanguage(file.getProject(), dslName, version);
 		} else return null;
 	}

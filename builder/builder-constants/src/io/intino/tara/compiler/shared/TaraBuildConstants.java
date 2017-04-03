@@ -32,7 +32,6 @@ public class TaraBuildConstants {
 	public static final String SEMANTIC_LIB = "semantic.lib";
 	public static final String TARA_PATH = "tara.path";
 	public static final String TARA_PROJECT_PATH = "tara.project.path";
-	public static final String NATIVES_LANGUAGE = "native.language";
 	public static final String WORKING_PACKAGE = "working.package";
 	public static final String PERSISTENT = "persistent";
 	public static final String LEVEL = "level";

@@ -30,7 +30,6 @@ import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService;
 import org.jetbrains.jps.tara.compiler.TaracOSProcessHandler.OutputItem;
 import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
 import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
-import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +58,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String STASH = ".stash";
 
 	private final String builderName;
-	private TaraJpsCompilerSettings settings;
 	private JpsModuleConfiguration conf;
 
 	TaraBuilder() {
@@ -76,7 +74,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		try {
 			final JpsTaraExtensionService service = JpsTaraExtensionService.instance();
 			conf = service.getConfiguration(chunk.getModules().iterator().next(), context);
-			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
 			if (e.getStackTrace().length != 0) {
@@ -98,7 +95,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		if (conf == null || toCompile.isEmpty()) return NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject());
-		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), conf, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), conf, isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
 		processMessages(chunk, context, handler);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;

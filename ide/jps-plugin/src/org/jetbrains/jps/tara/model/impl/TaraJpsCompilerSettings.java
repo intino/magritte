@@ -26,7 +26,4 @@ public class TaraJpsCompilerSettings extends JpsCompositeElementBase<TaraJpsComp
 	}
 
 
-	public String destinyLanguage() {
-		return mySettings.destinyLanguage;
-	}
 }

@@ -1,10 +1,10 @@
-<idea-plugin version="2" url="http://tara.intino.io">
+<idea-plugin url="http://tara.intino.io">
     <id>io.intino.tara</id>
     <depends>org.intellij.intelliLang</depends>
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
     <change-notes>
     </change-notes>
     <idea-version since-build="145"/>
@@ -52,8 +52,6 @@
         <compileServer.plugin classpath="jps-plugin.jar"/>
         <fileEditorProvider implementation="io.intino.tara.plugin.stash.StashEditorProvider"/>
 
-        <projectService serviceInterface="io.intino.tara.plugin.settings.TaraSettings" serviceImplementation="io.intino.tara.plugin.settings.TaraSettings"/>
-        <projectConfigurable instance="io.intino.tara.plugin.settings.TaraSettingsComponent"/>
         <projectService serviceInterface="io.intino.tara.plugin.lang.psi.TaraElementFactory" serviceImplementation="io.intino.tara.plugin.lang.psi.impl.TaraElementFactoryImpl"/>
         <projectService serviceInterface="io.intino.tara.plugin.codeinsight.JavaHelper" serviceImplementation="io.intino.tara.plugin.codeinsight.JavaHelper$Impl"/>
 
@@ -194,12 +192,6 @@
         </action>
         <action id="NewPackage" class="io.intino.tara.plugin.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
         </action>
-
-        <action id="io.intino.tara.plugin.actions.SubmitFeedbackAction"
-                class="io.intino.tara.plugin.actions.SubmitFeedbackAction"
-                text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
-            <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
-        </action>
     </actions>
 
     <module-components>
@@ -215,9 +207,7 @@
         <component>
             <implementation-class>io.intino.tara.plugin.codeinsight.languageinjection.imports.ImportsSaverService</implementation-class>
         </component>
-        <component>
-            <implementation-class>io.intino.tara.plugin.settings.TaraSettingsComponent</implementation-class>
-        </component>
+
         <component>
             <implementation-class>io.intino.tara.plugin.stash.StoreInspector</implementation-class>
         </component>

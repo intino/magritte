@@ -40,6 +40,8 @@ public interface Configuration {
 
 	String workingPackage();
 
+	String nativeLanguage();
+
 	Level level();
 
 	List<? extends LanguageLibrary> languages();

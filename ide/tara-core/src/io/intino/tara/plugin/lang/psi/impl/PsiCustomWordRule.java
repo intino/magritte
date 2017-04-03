@@ -31,7 +31,7 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 
 	@Override
 	public boolean accept(Object value) {
-		if (!isEnumType() || !(value instanceof List)) return true;
+		if (psiClass != null && !isEnumType() || !(value instanceof List)) return true;
 		for (Object o : ((List) value)) if (!words.contains(o.toString())) return false;
 		return true;
 	}
@@ -56,7 +56,7 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 	private boolean isEnumType() {
 		for (PsiClassType psiClassType : psiClass.getImplementsListTypes())
 			if (psiClassType.getClassName().equals("Rule") && psiClassType.getParameters().length == 1 &&
-				"Enum".equals(psiClassType.getParameters()[0].getPresentableText())) return true;
+					"Enum".equals(psiClassType.getParameters()[0].getPresentableText())) return true;
 		return false;
 	}
 

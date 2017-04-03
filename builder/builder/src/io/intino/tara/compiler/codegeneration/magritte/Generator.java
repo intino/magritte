@@ -88,7 +88,7 @@ public abstract class Generator implements TemplateTags {
 
 	protected Predicate<Tag> isLayerInterface() {
 		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
-				|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile) || tag.equals(Tag.Versioned);
+				|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile);
 	}
 
 	protected void addTerminalVariables(Node node, final Frame frame) {
