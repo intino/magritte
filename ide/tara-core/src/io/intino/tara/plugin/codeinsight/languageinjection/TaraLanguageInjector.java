@@ -42,7 +42,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
 		final Language language = injectionLanguage(host);
-		this.resolve(host);
+		resolve(host);
 		injectionPlacesRegistrar.addPlace(language,
 				getRangeInsideHost((Expression) host),
 				createPrefix((Expression) host, language),
@@ -113,11 +113,11 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private static String groovySuffix() {
 		return "\n\t}\n\n" +
-				"\tvoid self(io.intino.tara.magritte.Layer context) {\n" +
+				"\tpublic void self(io.intino.tara.magritte.Layer context) {\n" +
 				"\t}\n" +
 				"\n" +
-				"\tClass<? extends io.intino.tara.magritte.Layer> selfClass() {\n" +
-				"\t\treturn null\n" +
+				"\tpublic Class<? extends io.intino.tara.magritte.Layer> selfClass() {\n" +
+				"\t\treturn null;\n" +
 				"\t}\n" +
 				"}";
 	}
@@ -144,7 +144,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 			case "kotlin":
 				return kotlinSuffix();
 			default:
-				return (withSemicolon ? ";" : "") + "\n\t}\n}";
+				return (withSemicolon ? ";" : "") + groovySuffix();
 		}
 	}
 }
