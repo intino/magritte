@@ -40,6 +40,7 @@ public class LanguageManager {
 	public static final String DSL_GROUP_ID = "tara.dsl";
 	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
 	private static final Map<String, Language> core = new HashMap<>();
+	private static final Map<String, Map<Project, Language>> auxiliarLanguages = new HashMap<>();
 	private static final String INFO_JSON = "info" + JSON;
 	private static final String MISC = "misc";
 	private static final String LATEST = "LATEST";
@@ -69,6 +70,7 @@ public class LanguageManager {
 	public static Language getLanguage(Project project, String dsl, String version) {
 		if (dsl == null) return null;
 		if (core.containsKey(dsl)) return core.get(dsl);
+		if (auxiliarLanguages.containsKey(dsl)) return auxiliarLanguages.get(dsl).get(project);
 		if (dsl.isEmpty()) return core.get(VERSO);
 		if (project == null) return null;
 		return loadLanguage(project, dsl, version);
@@ -93,11 +95,16 @@ public class LanguageManager {
 			if (currentDSL.equalsIgnoreCase(dsl))
 				return languages.get(currentDSL);
 		return null;
-
 	}
 
 	public static void register(Language language) {
 		core.put(language.languageName(), language);
+	}
+
+	public static void registerAuxiliar(Project project, Language language) {
+		if (!auxiliarLanguages.containsKey(language.languageName()))
+			auxiliarLanguages.put(language.languageName(), new HashMap<>());
+		auxiliarLanguages.get(language.languageName()).put(project, language);
 	}
 
 	@SuppressWarnings("WeakerAccess")
