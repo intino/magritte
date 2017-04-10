@@ -107,9 +107,6 @@ public class CompilationInfoExtractor {
 			case TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;
-			case NATIVES_LANGUAGE:
-				configuration.nativeLanguage(reader.readLine());
-				break;
 			case DSL:
 				final String[] dsl = reader.readLine().trim().split(":");
 				configuration.addLanguage(dsl[0], dsl[1]);

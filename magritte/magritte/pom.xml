@@ -22,7 +22,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
-            <version>1.0.2</version>
+            <version>[1.0.2, 2.0.0)</version>
         </dependency>
 
         <dependency>

@@ -133,7 +133,8 @@ public class MethodReferenceCreator {
 	}
 
 	private PsiType getFunctionReturnType() {
-		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(valued.scope().toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), moduleWithDependenciesScope(module));
+		final String workingPackage = valued instanceof Variable ? this.workingPackage : valued.scope().toLowerCase();
+		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(workingPackage + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), moduleWithDependenciesScope(module));
 		if (aClass == null || !aClass.isInterface()) return PsiType.VOID;
 		return aClass.getMethods()[0].getReturnType();
 	}

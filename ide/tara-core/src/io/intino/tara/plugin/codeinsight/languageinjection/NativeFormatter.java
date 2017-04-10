@@ -194,7 +194,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String buildContainerPathOfExpression(Parameter parameter, String outDsl) {
-		return buildExpressionContainerPath(parameter.scope(), parameter.container(), outDsl);
+		return  buildExpressionContainerPath(parameter.scope(), parameter.container(), outDsl);
 	}
 
 	public static String getSignature(Parameter parameter) {
