@@ -22,7 +22,8 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
-            <version>[1.0.2, 2.0.0)</version>
+            <version>1.0.2</version>
+            <!--TODO update to 1.0.3-->
         </dependency>
 
         <dependency>
@@ -38,6 +39,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>intino-maven</id>
+            <name>intino-maven</name>
+            <url>http://artifactory.intino.io/artifactory/releases/</url>
+        </repository>
+    </repositories>
 
     <distributionManagement>
         <repository>
