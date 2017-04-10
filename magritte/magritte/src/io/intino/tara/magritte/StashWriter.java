@@ -97,7 +97,7 @@ class StashWriter {
     }
 
     private List<String> dateOf(List<?> values) {
-        // TODO
+        // TODO JJ serializar el DateX a string
         return values.stream().map(v -> ((LocalDateTime) v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
     }
 
