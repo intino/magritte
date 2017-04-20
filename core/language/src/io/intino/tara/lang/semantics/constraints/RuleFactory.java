@@ -66,14 +66,15 @@ public class RuleFactory {
 				for (Node component : node.components())
 					if (!areCompatibles(component, types))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type().replace(":", ""))));
-			}
+				}
 		};
 	}
 
 	private static boolean areCompatibles(Node component, List<String> allowedTypes) {
-		for (String componentType : component.types())
+		for (String componentType : component.types()) {
 			if (componentType != null && (allowedTypes.contains(componentType) || (component.container() != null && fromFacet(component.container().facets(), componentType, allowedTypes))))
 				return true;
+		}
 		return checkFacets(component, allowedTypes);
 	}
 
@@ -128,7 +129,11 @@ public class RuleFactory {
 	}
 
 	private static boolean facetComponent(List<Facet> facets, String nodeType, List<String> types) {
-		for (Facet facet : facets) if (types.contains(facet.type() + ProteoConstants.FACET_SEPARATOR + nodeType)) return true;
+		for (Facet facet : facets) {
+			if (types.contains(facet.type() + ProteoConstants.FACET_SEPARATOR + nodeType)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
