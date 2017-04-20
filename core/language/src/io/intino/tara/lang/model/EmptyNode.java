@@ -16,12 +16,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String language() {
+	public String languageName() {
 		return null;
 	}
 
 	@Override
-	public void language(String language) {
+	public void languageName(String language) {
 		throw new UnsupportedOperationException();
 	}
 

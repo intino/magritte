@@ -57,13 +57,13 @@ public class StashGenerationOperation extends ModelOperation {
 	private void createTestStashes(Model model) throws TaraException {
 		for (List<Node> nodes : pack(model)) {
 			if (nodes.isEmpty()) continue;
-			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.getLanguage()));
+			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
 		}
 	}
 
 	private void createStash(Model model) throws TaraException {
 		if (model.components().isEmpty()) return;
-		writeStashTo(stashDestiny(new File(model.components().get(0).file())), stashOf(model.components(), model.getLanguage()));
+		writeStashTo(stashDestiny(new File(model.components().get(0).file())), stashOf(model.components(), model.language()));
 	}
 
 	private Stash stashOf(List<Node> nodes, Language language) throws TaraException {

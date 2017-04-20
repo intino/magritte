@@ -108,12 +108,12 @@ public class FacetTargetImpl implements FacetTarget, Cloneable {
 	}
 
 	@Override
-	public String language() {
+	public String languageName() {
 		return language;
 	}
 
 	@Override
-	public void language(String language) {
+	public void languageName(String language) {
 		this.language = language;
 	}
 

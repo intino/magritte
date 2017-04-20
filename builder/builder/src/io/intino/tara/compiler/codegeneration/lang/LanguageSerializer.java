@@ -59,7 +59,7 @@ public class LanguageSerializer {
 
 	private List<Class<?>> collectLanguageRules(Model model) {
 		List<Class<?>> classes = new ArrayList<>();
-		for (Context context : model.getLanguage().catalog().values())
+		for (Context context : model.language().catalog().values())
 			classes.addAll(getRulesOfNode(context));
 		return classes;
 
@@ -89,7 +89,7 @@ public class LanguageSerializer {
 			JavaCompiler.compile(javaFile, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
 			jar(dslDestiny, rules.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).collect(Collectors.toList()));
 		} catch (IOException e) {
-			throw new TaraException("Error creating language: " + e.getMessage(), e);
+			throw new TaraException("Error creating languageName: " + e.getMessage(), e);
 		}
 	}
 
@@ -97,8 +97,8 @@ public class LanguageSerializer {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
 		for (Model model : models)
-			if (!(model.getLanguage() instanceof Proteo) && !(model.getLanguage() instanceof Verso)) try {
-				dependencies.add(Paths.get(model.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " "));
+			if (!(model.language() instanceof Proteo) && !(model.language() instanceof Verso)) try {
+				dependencies.add(Paths.get(model.language().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " "));
 			} catch (URISyntaxException ignored) {
 			}
 		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
@@ -134,10 +134,10 @@ public class LanguageSerializer {
 
 	private void addInheritedRules(JarOutputStream target) throws IOException {
 		for (Model model : models) {
-			if (model.getLanguage() instanceof Proteo || model.getLanguage() instanceof Verso) return;
+			if (model.language() instanceof Proteo || model.language() instanceof Verso) return;
 			final File tempDirectory = conf.getTempDirectory();
 			conf.cleanTemp();
-			FileSystemUtils.extractJar(model.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), tempDirectory);
+			FileSystemUtils.extractJar(model.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), tempDirectory);
 			final File[] languageDirectories = languageDirectory(tempDirectory);
 			List<File> rules = new ArrayList<>();
 			for (File d : languageDirectories) FileSystemUtils.getAllFiles(d, rules);

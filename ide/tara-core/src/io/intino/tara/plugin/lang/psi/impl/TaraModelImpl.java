@@ -234,6 +234,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public void name(String name) {
 	}
 
+	@Override
+	public Language language() {
+		return TaraUtil.getLanguage(this.getOriginalElement());
+	}
+
 	@NotNull
 	public Node resolve() {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
