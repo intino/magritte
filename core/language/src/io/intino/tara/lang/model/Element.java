@@ -1,5 +1,7 @@
 package io.intino.tara.lang.model;
 
+import io.intino.tara.Language;
+
 public interface Element {
 
 	String file();
@@ -24,10 +26,15 @@ public interface Element {
 //		throw new UnsupportedOperationException();
 	}
 
-	default String language() {
+	default String languageName() {
 		return null;
 	}
 
-	default void language(String language) {
+	default void languageName(String language) {
 	}
+
+	default Language language() {
+		return null;
+	}
+
 }

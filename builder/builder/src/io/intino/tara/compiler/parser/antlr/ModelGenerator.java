@@ -53,7 +53,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			final String langName = ctx.headerReference().getText();
 			for (CompilerConfiguration.DSL language : languages)
 				if (language.name().equalsIgnoreCase(langName)) model.setLanguage(language.get());
-			if (model.language().isEmpty())
+			if (model.languageName().isEmpty())
 				addError("Language " + langName + " not found", ctx);
 		} else addError("Language not found", ctx);
 	}
@@ -62,7 +62,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterNode(NodeContext ctx) {
 		if (!errors.isEmpty()) return;
 		NodeImpl node = new NodeImpl();
-		node.language(model.language());
+		node.languageName(model.languageName());
 		node.setSub(ctx.signature().SUB() != null);
 		if (ctx.signature().IDENTIFIER() != null) node.name(ctx.signature().IDENTIFIER().getText());
 		Node container = resolveContainer(node);
@@ -137,7 +137,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addHeaderInformation(ParserRuleContext ctx, Element element) {
-		element.language(model.language());
+		element.languageName(model.languageName());
 		element.line(ctx.getStart().getLine());
 		element.column(ctx.getStart().getCharPositionInLine());
 		element.file(file);

@@ -78,7 +78,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(model.getLanguage(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.language())).generationPackage()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
 		writeWrapper(createWrapper());
 	}
 
@@ -124,14 +124,14 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
 		if (node.facetTarget() != null) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf,node.language()).create(node.facetTarget(), node);
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf,node.languageName()).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
-		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.language()).create(node);
+		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 	}

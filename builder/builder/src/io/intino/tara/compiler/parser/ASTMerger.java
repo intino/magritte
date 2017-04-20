@@ -41,7 +41,7 @@ public class ASTMerger {
 				model.add(c, unit.getModel().rulesOf(c));
 				((NodeImpl) c).setDirty(unit.isDirty());
 			});
-			if (!components.isEmpty()) model.language(components.get(0).language());
+			if (!components.isEmpty()) model.languageName(components.get(0).languageName());
 		}
 		for (Node node : model.components()) node.container(model);
 		if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
@@ -51,9 +51,9 @@ public class ASTMerger {
 	private Map<Language, List<SourceUnit>> groupByLanguage() {
 		Map<Language, List<SourceUnit>> list = new HashMap<>();
 		for (SourceUnit source : sources) {
-			if (!list.containsKey(source.getModel().getLanguage()))
-				list.put(source.getModel().getLanguage(), new ArrayList<>());
-			list.get(source.getModel().getLanguage()).add(source);
+			if (!list.containsKey(source.getModel().language()))
+				list.put(source.getModel().language(), new ArrayList<>());
+			list.get(source.getModel().language()).add(source);
 		}
 		return list;
 

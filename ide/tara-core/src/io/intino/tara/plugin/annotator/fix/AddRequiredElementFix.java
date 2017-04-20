@@ -64,11 +64,11 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}
 
-	public boolean isRequired(Constraint.Component constraint) {
+	private boolean isRequired(Constraint.Component constraint) {
 		return constraint.rules().stream().filter(r -> r instanceof Size).allMatch(r -> ((Size) r).isRequired());
 	}
 
-	public List<Constraint> findConstraints() {
+	private List<Constraint> findConstraints() {
 		return TaraUtil.getConstraintsOf(node);
 	}
 
@@ -98,18 +98,18 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 		PsiDocumentManager.getInstance(node.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}
 
-	public Template createTemplate(List<Constraint.Component> requires, PsiFile file) {
+	private Template createTemplate(List<Constraint.Component> requires, PsiFile file) {
 		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires, TaraPsiImplUtil.getIndentation((PsiElement) node) + 1));
 		addComponents(template, requires);
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;
 	}
 
-	public void addComponents(Template template, List<Constraint.Component> requires) {
+	private void addComponents(Template template, List<Constraint.Component> requires) {
 		for (int i = 0; i < requires.size(); i++) template.addVariable("VALUE" + i, "", "", true);
 	}
 
-	public String createTemplateText(List<Constraint.Component> requires, int indents) {
+	private String createTemplateText(List<Constraint.Component> requires, int indents) {
 		String text = buildIndentation(indents);
 		for (int i = 0; i < requires.size(); i++) text += shortType(requires, i) + " $VALUE" + i + "$\n";
 		return text;
@@ -121,7 +121,7 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 		return indentation;
 	}
 
-	public String shortType(List<Constraint.Component> requires, int i) {
+	private String shortType(List<Constraint.Component> requires, int i) {
 		final String[] type = requires.get(i).type().split("\\.");
 		return type[type.length - 1];
 	}

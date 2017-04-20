@@ -19,8 +19,8 @@ public class SemanticAnalyzer {
 
 	public SemanticAnalyzer(Model model) {
 		this.model = model;
-		resolver = new Resolver(model.getLanguage());
-		checker = new Checker(model.getLanguage());
+		resolver = new Resolver(model.language());
+		checker = new Checker(model.language());
 		notifications = new ArrayList<>();
 	}
 

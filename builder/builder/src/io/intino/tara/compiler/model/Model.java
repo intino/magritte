@@ -85,12 +85,12 @@ public class Model implements NodeRoot {
 		return this.components.get(component);
 	}
 
-	public Language getLanguage() {
+	public Language language() {
 		return language;
 	}
 
 	@Override
-	public String language() {
+	public String languageName() {
 		return language != null ? language.languageName() : "";
 	}
 

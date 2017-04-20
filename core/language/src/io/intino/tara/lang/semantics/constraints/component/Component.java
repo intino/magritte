@@ -87,7 +87,7 @@ public class Component implements Constraint.Component {
 		return false;
 	}
 
-	public void addFlags(Node node) {
+	private void addFlags(Node node) {
 		List<Tag> flags = new ArrayList<>(node.flags());
 		for (Tag flag : this.annotations) {
 			if (!flags.contains(flag)) node.addFlag(flag);
@@ -96,16 +96,16 @@ public class Component implements Constraint.Component {
 	}
 
 	private List<Node> filterByType(NodeContainer node) {
-		return node.components().stream().filter(component -> areCompatibles(component, type())).collect(Collectors.toList());
+		return node.components().stream().filter(component -> isCompatibles(component)).collect(Collectors.toList());
 	}
 
-	private static boolean areCompatibles(Node node, String type) {
+	private boolean isCompatibles(Node node) {
 		for (String nodeType : node.types())
-			if (nodeType != null && nodeType.equals(type)) return true;
-		return checkFacets(node, type);
+			if (nodeType != null && nodeType.equals(type) || nodeType.equals(Resolver.shortType(type))) return true;
+		return checkFacets(node);
 	}
 
-	private static boolean checkFacets(Node node, String type) {
+	private boolean checkFacets(Node node) {
 		for (io.intino.tara.lang.model.Facet facet : node.facets())
 			if (facet.type().equals(Resolver.shortType(type))) return true;
 		return false;

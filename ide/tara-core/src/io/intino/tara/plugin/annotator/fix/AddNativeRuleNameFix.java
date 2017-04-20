@@ -70,7 +70,7 @@ public class AddNativeRuleNameFix extends WithLiveTemplateFix implements Intenti
 		});
 	}
 
-	public Template createTemplate(PsiFile file) {
+	private Template createTemplate(PsiFile file) {
 		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", ":$VALUE$");
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;

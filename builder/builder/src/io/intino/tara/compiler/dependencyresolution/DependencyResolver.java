@@ -104,7 +104,7 @@ public class DependencyResolver {
 	}
 
 	private boolean tryWithAnInstance(Primitive.Reference value) {
-		final Language language = model.getLanguage();
+		final Language language = model.language();
 		if (language != null && language.instances().keySet().contains(value.get())) {
 			value.setToInstance(true);
 			value.instanceTypes(language.instances().get(value.get()).types());
@@ -242,7 +242,7 @@ public class DependencyResolver {
 	}
 
 	private boolean tryAsLanguageReference(VariableReference variable) {
-		final Language language = model.getLanguage();
+		final Language language = model.language();
 		if (language == null) return false;
 		final List<String> types = language.types(variable.destinyName());
 		if (types != null) {

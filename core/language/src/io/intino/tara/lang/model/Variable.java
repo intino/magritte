@@ -1,5 +1,6 @@
 package io.intino.tara.lang.model;
 
+import io.intino.tara.Language;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
 
@@ -63,6 +64,17 @@ public interface Variable extends Valued, Cloneable {
 	void defaultMetric(String defaultExtension);
 
 	String getUID();
+
+	default Language language() {
+		return nodeRoot().language();
+	}
+
+	default NodeRoot nodeRoot() {
+		Node container = container();
+		while (!(container instanceof NodeRoot))
+			container = container.container();
+		return (NodeRoot) container;
+	}
 
 	default Variable cloneIt(Node container) {
 		return null;

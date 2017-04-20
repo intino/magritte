@@ -403,11 +403,11 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	public String language() {
+	public String languageName() {
 		return null;
 	}
 
-	public void language(String language) {
+	public void languageName(String language) {
 	}
 
 	public List<Node> children() {

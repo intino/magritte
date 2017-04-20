@@ -66,14 +66,15 @@ public class RuleFactory {
 				for (Node component : node.components())
 					if (!areCompatibles(component, types))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type().replace(":", ""))));
-			}
+				}
 		};
 	}
 
 	private static boolean areCompatibles(Node component, List<String> allowedTypes) {
-		for (String componentType : component.types())
+		for (String componentType : component.types()) {
 			if (componentType != null && (allowedTypes.contains(componentType) || (component.container() != null && fromFacet(component.container().facets(), componentType, allowedTypes))))
 				return true;
+		}
 		return checkFacets(component, allowedTypes);
 	}
 
@@ -128,8 +129,7 @@ public class RuleFactory {
 	}
 
 	private static boolean facetComponent(List<Facet> facets, String nodeType, List<String> types) {
-		for (Facet facet : facets) if (types.contains(facet.type() + ProteoConstants.FACET_SEPARATOR + nodeType)) return true;
-		return false;
+		return facets.stream().anyMatch(facet -> types.contains(facet.type() + ProteoConstants.FACET_SEPARATOR + nodeType));
 	}
 
 	private static boolean asFacet(List<Facet> facets, String facet) {
@@ -155,18 +155,6 @@ public class RuleFactory {
 			}
 		};
 	}
-//
-//	public static Constraint anchor() {
-//		return new Constraint.Anchor() {
-//			@Override
-//			public void check(Element element) throws SemanticException {
-//				Node node = (Node) element;
-//				if (element == null) return;
-//				if (!node.isReference() && (node.anchor() == null || node.anchor().isEmpty()))
-//					throw new SemanticException(new SemanticError("required.anchor", node, singletonList(node.type())));
-//			}
-//		};
-//	}
 
 	public static Constraint.TerminalVariableRedefinition redefine(final String name, String superType) {
 		return new Constraint.TerminalVariableRedefinition() {

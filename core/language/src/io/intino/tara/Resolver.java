@@ -59,7 +59,7 @@ public class Resolver {
 	private List<Constraint> findInFacets(Node node) {
 		final Node context = context(node);
 		for (String type : context.secondaryTypes()) {
-			List<Constraint> constraints = language.constraints(type.contains(":") ? type : type + ":" + context.type());
+			List<Constraint> constraints = language.constraints(type.contains(":") ? type : type + ":" + context.type().replace(".",":"));
 			if (constraints != null && contextNodeConstraints(constraints, node)) return constraints;
 		}
 		return null;
