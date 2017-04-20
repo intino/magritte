@@ -171,8 +171,7 @@ public class GlobalConstraints {
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!variable.isReference() && isRedefiningTerminal(variable))
-			error("reject.default.value.reference.to.instance", variable);
-
+			error("reject.terminal.variable.redefinition", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		else if (!values.isEmpty() && !(values.get(0) instanceof EmptyNode) && variable.rule() != null && !(variable.rule() instanceof NativeRule) && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
