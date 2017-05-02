@@ -61,7 +61,7 @@ def type(Variable) !type(owner | concept) type(target | metaType) slot(name) typ
 end
 
 def type(Variable & function) type(target | metaType) !type(owner) slot(name) trigger(getter)
-	public $returnType $name+firstLowerCase+javaValidName($parameters) {
+	public $returnType $name+firstLowerCase+javaValidName($parameters)[ throws $exception...[, ]] {
 		$returnType+isReturn _$containerName+firstLowerCase.$name+firstLowerCase+javaValidName($parameters+WithOutType);
 	}
 end
@@ -225,7 +225,7 @@ def type(variable & reactive) !type(inherited | overriden) trigger(getter)
 end
 
 def type(variable & function) !type(inherited | overriden) trigger(getter)
-	public $returnType $name+firstLowerCase+javaValidName($parameters) {
+	public $returnType $name+firstLowerCase+javaValidName($parameters)[ throws $exception...[, ]] {
 		$returnType+isReturn $name+firstLowerCase+javaValidName.$methodName($parameters+WithoutType);
 	}
 end

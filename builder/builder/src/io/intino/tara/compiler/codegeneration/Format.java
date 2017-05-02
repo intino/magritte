@@ -22,7 +22,7 @@ public class Format {
 		template.add("withDollar", withDollar());
 		template.add("noPackage", noPackage());
 		template.add("key", key());
-		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
+		template.add("returnType", (trigger, type) -> trigger.frame().frames("returnType").next().value().equals(type));
 		template.add("WithoutType", nativeParameterWithoutType());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
