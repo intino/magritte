@@ -84,7 +84,8 @@ public class NativeFormatter implements TemplateTags {
 		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
-		frame.addFrame("returnType", extractor.returnValue());
+		frame.addFrame("returnType", extractor.returnType());
+		frame.addFrame("exception", extractor.exceptions());
 	}
 
 	public void fillFrameForFunctionParameter(Frame frame, Parameter parameter, Object body) {
@@ -111,7 +112,8 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), signature));
-		frame.addFrame("returnType", extractor.returnValue());
+		frame.addFrame("returnType", extractor.returnType());
+		frame.addFrame("exception", extractor.exceptions());
 	}
 
 	public void fillFrameNativeVariable(Frame frame, Variable variable, Object body) {

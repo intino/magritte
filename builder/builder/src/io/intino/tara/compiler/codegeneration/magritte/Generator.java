@@ -198,7 +198,7 @@ public abstract class Generator implements TemplateTags {
 			NativeExtractor extractor = new NativeExtractor(signature);
 			frame.addFrame("methodName", extractor.methodName());
 			frame.addFrame("parameters", extractor.parameters());
-			frame.addFrame("returnType", extractor.returnValue());
+			frame.addFrame("returnType", extractor.returnType());
 			frame.addFrame(RULE, rule.interfaceClass());
 			frame.addFrame(OUT_LANGUAGE, parameter.scope());
 			imports.addAll(rule.imports().stream().collect(Collectors.toList()));
