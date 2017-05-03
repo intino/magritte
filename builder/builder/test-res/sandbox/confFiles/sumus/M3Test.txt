@@ -1,5 +1,12 @@
 def.file
-/Users/oroncal/workspace/sandbox/sumus_platform/test/src/io/intino/sumus/test/Test.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/nqa/Olap.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Entities.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/happysense/TestHappysense.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/happysense/Olap.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/nqa/TestNqa.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Namespaces.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Palette.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Metrics.tara#true
 
 project
 sumus
@@ -8,17 +15,17 @@ test
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/sumus_platform/test/gen
+/Users/oroncal/workspace/sandbox/sumus-platform/test/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/sumus_platform/out/production/test/
+/Users/oroncal/workspace/sandbox/sumus-platform/out/production/test/
 resources
-/Users/oroncal/workspace/sandbox/sumus_platform/test/res
+/Users/oroncal/workspace/sandbox/sumus-platform/test/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/sandbox/sumus_platform/.tara
+/Users/oroncal/workspace/sandbox/sumus-platform/.tara
 src.path
-/Users/oroncal/workspace/sandbox/sumus_platform/test/src
+/Users/oroncal/workspace/sandbox/sumus-platform/test/src
 
 version
 1.0.0

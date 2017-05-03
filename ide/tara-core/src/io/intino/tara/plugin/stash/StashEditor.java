@@ -2,6 +2,8 @@ package io.intino.tara.plugin.stash;
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.*;
@@ -12,9 +14,9 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.pom.Navigatable;
+import io.intino.tara.plugin.lang.file.StashFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.lang.file.StashFileType;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
@@ -32,11 +34,17 @@ class StashEditor implements TextEditor {
 		try {
 			final Path path = StashToTara.createTara(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".tara"));
 			final VirtualFile fileByURL = VfsUtil.findFileByIoFile(path.toFile(), true);
-			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+			refreshFiles();
 			if (fileByURL != null) myComponent = createEditorComponent(project, fileByURL);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void refreshFiles() {
+		final Application application = ApplicationManager.getApplication();
+		if (application.isWriteAccessAllowed()) VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+		else application.invokeAndWait(() -> VirtualFileManager.getInstance().refreshWithoutFileWatcher(false));
 	}
 
 	@NotNull
