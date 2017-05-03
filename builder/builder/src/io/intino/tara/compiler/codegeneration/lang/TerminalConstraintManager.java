@@ -1,18 +1,18 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.lang.model.*;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.engine.adapters.ExcludeAdapter;
-import org.siani.itrules.model.Frame;
-import io.intino.tara.Language;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.ReferenceRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.engine.adapters.ExcludeAdapter;
+import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,30 +72,34 @@ class TerminalConstraintManager implements TemplateTags {
 		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.facet(), constraint.position(), constraint.scope(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
-			fillAllowedReferences((ReferenceRule) constraint.rule());
+			fillAllowedReferences(constraint);
 			primitiveFrame.addTypes(REFERENCE);
 		}
 		renderPrimitive(primitiveFrame, parameters, relation);
 		constraints.addFrame(relation, primitiveFrame);
 	}
 
-	private void fillAllowedReferences(ReferenceRule rule) {
-		if (!allowedValuesAreTerminal(rule)) rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
+	private void fillAllowedReferences(Constraint.Parameter constraint) {
+		if (constraint.rule() instanceof ReferenceRule) fillAllowedReferences((ReferenceRule) constraint.rule());
 	}
 
-	private Frame renderPrimitive(Frame frame, Object[] parameters, String relation) {
+	private void fillAllowedReferences(ReferenceRule rule) {
+		if (!allowedValuesAreTerminal(rule.allowedReferences()))
+			rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
+	}
+
+	private void renderPrimitive(Frame frame, Object[] parameters, String relation) {
 		frame.addTypes(relation, PARAMETER);
 		fillParameterFrame(parameters, frame);
-		return frame;
 	}
 
 	private void fillParameterFrame(Object[] parameters, Frame frame) {
 		frame.addFrame(NAME, parameters[0]).
-			addFrame(TYPE, parameters[1]).
-			addFrame(SIZE, (Frame) parameters[2]).
-			addFrame(FACET, parameters[3]).
-			addFrame(POSITION, parameters[4]).
-			addFrame(SCOPE, parameters[5]);
+				addFrame(TYPE, parameters[1]).
+				addFrame(SIZE, (Frame) parameters[2]).
+				addFrame(FACET, parameters[3]).
+				addFrame(POSITION, parameters[4]).
+				addFrame(SCOPE, parameters[5]);
 		if (parameters[6] != null) frame.addFrame(RULE, (Frame) parameters[6]);
 		frame.addFrame(TAGS, (String[]) parameters[7]);
 	}
@@ -128,8 +132,8 @@ class TerminalConstraintManager implements TemplateTags {
 		}
 	}
 
-	private boolean allowedValuesAreTerminal(ReferenceRule rule) {
-		for (String node : rule.allowedReferences())
+	private boolean allowedValuesAreTerminal(List<String> references) {
+		for (String node : references)
 			if (!isTerminal(node)) return false;
 		return true;
 	}

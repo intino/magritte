@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.2.9</version>
+    <version>1.2.10</version>
     <change-notes>
     </change-notes>
     <idea-version since-build="145"/>
@@ -206,10 +206,6 @@
         </component>
         <component>
             <implementation-class>io.intino.tara.plugin.codeinsight.languageinjection.imports.ImportsSaverService</implementation-class>
-        </component>
-
-        <component>
-            <implementation-class>io.intino.tara.plugin.stash.StoreInspector</implementation-class>
         </component>
     </project-components>
 
