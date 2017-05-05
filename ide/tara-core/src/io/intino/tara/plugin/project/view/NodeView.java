@@ -22,6 +22,7 @@ import com.intellij.ui.RowIcon;
 import com.intellij.util.PlatformIcons;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,9 +80,10 @@ class NodeView extends PsiFileNode implements Navigatable {
 		PsiFile value = getValue();
 		if (value instanceof TaraModel) {
 			myName = getName();
-			System.out.println(myName + " " + data.isChanged());
 			data.setPresentableText(((TaraModel) value).getPresentableName());
-			data.setIcon(new RowIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS), PlatformIcons.PUBLIC_ICON));
+			final Icon icon = value.getIcon(Iconable.ICON_FLAG_READ_STATUS);
+			data.setIcon(((TaraModel) value).dsl().equalsIgnoreCase("Legio") ?
+					icon : new RowIcon(icon, PlatformIcons.PACKAGE_LOCAL_ICON));
 		} else data.setPresentableText(value.getName());
 		VirtualFile file = getVirtualFile();
 		if (file != null && file.is(VFileProperty.SYMLINK)) {

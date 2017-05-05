@@ -84,7 +84,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.addLanguage(project.name(), project.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else for (Factory.Language language : factory.languageList()) {
-			configuration.addLanguage(language.name$(), language.version());
+			configuration.addLanguage(language.name$(), language.effectiveVersion());
 			configuration.level(level);
 		}
 	}
