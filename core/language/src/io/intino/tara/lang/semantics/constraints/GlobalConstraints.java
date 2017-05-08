@@ -147,14 +147,17 @@ public class GlobalConstraints {
 
 	private void inNode(Node node) throws SemanticException {
 		checkDuplicates(node.variables());
+		checkDuplicates(node.parameters());
 		for (Variable variable : node.variables())
 			checkVariable(variable);
+
 	}
 
-	private void checkDuplicates(List<Variable> variables) throws SemanticException {
+	private void checkDuplicates(List<? extends Valued> valueds) throws SemanticException {
 		Set<String> names = new LinkedHashSet();
-		for (Variable variable : variables)
-			if (!names.add(variable.name())) error("reject.duplicated.variable", variable, Collections.emptyList());
+		for (Valued valued : valueds)
+			if (!names.add(valued.name()))
+				error("reject.duplicated.valued", valued, Collections.singletonList(valued.getClass().getSimpleName().contains("Parameter") ? "parameter" : "variable"));
 	}
 
 	private void checkVariable(Variable variable) throws SemanticException {
