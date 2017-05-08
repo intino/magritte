@@ -187,7 +187,7 @@
     </extensions>
 
     <actions>
-        <action id="NewTaraFile" class="io.intino.tara.plugin.actions.CreateTaraFileAction">
+        <action id="NewTaraFile" class="io.intino.tara.plugin.actions.CreateModelFileAction">
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
         <action id="NewPackage" class="io.intino.tara.plugin.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">

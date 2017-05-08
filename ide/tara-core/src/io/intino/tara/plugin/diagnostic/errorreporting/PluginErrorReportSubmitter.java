@@ -57,7 +57,6 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		return true;
 	}
 
-
 	private boolean processExceptions(Component parentComponent, PivotalLoggingEventSubmitter.SubmitException e) {
 		if (e != null) {
 			LOG.info("Error submission failed", e);

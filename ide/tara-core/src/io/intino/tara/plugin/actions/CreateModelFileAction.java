@@ -31,9 +31,9 @@ import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import java.util.List;
 import java.util.Map;
 
-public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
+public class CreateModelFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
-	public CreateTaraFileAction() {
+	public CreateModelFileAction() {
 		super(MessageProvider.message("new.file.menu.action.text"), MessageProvider.message("new.file.menu.action.description"), TaraIcons.ICON_16, true);
 	}
 
@@ -60,7 +60,8 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
 		if (!(data instanceof PsiFile || data instanceof PsiDirectory)) return false;
 		Module module = ModuleProvider.moduleOf(data);
-		return super.isAvailable(dataContext) && TaraModuleType.isTara(module);
+		final Configuration configuration = TaraUtil.configurationOf(module);
+		return super.isAvailable(dataContext) && TaraModuleType.isTara(module) && configuration != null;//TODO && configuration.modelling()!= null;
 	}
 
 	@Nullable
