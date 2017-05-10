@@ -38,11 +38,6 @@ public class TaraModuleType extends JavaModuleType {
 	}
 
 	@Override
-	public Icon getBigIcon() {
-		return TaraIcons.LOGO_24;
-	}
-
-	@Override
 	public Icon getNodeIcon(@Deprecated boolean isOpened) {
 		return TaraIcons.ICON_16;
 	}
