@@ -111,9 +111,9 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public List<String> repositories() {
+	public Map<String, String> repositories() {
 		return maven.getRemoteRepositories().stream().
-				map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
+				collect(Collectors.toMap(MavenRemoteRepository::getUrl, MavenRemoteRepository::getId));
 	}
 
 	@Override
@@ -131,18 +131,12 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public String languageRepository() {
+	public Map<String, String> languageRepositories() {
 		return maven.getRemoteRepositories().stream().
 				filter(repository -> repository.getSnapshotsPolicy() == null).
-				map(MavenRemoteRepository::getUrl).findFirst().orElse(null);
+				collect(Collectors.toMap(MavenRemoteRepository::getUrl, MavenRemoteRepository::getId));
 	}
 
-	@Override
-	public String languageRepositoryId() {
-		return maven.getRemoteRepositories().stream().
-				filter(repository -> repository.getSnapshotsPolicy() == null).
-				map(MavenRemoteRepository::getId).findFirst().orElse(null);
-	}
 
 	@Override
 	public String outDSL() {

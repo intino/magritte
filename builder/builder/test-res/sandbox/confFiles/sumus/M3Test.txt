@@ -1,12 +1,6 @@
 def.file
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/nqa/Olap.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Entities.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/happysense/TestHappysense.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/happysense/Olap.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/nqa/TestNqa.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Namespaces.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Palette.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src/io/intino/sumus/test/Metrics.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/test/io/intino/sumus/analytics/query/Metric.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/test/test/io/intino/sumus/test/Model.tara#true
 
 project
 sumus
@@ -15,17 +9,17 @@ test
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/sumus-platform/test/gen
+/Users/oroncal/workspace/sandbox/sumus-platform/test/test-gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/sumus-platform/out/production/test/
+/Users/oroncal/workspace/sandbox/sumus-platform/out/test/test/
 resources
-/Users/oroncal/workspace/sandbox/sumus-platform/test/res
+/Users/oroncal/workspace/sandbox/sumus-platform/test/test-res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/sandbox/sumus-platform/.tara
 src.path
-/Users/oroncal/workspace/sandbox/sumus-platform/test/src
+/Users/oroncal/workspace/sandbox/sumus-platform/test/test
 
 version
 1.0.0
@@ -34,6 +28,6 @@ working.package
 make
 false
 test.module
-false
+true
 encoding
 UTF-8

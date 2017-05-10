@@ -1,8 +1,7 @@
 package io.intino.tara.compiler.core.operation.setup;
 
+import io.intino.legio.Artifact;
 import io.intino.legio.Legio;
-import io.intino.legio.Project;
-import io.intino.legio.Project.Factory;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -71,19 +70,19 @@ public class SetupConfigurationOperation extends SetupOperation {
 	}
 
 	private void extractConfiguration(Legio legio) {
-		Project project = legio.project();
-		Factory factory = project.factory();
-		final Level level = Level.valueOf(factory.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
-		configuration.outDSL(project.name());
-		final String workingPackage = factory.inPackage() != null ? factory.inPackage() : project.name().toLowerCase();
+		Artifact artifact = legio.artifact();
+		Artifact.Generation generation = artifact.generation();
+		final Level level = Level.valueOf(generation.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
+		configuration.outDSL(artifact.name());
+		final String workingPackage = generation.inPackage() != null ? generation.inPackage() : artifact.name().toLowerCase();
 		configuration.workingPackage(configuration.isTest() ? workingPackage + ".test" : workingPackage);
-		configuration.artifactId(project.name().toLowerCase());
-		configuration.groupId(project.groupId());
-		configuration.version(project.version());
+		configuration.artifactId(artifact.name().toLowerCase());
+		configuration.groupId(artifact.groupId());
+		configuration.version(artifact.version());
 		if (configuration.isTest()) {
-			configuration.addLanguage(project.name(), project.version());
+			configuration.addLanguage(artifact.name(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
-		} else for (Factory.Language language : factory.languageList()) {
+		} else for (Artifact.Modeling.Language language : artifact.modeling().languageList()) {
 			configuration.addLanguage(language.name$(), language.effectiveVersion());
 			configuration.level(level);
 		}
