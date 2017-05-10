@@ -267,7 +267,7 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonopolyM0() {
+	public void MonopolyM1() {
 		main(new String[]{home + "sandbox/confFiles/tafat/MonopolyM1.txt"});
 	}
 

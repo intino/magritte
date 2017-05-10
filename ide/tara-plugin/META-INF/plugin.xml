@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.2.10</version>
+    <version>1.3.0</version>
     <change-notes>
     </change-notes>
     <idea-version since-build="145"/>
@@ -187,7 +187,7 @@
     </extensions>
 
     <actions>
-        <action id="NewTaraFile" class="io.intino.tara.plugin.actions.CreateTaraFileAction">
+        <action id="NewTaraFile" class="io.intino.tara.plugin.actions.CreateModelFileAction">
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
         <action id="NewPackage" class="io.intino.tara.plugin.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">

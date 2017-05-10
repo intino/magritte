@@ -18,8 +18,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.JBColor;
+import com.intellij.ui.RowIcon;
+import com.intellij.util.PlatformIcons;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +33,7 @@ class NodeView extends PsiFileNode implements Navigatable {
 	static final DataKey<NodeView> DATA_KEY = DataKey.create("form.array");
 	@SuppressWarnings("deprecation")
 	public static final TextAttributesKey ERROR = createTextAttributesKey("ERROR",
-		new TextAttributes(null, null, JBColor.RED, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
+			new TextAttributes(null, null, JBColor.RED, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
 	private final PsiFile taraFile;
 
 	NodeView(Project project, TaraModel psiFile, ViewSettings settings) {
@@ -78,8 +81,10 @@ class NodeView extends PsiFileNode implements Navigatable {
 		if (value instanceof TaraModel) {
 			myName = getName();
 			data.setPresentableText(((TaraModel) value).getPresentableName());
+			final Icon icon = value.getIcon(Iconable.ICON_FLAG_READ_STATUS);
+			data.setIcon(((TaraModel) value).dsl().equalsIgnoreCase("Legio") ?
+					icon : new RowIcon(icon, PlatformIcons.PACKAGE_LOCAL_ICON));
 		} else data.setPresentableText(value.getName());
-		data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS));
 		VirtualFile file = getVirtualFile();
 		if (file != null && file.is(VFileProperty.SYMLINK)) {
 			String target = file.getCanonicalPath();

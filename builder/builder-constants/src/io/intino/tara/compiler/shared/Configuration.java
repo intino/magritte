@@ -1,6 +1,6 @@
 package io.intino.tara.compiler.shared;
 
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +54,8 @@ public interface Configuration {
 
 	String interfaceVersion();
 
-	default List<String> repositories() {
-		return Collections.emptyList();
+	default Map<String, String> repositories() {
+		return Collections.emptyMap();
 	}
 
 	default Map<String, String> releaseRepositories() {
@@ -66,28 +66,20 @@ public interface Configuration {
 		return "";
 	}
 
-	default AbstractMap.SimpleEntry<String, String> distributionLanguageRepository() {
-		return new AbstractMap.SimpleEntry<>("", "");
+	default SimpleEntry<String, String> distributionLanguageRepository() {
+		return new SimpleEntry<>("", "");
 	}
 
-	default AbstractMap.SimpleEntry<String, String> distributionReleaseRepository() {
-		return new AbstractMap.SimpleEntry<>("", "");
+	default SimpleEntry<String, String> distributionReleaseRepository() {
+		return new SimpleEntry<>("", "");
 	}
 
-	default AbstractMap.SimpleEntry<String, String> distributionSnapshotRepository() {
-		return new AbstractMap.SimpleEntry<>("", "");
+	default SimpleEntry<String, String> distributionSnapshotRepository() {
+		return new SimpleEntry<>("", "");
 	}
 
-	default String languageRepository() {
-		return "";
-	}
-
-	default String languageRepositoryId() {
-		return "";
-	}
-
-	default List<RunConfiguration> preConfigurations() {
-		return Collections.emptyList();
+	default Map<String, String> languageRepositories() {
+		return Collections.emptyMap();
 	}
 
 	default List<RunConfiguration> deployConfigurations() {

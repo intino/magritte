@@ -221,24 +221,23 @@ class TaraBuilder extends ModuleLevelBuilder {
 			LOG.info("No java source root descriptor for the item found =" + item);
 	}
 
-	private static String ensureCorrectOutput(ModuleChunk chunk,
-											  OutputItem item,
-											  Map<ModuleBuildTarget, List<String>> generationOutputs,
-											  String compilerOutput,
-											  @NotNull ModuleBuildTarget srcTarget) throws IOException {
+	private static void ensureCorrectOutput(ModuleChunk chunk,
+											OutputItem item,
+											Map<ModuleBuildTarget, List<String>> generationOutputs,
+											String compilerOutput,
+											@NotNull ModuleBuildTarget srcTarget) throws IOException {
 		if (chunk.getModules().size() > 1 && !srcTarget.equals(chunk.representativeTarget())) {
 			File output = new File(item.getSourcePath());
 			String srcTargetOutput = generationOutputs.get(srcTarget).get(0);
 			if (srcTargetOutput == null) {
 				LOG.info("No output for " + srcTarget + "; outputs=" + generationOutputs + "; targets = " + chunk.getTargets());
-				return item.getSourcePath();
+				return;
 			}
 			File correctRoot = new File(srcTargetOutput);
 			File correctOutput = new File(correctRoot, FileUtil.getRelativePath(new File(compilerOutput), output));
 			FileUtil.rename(output, correctOutput);
-			return correctOutput.getPath();
+			correctOutput.getPath();
 		}
-		return item.getSourcePath();
 	}
 
 	@Override
