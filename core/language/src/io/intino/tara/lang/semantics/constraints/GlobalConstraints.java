@@ -156,7 +156,7 @@ public class GlobalConstraints {
 	private void checkDuplicates(List<? extends Valued> valueds) throws SemanticException {
 		Set<String> names = new LinkedHashSet();
 		for (Valued valued : valueds)
-			if (!names.add(valued.name()))
+			if (valued.name() != null && !valued.name().isEmpty() && !names.add(valued.name()))
 				error("reject.duplicated.valued", valued, Collections.singletonList(valued.getClass().getSimpleName().contains("Parameter") ? "parameter" : "variable"));
 	}
 
