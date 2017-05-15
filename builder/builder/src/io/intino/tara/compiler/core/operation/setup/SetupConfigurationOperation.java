@@ -83,7 +83,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.addLanguage(artifact.name(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else for (Artifact.Modeling.Language language : artifact.modeling().languageList()) {
-			configuration.addLanguage(language.name$(), language.effectiveVersion());
+			configuration.addLanguage(language.name$(), language.effectiveVersion().isEmpty() ? language.version() : language.effectiveVersion());
 			configuration.level(level);
 		}
 	}
