@@ -2,6 +2,7 @@ package io.intino.tara.compiler.core.operation.setup;
 
 import io.intino.legio.Artifact;
 import io.intino.legio.Legio;
+import io.intino.legio.level.LevelArtifact;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -61,7 +62,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 
 	private boolean checkConfiguration() throws TaraException {
 		if (configuration.languages().isEmpty())
-			throw new TaraException("Language not defined or not found:");
+			throw new TaraException("Language not defined or not found.");
 		if (configuration.artifactId() == null || configuration.artifactId().isEmpty())
 			throw new TaraException("Project name not found. Reload configuration");
 		else if (configuration.languages().get(0).get() == null)
@@ -72,9 +73,9 @@ public class SetupConfigurationOperation extends SetupOperation {
 	private void extractConfiguration(Legio legio) {
 		Artifact artifact = legio.artifact();
 		Artifact.Generation generation = artifact.generation();
-		final Level level = Level.valueOf(generation.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
+		final Level level = Level.valueOf(artifact.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
 		configuration.outDSL(artifact.name());
-		final String workingPackage = generation.inPackage() != null ? generation.inPackage() : artifact.name().toLowerCase();
+		final String workingPackage = generation != null && generation.targetPackage() != null ? generation.targetPackage() : artifact.groupId() + "." + artifact.name().toLowerCase();
 		configuration.workingPackage(configuration.isTest() ? workingPackage + ".test" : workingPackage);
 		configuration.artifactId(artifact.name().toLowerCase());
 		configuration.groupId(artifact.groupId());
@@ -82,9 +83,11 @@ public class SetupConfigurationOperation extends SetupOperation {
 		if (configuration.isTest()) {
 			configuration.addLanguage(artifact.name(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
-		} else for (Artifact.Modeling.Language language : artifact.modeling().languageList()) {
-			configuration.addLanguage(language.name$(), language.effectiveVersion().isEmpty() ? language.version() : language.effectiveVersion());
-			configuration.level(level);
+		} else if (artifact.isLevel()) {
+			for (LevelArtifact.Modeling.Language language : artifact.asLevel().modeling().languageList()) {
+				configuration.addLanguage(language.name$(), language.effectiveVersion().isEmpty() ? language.version() : language.effectiveVersion());
+				configuration.level(level);
+			}
 		}
 	}
 }
