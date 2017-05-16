@@ -469,6 +469,4 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void addError(String message, ParserRuleContext ctx) {
 		errors.add(new SyntaxException(message, ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), ""));
 	}
-
-
 }

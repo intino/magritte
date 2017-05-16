@@ -36,7 +36,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void legioM1() {
-		main(new String[]{home + "sandbox/confFiles/legio/legioExample.txt"});
+		main(new String[]{home + "sandbox/confFiles/legio/Humket.txt"});
 	}
 
 	@Test
