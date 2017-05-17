@@ -4,7 +4,7 @@ import com.intellij.ide.DataManager;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -15,9 +15,9 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
+import io.intino.tara.plugin.lang.psi.TaraTypes;
 import io.intino.tara.plugin.messages.MessageProvider;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraTypes;
 
 import java.awt.*;
 import java.util.Map;
@@ -149,7 +149,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 			DataContext result = getContext();
 			if (EventQueue.isDispatchThread() && result == null)
 				result = DataManager.getInstance().getDataContextFromFocus().getResultSync(100);
-			project = result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null;
+			project = result != null ? (Project) result.getData(LangDataKeys.MODULE) : null;
 		}
 		return new TaraHighlighterLexAdapter(project);
 	}

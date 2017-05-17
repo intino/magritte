@@ -6,7 +6,7 @@ import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Application;
+import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 
 public class TerminalResolver {
 
@@ -26,8 +26,8 @@ public class TerminalResolver {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
 			if (component.isTerminal()) propagateTerminalToInside(component);
-			else if (Application.compareLevelWith(level) > 0) resolveTerminals(component);
-			else if (level.compareLevelWith(Application) == 0) {
+			else if (Product.compareLevelWith(level) > 0) resolveTerminals(component);
+			else if (level.compareLevelWith(Product) == 0) {
 				component.addFlag(Tag.Terminal);
 				propagateTerminalToInside(component);
 			}

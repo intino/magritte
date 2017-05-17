@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Application;
+import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.lang.model.Tag.Reactive;
 import static java.util.Collections.emptyList;
@@ -96,7 +96,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	}
 
 	private boolean isTerminal(Variable variable) {
-		return variable.isTerminal() && !variable.container().isTerminal() && Application.compareLevelWith(level) > 0;
+		return variable.isTerminal() && !variable.container().isTerminal() && Product.compareLevelWith(level) > 0;
 	}
 
 	private Frame transformSizeRuleOfTerminalNode(Variable variable) {

@@ -253,7 +253,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean isTerminal() {
 		final Configuration.Level type = TaraUtil.level(this);
-		return is(Terminal) || (type != null && type.equals(Configuration.Level.Application));
+		return is(Terminal) || (type != null && type.equals(Configuration.Level.Product));
 	}
 
 	public boolean is(Tag tag) {

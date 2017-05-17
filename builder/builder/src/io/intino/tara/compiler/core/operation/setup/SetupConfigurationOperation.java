@@ -72,10 +72,10 @@ public class SetupConfigurationOperation extends SetupOperation {
 
 	private void extractConfiguration(Legio legio) {
 		Artifact artifact = legio.artifact();
-		Artifact.Generation generation = artifact.generation();
+		Artifact.Code code = artifact.code();
 		final Level level = Level.valueOf(artifact.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
 		configuration.outDSL(artifact.name());
-		final String workingPackage = generation != null && generation.targetPackage() != null ? generation.targetPackage() : artifact.groupId() + "." + artifact.name().toLowerCase();
+		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name().toLowerCase();
 		configuration.workingPackage(configuration.isTest() ? workingPackage + ".test" : workingPackage);
 		configuration.artifactId(artifact.name().toLowerCase());
 		configuration.groupId(artifact.groupId());
@@ -84,10 +84,9 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.addLanguage(artifact.name(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else if (artifact.isLevel()) {
-			for (LevelArtifact.Modeling.Language language : artifact.asLevel().modeling().languageList()) {
-				configuration.addLanguage(language.name$(), language.effectiveVersion().isEmpty() ? language.version() : language.effectiveVersion());
-				configuration.level(level);
-			}
+			final LevelArtifact.Model model = artifact.asLevel().model();
+			configuration.addLanguage(model.language(), model.effectiveVersion().isEmpty() ? model.version() : model.effectiveVersion());
+			configuration.level(level);
 		}
 	}
 }

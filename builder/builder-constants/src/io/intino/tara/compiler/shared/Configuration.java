@@ -8,7 +8,7 @@ import java.util.Map;
 public interface Configuration {
 
 	enum Level {
-		System, Application, Platform;
+		System, Product, Platform;
 
 		public int compareLevelWith(Level type) {
 			return type.ordinal() - this.ordinal();
@@ -74,15 +74,11 @@ public interface Configuration {
 		return new SimpleEntry<>("", "");
 	}
 
-	default SimpleEntry<String, String> distributionSnapshotRepository() {
-		return new SimpleEntry<>("", "");
-	}
-
 	default Map<String, String> languageRepositories() {
 		return Collections.emptyMap();
 	}
 
-	default List<RunConfiguration> deployConfigurations() {
+	default List<DeployConfiguration> deployConfigurations() {
 		return Collections.emptyList();
 	}
 
@@ -99,7 +95,7 @@ public interface Configuration {
 		String generationPackage();
 	}
 
-	interface RunConfiguration {
+	interface DeployConfiguration {
 		String name();
 
 		List<Parameter> parameters();

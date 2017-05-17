@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Application;
+import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 
 public final class TypesProvider implements TemplateTags {
 
@@ -83,7 +83,7 @@ public final class TypesProvider implements TemplateTags {
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
 			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
-		if (type.equals(Application)) types.add(TERMINAL);
+		if (type.equals(Product)) types.add(TERMINAL);
 		types.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			types.add(REFERENCE);
