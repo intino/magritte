@@ -20,7 +20,7 @@ public interface TemplateTags {
 	String PLATFORM = "Platform";
 	String MAIN = "Main";
 	String SCOPE = "scope";
-	String APPLICATION = "Application";
+	String PRODUCT = "Product";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
 	String EXTERNAL_CLASS = "externalClass";

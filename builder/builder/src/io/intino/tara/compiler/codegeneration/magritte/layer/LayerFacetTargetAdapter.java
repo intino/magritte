@@ -37,7 +37,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		this.context = context;
 		frame.addTypes("nodeimpl");
-		frame.addFrame(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : PRODUCT);
 		frame.addFrame(OUT_LANGUAGE, outDSL).addFrame(WORKING_PACKAGE, workingPackage);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);

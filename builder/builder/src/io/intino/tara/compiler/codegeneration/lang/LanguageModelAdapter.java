@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.Format.capitalize;
 import static io.intino.tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
-import static io.intino.tara.compiler.shared.Configuration.Level.Application;
+import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
 
@@ -60,7 +60,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void initRoot() {
 		this.root.addFrame(NAME, outDSL);
-		this.root.addFrame(TERMINAL, level.equals(Application));
+		this.root.addFrame(TERMINAL, level.equals(Product));
 		this.root.addFrame(META_LANGUAGE, language.languageName());
 		this.root.addFrame(LOCALE, locale.getLanguage());
 	}
@@ -325,7 +325,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (target.isAbstract())
 			for (Node child : target.children()) {
 				Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, node.name() + FacetSeparator + child.qualifiedName());
-				frame.addFrame(SIZE, node.isTerminal() && Application.compareLevelWith(level) > 0 ? transformSizeRuleOfTerminalNode(node) : createRulesFrames(node.container().rulesOf(node)));
+				frame.addFrame(SIZE, node.isTerminal() && Product.compareLevelWith(level) > 0 ? transformSizeRuleOfTerminalNode(node) : createRulesFrames(node.container().rulesOf(node)));
 				addTags(node, frame);
 				frames.add(frame);
 			}
@@ -354,7 +354,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isTerminal(Node component) {
-		return component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(level) > 0;
+		return component.isTerminal() && !isInTerminal(component) && Product.compareLevelWith(level) > 0;
 	}
 
 	private static boolean isInTerminal(Node component) {

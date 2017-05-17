@@ -18,7 +18,7 @@ import io.intino.tara.plugin.project.TaraModuleType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static io.intino.tara.compiler.shared.Configuration.Level.Application;
+import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 import static io.intino.tara.compiler.shared.Configuration.Level.System;
 import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
 import static io.intino.tara.plugin.project.module.ModuleProvider.moduleOf;
@@ -57,7 +57,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 						final Module module = moduleOf(parameters.getOriginalFile());
 						if (!TaraModuleType.isTara(module)) return;
 						final Configuration.Level type = TaraUtil.configurationOf(module).level();
-						if (type.equals(System) || type.equals(Application)) return;
+						if (type.equals(System) || type.equals(Product)) return;
 						addTags(parameters, resultSet);
 					}
 				}
