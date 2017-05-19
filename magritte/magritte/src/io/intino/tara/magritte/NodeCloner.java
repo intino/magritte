@@ -8,17 +8,17 @@ class NodeCloner {
 
     private final List<Node> nodes;
     private final Node node;
-    private final GraphHandler model;
+    private final Graph model;
     private final Map<String, Node> cloneMap = new HashMap<>();
     private final NodeLoader loader = cloneMap::get;
 
-    private NodeCloner(List<Node> nodes, Node node, GraphHandler model) {
+    private NodeCloner(List<Node> nodes, Node node, Graph model) {
         this.nodes = nodes;
         this.node = node;
         this.model = model;
     }
 
-    static void clone(List<Node> toClone, Node node, GraphHandler model) {
+    static void clone(List<Node> toClone, Node node, Graph model) {
         if(toClone.isEmpty()) return;
         new NodeCloner(toClone, node, model).execute();
     }

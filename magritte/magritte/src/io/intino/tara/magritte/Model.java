@@ -1,10 +1,20 @@
 package io.intino.tara.magritte;
 
+import java.util.Map;
+
 class Model extends Node {
 
     Graph graph;
+    private Map<Class<? extends GraphView>, GraphView> views;
 
-    Model() {}
+    Model(Graph graph, Map<Class<? extends GraphView>, GraphView> views) {
+        this.graph = graph;
+        this.views = views;
+        addLayer(M1.class);
+        addLayer(M2.class);
+        addLayer(M3.class);
+        typeNames.add("Model");
+    }
 
     @Override
     public Graph graph() {
@@ -14,12 +24,12 @@ class Model extends Node {
     @Override
     public void add(Node node) {
         super.add(node);
-        graph.wrappers.values().forEach(wrapper -> wrapper.addNode(node));
+        views.values().forEach(view -> view.addNode(node));
     }
 
     @Override
     protected void remove(Node node) {
         super.remove(node);
-        graph.wrappers.values().forEach(wrapper -> wrapper.removeNode(node));
+        views.values().forEach(view -> view.removeNode(node));
     }
 }

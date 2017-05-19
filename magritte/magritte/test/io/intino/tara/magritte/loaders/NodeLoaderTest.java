@@ -2,13 +2,10 @@ package io.intino.tara.magritte.loaders;
 
 import io.intino.tara.magritte.Graph;
 import io.intino.tara.magritte.layers.MockLayer;
-import io.intino.tara.magritte.modelwrappers.MockApplication;
-import io.intino.tara.magritte.modelwrappers.MockPlatform;
 import org.junit.Test;
 
 import java.util.List;
 
-import static io.intino.tara.magritte.Graph.use;
 import static io.intino.tara.magritte.TestHelper.emptyStash;
 import static io.intino.tara.magritte.TestHelper.mockStore;
 import static io.intino.tara.magritte.loaders.NodeLoader.load;
@@ -20,7 +17,7 @@ public class NodeLoaderTest {
 
     @Test
     public void load_node() throws Exception {
-        Graph graph = use(mockStore(), MockApplication.class, MockPlatform.class).load(emptyStash);
+        Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash, "mock1");
         graph.createRoot(MockLayer.class, emptyStash, "mock2");
         List<MockLayer> list = load(asList(emptyStash + "#mock1", "$@io.intino.tara.magritte.natives.CodedNode"), MockLayer.class, mockLayer);

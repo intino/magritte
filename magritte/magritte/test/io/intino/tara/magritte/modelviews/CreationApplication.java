@@ -1,4 +1,4 @@
-package io.intino.tara.magritte.modelwrappers;
+package io.intino.tara.magritte.modelviews;
 
 import io.intino.tara.magritte.Graph;
 

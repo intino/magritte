@@ -25,7 +25,7 @@ public class NodeLoader {
             Object object = process(item.substring(2), layer);
             return object != null ? ((Layer)object).node() : null;
         }
-        return layer.graph().loadNode(item);
+        return layer.graph().load(item);
     }
 
 }

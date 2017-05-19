@@ -1,14 +1,14 @@
-package io.intino.tara.magritte.modelwrappers;
+package io.intino.tara.magritte.modelviews;
 
 import io.intino.tara.magritte.Graph;
-import io.intino.tara.magritte.GraphWrapper;
+import io.intino.tara.magritte.GraphView;
 import io.intino.tara.magritte.Node;
 import io.intino.tara.magritte.layers.MockLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockPlatform extends GraphWrapper{
+public class MockPlatform extends GraphView {
 
 	private final Graph graph;
 	private List<MockLayer> mockLayerList = new ArrayList<>();

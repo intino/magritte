@@ -18,17 +18,17 @@ import static java.util.stream.Collectors.toList;
 
 class StashWriter {
 
-    private final GraphHandler model;
+    private final Graph model;
     private final String stash;
     private final List<Node> nodes;
 
-    private StashWriter(GraphHandler model, String stash, List<Node> nodes) {
+    private StashWriter(Graph model, String stash, List<Node> nodes) {
         this.model = model;
         this.stash = stash;
         this.nodes = nodes;
     }
 
-    static void write(GraphHandler model, String stash, List<Node> nodes) {
+    static void write(Graph model, String stash, List<Node> nodes) {
         new StashWriter(model, stash, nodes).write();
     }
 
