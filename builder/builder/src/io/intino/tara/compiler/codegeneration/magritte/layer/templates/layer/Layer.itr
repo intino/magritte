@@ -38,12 +38,24 @@ def type(node) !type(final | instance | abstract) trigger(new)
     }
 end
 
+def type(node) !type(single | final | instance | abstract) trigger(clear)
+    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
+		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete);
+	}
+end
+
 def type(node & create) !type(final | instance) trigger(new)
     public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
 		$variable+assign...[$NL] |:
         return newElement;
     }
+end
+
+def type(node & create) !type(single | final | instance) trigger(clear)
+    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
+		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete);
+	}
 end
 
 def type(node & owner) trigger(new)
@@ -95,7 +107,7 @@ def type(constraint) trigger(facet)
 end
 
 def !type(target) type(nodeimpl) !type(instance) trigger(Node)
-	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
+	public[ $inner][ $abstract] class $name+firstUpperCase+javaValidName[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
 		$variable+declaration...[$NL][
 		$node+declaration...[$NL]][
 		$facetTarget+declaration...[$NL]][
@@ -182,6 +194,10 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			return new Create(name);
 		}
 
+		public Clear clear() {
+			return new Clear();
+		}
+
 		public class Create[ extends $parent.Create] {
 			[$parentSuper+parentvariable]
 
@@ -192,11 +208,20 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			$node+new...[$NL$NL]]
 			$create+new...[$NL$NL]
 		}
+
+		public class Clear[ extends $parent.Clear] {
+
+			public Clear() {
+			}[
+
+			$node+clear...[$NL$NL]]
+			$create+clear...[$NL$NL]
+		}
 		[
 		$node...[$NL]
 		]
-		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase $generatedLanguage+javaValidName+firstLowerCase~Wrapper() {
-			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase) graph().wrapper($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase.class);
+		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase $generatedLanguage+javaValidName+firstLowerCase~View() {
+			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase) graph().view($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~View.class);
 		}
 	}
 

@@ -3,12 +3,12 @@ def type(graph)
 
 	import io.intino.tara.magritte.Graph;
 
-	public class GraphWrapper extends io.intino.tara.magritte.GraphWrapper {
+	public class GraphView extends io.intino.tara.magritte.GraphView {
 
 		protected io.intino.tara.magritte.Graph graph;
 		$node+declaration...[$NL]
 
-		public GraphWrapper(io.intino.tara.magritte.Graph graph) {
+		public GraphView(io.intino.tara.magritte.Graph graph) {
 			this.graph = graph;
 			this.graph.i18n().register("$name");
 		}
@@ -51,33 +51,26 @@ def type(graph)
 			return graph.conceptList();
 		}
 
-		public java.util.List<io.intino.tara.magritte.Concept> conceptList(java.util.function.Predicate<io.intino.tara.magritte.Concept> predicate) {
-			return graph.conceptList(predicate);
+		public java.util.stream.Stream<io.intino.tara.magritte.Concept> conceptList(java.util.function.Predicate<io.intino.tara.magritte.Concept> filter) {
+			return graph.conceptList(filter);
 		}
 
-		public io.intino.tara.magritte.Node createRoot(io.intino.tara.magritte.Concept concept, String namespace) {
-			return graph.createRoot(concept, namespace);
+		public io.intino.tara.magritte.Node load(String node) {
+			return graph.load(node);
 		}
 
-		public <T extends io.intino.tara.magritte.Layer> T createRoot(java.lang.Class<T> layerClass, String namespace) {
-			return graph.createRoot(layerClass, namespace);
+		public void loadPaths(String... paths) {
+			graph.loadPaths(paths);
 		}
 
-		public io.intino.tara.magritte.Node createRoot(String concept, String namespace) {
-			return graph.createRoot(concept, namespace);
+		public void savePath(String... paths) {
+			graph.save(paths);
 		}
 
-		public <T extends io.intino.tara.magritte.Layer> T createRoot(java.lang.Class<T> layerClass, String namespace, String id) {
-			return graph.createRoot(layerClass, namespace, id);
+		public void saveAll(String... excludedPaths) {
+			graph.saveAll(excludedPaths);
 		}
 
-		public io.intino.tara.magritte.Node createRoot(String concept, String namespace, String id) {
-			return graph.createRoot(concept, namespace, id);
-		}
-
-		public io.intino.tara.magritte.Node createRoot(io.intino.tara.magritte.Concept concept, String namespace, String id) {
-			return graph.createRoot(concept, namespace, id);
-		}
 
 		$node+getter...[$NL$NL]
 
@@ -91,28 +84,33 @@ def type(graph)
 			return new Create("Misc", null);
 		}
 
-		public Create create(String namespace) {
-			return new Create(namespace, null);
+		public Create create(String path) {
+			return new Create(path, null);
 		}
 
-		public Create create(String namespace, String name) {
-			return new Create(namespace, name);
+		public Create create(String path, String name) {
+			return new Create(path, name);
+		}
+
+		public Create clear() {
+			return new Clear();
 		}
 
 		public class Create {
-			private final String namespace;
+			private final String path;
 			private final String name;
 
-			public Create(String namespace, String name) {
-				this.namespace = namespace;
+			public Create(String path, String name) {
+				this.path = path;
 				this.name = name;
 			}
 
 			$node+new...[$NL$NL]
-
 		}
 
-
+		public class Clear {
+			$node+clear...[$NL$NL]
+		}
 	}
 end
 
@@ -190,8 +188,8 @@ def type(node) trigger(getter)
 end
 
 def type(node) !type(single | instance) trigger(filter)
-	public java.util.List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
-		return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.stream.Stream<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> filter) {
+		return $name+firstLowerCase~List.stream().filter(filter);
 	}
 
 	public $qn+reference $name+firstLowerCase+javaValidWord(int index) {
@@ -201,8 +199,14 @@ end
 
 def type(node & concept) !type(final | abstract | component | instance) trigger(new)
 	public $qn+reference $name+firstLowerCase+javaValidWord([$variable+parameters...[, ]]) {
-		$qn+reference newElement = GraphWrapper.this.graph.createRoot($qn+reference.class, namespace, name).as($qn+reference.class);
+		$qn+reference newElement = GraphView.this.graph.createRoot($qn+reference.class, path, name).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
+	}
+end
+
+def type(node & concept) !type(single | final | abstract | component | instance) trigger(clear)
+	public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
+		new java.util.ArrayList<>(GraphView.this.$name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete);
 	}
 end
