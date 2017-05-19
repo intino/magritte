@@ -178,11 +178,15 @@ public abstract class GraphHandler {
     }
 
     Stash stashOf(String source) {
+        return stashOf(source, true);
+    }
+
+    Stash stashOf(String source, boolean logFail) {
         source = pathWithExtension(source);
         if (openedStashes.contains(source)) return null;
         openedStashes.add(source);
         Stash stash = store.stashFrom(source);
-        if (stash == null) getGlobal().severe("Stash " + source + " does not exist or cannot be opened");
+        if (stash == null && logFail) getGlobal().warning("Stash " + source + " does not exist or cannot be opened");
         return stash;
     }
 
@@ -230,7 +234,6 @@ public abstract class GraphHandler {
     private void doInit(String language) {
         this.languages.add(language);
         Stash stash = stashOf(language);
-        if (stash == null) getGlobal().severe("Language or model corrupt or not found: " + language);
         doLoadStashes(stash);
     }
 
