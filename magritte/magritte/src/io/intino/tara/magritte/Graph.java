@@ -157,9 +157,7 @@ public class Graph extends GraphHandler {
             return null;
         }
         path = path == null || path.isEmpty() ? "Misc" : path;
-        getGlobal().setUseParentHandlers(false);
-        load(PathHelper.pathWithExtension(path));
-        getGlobal().setUseParentHandlers(true);
+        doLoadStashes(stashOf(PathHelper.pathWithExtension(path), false));
         if (name != null && nodes.containsKey(path + "#" + name)) {
             getGlobal().warning("Node with id " + path + "#" + name + " already exists");
             return null;

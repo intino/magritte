@@ -261,4 +261,15 @@ public class GraphTest {
         handler.flush();
         assertThat(outputStream.toString(), not(containsString("m2")));
     }
+
+    @Test
+    public void should_not_log_an_error_create_root_uses_a_non_existing_stash() throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        StreamHandler handler = new StreamHandler(outputStream, new SimpleFormatter());
+        getGlobal().addHandler(handler);
+        Graph graph = Graph.use(mockStore()).load("m2");
+        graph.createRoot(MockLayer.class, "non_existing_stash");
+        handler.flush();
+        assertThat(outputStream.toString(), not(containsString("non_existing_stash.stash does not exist")));
+    }
 }
