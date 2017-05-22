@@ -3,10 +3,10 @@ package io.intino.tara.compiler.core.operation;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.tara.compiler.codegeneration.magritte.layer.GraphViewCreator;
+import io.intino.tara.compiler.codegeneration.magritte.layer.AbstractGraphCreator;
 import io.intino.tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import io.intino.tara.compiler.codegeneration.magritte.layer.LayerTemplate;
-import io.intino.tara.compiler.codegeneration.magritte.layer.templates.LevelTemplate;
+import io.intino.tara.compiler.codegeneration.magritte.layer.templates.GraphTemplate;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -38,7 +38,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private static final Logger LOG = Logger.getGlobal();
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
-	private static final String WRAPPER = "GraphView";
+	private static final String GRAPH = "Graph";
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
@@ -78,8 +78,8 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphViewCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
-		writeWrapper(createWrapper());
+		registerOutputs(layers, writeAbstractGraph(new AbstractGraphCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
+		writeGraph(createGraph());
 	}
 
 	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
@@ -104,11 +104,11 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		outMap.get(key).add(value);
 	}
 
-	private String createWrapper() {
+	private String createGraph() {
 		Frame frame = new Frame().addTypes("wrapper");
 		frame.addFrame(OUT_LANGUAGE, conf.outDSL());
 		frame.addFrame(WORKING_PACKAGE, conf.workingPackage());
-		return Format.customize(LevelTemplate.create()).format(frame);
+		return Format.customize(GraphTemplate.create()).format(frame);
 	}
 
 
@@ -124,7 +124,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
 		if (node.facetTarget() != null) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf,node.languageName()).create(node.facetTarget(), node);
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}
@@ -151,15 +151,15 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return outputs;
 	}
 
-	private String writeGraphWrapper(String text) {
-		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), WRAPPER + JAVA);
+	private String writeAbstractGraph(String text) {
+		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), GRAPH + JAVA);
 		destiny.getParentFile().mkdirs();
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
-	private String writeWrapper(String text) {
+	private void writeGraph(String text) {
 		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + JAVA);
-		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
+		if (!destiny.exists()) write(destiny, text);
 	}
 
 	private void cleanOldLayers(Model model) {
@@ -193,7 +193,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private List<File> collectAllLayers(File out) {
 		List<File> list = new ArrayList<>();
-		if (!out.isDirectory() && !out.getName().equals(WRAPPER + JAVA)) list.add(out);
+		if (!out.isDirectory() && !out.getName().equals(GRAPH + JAVA)) list.add(out);
 		else if (!out.isDirectory())
 			for (File file : out.listFiles(f -> !"natives".equals(f.getName())))
 				list.addAll(collectAllLayers(file));

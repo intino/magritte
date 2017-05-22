@@ -22,7 +22,7 @@ src.path
 /Users/oroncal/workspace/intino/model/gen
 
 level
-Application
+Product
 dsl
 Proteo:1.0.0
 out.dsl
