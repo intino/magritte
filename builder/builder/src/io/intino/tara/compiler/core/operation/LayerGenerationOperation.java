@@ -3,7 +3,7 @@ package io.intino.tara.compiler.core.operation;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
+import io.intino.tara.compiler.codegeneration.magritte.layer.GraphViewCreator;
 import io.intino.tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import io.intino.tara.compiler.codegeneration.magritte.layer.LayerTemplate;
 import io.intino.tara.compiler.codegeneration.magritte.layer.templates.LevelTemplate;
@@ -38,7 +38,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private static final Logger LOG = Logger.getGlobal();
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
-	private static final String WRAPPER = "GraphWrapper";
+	private static final String WRAPPER = "GraphView";
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
@@ -78,7 +78,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphViewCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
 		writeWrapper(createWrapper());
 	}
 
