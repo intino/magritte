@@ -12,12 +12,12 @@ public class M1 extends Layer {
 	}
 
 	@Override
-	protected void addNode(Node node) {
+	protected void addNode$(Node node) {
 		components.add(node);
 	}
 
 	@Override
-	protected void removeNode(Node node) {
+	protected void removeNode$(Node node) {
 		components.remove(node);
 	}
 

@@ -35,12 +35,12 @@ public class MockLayer extends Layer implements Terminal {
 	}
 
 	@Override
-	protected void addNode(Node node) {
+	protected void addNode$(Node node) {
 		if(node.is("Mock")) mockList.add(node.as(MockLayer.class));
 	}
 
 	@Override
-	protected void removeNode(Node node) {
+	protected void removeNode$(Node node) {
 		if(node.is("Mock")) mockList.remove(node.as(MockLayer.class));
 	}
 

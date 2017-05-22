@@ -120,24 +120,24 @@ public class GraphTest {
         assertThat(graph.rootList().size(), is(0));
         graph.createRoot(MockLayer.class, emptyStash);
         assertThat(graph.rootList().size(), is(1));
-        assertThat(graph.view(MockApplication.class).mockLayerList().size(), is(1));
-        assertThat(graph.view(MockPlatform.class).mockLayerList().size(), is(1));
+        assertThat(graph.as(MockApplication.class).mockLayerList().size(), is(1));
+        assertThat(graph.as(MockPlatform.class).mockLayerList().size(), is(1));
         graph.clear();
         assertThat(graph.rootList().size(), is(0));
-        assertThat(graph.view(MockApplication.class).mockLayerList().size(), is(0));
-        assertThat(graph.view(MockPlatform.class).mockLayerList().size(), is(0));
+        assertThat(graph.as(MockApplication.class).mockLayerList().size(), is(0));
+        assertThat(graph.as(MockPlatform.class).mockLayerList().size(), is(0));
     }
 
     @Test
     public void should_reload_all_model_platform_and_application_when_there_is_one_element() {
         Graph graph = new Graph(mockStore()).loadPaths(oneMockStash);
         assertThat(graph.rootList().size(), is(2));
-        assertThat(graph.view(MockApplication.class).mockLayerList().size(), is(2));
-        assertThat(graph.view(MockPlatform.class).mockLayerList().size(), is(2));
+        assertThat(graph.as(MockApplication.class).mockLayerList().size(), is(2));
+        assertThat(graph.as(MockPlatform.class).mockLayerList().size(), is(2));
         graph.reload();
         assertThat(graph.rootList().size(), is(2));
-        assertThat(graph.view(MockApplication.class).mockLayerList().size(), is(2));
-        assertThat(graph.view(MockPlatform.class).mockLayerList().size(), is(2));
+        assertThat(graph.as(MockApplication.class).mockLayerList().size(), is(2));
+        assertThat(graph.as(MockPlatform.class).mockLayerList().size(), is(2));
     }
 
     @Test
@@ -161,8 +161,8 @@ public class GraphTest {
         Map<String, Concept> concepts = new HashMap<>(graph.concepts);
         Map<String, Node> nodes = new HashMap<>(graph.nodes);
         List<NodeLoader> loaders = new ArrayList<>(graph.loaders);
-        List<MockLayer> mockLayersInPlatform = new ArrayList<>(graph.view(MockPlatform.class).mockLayerList());
-        List<MockLayer> mockLayersInApplication = new ArrayList<>(graph.view(MockApplication.class).mockLayerList());
+        List<MockLayer> mockLayersInPlatform = new ArrayList<>(graph.as(MockPlatform.class).mockLayerList());
+        List<MockLayer> mockLayersInApplication = new ArrayList<>(graph.as(MockApplication.class).mockLayerList());
         graph.reload();
         assertThat(components.size(), is(graph.model.componentList().size()));
         assertThat(openedStashes.size(), is(graph.openedStashes.size()));
@@ -170,8 +170,8 @@ public class GraphTest {
         assertThat(concepts.size(), is(graph.concepts.size()));
         assertThat(nodes.size(), is(graph.nodes.size()));
         assertThat(loaders.size(), is(graph.loaders.size()));
-        assertThat(mockLayersInPlatform.size(), is(graph.view(MockPlatform.class).mockLayerList().size()));
-        assertThat(mockLayersInApplication.size(), is(graph.view(MockApplication.class).mockLayerList().size()));
+        assertThat(mockLayersInPlatform.size(), is(graph.as(MockPlatform.class).mockLayerList().size()));
+        assertThat(mockLayersInApplication.size(), is(graph.as(MockApplication.class).mockLayerList().size()));
     }
 
     @Test

@@ -5,11 +5,11 @@ import java.util.Map;
 class Model extends Node {
 
     Graph graph;
-    private Map<Class<? extends GraphView>, GraphView> views;
+    private Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers;
 
-    Model(Graph graph, Map<Class<? extends GraphView>, GraphView> views) {
+    Model(Graph graph, Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers) {
         this.graph = graph;
-        this.views = views;
+        this.wrappers = wrappers;
         addLayer(M1.class);
         addLayer(M2.class);
         addLayer(M3.class);
@@ -24,12 +24,12 @@ class Model extends Node {
     @Override
     public void add(Node node) {
         super.add(node);
-        views.values().forEach(view -> view.addNode(node));
+        wrappers.values().forEach(wrapper -> wrapper.addNode$(node));
     }
 
     @Override
     protected void remove(Node node) {
         super.remove(node);
-        views.values().forEach(view -> view.removeNode(node));
+        wrappers.values().forEach(wrapper -> wrapper.removeNode$(node));
     }
 }

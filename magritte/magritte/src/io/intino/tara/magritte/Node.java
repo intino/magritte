@@ -45,7 +45,7 @@ public class Node extends Predicate {
     }
 
     public void add(Node node) {
-        for (Layer layer : layers) layer.addNode(node);
+        for (Layer layer : layers) layer.addNode$(node);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Node extends Predicate {
     }
 
     protected void remove(Node node) {
-        layers.forEach(l -> l.removeNode(node));
+        layers.forEach(l -> l.removeNode$(node));
     }
 
     public void addLayers(List<Concept> concepts) {

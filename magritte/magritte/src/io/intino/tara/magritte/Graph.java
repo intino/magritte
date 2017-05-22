@@ -26,7 +26,7 @@ public class Graph {
     Map<Node, Map<String, List<?>>> variables = new HashMap<>();
     Map<String, Node> nodes = new HashMap<>();
     Map<String, Concept> concepts = new HashMap<>();
-    Map<Class<? extends GraphView>, GraphView> views = new HashMap<>();
+    Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers = new HashMap<>();
     List<NodeLoader> loaders = new ArrayList<>();
     I18n i18n = new I18n();
     LayerFactory layerFactory = new LayerFactory();
@@ -39,7 +39,7 @@ public class Graph {
 
     public Graph(Store store) {
         this.store = store;
-        model = new Model(this, views);
+        model = new Model(this, wrappers);
     }
 
     public Graph loadPaths(String... paths) {
@@ -115,9 +115,9 @@ public class Graph {
         return store.writeResource(inputStream, path, oldUrl, node);
     }
 
-    public <T extends GraphView> T view(Class<T> aClass) {
-        if (!views.containsKey(aClass)) views.put(aClass, GraphHelper.create(aClass, this));
-        return (T) views.get(aClass);
+    public <T extends GraphWrapper> T as(Class<T> aClass) {
+        if (!wrappers.containsKey(aClass)) wrappers.put(aClass, GraphHelper.create(aClass, this));
+        return (T) wrappers.get(aClass);
     }
 
     public void remove(Node node) {
@@ -138,7 +138,7 @@ public class Graph {
         Set<String> openedStashes = new HashSet<>(this.openedStashes);
         clear();
         openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
-        views.values().forEach(GraphView::update);
+        wrappers.values().forEach(GraphWrapper::update$);
     }
 
     public void clear() {
@@ -148,7 +148,7 @@ public class Graph {
         concepts.clear();
         nodes.clear();
         loaders.clear();
-        views.values().forEach(GraphView::update);
+        wrappers.values().forEach(GraphWrapper::update$);
         layerFactory.clear();
     }
 

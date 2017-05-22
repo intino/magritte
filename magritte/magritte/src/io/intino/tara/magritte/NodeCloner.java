@@ -55,7 +55,7 @@ class NodeCloner {
     private void cloneComponents(Node toClone, Node clone, String name) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            toClone.componentList().forEach(c -> destination.addNode(clone(name + "." + c.name(), c, clone)));
+            toClone.componentList().forEach(c -> destination.addNode$(clone(name + "." + c.name(), c, clone)));
         });
     }
 

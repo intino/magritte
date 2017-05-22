@@ -17,7 +17,7 @@ class GraphCloner {
         clone.layerFactory = new LayerFactory(graph.layerFactory);
         clone.openedStashes = new HashSet<>(graph.openedStashes);
         graph.model.componentList().forEach(clone.model::add);
-        graph.views.values().forEach(w -> clone.views.put(w.getClass(), create(w.getClass(), clone)));
+        graph.wrappers.values().forEach(w -> clone.wrappers.put(w.getClass(), create(w.getClass(), clone)));
         return clone;
     }
 

@@ -50,10 +50,10 @@ public abstract class Layer {
         node.save();
     }
 
-    protected void addNode(Node node) {
+    protected void addNode$(Node node) {
     }
 
-    protected void removeNode(Node node) {
+    protected void removeNode$(Node node) {
     }
 
     @Override
