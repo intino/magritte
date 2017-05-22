@@ -3,7 +3,7 @@ def type(graph)
 
 	import io.intino.tara.magritte.Graph;
 
-	public class GraphView extends io.intino.tara.magritte.GraphView {
+	public class AbstractGraph extends io.intino.tara.magritte.Graph {
 
 		protected io.intino.tara.magritte.Graph graph;
 		$node+declaration...[$NL]
