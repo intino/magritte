@@ -31,7 +31,7 @@ public class MockLayer extends Layer implements Terminal {
 	}
 
 	public MockLayer newMock() {
-		return graph().concept(MockLayer.class).createNode(node()).as(MockLayer.class);
+		return core$().graph().concept(MockLayer.class).createNode(core$()).as(MockLayer.class);
 	}
 
 	@Override
@@ -45,18 +45,18 @@ public class MockLayer extends Layer implements Terminal {
 	}
 
 	@Override
-	public Map<String, List<?>> variables() {
+	public Map<String, List<?>> variables$() {
 		return Collections.singletonMap("mockLayer", new ArrayList<>(singletonList(mockLayer)));
 	}
 
 	@Override
-	protected void _load(String name, List<?> object) {
+	protected void load$(String name, List<?> object) {
 		if (name.equals("mockLayer")) mockLayer = NodeLoader.load(object, MockLayer.class, this).get(0);
 	}
 
 	@Override
-	public List<Node> componentList() {
-		return new ArrayList<>(mockList.stream().map(Layer::node).collect(toList()));
+	public List<Node> componentList$() {
+		return new ArrayList<>(mockList.stream().map(Layer::core$).collect(toList()));
 	}
 
 	public MockLayer mock(int index) {

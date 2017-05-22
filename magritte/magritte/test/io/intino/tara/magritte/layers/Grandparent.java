@@ -34,7 +34,7 @@ public class Grandparent extends Layer implements Terminal {
     }
 
 	@Override
-	protected void _load(String name, List<?> object) {
+	protected void load$(String name, List<?> object) {
 		if (name.equals("grandparentVar")) grandparentVar = StringLoader.load(object, this).get(0);
 		else if (name.equals("fillByParentVar")) fillByParentVar = StringLoader.load(object, this).get(0);
 	}

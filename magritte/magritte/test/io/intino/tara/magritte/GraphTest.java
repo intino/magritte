@@ -27,7 +27,7 @@ public class GraphTest {
     @Test
     public void new_main_should_be_saved() throws Exception {
         Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
-        graph.createRoot(MockLayer.class, emptyStash).save();
+        graph.createRoot(MockLayer.class, emptyStash).save$();
         assertThat(graph.rootList().size(), is(1));
         assertThat(graph.rootList().get(0).layers.size(), is(1));
         assertTrue(graph.rootList().get(0).is(MockLayer.class));
@@ -44,7 +44,7 @@ public class GraphTest {
         Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         assertThat(graph.rootList().size(), is(1));
-        mockLayer.delete();
+        mockLayer.delete$();
         assertThat(graph.rootList().size(), is(0));
         Graph reloaded = new Graph(graph.store).loadPaths(emptyStash);
         assertThat(reloaded.rootList().size(), is(0));
@@ -53,7 +53,7 @@ public class GraphTest {
     @Test
     public void should_store_with_canonical_name() throws Exception {
         Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
-        graph.createRoot(MockLayer.class, "tara\\magritte").save();
+        graph.createRoot(MockLayer.class, "tara\\magritte").save$();
         assertThat(graph.rootList().get(0).path(), is("tara/magritte"));
         Graph reloaded = new Graph(graph.store).loadPaths("tara/magritte");
         assertThat(reloaded.rootList().size(), is(1));
@@ -66,9 +66,9 @@ public class GraphTest {
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         MockLayer toBeRemoved = graph.createRoot(MockLayer.class, emptyStash);
         mockLayer.mockLayer(toBeRemoved);
-        mockLayer.save();
+        mockLayer.save$();
         assertThat(graph.rootList().size(), is(2));
-        toBeRemoved.delete();
+        toBeRemoved.delete$();
         assertThat(graph.rootList().size(), is(1));
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -87,9 +87,9 @@ public class GraphTest {
         Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         MockLayer child = mockLayer.newMock();
-        assertThat(mockLayer.componentList().size(), is(1));
-        child.delete();
-        assertThat(mockLayer.componentList().size(), is(0));
+        assertThat(mockLayer.componentList$().size(), is(1));
+        child.delete$();
+        assertThat(mockLayer.componentList$().size(), is(0));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class GraphTest {
         Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash);
         MockLayer child = mockLayer.newMock();
-        child.save();
+        child.save$();
 
         Graph reloaded = new Graph(graph.store).loadPaths(emptyStash);
         assertThat(reloaded.rootList().size(), is(1));

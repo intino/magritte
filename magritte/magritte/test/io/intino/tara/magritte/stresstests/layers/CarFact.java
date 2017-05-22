@@ -23,8 +23,8 @@ public class CarFact extends Layer implements Terminal {
 
     @SuppressWarnings("IfCanBeSwitch")
     @Override
-    protected void _load(String name, List<?> object) {
-        super._load(name, object);
+    protected void load$(String name, List<?> object) {
+        super.load$(name, object);
         if (name.equals("car")) this.car = NodeLoader.load(object, Car.class, this).get(0);
         else if (name.equals("speed")) this.speed = DoubleLoader.load(object, this).get(0);
         else if (name.equals("distance")) this.distance = DoubleLoader.load(object, this).get(0);

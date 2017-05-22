@@ -168,12 +168,12 @@ public class Concept extends Predicate {
 
     private void fillVariables(Layer layer) {
         conceptList().forEach(c -> c.fillVariables(layer));
-        variables.forEach(layer::_load);
+        variables.forEach(layer::load$);
     }
 
     private void fillParameters(Layer layer) {
         conceptList().forEach(c -> c.fillParameters(layer));
-        parameters.forEach(layer::_load);
+        parameters.forEach(layer::load$);
     }
 
     @Override

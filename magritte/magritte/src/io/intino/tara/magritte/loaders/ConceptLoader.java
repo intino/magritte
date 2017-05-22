@@ -17,7 +17,7 @@ public class ConceptLoader {
 
 	private static Concept conceptOf(String item, Layer layer) {
 		Object conceptObject = process((Object) item, layer);
-		return conceptObject instanceof Concept ? (Concept) conceptObject : layer.graph().concept(item);
+		return conceptObject instanceof Concept ? (Concept) conceptObject : layer.core$().graph().concept(item);
 	}
 
 }

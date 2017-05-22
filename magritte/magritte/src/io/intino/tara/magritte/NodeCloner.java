@@ -62,9 +62,9 @@ class NodeCloner {
     private void copyVariables(Node toClone, Node clone) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            origin.variables().entrySet().stream()
+            origin.variables$().entrySet().stream()
                     .filter(e -> !e.getValue().isEmpty())
-                    .forEach(e -> destination._set(e.getKey(), e.getValue()));
+                    .forEach(e -> destination.set$(e.getKey(), e.getValue()));
         });
     }
 

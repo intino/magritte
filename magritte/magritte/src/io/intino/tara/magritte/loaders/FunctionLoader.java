@@ -28,8 +28,8 @@ public class FunctionLoader {
 
     private static Layer morphContextOf(Layer layer, Class<? extends Layer> $Class) {
         return $Class.isAssignableFrom(layer.getClass()) ? layer :
-            (layer.node().is($Class) ? layer.node().as($Class) :
-                layer.node().ownerAs($Class));
+            (layer.core$().is($Class) ? layer.core$().as($Class) :
+                layer.core$().ownerAs($Class));
     }
 
 }

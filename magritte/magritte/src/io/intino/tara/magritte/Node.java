@@ -51,7 +51,7 @@ public class Node extends Predicate {
     @Override
     public Map<String, List<?>> variables() {
         Map<String, List<?>> variables = new HashMap<>();
-        layers.forEach(m -> variables.putAll(m.variables()));
+        layers.forEach(m -> variables.putAll(m.variables$()));
         return variables;
     }
 
@@ -116,7 +116,7 @@ public class Node extends Predicate {
     @Override
     public List<Node> componentList() {
         Set<Node> nodes = new LinkedHashSet<>();
-        reverseListOf(layers).forEach(l -> nodes.addAll(l.componentList()));
+        reverseListOf(layers).forEach(l -> nodes.addAll(l.componentList$()));
         return new ArrayList<>(nodes);
     }
 
@@ -144,29 +144,59 @@ public class Node extends Predicate {
     }
 
     void load(String varName, List<?> value) {
-        layers.forEach(l -> l._load(varName, value));
+        layers.forEach(l -> l.load$(varName, value));
     }
 
     public void load(Layer layer, String name, List<?> values) {
-        if (layer.node() == this)
-            layer._load(name, values);
+        if (layer.core$() == this)
+            layer.load$(name, values);
         else
             getGlobal().severe("Layer does not belong to node " + name);
     }
 
     void set(String varName, List<?> value) {
-        layers.forEach(l -> l._set(varName, value));
+        layers.forEach(l -> l.set$(varName, value));
     }
 
     public void set(Layer layer, String name, List<?> values) {
-        if (layer.node() == this)
-            layer._set(name, values);
+        if (layer.core$() == this)
+            layer.set$(name, values);
         else
             getGlobal().severe("Layer does not belong to node " + name);
     }
 
     public void save() {
         graph().save(this);
+    }
+
+    public void createNode(String name, Concept concept) {
+        add(concept.createNode(name, this));
+    }
+
+    public <T extends Layer> T addFacet(Class<T> layerClass) {
+        return (T) addFacet(graph().layerFactory.names(layerClass).get(0));
+    }
+
+    public Layer addFacet(String concept) {
+        return addFacet(graph().concept(concept));
+    }
+
+    public Layer addFacet(Concept concept) {
+        concept.createLayersFor(this);
+        syncLayers();
+        return as(concept);
+    }
+
+    public void removeFacet(Class<? extends Layer> layerClass) {
+        removeFacet(graph().layerFactory.names(layerClass).get(0));
+    }
+
+    public void removeFacet(String concept) {
+        removeFacet(graph().concept(concept));
+    }
+
+    public void removeFacet(Concept concept) {
+        removeLayer(concept);
     }
 
     private void createLayer(Concept concept) {
@@ -237,6 +267,6 @@ public class Node extends Predicate {
     }
 
     void syncLayers() {
-        layers.forEach(l -> layers.forEach(l::_sync));
+        layers.forEach(l -> layers.forEach(l::sync$));
     }
 }

@@ -12,7 +12,7 @@ public class M3 extends Layer {
 	}
 
 	public List<Concept> conceptList() {
-		return node().graph().conceptList().stream().
+		return core$().graph().conceptList().stream().
 				filter(c -> c.metatype == null).
 				collect(toList());
 	}

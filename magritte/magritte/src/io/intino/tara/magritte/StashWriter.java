@@ -110,7 +110,7 @@ class StashWriter {
     }
 
     private List<String> refsOfLayers(List<?> layers) {
-        return layers.stream().map(l -> ((Layer) l).id()).collect(toList());
+        return layers.stream().map(l -> ((Layer) l).id$()).collect(toList());
     }
 
     private List<String> words(List<?> values) {
