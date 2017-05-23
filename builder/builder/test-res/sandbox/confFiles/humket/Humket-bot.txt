@@ -10,7 +10,7 @@ semantic.lib
 outputpath
 /Users/oroncal/workspace/humket/humket-bot/gen
 final_outputpath
-/Users/oroncal/workspace/humket/out/production/humket-bot
+/Users/oroncal/workspace/humket/out/production/humket-bot/
 resources
 /Users/oroncal/workspace/humket/humket-bot/res
 tara.path
@@ -19,6 +19,11 @@ tara.project.path
 /Users/oroncal/workspace/humket/.tara
 src.path
 /Users/oroncal/workspace/humket/humket-bot/src
+/Users/oroncal/workspace/humket/humket-bot/gen
+
+version
+1.0.0
+working.package
 
 make
 false

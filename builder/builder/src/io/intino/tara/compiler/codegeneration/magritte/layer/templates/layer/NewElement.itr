@@ -47,15 +47,15 @@ def type(variable & concept & required) !type(multiple | empty) !slot(values) tr
 end
 
 def	type(variable & reactive & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.node().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+javaValidName+firstLowerCase+javaValidWord));
+	newElement.core$$().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+javaValidName+firstLowerCase+javaValidWord));
 end
 
 def	type(variable & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.node().set(newElement, "$name+firstLowerCase", $name+javaValidName+firstLowerCase+javaValidWord);
+	newElement.core$$().set(newElement, "$name+firstLowerCase", $name+javaValidName+firstLowerCase+javaValidWord);
 end
 
 def	type(variable & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.node().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+javaValidName+firstLowerCase+javaValidWord));
+	newElement.core$$().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+javaValidName+firstLowerCase+javaValidWord));
 end
 
 def	type(variable & required) !type(empty) !slot(values) !slot(wordvalues) trigger(name)

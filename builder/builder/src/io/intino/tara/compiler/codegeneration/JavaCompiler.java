@@ -29,9 +29,9 @@ public class JavaCompiler {
 		options.add(classPath);
 		CompilationTask task = compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits);
 		if (!task.call()) {
-			String message = "";
+			StringBuilder message = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
-				message += diagnostic.getMessage(Locale.ENGLISH) + "\n";
+				message.append(diagnostic.getMessage(Locale.ENGLISH)).append("\n");
 			throw new TaraException(message.substring(0, message.indexOf("\n")));
 		}
 		try {

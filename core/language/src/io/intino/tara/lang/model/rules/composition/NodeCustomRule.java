@@ -30,7 +30,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 		return loadedClass;
 	}
 
-	public String getSource() {
+	public String getExternalWordClass() {
 		return aClass;
 	}
 

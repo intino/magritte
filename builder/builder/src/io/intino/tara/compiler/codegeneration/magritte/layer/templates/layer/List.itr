@@ -31,19 +31,19 @@ def type(Variable & metaType) !type(inherited | overriden | volatile) trigger(li
 end
 
 def type(Node & single & owner) !type(inherited | overriden | instance) trigger(list)
-	if ($name+firstLowerCase+javaValidName != null) nodes.add(this.$name+firstLowerCase+javaValidName.node());
+	if ($name+firstLowerCase+javaValidName != null) nodes.add(this.$name+firstLowerCase+javaValidName.core$$());
 end
 
 def type(Node & owner) !type(inherited | overriden | instance) trigger(list)
-	$name+toCamelCase+firstLowerCase~List.stream().forEach(c -> nodes.add(c.node()));
+	$name+toCamelCase+firstLowerCase~List.stream().forEach(c -> nodes.add(c.core$$()));
 end
 
 def type(Node & single & owner) !type(inherited | overriden | instance) trigger(componentList)
-	if ($name+firstLowerCase+javaValidName != null) components.add(this.$name+firstLowerCase+javaValidName.node());
+	if ($name+firstLowerCase+javaValidName != null) components.add(this.$name+firstLowerCase+javaValidName.core$$());
 end
 
 def type(Node & owner) !type(inherited | overriden | instance) trigger(componentList)
-	$name+toCamelCase+toCamelCase+firstLowerCase~List.stream().forEach(c -> components.add(c.node()));
+	$name+toCamelCase+toCamelCase+firstLowerCase~List.stream().forEach(c -> components.add(c.core$$()));
 end
 
 def type(Node) trigger(list)

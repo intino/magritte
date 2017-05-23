@@ -6,6 +6,7 @@ import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.Primitive.Expression;
 import io.intino.tara.lang.model.Primitive.MethodReference;
+import io.intino.tara.lang.model.rules.NativeCustomWordRule;
 import io.intino.tara.lang.model.rules.NativeWordRule;
 import io.intino.tara.lang.model.rules.variable.NativeReferenceRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -58,8 +59,12 @@ public class NativeResolver {
 		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>()));
 		else if (valued.rule() instanceof ReferenceRule)
 			valued.rule(new NativeReferenceRule(((ReferenceRule) valued.rule()).allowedReferences()));
-		else if (valued.rule() instanceof WordRule) valued.rule(new NativeWordRule(((WordRule) valued.rule()).words()));
-		else if (!(valued.rule() instanceof NativeRule)) valued.rule(new NativeRule("", "", new ArrayList<>()));
+		else if (valued.rule() instanceof WordRule) {
+			if (((WordRule) valued.rule()).externalWordClass() == null)
+				valued.rule(new NativeWordRule(((WordRule) valued.rule()).words()));
+			else
+				valued.rule(new NativeCustomWordRule(((WordRule) valued.rule()).words(), ((WordRule) valued.rule()).externalWordClass()));
+		} else if (!(valued.rule() instanceof NativeRule)) valued.rule(new NativeRule("", "", new ArrayList<>()));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 

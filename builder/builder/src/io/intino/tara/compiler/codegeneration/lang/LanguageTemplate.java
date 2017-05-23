@@ -34,6 +34,7 @@ public class LanguageTemplate extends Template {
 			rule().add((condition("trigger", "constraint"))).add(mark("value")).add(literal("()")),
 			rule().add((condition("trigger", "tags"))).add(literal("io.intino.tara.lang.model.Tag.")).add(mark("value")),
 			rule().add((condition("type", "customRule & metric")), (condition("trigger", "rule"))).add(mark("qn")).add(literal(".")).add(mark("default")),
+			rule().add((condition("type", "nativecustomwordrule")), (condition("trigger", "rule"))).add(literal("new io.intino.tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList(")).add(mark("words", "quoted").multiple(", ")).add(literal(")")).add(expression().add(literal(", ")).add(mark("externalWordClass", "quoted"))).add(literal(")")),
 			rule().add((condition("type", "customRule")), (condition("trigger", "rule"))).add(literal("new ")).add(mark("qn")).add(literal("()")),
 			rule().add((condition("type", "rule & customRule")), (condition("trigger", "size"))).add(literal("new ")).add(mark("qn")).add(literal("()")),
 			rule().add((condition("type", "rule & size")), (condition("trigger", "size"))).add(literal("new io.intino.tara.lang.model.rules.Size(")).add(mark("min")).add(literal(", ")).add(mark("max")).add(expression().add(literal(", ")).add(mark("into", "size"))).add(literal(")")),

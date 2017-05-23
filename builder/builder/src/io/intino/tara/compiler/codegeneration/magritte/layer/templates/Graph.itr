@@ -3,9 +3,9 @@ def type(wrapper)
 
 	import io.intino.tara.magritte.Graph;
 
-	public class $generatedLanguage+javaValidName+FirstUpperCase extends $workingPackage+lowercase.AbstractGraph {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Graph extends $workingPackage+lowercase.AbstractGraph {
 
-		public $generatedLanguage+javaValidName+FirstUpperCase(Graph graph) {
+		public $generatedLanguage+javaValidName+FirstUpperCase~Graph(Graph graph) {
 			super(graph);
 		}
 	}

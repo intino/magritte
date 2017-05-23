@@ -152,13 +152,13 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String writeAbstractGraph(String text) {
-		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), GRAPH + JAVA);
+		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), "Abstract" + GRAPH + JAVA);
 		destiny.getParentFile().mkdirs();
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private void writeGraph(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + GRAPH + JAVA);
 		if (!destiny.exists()) write(destiny, text);
 	}
 

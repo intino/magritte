@@ -94,6 +94,10 @@ def type(customRule & metric) trigger(rule)
 	$qn.$default
 end
 
+def type(nativecustomwordrule) trigger(rule)
+	new io.intino.tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
+end
+
 def type(customRule) trigger(rule)
 	new $qn()
 end

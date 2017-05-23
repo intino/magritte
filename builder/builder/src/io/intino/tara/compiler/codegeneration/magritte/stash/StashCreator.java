@@ -239,9 +239,17 @@ public class StashCreator {
 		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
 		else if (type.equals(INSTANT))
 			return INSTANT.convert(valued.values().toArray(new String[valued.values().size()]));
-		if (type.equals(RESOURCE)) //TODO CHECK VALUE EQUALS RESOURCE FOLDER.IT WILL TRHOW INDEXOUTOFRANGE
-			return (valued.values()).stream().map(o -> toSystemIndependentName(((File) o).getAbsolutePath()).substring(toSystemIndependentName(resourceFolder.getAbsolutePath()).length() + 1)).collect(toList());
-		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
+		if (type.equals(RESOURCE)) {
+			return (valued.values()).stream()
+					.map(o -> relative((File) o))
+					.collect(toList());
+		} else return type.convert(valued.values().toArray(new String[valued.values().size()]));
+	}
+
+	private String relative(File file) {
+		final String path = toSystemIndependentName(file.getAbsolutePath());
+		final String resources = toSystemIndependentName(resourceFolder.getAbsolutePath());
+		return path.equals(resources) ? path : path.substring(resources.length() + 1);
 	}
 
 	private List<Object> buildReferenceValues(List<Object> values) {
@@ -250,7 +258,8 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Object o) {
-		if (o instanceof Primitive.Reference && !((Reference) o).isToInstance()) return noName(((Reference) o).reference());
+		if (o instanceof Primitive.Reference && !((Reference) o).isToInstance())
+			return noName(((Reference) o).reference());
 		else if (o instanceof io.intino.tara.lang.model.Node) return noName((io.intino.tara.lang.model.Node) o);
 		return StashHelper.buildInstanceReference(o);
 	}
