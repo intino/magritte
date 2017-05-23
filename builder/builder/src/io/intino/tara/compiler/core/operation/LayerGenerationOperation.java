@@ -54,7 +54,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();
-		this.srcFolder = conf.sourceDirectories().get(0);
+		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
 	}
 
 	@Override
