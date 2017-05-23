@@ -14,7 +14,7 @@ class GraphHelper {
     static <T extends GraphWrapper> T create(Class<T> aClass, Graph graph) {
         try {
             T instance = aClass.getConstructor(Graph.class).newInstance(graph);
-            instance.update$();
+            instance.update();
             return instance;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();

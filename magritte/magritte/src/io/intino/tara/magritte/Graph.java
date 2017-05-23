@@ -138,7 +138,7 @@ public class Graph {
         Set<String> openedStashes = new HashSet<>(this.openedStashes);
         clear();
         openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
-        wrappers.values().forEach(GraphWrapper::update$);
+        wrappers.values().forEach(GraphWrapper::update);
     }
 
     public void clear() {
@@ -148,7 +148,7 @@ public class Graph {
         concepts.clear();
         nodes.clear();
         loaders.clear();
-        wrappers.values().forEach(GraphWrapper::update$);
+        wrappers.values().forEach(GraphWrapper::update);
         layerFactory.clear();
     }
 

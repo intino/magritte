@@ -38,7 +38,7 @@ public class MockPlatform extends GraphWrapper {
 	}
 
 	@Override
-	public void update$() {
+	public void update() {
 		execute();
 	}
 }
