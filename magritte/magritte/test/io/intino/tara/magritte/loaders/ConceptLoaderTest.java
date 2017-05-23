@@ -18,7 +18,7 @@ public class ConceptLoaderTest {
 
     @Test
     public void load_concept() throws Exception {
-        Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
+        Graph graph = new Graph(mockStore()).loadStashes(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class);
         List<Concept> list = load(asList("Mock", "$@io.intino.tara.magritte.natives.CodedConcept"), mockLayer);
         assertThat(list.size(), is(2));

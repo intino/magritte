@@ -3,7 +3,7 @@ package io.intino.tara.magritte;
 import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.stores.ResourcesStore;
 import io.intino.tara.magritte.utils.I18n;
-import io.intino.tara.magritte.utils.PathHelper;
+import io.intino.tara.magritte.utils.StashHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.intino.tara.magritte.utils.PathHelper.pathWithExtension;
+import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Logger.getGlobal;
@@ -42,9 +42,9 @@ public class Graph {
         model = new Model(this, wrappers);
     }
 
-    public Graph loadPaths(String... paths) {
-        if (paths.length == 0) return this;
-        doLoadPath(paths);
+    public Graph loadStashes(String... stashes) {
+        if (stashes.length == 0) return this;
+        doLoadStashes(stashes);
         return this;
     }
 
@@ -87,17 +87,17 @@ public class Graph {
 
     @SuppressWarnings("UnusedParameters")
     void save(Node node) {
-        save(node.path());
+        save(node.stash());
     }
 
-    public synchronized void save(String... paths) {
+    public synchronized void save(String... stashes) {
         if (!store.allowWriting()) return;
-        GraphHelper.saveStashes(this, paths);
+        GraphHelper.saveStashes(this, stashes);
     }
 
-    public synchronized void saveAll(String... excludedPaths) {
+    public synchronized void saveAll(String... excludedStashes) {
         if (!store.allowWriting()) return;
-        GraphHelper.saveAll(this, excludedPaths);
+        GraphHelper.saveAll(this, excludedStashes);
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -123,15 +123,15 @@ public class Graph {
     public void remove(Node node) {
         node.owner().remove(node);
         nodes.remove(node.id);
-        save(node.path());
+        save(node.stash());
     }
 
-    public void remove(String path) {
-        nodesIn(path).forEach(node -> {
+    public void remove(String stash) {
+        nodesIn(stash).forEach(node -> {
             node.owner().remove(node);
             nodes.remove(node.id);
         });
-        save(path);
+        save(stash);
     }
 
     public void reload() {
@@ -226,35 +226,33 @@ public class Graph {
         return createRoot(concept, stash, createNodeName());
     }
 
-    public <T extends Layer> T createRoot(Class<T> layerClass, String path) {
-        return createRoot(layerClass, path, createNodeName());
+    public <T extends Layer> T createRoot(Class<T> layerClass, String stash) {
+        return createRoot(layerClass, stash, createNodeName());
     }
 
-    public Node createRoot(String type, String path) {
-        return createRoot(concept(type), path, createNodeName());
+    public Node createRoot(String type, String stash) {
+        return createRoot(concept(type), stash, createNodeName());
     }
 
-    public <T extends Layer> T createRoot(Class<T> layerClass, String path, String name) {
-        Node node = createRoot(concept(layerClass), path, name);
+    public <T extends Layer> T createRoot(Class<T> layerClass, String stash, String name) {
+        Node node = createRoot(concept(layerClass), stash, name);
         return node != null ? node.as(layerClass) : null;
     }
 
-    public Node createRoot(String type, String path, String name) {
-        return createRoot(concept(type), path, name);
+    public Node createRoot(String type, String stash, String name) {
+        return createRoot(concept(type), stash, name);
     }
 
-    public Node createRoot(Concept concept, String path, String name) {
-        Node newNode = GraphHelper.createNode(this, concept, path, name);
+    public Node createRoot(Concept concept, String stash, String name) {
+        Node newNode = GraphHelper.createNode(this, concept, stash, name);
         if (newNode != null) commit(newNode);
         return newNode;
     }
 
-    private void doLoadPath(String... paths) {
-        doLoadStashes(stream(paths).map(PathHelper::pathWithExtension).toArray(String[]::new));
-    }
-
-    private void doLoadStashes(String... paths) {
-        doLoadStashes(stream(paths).map(this::stashOf).toArray(Stash[]::new));
+    private void doLoadStashes(String... stashes) {
+        doLoadStashes(stream(stashes)
+                .map(StashHelper::stashWithExtension)
+                .map(this::stashOf).toArray(Stash[]::new));
     }
 
     void doLoadStashes(Stash... stashes) {
@@ -291,8 +289,8 @@ public class Graph {
         return result;
     }
 
-    private List<Node> nodesIn(String path) {
-        return model.graph.rootList().stream().filter(i -> i.path().equals(path)).collect(toList());
+    private List<Node> nodesIn(String stash) {
+        return model.graph.rootList().stream().filter(i -> i.stash().equals(stash)).collect(toList());
     }
 
     private Stash stashOf(String source) {
@@ -300,7 +298,7 @@ public class Graph {
     }
 
     Stash stashOf(String source, boolean logFail) {
-        source = pathWithExtension(source);
+        source = stashWithExtension(source);
         if (openedStashes.contains(source)) return null;
         openedStashes.add(source);
         Stash stash = store.stashFrom(source);
@@ -335,12 +333,12 @@ public class Graph {
     }
 
     protected Node loadFromStash(String id) {
-        doLoadStashes(stashOf(pathWithExtension(id)));
+        doLoadStashes(stashOf(stashWithExtension(id)));
         return node(id);
     }
 
     void init(String language) {
-        if (openedStashes.contains(pathWithExtension(language))) {
+        if (openedStashes.contains(stashWithExtension(language))) {
             languages.add(language);
             return;
         }
@@ -375,7 +373,7 @@ public class Graph {
     private void commit(Node node) {
         model.add(node);
         register(node);
-        openedStashes.add(PathHelper.pathWithExtension(node.path()));
+        openedStashes.add(StashHelper.stashWithExtension(node.stash()));
     }
 
 }

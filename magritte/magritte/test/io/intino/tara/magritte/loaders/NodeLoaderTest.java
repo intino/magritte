@@ -17,7 +17,7 @@ public class NodeLoaderTest {
 
     @Test
     public void load_node() throws Exception {
-        Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
+        Graph graph = new Graph(mockStore()).loadStashes(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash, "mock1");
         graph.createRoot(MockLayer.class, emptyStash, "mock2");
         List<MockLayer> list = load(asList(emptyStash + "#mock1", "$@io.intino.tara.magritte.natives.CodedNode"), MockLayer.class, mockLayer);

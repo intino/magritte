@@ -19,7 +19,7 @@ public class Creation {
 
     @Test
     public void createInstanceOfConceptWithManyParents() throws Exception {
-        Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
+        Graph graph = new Graph(mockStore()).loadStashes(emptyStash);
         Child child = graph.createRoot(Child.class);
         assertThat(child.childVar(), is("child"));
         assertThat(child.fillByChildVar(), is("filledByChild"));

@@ -19,7 +19,7 @@ public class ResourceLoaderTest {
 
     @Test
     public void load_node() throws Exception {
-        Graph graph = new Graph(mockStore()).loadPaths(emptyStash);
+        Graph graph = new Graph(mockStore()).loadStashes(emptyStash);
         MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash, "mock1");
         List<URL> list = ResourceLoader.load(asList("oldFile", "$@io.intino.tara.magritte.natives.CodedResource"), mockLayer);
         assertThat(list.size(), is(2));

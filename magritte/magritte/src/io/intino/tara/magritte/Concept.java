@@ -141,7 +141,7 @@ public class Concept extends Predicate {
             getGlobal().severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
             return null;
         }
-        return newNode(owner.path() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+        return newNode(owner.stash() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
     }
 
     private Node newNode(String name, Node owner) {

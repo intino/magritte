@@ -1,12 +1,12 @@
 package io.intino.tara.magritte;
 
-import io.intino.tara.magritte.utils.PathHelper;
+import io.intino.tara.magritte.utils.StashHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static io.intino.tara.magritte.utils.PathHelper.canonicalPath;
-import static io.intino.tara.magritte.utils.PathHelper.pathWithExtension;
+import static io.intino.tara.magritte.utils.StashHelper.canonicalPath;
+import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Arrays.asList;
 import static java.util.logging.Logger.getGlobal;
 
@@ -27,21 +27,21 @@ class GraphHelper {
         Map<String, List<Node>> pathNodes = new HashMap<>();
         set.forEach(p -> pathNodes.put(p, new ArrayList<>()));
         for (Node node : graph.model.graph.rootList())
-            if (set.contains(node.path())) pathNodes.get(node.path()).add(node);
+            if (set.contains(node.stash())) pathNodes.get(node.stash()).add(node);
         for (Map.Entry<String, List<Node>> entry : pathNodes.entrySet())
-            StashWriter.write(graph, pathWithExtension(entry.getKey()), entry.getValue());
+            StashWriter.write(graph, stashWithExtension(entry.getKey()), entry.getValue());
     }
 
     static void saveAll(Graph graph, String[] excludedPaths) {
         Set<String> set = new HashSet(asList(excludedPaths));
         Map<String, List<Node>> pathNodes = new HashMap<>();
         for (Node node : graph.model.graph.rootList()) {
-            if (set.contains(node.path())) continue;
-            if (!pathNodes.containsKey(node.path())) pathNodes.put(node.path(), new ArrayList<>());
-            pathNodes.get(node.path()).add(node);
+            if (set.contains(node.stash())) continue;
+            if (!pathNodes.containsKey(node.stash())) pathNodes.put(node.stash(), new ArrayList<>());
+            pathNodes.get(node.stash()).add(node);
         }
         for (Map.Entry<String, List<Node>> entry : pathNodes.entrySet())
-            StashWriter.write(graph, pathWithExtension(entry.getKey()), entry.getValue());
+            StashWriter.write(graph, stashWithExtension(entry.getKey()), entry.getValue());
     }
 
     static Node createNode(Graph graph, Concept concept, String path, String name) {
@@ -54,7 +54,7 @@ class GraphHelper {
             return null;
         }
         path = path == null || path.isEmpty() ? "Misc" : path;
-        graph.doLoadStashes(graph.stashOf(PathHelper.pathWithExtension(path), false));
+        graph.doLoadStashes(graph.stashOf(StashHelper.stashWithExtension(path), false));
         if (name != null && graph.nodes.containsKey(path + "#" + name)) {
             getGlobal().warning("Node with id " + path + "#" + name + " already exists");
             return null;
