@@ -85,7 +85,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 				null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, languageWorkingPackage, modelLevel.equals(Level.System), null);
+		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, languageWorkingPackage, modelLevel.equals(Level.Solution), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));

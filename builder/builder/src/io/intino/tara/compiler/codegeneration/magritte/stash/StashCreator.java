@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
-import static io.intino.tara.compiler.shared.Configuration.Level.System;
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.Collections.emptyList;
@@ -273,15 +273,15 @@ public class StashCreator {
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {
-		return test ? getTestStash(node) : getDefaultStashName();
+		return test ? getStashByNode(node) : stashName(node);
 	}
 
-	private String getTestStash(io.intino.tara.lang.model.Node node) {
+	private String stashName(io.intino.tara.lang.model.Node node) {
+		return level.compareLevelWith(Solution) == 0 ? getStashByNode(node) : generatedLanguage;
+	}
+
+	private String getStashByNode(io.intino.tara.lang.model.Node node) {
 		final String file = new File(node.file()).getName();
 		return file.substring(0, file.lastIndexOf("."));
-	}
-
-	private String getDefaultStashName() {
-		return level.compareLevelWith(System) == 0 ? "Model" : generatedLanguage;
 	}
 }

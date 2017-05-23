@@ -102,7 +102,7 @@ ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
 REACTIVE            : 'reactive';
 VOLATILE            : 'volatile';
-VERSIONED           : 'versioned';
+DECORABLE           : 'decorable';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

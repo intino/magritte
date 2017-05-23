@@ -68,6 +68,7 @@ public interface TaraTypes {
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
 	IElementType CONCEPT = new TaraTokenType("CONCEPT");
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
+	IElementType DECORABLE = new TaraTokenType("DECORABLE");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
 	IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
 	IElementType DOT = new TaraTokenType("DOT");
@@ -117,7 +118,6 @@ public interface TaraTypes {
 	IElementType TIME_TYPE = new TaraTokenType("TIME_TYPE");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
-	IElementType VERSIONED = new TaraTokenType("VERSIONED");
 	IElementType VOLATILE = new TaraTokenType("VOLATILE");
 	IElementType WITH = new TaraTokenType("WITH");
 	IElementType WORD_TYPE = new TaraTokenType("WORD_TYPE");
