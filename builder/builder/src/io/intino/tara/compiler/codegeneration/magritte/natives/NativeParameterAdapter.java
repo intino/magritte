@@ -12,7 +12,7 @@ import io.intino.tara.lang.model.Primitive;
 
 import java.io.File;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.System;
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 
 class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
@@ -41,7 +41,7 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
-		final NativeFormatter formatter = new NativeFormatter(language, outDsl, aPackage, workingPackage, languageWorkingPackage, level.compareLevelWith(System) == 0, importsFile);
+		final NativeFormatter formatter = new NativeFormatter(language, outDsl, aPackage, workingPackage, languageWorkingPackage, level.compareLevelWith(Solution) == 0, importsFile);
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForFunctionParameter(frame, parameter, value);
 		else formatter.fillFrameNativeParameter(frame, parameter, value);
 	}

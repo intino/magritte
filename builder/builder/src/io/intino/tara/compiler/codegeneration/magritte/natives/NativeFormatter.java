@@ -8,6 +8,7 @@ import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.VariableReference;
+import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -24,9 +25,7 @@ import static io.intino.tara.Resolver.shortType;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.tara.dsl.Proteo.FACET_SEPARATOR;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
-import static io.intino.tara.lang.model.Tag.Concept;
-import static io.intino.tara.lang.model.Tag.Feature;
-import static io.intino.tara.lang.model.Tag.Instance;
+import static io.intino.tara.lang.model.Tag.*;
 
 @SuppressWarnings("ALL")
 public class NativeFormatter implements TemplateTags {
@@ -124,6 +123,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(COLUMN, variable.column());
 		final Set<String> imports = new HashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new HashSet<>());
 		imports.addAll(collectImports(variable));
+		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());

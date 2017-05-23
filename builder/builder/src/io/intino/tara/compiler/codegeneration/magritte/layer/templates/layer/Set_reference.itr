@@ -12,5 +12,5 @@ def type(variable & reference & multiple & owner) !type(concept | inherited | ov
 end
 
 def type(variable & reference & owner) !type(concept | inherited | reactive | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = values.get(0)!= null ? graph().loadNode(((io.intino.tara.magritte.Layer) values.get(0)).id()).as($type+reference.class) : null;
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = values.get(0)!= null ? core$$().graph().load(((io.intino.tara.magritte.Layer) values.get(0)).id$$()).as($type+reference.class) : null;
 end

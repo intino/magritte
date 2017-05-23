@@ -9,7 +9,6 @@ import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.io.Stash;
 import io.intino.tara.io.StashSerializer;
 import io.intino.tara.lang.model.Node;
@@ -25,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class StashGenerationOperation extends ModelOperation {
@@ -42,7 +42,7 @@ public class StashGenerationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) {
-		this.outDSL = conf.level().equals(Configuration.Level.System) ? conf.getModule() : conf.outDSL();
+		this.outDSL = conf.level().equals(Solution) ? conf.getModule() : conf.outDSL();
 		try {
 			if (conf.isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
@@ -70,7 +70,7 @@ public class StashGenerationOperation extends ModelOperation {
 		return new StashCreator(nodes, language, outDSL, conf).create();
 	}
 
-	private String writeStashTo(File taraFile, Stash stash) {
+	private void writeStashTo(File taraFile, Stash stash) {
 		final byte[] content = StashSerializer.serialize(stash);
 		final File file = stashDestiny(taraFile);
 		file.getParentFile().mkdirs();
@@ -81,15 +81,15 @@ public class StashGenerationOperation extends ModelOperation {
 			LOG.log(Level.SEVERE, "Error writing stashes: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
-		return file.getPath();
+		file.getPath();
 	}
 
 	private File stashDestiny(File taraFile) {
 		final File destiny = conf.resourcesDirectory();
 		destiny.mkdirs();
-		return !conf.isTest() ?
-				new File(destiny, Format.firstUpperCase().format(conf.level().equals(Configuration.Level.System) ? "Model" : conf.outDSL()).toString() + STASH) :
-				new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
+		return conf.isTest() || conf.level().equals(Solution) ?
+				new File(destiny, taraFile.getName().split("\\.")[0] + STASH) :
+				new File(destiny, Format.firstUpperCase().format(conf.outDSL()).toString() + STASH);
 	}
 
 	private List<List<Node>> pack(Model model) {

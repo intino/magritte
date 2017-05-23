@@ -1,14 +1,14 @@
 def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$externalClass> values) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(values);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Variable & word & outDefined & multiple) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(values);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
@@ -16,46 +16,46 @@ end
 def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($workingPackage.rules.$externalClass value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Variable & word & outDefined) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($workingPackage.rules.$rule+externalWordClass value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & word) !type(multiple | owner | reactive | final | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($qn+reference.$name+firstUpperCase+javaValidName+reference value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & resource) !type(multiple | owner | reactive | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($type+variableType value, String destiny) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value, destiny);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(java.io.InputStream stream, String destiny) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(stream, destiny);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Variable & reactive) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(io.intino.tara.magritte.Expression<$type+fullType+reference> value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Variable & function) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
@@ -63,14 +63,14 @@ end
 def type(variable) !type(multiple | owner | concept | function | resource | reactive | final | word) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(io.intino.tara.magritte.Concept value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
@@ -79,26 +79,26 @@ end
 def type(variable & word & outDefined) !type(target | inherited | overriden | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
 		this.$name+firstLowerCase+javaValidName = value;
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & word) !type(target | inherited | overriden | multiple | final | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName([$qn+reference.]$name+FirstUpperCase+javaValidName+reference value) {
 		this.$name+firstLowerCase+javaValidName = value;
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & resource) !type(target | inherited | overriden | reactive | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($type+fulltype+reference url, String destiny) {
 		this.$name+firstLowerCase+javaValidName = graph().save(url, destiny, this.$name+firstLowerCase+javaValidName, node());
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
     }
 
     public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(java.io.InputStream stream, String destiny) {
 		this.$name+firstLowerCase+javaValidName = graph().save(stream, destiny, this.$name+firstLowerCase+javaValidName, node());
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
@@ -106,13 +106,13 @@ def type(variable & resource & multiple) !type(target | inherited | overriden | 
 	public $container+firstUpperCase+javaValidName add$name+firstUpperCase($type+fulltype+reference url, String destiny) {
 		$type+fulltype+reference newElement = graph().save(url, destiny, null, node());
 		this.$name+firstLowerCase+javaValidName.add(newElement);
-    	return this;
+    	return ($container+firstUpperCase+javaValidName) this;
     }
 
     public $container+firstUpperCase+javaValidName add$name+firstUpperCase(java.io.InputStream stream, String destiny) {
 		$type+fulltype+reference newElement = graph().save(stream, destiny, null, node());
 		this.$name+firstLowerCase+javaValidName.add(newElement);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 
     public java.io.OutputStream add$name+firstUpperCase+javaValidName(String destiny) {
@@ -130,42 +130,42 @@ end
 def type(Variable & reactive) !type(inherited | concept | overriden | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(io.intino.tara.magritte.Expression<$type+fullType+reference> value) {
 		this.$name+firstLowerCase+javaValidName = io.intino.tara.magritte.loaders.FunctionLoader.load(value, this, io.intino.tara.magritte.Expression.class);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Variable & function) !type(inherited | concept | overriden | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
 		this.$name+firstLowerCase+javaValidName = io.intino.tara.magritte.loaders.FunctionLoader.load($name+firstLowerCase+javaValidName, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Variable) !type(inherited | concept | overriden | function | reactive | multiple | final) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($type+variableType value) {
 		this.$name+firstLowerCase+javaValidName = value;
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & reference & concept & multiple & owner) !type(final | inherited | overriden | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(java.util.List<io.intino.tara.magritte.Concept> value) {
 		this.$name+firstLowerCase+javaValidName+firstLowercase = value;
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & reference & concept & owner) !type(final | inherited | overriden | multiple | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(io.intino.tara.magritte.Concept value) {
 		this.$name+firstLowerCase+javaValidName+firstLowercase = value;
-		return this;
+		return ($container+firstUpperCase+javaValidName) this;
 	}
 end
 
 def type(Node & single & owner) !type(inherited | overriden | final) trigger(setter)
-	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($qn+reference value) {
+	public $containerName+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($qn+reference value) {
 		this.$name+firstLowerCase+javaValidName = value;
-		return this;
+		return ($containerName+firstUpperCase+javaValidName) this;
 	}
 end
 

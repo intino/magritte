@@ -24,7 +24,7 @@ public class GenerateLanguageOperation extends ModelCollectionOperation {
 	@Override
 	public void call(Collection<Model> models) {
 		try {
-			if (unit.getConfiguration().level().equals(CompilerConfiguration.Level.System)) return;
+			if (unit.getConfiguration().level().equals(CompilerConfiguration.Level.Solution)) return;
 			if (unit.getConfiguration().isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDSL() + "] Generating language...");
 			new LanguageSerializer(unit.getConfiguration(), models).write();

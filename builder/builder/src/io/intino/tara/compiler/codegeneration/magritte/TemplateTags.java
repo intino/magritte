@@ -19,6 +19,7 @@ public interface TemplateTags {
 	String EMPTY = "empty";
 	String PLATFORM = "Platform";
 	String MAIN = "Main";
+	String DECORABLE = "decorable";
 	String SCOPE = "scope";
 	String PRODUCT = "Product";
 	String SIGNATURE = "signature";

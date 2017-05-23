@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static io.intino.tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
+import static io.intino.tara.lang.model.Tag.Decorable;
 import static io.intino.tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
@@ -69,7 +70,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		addType(frame, node);
 		addName(frame, node);
 		addParent(frame, node);
-		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
+		if (node.isAbstract() || node.is(Decorable)) frame.addFrame(ABSTRACT, true);
+		if (node.is(Decorable)) frame.addFrame(DECORABLE, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
 		frame.addFrame(PARENT_SUPER, node.parent() != null);

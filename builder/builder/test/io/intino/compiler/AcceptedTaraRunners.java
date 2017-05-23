@@ -28,15 +28,14 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
 	}
 
-
 	@Test
-	public void teseoM2() {
-		main(new String[]{home + "sandbox/confFiles/konos/teseo.txt"});
+	public void humketM2() {
+		main(new String[]{home + "sandbox/confFiles/humket/Humket.txt"});
 	}
 
 	@Test
-	public void legioM1() {
-		main(new String[]{home + "sandbox/confFiles/legio/Humket.txt"});
+	public void humketM1() {
+		main(new String[]{home + "sandbox/confFiles/humket/Humket-bot.txt"});
 	}
 
 	@Test

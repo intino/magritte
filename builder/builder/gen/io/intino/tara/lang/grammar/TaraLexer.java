@@ -21,7 +21,7 @@ public class TaraLexer extends Lexer {
 		SUB=1, USE=2, DSL=3, VAR=4, AS=5, HAS=6, ON=7, IS=8, INTO=9, WITH=10, 
 		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, COMPONENT=16, 
 		FEATURE=17, FINAL=18, ENCLOSED=19, PRIVATE=20, REACTIVE=21, VOLATILE=22, 
-		VERSIONED=23, LEFT_PARENTHESIS=24, RIGHT_PARENTHESIS=25, LEFT_SQUARE=26, 
+		DECORABLE=23, LEFT_PARENTHESIS=24, RIGHT_PARENTHESIS=25, LEFT_SQUARE=26, 
 		RIGHT_SQUARE=27, LEFT_CURLY=28, RIGHT_CURLY=29, INLINE=30, CLOSE_INLINE=31, 
 		AT=32, HASHTAG=33, COLON=34, COMMA=35, DOT=36, EQUALS=37, STAR=38, LIST=39, 
 		SEMICOLON=40, PLUS=41, WORD=42, RESOURCE=43, INT_TYPE=44, FUNCTION_TYPE=45, 
@@ -46,7 +46,7 @@ public class TaraLexer extends Lexer {
 	public static final String[] ruleNames = {
 		"SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", "ANY", 
 		"EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "FEATURE", 
-		"FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "VERSIONED", "LEFT_PARENTHESIS", 
+		"FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "DECORABLE", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", 
 		"INLINE", "CLOSE_INLINE", "AT", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", 
 		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "FUNCTION_TYPE", 
@@ -66,7 +66,7 @@ public class TaraLexer extends Lexer {
 		null, "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", "'on'", "'is'", 
 		"'into'", "'with'", "'any'", "'extends'", "'concept'", "'abstract'", "'terminal'", 
 		"'component'", "'feature'", "'final'", "'enclosed'", "'private'", "'reactive'", 
-		"'volatile'", "'versioned'", "'('", "')'", "'['", "']'", "'{'", "'}'", 
+		"'volatile'", "'decorable'", "'('", "')'", "'['", "']'", "'{'", "'}'", 
 		"'>'", "'<'", "'@'", "'#'", "':'", "','", "'.'", "'='", "'*'", "'...'", 
 		null, "'+'", "'word'", "'resource'", "'integer'", "'function'", "'object'", 
 		"'double'", "'string'", "'boolean'", "'datex'", "'instant'", "'time'", 
@@ -79,7 +79,7 @@ public class TaraLexer extends Lexer {
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", 
 		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "FEATURE", 
-		"FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "VERSIONED", "LEFT_PARENTHESIS", 
+		"FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "DECORABLE", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", 
 		"INLINE", "CLOSE_INLINE", "AT", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", 
 		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "FUNCTION_TYPE", 
@@ -576,9 +576,9 @@ public class TaraLexer extends Lexer {
 		"\7x\2\2\u0150\u0151\7g\2\2\u0151\60\3\2\2\2\u0152\u0153\7x\2\2\u0153\u0154"+
 		"\7q\2\2\u0154\u0155\7n\2\2\u0155\u0156\7c\2\2\u0156\u0157\7v\2\2\u0157"+
 		"\u0158\7k\2\2\u0158\u0159\7n\2\2\u0159\u015a\7g\2\2\u015a\62\3\2\2\2\u015b"+
-		"\u015c\7x\2\2\u015c\u015d\7g\2\2\u015d\u015e\7t\2\2\u015e\u015f\7u\2\2"+
-		"\u015f\u0160\7k\2\2\u0160\u0161\7q\2\2\u0161\u0162\7p\2\2\u0162\u0163"+
-		"\7g\2\2\u0163\u0164\7f\2\2\u0164\64\3\2\2\2\u0165\u0166\7*\2\2\u0166\66"+
+		"\u015c\7f\2\2\u015c\u015d\7g\2\2\u015d\u015e\7e\2\2\u015e\u015f\7q\2\2"+
+		"\u015f\u0160\7t\2\2\u0160\u0161\7c\2\2\u0161\u0162\7d\2\2\u0162\u0163"+
+		"\7n\2\2\u0163\u0164\7g\2\2\u0164\64\3\2\2\2\u0165\u0166\7*\2\2\u0166\66"+
 		"\3\2\2\2\u0167\u0168\7+\2\2\u01688\3\2\2\2\u0169\u016a\7]\2\2\u016a:\3"+
 		"\2\2\2\u016b\u016c\7_\2\2\u016c<\3\2\2\2\u016d\u016e\7}\2\2\u016e>\3\2"+
 		"\2\2\u016f\u0170\7\177\2\2\u0170@\3\2\2\2\u0171\u0172\7@\2\2\u0172\u0173"+

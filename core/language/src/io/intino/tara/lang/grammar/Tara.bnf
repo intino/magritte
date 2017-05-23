@@ -181,7 +181,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | VERSIONED {
+	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | DECORABLE {
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.FlagMixin'
 	implements = 'io.intino.tara.plugin.lang.psi.Flag'
 }

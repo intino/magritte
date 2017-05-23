@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
-import static io.intino.tara.compiler.shared.Configuration.Level.System;
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.Collections.emptyList;
@@ -239,9 +239,17 @@ public class StashCreator {
 		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
 		else if (type.equals(INSTANT))
 			return INSTANT.convert(valued.values().toArray(new String[valued.values().size()]));
-		if (type.equals(RESOURCE)) //TODO CHECK VALUE EQUALS RESOURCE FOLDER.IT WILL TRHOW INDEXOUTOFRANGE
-			return (valued.values()).stream().map(o -> toSystemIndependentName(((File) o).getAbsolutePath()).substring(toSystemIndependentName(resourceFolder.getAbsolutePath()).length() + 1)).collect(toList());
-		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
+		if (type.equals(RESOURCE)) {
+			return (valued.values()).stream()
+					.map(o -> relative((File) o))
+					.collect(toList());
+		} else return type.convert(valued.values().toArray(new String[valued.values().size()]));
+	}
+
+	private String relative(File file) {
+		final String path = toSystemIndependentName(file.getAbsolutePath());
+		final String resources = toSystemIndependentName(resourceFolder.getAbsolutePath());
+		return path.equals(resources) ? path : path.substring(resources.length() + 1);
 	}
 
 	private List<Object> buildReferenceValues(List<Object> values) {
@@ -250,7 +258,8 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Object o) {
-		if (o instanceof Primitive.Reference && !((Reference) o).isToInstance()) return noName(((Reference) o).reference());
+		if (o instanceof Primitive.Reference && !((Reference) o).isToInstance())
+			return noName(((Reference) o).reference());
 		else if (o instanceof io.intino.tara.lang.model.Node) return noName((io.intino.tara.lang.model.Node) o);
 		return StashHelper.buildInstanceReference(o);
 	}
@@ -264,15 +273,15 @@ public class StashCreator {
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {
-		return test ? getTestStash(node) : getDefaultStashName();
+		return test ? getStashByNode(node) : stashName(node);
 	}
 
-	private String getTestStash(io.intino.tara.lang.model.Node node) {
+	private String stashName(io.intino.tara.lang.model.Node node) {
+		return level.compareLevelWith(Solution) == 0 ? getStashByNode(node) : generatedLanguage;
+	}
+
+	private String getStashByNode(io.intino.tara.lang.model.Node node) {
 		final String file = new File(node.file()).getName();
 		return file.substring(0, file.lastIndexOf("."));
-	}
-
-	private String getDefaultStashName() {
-		return level.compareLevelWith(System) == 0 ? "Model" : generatedLanguage;
 	}
 }

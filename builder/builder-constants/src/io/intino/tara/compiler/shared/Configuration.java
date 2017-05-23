@@ -8,7 +8,7 @@ import java.util.Map;
 public interface Configuration {
 
 	enum Level {
-		System, Product, Platform;
+		Solution, Product, Platform;
 
 		public int compareLevelWith(Level type) {
 			return type.ordinal() - this.ordinal();

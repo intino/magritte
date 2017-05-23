@@ -30,6 +30,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
+import static io.intino.tara.compiler.codegeneration.Format.javaValidName;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static java.io.File.separator;
 import static java.lang.System.out;
@@ -43,6 +45,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private Template template;
+	private final File srcFolder;
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
@@ -51,6 +54,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();
+		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
 	}
 
 	@Override
@@ -59,10 +63,10 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		try {
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Cleaning Old Layers...");
-			if (!conf.level().equals(Level.System)) cleanOldLayers(model);
+			if (!conf.level().equals(Level.Solution)) cleanOldLayers(model);
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Generating Layers...");
-			if (!model.level().equals(Level.System)) createLayers(model);
+			if (!model.level().equals(Level.Solution)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
@@ -134,10 +138,24 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
+		if (node.is(Tag.Decorable)) {
+			layerFrame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
+			map.get(node.file()).put(srcDestiny(layerFrame), format(layerFrame));
+		} else removeDecorable(layerFrame.getKey(), node.name());
+	}
+
+	private void removeDecorable(String key, String name) {
+		final File parentFile = new File(outFolder, key.replace(DOT, separator) + JAVA).getParentFile();
+		final File file = new File(parentFile, firstUpperCase().format(javaValidName().format(ABSTRACT + name)).toString() + JAVA);
+		if (file.exists()) file.delete();
 	}
 
 	private String destiny(Map.Entry<String, Frame> layerFrame) {
 		return new File(outFolder, layerFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
+	}
+
+	private String srcDestiny(Map.Entry<String, Frame> layerFrame) {
+		return new File(srcFolder, layerFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
 	private List<String> writeLayers(Map<String, String> documentMap) {
@@ -152,13 +170,13 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String writeAbstractGraph(String text) {
-		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), GRAPH + JAVA);
+		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), "Abstract" + GRAPH + JAVA);
 		destiny.getParentFile().mkdirs();
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private void writeGraph(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(Format.javaValidName().format(conf.outDSL())) + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.outDSL())) + GRAPH + JAVA);
 		if (!destiny.exists()) write(destiny, text);
 	}
 
@@ -180,7 +198,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private String calculateLayerPath(Node node, File base) {
 		final String aPackage = packageOf(node);
-		return base.getPath() + File.separator + aPackage + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
+		return base.getPath() + File.separator + aPackage + javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
 	}
 
 	private String facetName(FacetTarget facetTarget) {

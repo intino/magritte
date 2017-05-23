@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
-import static io.intino.tara.compiler.shared.Configuration.Level.System;
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
 import static io.intino.tara.plugin.lang.psi.resolve.ReferenceManager.resolveRule;
@@ -52,7 +52,7 @@ public class NativeFormatter implements TemplateTags {
 		allImports = new Imports(module.getProject());
 		this.language = language;
 		final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-		this.m0 = facetConfiguration != null && System.equals(facetConfiguration.level());
+		this.m0 = facetConfiguration != null && Solution.equals(facetConfiguration.level());
 	}
 
 	void fillFrameForNativeVariable(Frame frame, Variable variable, boolean isMultiline) {
