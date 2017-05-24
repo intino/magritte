@@ -13,10 +13,6 @@ public abstract class Layer {
         this.node = node;
     }
 
-    public String id$() {
-        return node.id();
-    }
-
     public String name$() {
         return node.name();
     }
