@@ -66,13 +66,13 @@ def type(graph)
 			public Create(String stash, String name) {
 				this.stash = stash;
 				this.name = name;
-			}
+			}[
 
-			$node+new...[$NL$NL]
+			$node+new...[$NL$NL]]
 		}
 
-		public class Clear {
-			$node+clear...[$NL$NL]
+		public class Clear {[
+		    $node+clear...[$NL$NL]]
 		}
 	}
 end

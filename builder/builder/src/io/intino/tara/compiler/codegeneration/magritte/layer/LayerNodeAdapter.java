@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
@@ -141,8 +140,11 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
 			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
 			available.addFrame(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
-			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
-			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
+			facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> {
+				Frame varFrame = (Frame) context.build(variable);
+				varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
+				available.addFrame(VARIABLE, varFrame.addTypes(REQUIRED));
+			});
 			frame.addFrame(AVAILABLE_FACET, available);
 		}
 	}
@@ -157,27 +159,23 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return stashQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
-	private String facetName(FacetTarget facetTarget) {
-		return facetTarget != null ? facetTarget.target().replace(".", "") : "";
-	}
-
 	private String buildQN(Node node) {
 		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private void addVariables(final Frame frame, Node node) {
-		node.variables().forEach(v -> addVariable(frame, v));
+		node.variables().forEach(v -> addVariable(frame, node, v));
 		addTerminalVariables(node, frame);
 	}
 
-	private void addVariable(Frame frame, Variable variable) {
+	private void addVariable(Frame frame, Node node, Variable variable) {
 		final Frame varFrame = (Frame) context.build(variable);
 		varFrame.addTypes(OWNER);
+		varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
 	void setInitNode(Node initNode) {
 		this.initNode = initNode;
 	}
-
 }

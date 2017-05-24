@@ -20,22 +20,22 @@ def type(Layer)
 end
 
 def type(single & owner) !type(overriden | instance) trigger(add)
-	if (core$$().is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = core$$().as($qn+reference.class);
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = node.as($qn+reference.class);
 end
 
 def type(owner) !type(overriden | instance) trigger(add)
-	if (core$$().is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.add(core$$().as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(add)
 end
 
 def type(single & owner) !type(overriden | instance) trigger(remove)
-	if (core$$().is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = null;
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = null;
 end
 
 def type(owner) !type(overriden | instance) trigger(remove)
-	if (core$$().is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.remove(core$$().as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(remove)
@@ -80,13 +80,13 @@ def type(availableFacet) slot(variable) trigger(availableFacet)
 	}
 
 	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
-		$qn+reference newElement = addFacet($qn+reference.class);
+		$qn+reference newElement = core$$().addFacet($qn+reference.class);
 		$variable+assign...[$NL] |:
         return newElement;
     }
 
     public boolean is$name+firstUpperCase() {
-    	return is($qn+reference.class);
+    	return core$$().is($qn+reference.class);
     }
 
     public void remove$name+firstUpperCase() {
@@ -97,11 +97,11 @@ end
 def type(availableFacet) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
 		io.intino.tara.magritte.Layer as = core$$().as($qn+reference.class);
-		return as != null ? ($qn+reference) as : [$abstract?addFacet($qn+reference.class)];
+		return as != null ? ($qn+reference) as : [$abstract?core$$().addFacet($qn+reference.class)];
 	}
 
 	public boolean is$name+firstUpperCase() {
-		return is($qn+reference.class);
+		return core$$().is($qn+reference.class);
 	}
 end
 
@@ -225,7 +225,6 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		public class Clear[ extends $parent.Clear] {
 			[
 			$node+clear...[$NL$NL]]
-			$create+clear...[$NL$NL]
 		}
 		[
 		$node...[$NL]

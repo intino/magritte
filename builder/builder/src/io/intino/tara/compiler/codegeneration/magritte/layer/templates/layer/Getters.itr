@@ -101,7 +101,7 @@ end
 
 def type(Node & instance) slot(name) trigger(getter)
 	public $conceptLayer+reference $name+firstLowerCase+javaValidName() {
-		return _metaType.$type+firstLowerCase(o -> o.name().equals("$name")).get(0);
+		return _metaType.$type+firstLowerCase(o -> o.name$$().equals("$name")).get(0);
 	}
 end
 

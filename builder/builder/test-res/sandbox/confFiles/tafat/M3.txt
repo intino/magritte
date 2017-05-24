@@ -1,12 +1,12 @@
 def.file
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/Main.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/Control.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/GUI.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/output/CsvOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/ModelingMechanisms.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/output/SumusOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/output/LogOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/io/intino/tafat/output/CityCdfOutput.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/output/CsvOutput.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/output/LogOutput.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/GUI.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/Main.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/output/CityCdfOutput.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/ModelingMechanisms.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/output/SumusOutput.tara#true
+/Users/oroncal/workspace/tafat/platform/src/io/intino/tafat/Control.tara#true
 
 project
 tafat
@@ -15,17 +15,17 @@ platform
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/gen
+/Users/oroncal/workspace/tafat/platform/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/tafat-platform/out/production/platform/
+/Users/oroncal/workspace/tafat/out/production/platform/
 resources
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/res
+/Users/oroncal/workspace/tafat/platform/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/sandbox/tafat-platform/.tara
+/Users/oroncal/workspace/tafat/.tara
 src.path
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src
+/Users/oroncal/workspace/tafat/platform/src
 
 version
 1.0.0
@@ -37,5 +37,3 @@ test.module
 false
 encoding
 UTF-8
-native.language
-Java

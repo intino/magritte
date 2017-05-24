@@ -89,12 +89,23 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>magritte</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.intino.tara</groupId>
+                    <artifactId>language</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>builder-constants</artifactId>
             <version>[1.2.0, 2.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>io.intino.tara</groupId>
+            <artifactId>language</artifactId>
+            <version>[1.0.4, 2.0.0)</version>
         </dependency>
 
         <dependency>

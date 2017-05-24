@@ -16,11 +16,10 @@ import io.intino.tara.lang.model.rules.variable.WordRule;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static io.intino.tara.lang.model.Tag.Reactive;
 
 
 class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
@@ -40,15 +39,15 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
-		frame.addFrame(CONTAINER, variable.container().name());
-		frame.addFrame(CONTAINER_NAME, variable.container().name());
-		frame.addFrame(QN, buildQN(variable.container()));
+		Node container = variable.container();
+		frame.addFrame(CONTAINER_NAME, container.name());
+		frame.addFrame(QN, buildQN(container));
 		if (variable.values().stream().filter(Objects::nonNull).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive))
+		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Reactive))
 			fillNativeVariable(frame, variable);
 	}
 
@@ -88,7 +87,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, languageWorkingPackage, modelLevel.equals(Level.Solution), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
-			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));
+			imports.addAll(new ArrayList<>(((NativeRule) variable.rule()).imports()));
 		} else adapter.fillFrameNativeVariable(frame, variable, next);
 	}
 
