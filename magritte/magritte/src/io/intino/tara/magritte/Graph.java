@@ -314,13 +314,13 @@ public class Graph {
         this.variables.put(node, variables);
     }
 
-    Concept $concept(String name) {
+    Concept concept$(String name) {
         if (name == null) return null;
         if (!concepts.containsKey(name)) register(new Concept(name));
         return concepts.get(name);
     }
 
-    Node $node(String name) {
+    Node node$(String name) {
         if (name == null) name = createNodeName();
 //		TODO check if (nodes.containsKey(name)) return nodes.get(name);
         Node node = new Node(name);

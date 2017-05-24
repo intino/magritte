@@ -40,7 +40,7 @@ class NodeCloner {
     private Node clone(String name, Node toClone, Node owner) {
         Node clone = new Node(name);
         clone.owner(owner);
-        toClone.typeNames.forEach(n -> clone.addLayer(model.$concept(n)));
+        toClone.typeNames.forEach(n -> clone.addLayer(model.concept$(n)));
         clone.syncLayers();
         cloneComponents(toClone, clone, name);
         register(toClone, clone);

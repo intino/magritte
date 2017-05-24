@@ -39,13 +39,13 @@ class StashReader {
     private void loadConcepts(List<io.intino.tara.io.Concept> rawConcepts) {
         for (io.intino.tara.io.Concept rawConcept : rawConcepts) {
             graph.layerFactory.register(rawConcept.name, rawConcept.className);
-            loadConcept(graph.$concept(rawConcept.name), rawConcept);
+            loadConcept(graph.concept$(rawConcept.name), rawConcept);
         }
     }
 
     @SuppressWarnings("Convert2MethodRef")
     private void loadConcept(Concept concept, io.intino.tara.io.Concept rawConcept) {
-        concept.parent(graph.$concept(rawConcept.parent));
+        concept.parent(graph.concept$(rawConcept.parent));
         List<Concept> concepts = typesWithoutConcept(rawConcept);
         concept.metatype = !concepts.isEmpty() ? concepts.get(0) : null;
         concept.concepts(metaTypesOf(concepts));
@@ -53,7 +53,7 @@ class StashReader {
         concept.isMetaConcept = rawConcept.isMetaConcept;
         concept.isMain = rawConcept.isMain;
         concept.layerClass = graph.layerFactory.layerClass(concept.id);
-        concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(graph.$concept(c.type), c.min, c.max)).collect(toSet());
+        concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(graph.concept$(c.type), c.min, c.max)).collect(toSet());
         concept.nodes = loadVirtualNodes(rawConcept.nodes);
         concept.parameters = rawConcept.parameters.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
         concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
@@ -63,14 +63,14 @@ class StashReader {
         List<Concept> result = new ArrayList<>();
         for (String type : taraConcept.types)
             if (!proteoTypes.contains(type))
-                result.add(graph.$concept(type));
+                result.add(graph.concept$(type));
         return result;
     }
 
     private List<Node> loadNodes(Node parent, List<io.intino.tara.io.Node> rawNodes) {
         List<Node> result = new ArrayList<>();
         for (io.intino.tara.io.Node rawNode : rawNodes) {
-            Node node = graph.$node(rawNode.name);
+            Node node = graph.node$(rawNode.name);
             node.owner(parent);
             loadNode(node, rawNode);
             parent.add(node);
