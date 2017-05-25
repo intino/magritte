@@ -35,7 +35,7 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 	public NodeRuleAnalyzer(TaraRuleContainer ruleContainer) {
 		this.node = TaraPsiImplUtil.getContainerByType(ruleContainer, Node.class);
 		this.rule = ruleContainer.getRule();
-		rulesPackage = (TaraModuleType.isTara(module()) ? TaraUtil.workingPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
+		rulesPackage = (TaraModuleType.isTara(module()) ? TaraUtil.graphPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
 	}
 
 	@Override

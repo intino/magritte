@@ -23,7 +23,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 	public MethodReferenceSolver(Identifier identifier, TextRange range) {
 		super(identifier, range);
 		this.module = ModuleProvider.moduleOf(identifier);
-		this.outputDsl = (TaraModuleType.isTara(module)) ? TaraUtil.workingPackage(identifier) : null;
+		this.outputDsl = (TaraModuleType.isTara(module)) ? TaraUtil.graphPackage(identifier) : null;
 	}
 
 	@Override

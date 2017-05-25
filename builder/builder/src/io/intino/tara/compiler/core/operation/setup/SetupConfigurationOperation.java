@@ -76,7 +76,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 		final Level level = Level.valueOf(artifact.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
 		configuration.outDSL(artifact.name());
 		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name().toLowerCase();
-		configuration.workingPackage(configuration.isTest() ? workingPackage + ".test" : workingPackage);
+		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
 		configuration.artifactId(artifact.name().toLowerCase());
 		configuration.groupId(artifact.groupId());
 		configuration.version(artifact.version());

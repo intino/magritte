@@ -50,7 +50,6 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
-		super();
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();

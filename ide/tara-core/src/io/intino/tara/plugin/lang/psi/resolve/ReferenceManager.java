@@ -241,14 +241,14 @@ public class ReferenceManager {
 
 	private static PsiElement resolveRuleToClass(io.intino.tara.plugin.lang.psi.Rule rule) {
 		if (!TaraModuleType.isTara(ModuleProvider.moduleOf(rule))) return null;
-		final String workingPackage = TaraUtil.workingPackage(rule);
+		final String workingPackage = TaraUtil.graphPackage(rule);
 		if (workingPackage == null) return null;
 		return resolveJavaClassReference(rule.getProject(), workingPackage.toLowerCase() + ".rules." + rule.getText());
 	}
 
 	private static PsiElement resolveNativeClass(io.intino.tara.plugin.lang.psi.Rule rule, Project project) {
 		if (rule == null) return null;
-		String aPackage = TaraUtil.workingPackage(rule) + '.' + "functions";
+		String aPackage = TaraUtil.graphPackage(rule) + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 
@@ -269,7 +269,7 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveTaraNativeImplementationToJava(io.intino.tara.plugin.lang.psi.Valued valued) {
-		String workingPackage = TaraUtil.workingPackage(valued);
+		String workingPackage = TaraUtil.graphPackage(valued);
 		if (ModuleProvider.moduleOf(valued) == null) return null;
 		if (workingPackage == null || workingPackage.isEmpty())
 			workingPackage = ModuleProvider.moduleOf(valued).getName();
