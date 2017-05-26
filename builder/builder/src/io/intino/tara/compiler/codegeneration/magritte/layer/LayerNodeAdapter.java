@@ -65,7 +65,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		frame.addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
-		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name());
+		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
 		addType(frame, node);
 		addName(frame, node);
 		addParent(frame, node);

@@ -152,8 +152,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 				SourceToOutputMapping mapping = dm.getSourceToOutputMap(entry.getKey());
 				for (String source : mapping.getSources()) {
 					if (new File(source).exists()) continue;
-					mapping.remove(source);
-					FSOperations.markDeleted(context, new File(source));
+//					mapping.remove(source);
+//					FSOperations.markDeleted(context, new File(source));
 				}
 			} catch (IOException e) {
 				LOG.error(e.getMessage());

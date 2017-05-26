@@ -12,8 +12,7 @@ public class TaraBuilderService extends BuilderService {
 
 	@NotNull
 	public List<? extends ModuleLevelBuilder> createModuleLevelBuilders() {
-		final TaraBuilder taraBuilder = new TaraBuilder();
-		return Collections.singletonList(taraBuilder);
+		return Collections.singletonList(new TaraBuilder());
 	}
 
 

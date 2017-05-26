@@ -49,7 +49,7 @@ def type(node) !type(final | instance | abstract) trigger(new)
     }
 end
 
-def type(node) !type(single | final | instance | abstract) trigger(clear)
+def type(node) !type(single | final | instance | abstract | overriden) trigger(clear)
     public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
 		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}

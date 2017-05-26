@@ -99,7 +99,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private void fillLayerInOutMap(Map<String, Map<String, String>> map) {
 		for (Map.Entry<String, Map<String, String>> entry : map.entrySet())
-			for (String out : entry.getValue().keySet()) put(entry.getKey(), out);
+			for (String out : entry.getValue().keySet()) if (!isUnderSource(new File(out))) put(entry.getKey(), out);
 	}
 
 	private void put(String key, String value) {
@@ -157,15 +157,17 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return new File(srcFolder, layerFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
-	private List<String> writeLayers(Map<String, String> documentMap) {
-		List<String> outputs = new ArrayList<>();
-		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
+	private void writeLayers(Map<String, String> layersMap) {
+		for (Map.Entry<String, String> entry : layersMap.entrySet()) {
 			File file = new File(entry.getKey());
+			if (isUnderSource(file) && file.exists()) continue;
 			file.getParentFile().mkdirs();
 			write(file, entry.getValue());
-			outputs.add(file.getAbsolutePath());
 		}
-		return outputs;
+	}
+
+	private boolean isUnderSource(File file) {
+		return file.getAbsolutePath().startsWith(srcFolder.getAbsolutePath());
 	}
 
 	private String writeAbstractGraph(String text) {
@@ -188,7 +190,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private List<File> filterOld(List<File> files, File base, Model model) {
 		List<File> current = calculateCurrentLayers(base, model);
-		return files.stream().filter(layer -> !current.contains(layer)).collect(Collectors.toList());
+		return files.stream().filter(layer -> !current.contains(layer) && !isUnderSource(layer)).collect(Collectors.toList());
 	}
 
 	private List<File> calculateCurrentLayers(File base, Model model) {
