@@ -47,7 +47,7 @@ public class MethodReferenceCreator {
 		this.valued = valued;
 		this.reference = reference.replace("@", "");
 		module = ModuleProvider.moduleOf(valued);
-		workingPackage = TaraUtil.workingPackage(valued);
+		workingPackage = TaraUtil.graphPackage(valued);
 	}
 
 	public PsiMethod create(String methodBody) {

@@ -8,9 +8,9 @@ end
 
 def type(variable & reference & multiple & owner) !type(concept | inherited | overriden | reactive) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<java.lang.Object>) values).stream().
-		map(s -> graph().core$$().load(((io.intino.tara.magritte.Layer) s).id$$()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
+		map(s -> graph().core$$().load(((io.intino.tara.magritte.Layer) s).core$$().id()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable & reference & owner) !type(concept | inherited | reactive | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = values.get(0)!= null ? core$$().graph().load(((io.intino.tara.magritte.Layer) values.get(0)).id$$()).as($type+reference.class) : null;
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = values.get(0)!= null ? core$$().graph().load(((io.intino.tara.magritte.Layer) values.get(0)).core$$().id()).as($type+reference.class) : null;
 end

@@ -33,7 +33,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		super(element, range);
 		this.module = ModuleProvider.moduleOf(element);
 		if (!TaraModuleType.isTara(module)) return;
-		this.outputDsl = TaraUtil.workingPackage(element);
+		this.outputDsl = TaraUtil.graphPackage(element);
 	}
 
 	@Override

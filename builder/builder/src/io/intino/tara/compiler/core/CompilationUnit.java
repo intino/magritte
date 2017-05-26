@@ -85,7 +85,7 @@ public final class CompilationUnit extends ProcessingUnit {
 	public static void cleanOut(CompilerConfiguration configuration) {
 		final String generationPackage = (configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage()).replace(".", File.separator);
 		File out = new File(configuration.getOutDirectory(), generationPackage.toLowerCase());
-//		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out); TODO avoid removing konos directory
+//		if (out.exists()) FileSystemUtils.removeDir(out); TODO
 	}
 
 	private void compile(int throughPhase) throws CompilationFailedException {

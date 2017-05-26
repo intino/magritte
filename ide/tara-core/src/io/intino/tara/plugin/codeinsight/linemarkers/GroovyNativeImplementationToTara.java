@@ -40,6 +40,6 @@ public class GroovyNativeImplementationToTara extends RelatedItemLineMarkerProvi
 	}
 
 	private String outDsl(@NotNull PsiElement element) {
-		return TaraUtil.workingPackage(element).isEmpty() ? ModuleProvider.moduleOf(element).getName() : TaraUtil.workingPackage(element);
+		return TaraUtil.graphPackage(element).isEmpty() ? ModuleProvider.moduleOf(element).getName() : TaraUtil.graphPackage(element);
 	}
 }

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.graphPackage;
+
 class TestClassCreator {
 
 
@@ -34,7 +36,7 @@ class TestClassCreator {
 		map.put("NAME", newName);
 		final Language language = LanguageManager.getLanguage(module.getProject(), dsl);
 		map.put("APPLICATION", io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase().format(conf.outDSL()).toString());
-		map.put("WORKING_PACKAGE", conf.workingPackage().toLowerCase());
+		map.put("WORKING_PACKAGE", graphPackage(module));
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;
 	}

@@ -27,7 +27,7 @@ def type(graph)
 			$node+remove...[$NL]
 		}
 
-		protected java.net.URL resourceAsMessage$$(String language, String key) {
+		public java.net.URL resourceAsMessage$$(String language, String key) {
 			return graph.loadResource(graph.i18n().message(language, key));
 		}
 
@@ -35,11 +35,11 @@ def type(graph)
 
 		$node+filter...[$NL$NL]
 
-		protected io.intino.tara.magritte.Graph core$$() {
+		public io.intino.tara.magritte.Graph core$$() {
 			return graph;
 		}
 
-		protected io.intino.tara.magritte.utils.I18n i18n$$() {
+		public io.intino.tara.magritte.utils.I18n i18n$$() {
 			return graph.i18n();
 		}
 

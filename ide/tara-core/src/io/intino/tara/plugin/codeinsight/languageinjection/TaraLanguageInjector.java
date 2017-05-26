@@ -86,7 +86,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final io.intino.tara.Language language = TaraUtil.getLanguage(expression.getOriginalElement().getContainingFile());
 		final Module module = moduleOf(expression);
 		if (language == null || module == null) return "";
-		String workingPackage = TaraUtil.workingPackage(expression).isEmpty() ? module.getName() : TaraUtil.workingPackage(expression);
+		String workingPackage = TaraUtil.graphPackage(expression).isEmpty() ? module.getName() : TaraUtil.graphPackage(expression);
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Parameter.class, new NativeParameterAdapter(module, workingPackage, language));
