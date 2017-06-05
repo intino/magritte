@@ -98,24 +98,14 @@ public interface Configuration {
 	interface DeployConfiguration {
 		String name();
 
+		boolean pro();
+
 		List<Parameter> parameters();
-
-		List<Service> services();
-
-		String store();
 
 		interface Parameter {
 			String name();
 
-			String type();
-
 			String value();
-		}
-
-		interface Service {
-			String name();
-
-			List<Parameter> parameters();
 		}
 	}
 

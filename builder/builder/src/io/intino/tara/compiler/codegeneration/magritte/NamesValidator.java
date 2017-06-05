@@ -61,10 +61,6 @@ public class NamesValidator {
 		javaKeywords.add("volatile");
 		javaKeywords.add("default");
 		javaKeywords.add("goto");
-		taraKeywords.add("name");
-		taraKeywords.add("id");
-		taraKeywords.add("components");
-		taraKeywords.add("node");
 	}
 
 	public static boolean isKeyword(final String name) {

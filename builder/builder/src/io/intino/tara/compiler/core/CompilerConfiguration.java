@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -65,6 +66,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private boolean test;
 	private String workingPackage;
 	private String nativeLanguage = "java";
+	private Map<String, String> packageParameters;
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
@@ -350,6 +352,14 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 			LOG.info(e.getMessage());
 			return null;
 		}
+	}
+
+	public Map<String, String> packageParameters() {
+		return packageParameters;
+	}
+
+	public void packageParameters(Map<String, String> packageParameters) {
+		this.packageParameters = packageParameters;
 	}
 
 	public class DSL implements LanguageLibrary {

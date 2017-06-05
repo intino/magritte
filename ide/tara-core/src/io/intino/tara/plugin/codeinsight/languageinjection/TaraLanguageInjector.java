@@ -7,6 +7,7 @@ import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import io.intino.tara.Checker;
+import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Tag;
@@ -42,6 +43,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
 		final Language language = injectionLanguage(host);
+		if (language == null) return;
 		resolve(host);
 		injectionPlacesRegistrar.addPlace(language,
 				getRangeInsideHost((Expression) host),
@@ -59,7 +61,9 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private Language injectionLanguage(PsiLanguageInjectionHost languageInjectionHost) {
-		return Language.findLanguageByID(languageMap.get(TaraUtil.configurationOf(languageInjectionHost).nativeLanguage().toLowerCase()));
+		final Configuration configuration = TaraUtil.configurationOf(languageInjectionHost);
+		if (configuration == null || configuration.nativeLanguage() == null) return null;
+		return Language.findLanguageByID(languageMap.get(configuration.nativeLanguage().toLowerCase()));
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {

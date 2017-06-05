@@ -22,8 +22,8 @@ public class ToNativeTransformerTemplate extends Template {
 			rule().add((condition("type", "native")), (condition("type", "date"))).add(literal("DateLoader.load(java.util.Collections.singletonList(\"")).add(mark("value")).add(literal("\"), self).get(0)")),
 			rule().add((condition("type", "native")), (condition("type", "instant"))).add(literal("InstantLoader.load(java.util.Collections.singletonList(\"")).add(mark("value")).add(literal("\"), self).get(0)")),
 			rule().add((condition("type", "native")), (condition("type", "emptyNode")), (condition("type", "reference"))).add(literal("null")),
-			rule().add((condition("type", "native")), (condition("type", "reference"))).add(literal("self.graph().loadInstance(\"")).add(mark("value")).add(literal("\");")),
-			rule().add((condition("type", "native")), (condition("type", "resource"))).add(literal("self.graph().loadResource(\"")).add(mark("value", "url")).add(literal("\");")),
+			rule().add((condition("type", "native")), (condition("type", "reference"))).add(literal("self.graph().core$().loadInstance(\"")).add(mark("value")).add(literal("\");")),
+			rule().add((condition("type", "native")), (condition("type", "resource"))).add(literal("self.graph().core$().loadResource(\"")).add(mark("value", "url")).add(literal("\");")),
 			rule().add((condition("type", "native")), (condition("type", "string"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
 			rule().add((condition("type", "native")), not(condition("type", "string"))).add(mark("value"))
 		);

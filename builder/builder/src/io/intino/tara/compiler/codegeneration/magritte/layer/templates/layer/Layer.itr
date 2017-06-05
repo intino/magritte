@@ -65,7 +65,7 @@ end
 
 def type(node & create) !type(single | final | instance) trigger(clear)
     public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
-		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete$$);
+		new java.util.ArrayList<>($name+firstLowerCase+javaValidName~List()).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}
 end
 
