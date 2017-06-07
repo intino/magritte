@@ -109,10 +109,7 @@ public class LanguageSerializer {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
-		for (Map.Entry<String, String> entry : conf.packageParameters().entrySet()) {
-			if (entry.getKey().isEmpty() || entry.getValue().isEmpty()) continue;
-			manifest.getMainAttributes().put(new Attributes.Name(entry.getKey()), entry.getValue());
-		}
+		frameworkParameters(manifest);
 		manifest.getEntries().put("tara", createTaraProperties());
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.outDSL() + "-" + conf.version() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
@@ -121,6 +118,14 @@ public class LanguageSerializer {
 		addInheritedRules(target);
 		target.close();
 		FileSystemUtils.removeDir(src);
+	}
+
+	private void frameworkParameters(Manifest manifest) {
+		final Attributes frameworkAttributes = new Attributes();
+		for (Map.Entry<String, String> entry : conf.packageParameters().entrySet())
+			if (!entry.getKey().isEmpty() && !entry.getValue().isEmpty())
+				frameworkAttributes.put(new Attributes.Name(entry.getKey()), entry.getValue());
+		manifest.getEntries().put("framework", frameworkAttributes);
 	}
 
 	private Attributes createTaraProperties() {

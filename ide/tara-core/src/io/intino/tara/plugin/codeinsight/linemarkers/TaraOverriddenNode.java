@@ -47,7 +47,6 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	}
 	);
 
-
 	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}

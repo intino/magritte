@@ -150,7 +150,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 			DataContext result = getContext();
 			if (EventQueue.isDispatchThread() && result == null)
 				result = DataManager.getInstance().getDataContextFromFocus().getResultSync(100);
-			project = result != null ? (Project) result.getData(LangDataKeys.MODULE) : null;
+			project = result != null ? result.getData(LangDataKeys.PROJECT) : null;
 		}
 		return new TaraHighlighterLexAdapter(project);
 	}
