@@ -57,7 +57,7 @@ public class Graph {
         return load(id, true);
     }
 
-    private Node load(String id, boolean logFail) {
+    public Node load(String id, boolean logFail) {
         Node node = loadFromLoaders(id);
         if (node == null) node = nodes.get(id);
         if (node == null) node = loadFromStash(id, logFail);
@@ -340,7 +340,7 @@ public class Graph {
         return loadFromStash(id, true);
     }
 
-    private Node loadFromStash(String id, boolean logFail) {
+    protected Node loadFromStash(String id, boolean logFail) {
         doLoadStashes(stashOf(stashWithExtension(id), logFail));
         return node(id);
     }
