@@ -54,10 +54,14 @@ public class Graph {
     }
 
     public Node load(String id) {
+        return load(id, true);
+    }
+
+    private Node load(String id, boolean logFail) {
         Node node = loadFromLoaders(id);
         if (node == null) node = nodes.get(id);
-        if (node == null) node = loadFromStash(id);
-        if (node == null) getGlobal().warning("A reference to a node named as " + id + " has not been found");
+        if (node == null) node = loadFromStash(id, logFail);
+        if (node == null && logFail) getGlobal().warning("A reference to a node named as " + id + " has not been found");
         return node;
     }
 
@@ -333,7 +337,11 @@ public class Graph {
     }
 
     protected Node loadFromStash(String id) {
-        doLoadStashes(stashOf(stashWithExtension(id)));
+        return loadFromStash(id, true);
+    }
+
+    private Node loadFromStash(String id, boolean logFail) {
+        doLoadStashes(stashOf(stashWithExtension(id), logFail));
         return node(id);
     }
 
