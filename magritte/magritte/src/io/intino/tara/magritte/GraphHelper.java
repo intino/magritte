@@ -28,8 +28,7 @@ class GraphHelper {
         set.forEach(p -> pathNodes.put(p, new ArrayList<>()));
         for (Node node : graph.model.graph.rootList())
             if (set.contains(node.stash())) pathNodes.get(node.stash()).add(node);
-        for (Map.Entry<String, List<Node>> entry : pathNodes.entrySet())
-            StashWriter.write(graph, stashWithExtension(entry.getKey()), entry.getValue());
+        save(graph, pathNodes);
     }
 
     static void saveAll(Graph graph, String[] excludedPaths) {
@@ -40,6 +39,10 @@ class GraphHelper {
             if (!pathNodes.containsKey(node.stash())) pathNodes.put(node.stash(), new ArrayList<>());
             pathNodes.get(node.stash()).add(node);
         }
+        save(graph, pathNodes);
+    }
+
+    private static void save(Graph graph, Map<String, List<Node>> pathNodes) {
         for (Map.Entry<String, List<Node>> entry : pathNodes.entrySet())
             StashWriter.write(graph, stashWithExtension(entry.getKey()), entry.getValue());
     }
