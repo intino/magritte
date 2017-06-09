@@ -281,6 +281,10 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void sumusCallgenie() {
+		main(new String[]{home + "sandbox/confFiles/sumus/callgenie.txt"});
+	}
+	@Test
 	public void sumusEbarTest() {
 		main(new String[]{home + "sandbox/confFiles/sumus/ebar_test.txt"});
 	}
