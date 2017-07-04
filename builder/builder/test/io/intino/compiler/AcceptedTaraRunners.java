@@ -99,6 +99,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void ebarBrdigeM2() {
+		main(new String[]{home + "sandbox/confFiles/ebar/m2.txt"});
+	}
+
+	@Test
 	public void exampleM1() {
 		main(new String[]{home + "sandbox/confFiles/example/m1.txt"});
 	}
@@ -153,7 +158,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimate.txt"});
 	}
 
-
 	@Test
 	public void amidasUltimateTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimateTest.txt"});
@@ -163,7 +167,6 @@ public class AcceptedTaraRunners {
 	public void AmidasTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3Test.txt"});
 	}
-
 
 	@Test
 	public void AmidasM1() {

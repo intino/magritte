@@ -59,7 +59,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			extractConfiguration(legio);
 			return checkConfiguration();
 		} catch (Throwable t) {
-			throw new TaraException(t.getMessage());
+			throw new TaraException(t.getMessage() == null ? "java.lang.NullPointerException at " + t.getStackTrace()[0].toString() : t.getMessage());
 		}
 	}
 
@@ -83,8 +83,10 @@ public class SetupConfigurationOperation extends SetupOperation {
 		configuration.artifactId(artifact.name().toLowerCase());
 		configuration.groupId(artifact.groupId());
 		configuration.version(artifact.version());
-		final Map<String, String> map = legio.artifact().package$().parameterList().stream().collect(Collectors.toMap(Parameter::name$, Parameter::value));
-		configuration.packageParameters(map);
+		if (legio.artifact().package$() != null) {
+			final Map<String, String> map = legio.artifact().package$().parameterList().stream().collect(Collectors.toMap(Parameter::name$, Parameter::value));
+			configuration.packageParameters(map);
+		}
 		if (configuration.isTest()) {
 			configuration.addLanguage(artifact.name(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);

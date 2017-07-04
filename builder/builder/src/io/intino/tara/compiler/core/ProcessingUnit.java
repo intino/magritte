@@ -18,10 +18,6 @@ public abstract class ProcessingUnit {
 		else this.errorCollector = er;
 	}
 
-	public void configure(CompilerConfiguration configuration) {
-		this.configuration = configuration;
-	}
-
 	public CompilerConfiguration getConfiguration() {
 		return this.configuration;
 	}
