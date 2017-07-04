@@ -1,10 +1,10 @@
 def.file
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src/test/Fridge.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src/test/Agent.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src/test/SystemDynamic.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src/test/RouterStateChart.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src/test/Task.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src/test/TableFunction.tara#true
+/Users/oroncal/workspace/tafat/Test/src/test/Agent.tara#true
+/Users/oroncal/workspace/tafat/Test/src/test/Fridge.tara#true
+/Users/oroncal/workspace/tafat/Test/src/test/TableFunction.tara#true
+/Users/oroncal/workspace/tafat/Test/src/test/RouterStateChart.tara#true
+/Users/oroncal/workspace/tafat/Test/src/test/SystemDynamic.tara#true
+/Users/oroncal/workspace/tafat/Test/src/test/Task.tara#true
 
 project
 tafat
@@ -13,17 +13,17 @@ Test
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/gen
+/Users/oroncal/workspace/tafat/Test/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/tafat-platform/out/production/Test/
+/Users/oroncal/workspace/tafat/out/production/Test/
 resources
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/res
+/Users/oroncal/workspace/tafat/Test/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/sandbox/tafat-platform/.tara
+/Users/oroncal/workspace/tafat/.tara
 src.path
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/src
+/Users/oroncal/workspace/tafat/Test/src
 
 version
 1.0.0
@@ -35,5 +35,3 @@ test.module
 false
 encoding
 UTF-8
-native.language
-Java

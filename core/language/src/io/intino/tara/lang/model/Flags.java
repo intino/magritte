@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.intino.tara.lang.model.Tag.*;
+import static io.intino.tara.lang.model.Tag.Facet;
 
 public class Flags {
 
@@ -19,7 +20,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Abstract, Final, Enclosed, Feature, Component, Volatile);
+		return Arrays.asList(Abstract, Final, Enclosed, Feature, Component, Volatile, Decorable);
 	}
 
 	public static List<Tag> forReference() {
@@ -27,7 +28,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forComponent() {
-		return Arrays.asList(Abstract, Final, Feature, Enclosed, Final, Component, Volatile);
+		return Arrays.asList(Abstract, Final, Feature, Enclosed, Final, Component, Volatile, Decorable);
 	}
 
 	public static List<Tag> forVariable() {

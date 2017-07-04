@@ -12,7 +12,7 @@ public class CodedConcept implements NativeCode, Expression<Concept> {
 
 	@Override
 	public Concept value() {
-		return self.graph().concept("Mock");
+		return self.core$().graph().concept("Mock");
 	}
 
 	@Override

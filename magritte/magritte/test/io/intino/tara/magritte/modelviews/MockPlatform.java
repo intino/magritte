@@ -1,4 +1,4 @@
-package io.intino.tara.magritte.modelwrappers;
+package io.intino.tara.magritte.modelviews;
 
 import io.intino.tara.magritte.Graph;
 import io.intino.tara.magritte.GraphWrapper;
@@ -8,7 +8,7 @@ import io.intino.tara.magritte.layers.MockLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockPlatform extends GraphWrapper{
+public class MockPlatform extends GraphWrapper {
 
 	private final Graph graph;
 	private List<MockLayer> mockLayerList = new ArrayList<>();
@@ -28,12 +28,12 @@ public class MockPlatform extends GraphWrapper{
 	}
 
 	@Override
-	protected void addNode(Node node) {
+	protected void addNode$(Node node) {
 		if(node.is(MockLayer.class)) mockLayerList.add(node.as(MockLayer.class));
 	}
 
 	@Override
-	protected void removeNode(Node node) {
+	protected void removeNode$(Node node) {
 		if(node.is(MockLayer.class)) mockLayerList.remove(node.as(MockLayer.class));
 	}
 

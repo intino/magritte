@@ -141,11 +141,11 @@ public class Concept extends Predicate {
             getGlobal().severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
             return null;
         }
-        return newNode(owner.path() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+        return newNode(owner.stash() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
     }
 
     private Node newNode(String name, Node owner) {
-        Node node = owner.graph().$node(name);
+        Node node = owner.graph().node$(name);
         node.owner(owner);
         createLayersFor(node);
         if (!owner.is("Model")) owner.add(node);
@@ -168,12 +168,12 @@ public class Concept extends Predicate {
 
     private void fillVariables(Layer layer) {
         conceptList().forEach(c -> c.fillVariables(layer));
-        variables.forEach(layer::_load);
+        variables.forEach(layer::load$);
     }
 
     private void fillParameters(Layer layer) {
         conceptList().forEach(c -> c.fillParameters(layer));
-        parameters.forEach(layer::_load);
+        parameters.forEach(layer::load$);
     }
 
     @Override

@@ -58,7 +58,7 @@ public abstract class Generator implements TemplateTags {
 			return NameFormatter.cleanQn(NameFormatter.getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
+					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getExternalWordClass()) :
 					Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().javaName();
@@ -97,8 +97,10 @@ public abstract class Generator implements TemplateTags {
 			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
 				frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 		}
-		terminalCoreVariables.forEach(c -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
+		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		addFacetVariables(node, frame);
+		if (!Arrays.asList(frame.slots()).contains(CONTAINER))
+			frame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
 	}
 
 	private boolean isRequired(Node node, Constraint.Parameter allow) {
@@ -114,8 +116,8 @@ public abstract class Generator implements TemplateTags {
 	private void addFacetVariables(Node node, Frame frame) {
 		for (Facet facet : node.facets())
 			frame.addFrame(META_FACET, new Frame().addTypes(META_FACET).addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
-		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
-				addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), entry.getKey(), languageWorkingPackage)));
+		collectTerminalFacetVariables(node).forEach((key, value) -> value.forEach(c ->
+				addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), key, languageWorkingPackage)));
 	}
 
 	private List<Constraint> collectTerminalCoreVariables(Node node) {
@@ -167,8 +169,15 @@ public abstract class Generator implements TemplateTags {
 		return false;
 	}
 
-	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
-		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage));
+	private void addTerminalVariable(Node node, String type, Frame frame, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
+		Frame varFrame = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
+		if (!Arrays.asList(varFrame.slots()).contains(CONTAINER))
+			varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
+		frame.addFrame(VARIABLE, varFrame);
+	}
+
+	protected String facetName(FacetTarget facetTarget) {
+		return facetTarget != null ? facetTarget.targetNode().name().replace(".", "") : "";
 	}
 
 	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {

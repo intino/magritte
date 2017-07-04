@@ -23,9 +23,9 @@ public class NodeLoader {
     private static Node loadNode(String item, Layer layer) {
         if(item.startsWith("$@")) {
             Object object = process(item.substring(2), layer);
-            return object != null ? ((Layer)object).node() : null;
+            return object != null ? ((Layer)object).core$() : null;
         }
-        return layer.graph().loadNode(item);
+        return layer.core$().graph().load(item);
     }
 
 }

@@ -21,6 +21,6 @@ public class NativeWordRule extends NativeRule {
 
 	@Override
 	public String toString() {
-		return "NativeReferenceRule{" + String.join(",", words) + '}';
+		return "NativeWordRule{" + String.join(",", words) + '}';
 	}
 }

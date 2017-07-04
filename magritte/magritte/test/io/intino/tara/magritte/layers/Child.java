@@ -20,8 +20,8 @@ public class Child extends Parent implements Terminal {
     }
 
 	@Override
-	protected void _load(String name, List<?> object) {
-	    super._load(name, object);
+	protected void load$(String name, List<?> object) {
+	    super.load$(name, object);
 		if (name.equals("childVar")) childVar = StringLoader.load(object, this).get(0);
 	}
 }

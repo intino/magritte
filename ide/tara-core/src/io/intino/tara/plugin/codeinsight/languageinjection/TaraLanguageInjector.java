@@ -7,6 +7,7 @@ import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import io.intino.tara.Checker;
+import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Tag;
@@ -42,6 +43,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
 		final Language language = injectionLanguage(host);
+		if (language == null) return;
 		resolve(host);
 		injectionPlacesRegistrar.addPlace(language,
 				getRangeInsideHost((Expression) host),
@@ -59,7 +61,9 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private Language injectionLanguage(PsiLanguageInjectionHost languageInjectionHost) {
-		return Language.findLanguageByID(languageMap.get(TaraUtil.configurationOf(languageInjectionHost).nativeLanguage().toLowerCase()));
+		final Configuration configuration = TaraUtil.configurationOf(languageInjectionHost);
+		if (configuration == null || configuration.nativeLanguage() == null) return null;
+		return Language.findLanguageByID(languageMap.get(configuration.nativeLanguage().toLowerCase()));
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {
@@ -86,7 +90,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final io.intino.tara.Language language = TaraUtil.getLanguage(expression.getOriginalElement().getContainingFile());
 		final Module module = moduleOf(expression);
 		if (language == null || module == null) return "";
-		String workingPackage = TaraUtil.workingPackage(expression).isEmpty() ? module.getName() : TaraUtil.workingPackage(expression);
+		String workingPackage = TaraUtil.graphPackage(expression).isEmpty() ? module.getName() : TaraUtil.graphPackage(expression);
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Parameter.class, new NativeParameterAdapter(module, workingPackage, language));

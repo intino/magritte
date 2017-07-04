@@ -177,32 +177,32 @@ public class DependencyResolver {
 
 	private void loadCustomRule(Variable variable) throws DependencyException {
 		final VariableCustomRule rule = (VariableCustomRule) variable.rule();
-		final String source = rule.getSource();
+		final String source = rule.getExternalWordClass();
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
 					loadedRules.get(source) :
 					CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
-			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
+			throw new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass(), e.getMessage());
 		}
 		if (aClass != null) loadedRules.put(source, aClass);
-		else throw new DependencyException("impossible.load.rule.class", variable, rule.getSource());
+		else throw new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass());
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);
 	}
 
 	private void loadCustomRule(Node node, CustomRule rule) throws DependencyException {
-		final String source = rule.getSource();
+		final String source = rule.getExternalWordClass();
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
 					loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
-			throw new DependencyException("impossible.load.rule.class", node, rule.getSource(), e.getMessage().split("\n")[0]);
+			throw new DependencyException("impossible.load.rule.class", node, rule.getExternalWordClass(), e.getMessage().split("\n")[0]);
 		}
 		if (aClass != null) loadedRules.put(source, aClass);
-		else throw new DependencyException("impossible.load.rule.class", node, rule.getSource());
+		else throw new DependencyException("impossible.load.rule.class", node, rule.getExternalWordClass());
 		rule.setLoadedClass(aClass);
 	}
 

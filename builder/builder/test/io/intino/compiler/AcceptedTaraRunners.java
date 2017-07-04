@@ -28,15 +28,14 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
 	}
 
-
 	@Test
-	public void teseoM2() {
-		main(new String[]{home + "sandbox/confFiles/konos/teseo.txt"});
+	public void humketM2() {
+		main(new String[]{home + "sandbox/confFiles/humket/Humket.txt"});
 	}
 
 	@Test
-	public void legioM1() {
-		main(new String[]{home + "sandbox/confFiles/legio/Humket.txt"});
+	public void humketM1() {
+		main(new String[]{home + "sandbox/confFiles/humket/Humket-bot.txt"});
 	}
 
 	@Test
@@ -100,6 +99,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void ebarBrdigeM2() {
+		main(new String[]{home + "sandbox/confFiles/ebar/m2.txt"});
+	}
+
+	@Test
 	public void exampleM1() {
 		main(new String[]{home + "sandbox/confFiles/example/m1.txt"});
 	}
@@ -154,7 +158,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimate.txt"});
 	}
 
-
 	@Test
 	public void amidasUltimateTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimateTest.txt"});
@@ -164,7 +167,6 @@ public class AcceptedTaraRunners {
 	public void AmidasTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3Test.txt"});
 	}
-
 
 	@Test
 	public void AmidasM1() {
@@ -281,6 +283,10 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/sumus/ebar.txt"});
 	}
 
+	@Test
+	public void sumusCallgenie() {
+		main(new String[]{home + "sandbox/confFiles/sumus/callgenie.txt"});
+	}
 	@Test
 	public void sumusEbarTest() {
 		main(new String[]{home + "sandbox/confFiles/sumus/ebar_test.txt"});

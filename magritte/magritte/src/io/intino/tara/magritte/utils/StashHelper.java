@@ -1,6 +1,6 @@
 package io.intino.tara.magritte.utils;
 
-public class PathHelper {
+public class StashHelper {
 
 	private static final String STASH_EXT = ".stash";
 
@@ -8,7 +8,7 @@ public class PathHelper {
 		return id.contains("#") ? id.substring(0, id.indexOf("#")) : "";
 	}
 
-	public static String pathWithExtension(String id) {
+	public static String stashWithExtension(String id) {
 		if(id.endsWith(STASH_EXT)) return id.contains("#") ? pathOf(id) : id;
         return canonicalPath(id.contains("#") ? pathOf(id) + STASH_EXT : id + STASH_EXT);
     }

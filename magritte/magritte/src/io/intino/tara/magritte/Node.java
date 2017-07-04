@@ -1,6 +1,6 @@
 package io.intino.tara.magritte;
 
-import io.intino.tara.magritte.utils.PathHelper;
+import io.intino.tara.magritte.utils.StashHelper;
 
 import java.util.*;
 
@@ -21,6 +21,22 @@ public class Node extends Predicate {
         super(name);
     }
 
+    private static <T> List<T> reverseListOf(List<T> list) {
+        List<T> result = new ArrayList<>(list);
+        Collections.reverse(result);
+        return result;
+    }
+
+    public Node owner() {
+        return owner;
+    }
+
+    public <T extends Layer> T ownerAs(Class<T> layerClass) {
+        if (owner == null) return null;
+        if (owner.is(layerClass)) return owner.as(layerClass);
+        return owner.ownerAs(layerClass);
+    }
+
     @Override
     public List<Concept> conceptList() {
         List<Concept> result = new ArrayList<>();
@@ -37,6 +53,14 @@ public class Node extends Predicate {
         return (Model) node;
     }
 
+    public Graph graph() {
+        return model().graph();
+    }
+
+    public String stash() {
+        return StashHelper.pathOf(id);
+    }
+
     public Node root() {
         Node node = this;
         while (!(node.owner instanceof Model))
@@ -44,15 +68,28 @@ public class Node extends Predicate {
         return node;
     }
 
+    public void createNode(String name, Concept concept) {
+        add(concept.createNode(name, this));
+    }
+
     public void add(Node node) {
-        for (Layer layer : layers) layer.addNode(node);
+        for (Layer layer : layers) layer.addNode$(node);
     }
 
     @Override
-    public Map<String, List<?>> variables() {
-        Map<String, List<?>> variables = new HashMap<>();
-        layers.forEach(m -> variables.putAll(m.variables()));
-        return variables;
+    public List<Node> componentList() {
+        Set<Node> nodes = new LinkedHashSet<>();
+        reverseListOf(layers).forEach(l -> nodes.addAll(l.componentList$()));
+        return new ArrayList<>(nodes);
+    }
+
+    @SuppressWarnings("unused")
+    public <T extends Layer> List<T> componentList(Class<T> layerClass) {
+        List<String> types = graph().layerFactory.names(layerClass);
+        return componentList().stream()
+                .filter(c -> c.isAnyOf(types))
+                .map(c -> c.as(layerClass))
+                .collect(toList());
     }
 
     @Override
@@ -62,44 +99,6 @@ public class Node extends Predicate {
             tList.add(as(layerClass));
         componentList().forEach(c -> tList.addAll(c.findNode(layerClass)));
         return tList;
-    }
-
-    protected void remove(Node node) {
-        layers.forEach(l -> l.removeNode(node));
-    }
-
-    public void addLayers(List<Concept> concepts) {
-        concepts.forEach(this::addLayer);
-    }
-
-    public Node addLayer(Concept concept) {
-        if (is(concept.id)) return this;
-        putType(concept);
-        createLayer(concept);
-        removeParentLayer(concept);
-        return this;
-    }
-
-    public Node addLayer(Class<? extends Layer> layerClass) {
-        createLayer(layerClass);
-        return this;
-    }
-
-    public void removeLayers(List<Concept> concepts) {
-        concepts.forEach(this::removeLayer);
-    }
-
-    @SuppressWarnings("unused")
-    public Node removeLayer(Concept concept) {
-        if (!is(concept.id())) return this;
-        deleteType(concept);
-        deleteLayer(concept.layerClass());
-        return this;
-    }
-
-    public Node removeLayer(Class<? extends Layer> layerClass) {
-        deleteLayer(layerClass);
-        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -113,60 +112,75 @@ public class Node extends Predicate {
         return as(graph().layerFactory.layerClass(conceptName));
     }
 
-    @Override
-    public List<Node> componentList() {
-        Set<Node> nodes = new LinkedHashSet<>();
-        reverseListOf(layers).forEach(l -> nodes.addAll(l.componentList()));
-        return new ArrayList<>(nodes);
-    }
-
-    @SuppressWarnings("unused")
-    public <T extends Layer> List<T> componentList(Class<T> layerClass) {
-        List<String> types = graph().layerFactory.names(layerClass);
-        return componentList().stream()
-                .filter(c -> c.isAnyOf(types))
-                .map(c -> c.as(layerClass))
-                .collect(toList());
-    }
-
-    public void owner(Node owner) {
-        this.owner = owner;
-    }
-
-    public Node owner() {
-        return owner;
-    }
-
-    public <T extends Layer> T ownerAs(Class<T> layerClass) {
-        if (owner == null) return null;
-        if (owner.is(layerClass)) return owner.as(layerClass);
-        return owner.ownerAs(layerClass);
-    }
-
-    void load(String varName, List<?> value) {
-        layers.forEach(l -> l._load(varName, value));
-    }
-
     public void load(Layer layer, String name, List<?> values) {
-        if (layer.node() == this)
-            layer._load(name, values);
+        if (layer.core$() == this)
+        layer.load$(name, values);
         else
-            getGlobal().severe("Layer does not belong to node " + name);
-    }
-
-    void set(String varName, List<?> value) {
-        layers.forEach(l -> l._set(varName, value));
+        getGlobal().severe("Layer does not belong to node " + name);
     }
 
     public void set(Layer layer, String name, List<?> values) {
-        if (layer.node() == this)
-            layer._set(name, values);
+        if (layer.core$() == this)
+        layer.set$(name, values);
         else
-            getGlobal().severe("Layer does not belong to node " + name);
+        getGlobal().severe("Layer does not belong to node " + name);
+    }
+
+        @Override
+        public Map<String, List<?>> variables() {
+        Map<String, List<?>> variables = new HashMap<>();
+        layers.forEach(m -> variables.putAll(m.variables$()));
+        return variables;
     }
 
     public void save() {
         graph().save(this);
+    }
+
+    public void delete() {
+        graph().remove(this);
+    }
+
+    public boolean is(String concept) {
+        return typeNames.contains(concept);
+    }
+
+    public boolean is(Concept concept) {
+        return typeNames.contains(concept.name());
+    }
+
+    public boolean is(Class<? extends Layer> layer) {
+        return isAnyOf(concepts(layer));
+    }
+
+    public Layer as(Concept concept) {
+        return as(concept.id);
+    }
+
+    public <T extends Layer> T addFacet(Class<T> layerClass) {
+        return (T) addFacet(graph().layerFactory.names(layerClass).get(0));
+    }
+
+    public Layer addFacet(String concept) {
+        return addFacet(graph().concept(concept));
+    }
+
+    public Layer addFacet(Concept concept) {
+        concept.createLayersFor(this);
+        syncLayers();
+        return as(concept);
+    }
+
+    public void removeFacet(Class<? extends Layer> layerClass) {
+        removeFacet(graph().layerFactory.names(layerClass).get(0));
+    }
+
+    public void removeFacet(String concept) {
+        removeFacet(graph().concept(concept));
+    }
+
+    public void removeFacet(Concept concept) {
+        removeLayer(concept);
     }
 
     private void createLayer(Concept concept) {
@@ -194,49 +208,64 @@ public class Node extends Predicate {
         if (toRemove != null) layers.remove(toRemove);
     }
 
-    public Graph graph() {
-        return model().graph();
+    protected void remove(Node node) {
+        layers.forEach(l -> l.removeNode$(node));
     }
 
-    public String path() {
-        return PathHelper.pathOf(id);
+    void addLayers(List<Concept> concepts) {
+        concepts.forEach(this::addLayer);
     }
 
-    private <T> List<T> reverseListOf(List<T> list) {
-        List<T> result = new ArrayList<>(list);
-        Collections.reverse(result);
-        return result;
+    Node addLayer(Class<? extends Layer> layerClass) {
+        createLayer(layerClass);
+        return this;
     }
 
-    public void delete() {
-        graph().remove(this);
+    Node addLayer(Concept concept) {
+        if (is(concept.id)) return this;
+        putType(concept);
+        createLayer(concept);
+        removeParentLayer(concept);
+        return this;
     }
 
-    public boolean is(String concept) {
-        return typeNames.contains(concept);
+    void removeLayers(List<Concept> concepts) {
+        concepts.forEach(this::removeLayer);
     }
 
-    public boolean is(Concept concept) {
-        return typeNames.contains(concept.name());
+    Node removeLayer(Concept concept) {
+        if (!is(concept.id())) return this;
+        deleteType(concept);
+        deleteLayer(concept.layerClass());
+        return this;
     }
 
-    public boolean is(Class<? extends Layer> layer) {
-        return isAnyOf(concepts(layer));
-    }
-
-    private List<String> concepts(Class<? extends Layer> layerClass) {
-        return graph().layerFactory.names(layerClass);
+    Node removeLayer(Class<? extends Layer> layerClass) {
+        deleteLayer(layerClass);
+        return this;
     }
 
     boolean isAnyOf(List<String> concepts) {
         return concepts.stream().anyMatch(this::is);
     }
 
-    public Layer as(Concept concept) {
-        return as(concept.id);
+    void owner(Node owner) {
+        this.owner = owner;
+    }
+
+    void load(String varName, List<?> value) {
+        layers.forEach(l -> l.load$(varName, value));
+    }
+
+    void set(String varName, List<?> value) {
+        layers.forEach(l -> l.set$(varName, value));
+    }
+
+    private List<String> concepts(Class<? extends Layer> layerClass) {
+        return graph().layerFactory.names(layerClass);
     }
 
     void syncLayers() {
-        layers.forEach(l -> layers.forEach(l::_sync));
+        layers.forEach(l -> layers.forEach(l::sync$));
     }
 }

@@ -2,16 +2,17 @@ package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
-import io.intino.tara.plugin.project.module.ModuleProvider;
-import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.lang.model.rules.CustomRule;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
+import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.plugin.project.module.ModuleProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PsiCustomWordRule implements VariableRule<Object> {
+public class PsiCustomWordRule implements VariableRule<Object>, CustomRule {
 
 	private final String destiny;
 	private final TaraVariable variable;
@@ -26,7 +27,7 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 	}
 
 	private PsiClass findClass() {
-		return JavaPsiFacade.getInstance(variable.getProject()).findClass(TaraUtil.workingPackage(variable).toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.moduleOf(variable)));
+		return JavaPsiFacade.getInstance(variable.getProject()).findClass(TaraUtil.graphPackage(variable).toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.moduleOf(variable)));
 	}
 
 	@Override
@@ -60,4 +61,18 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 		return false;
 	}
 
+	@Override
+	public Class<?> getLoadedClass() {
+		return null;
+	}
+
+	@Override
+	public void setLoadedClass(Class<?> loadedClass) {
+
+	}
+
+	@Override
+	public String getExternalWordClass() {
+		return psiClass.getQualifiedName();
+	}
 }

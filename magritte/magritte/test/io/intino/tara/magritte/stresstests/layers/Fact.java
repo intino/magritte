@@ -17,8 +17,8 @@ public class Fact extends Layer {
     }
 
     @Override
-    protected void _load(String name, List<?> object) {
-        super._load(name, object);
+    protected void load$(String name, List<?> object) {
+        super.load$(name, object);
         if (name.equals("instant")) instant = DateXLoader.load(object, this).get(0);
     }
 }

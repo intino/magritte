@@ -22,7 +22,7 @@ public class TestHelper {
     public static final String thirdStash = "thirdStash";
     public static final String dependantStashByUse = "dependantStashByUse";
     public static final String cyclicDependantStash = "cyclicDependantStash";
-    public static final String independentStash = "subpath/independant";
+    public static final String independentStash = "substash/independant";
     public static final String m1 = "m1";
     public static final String m2 = "m2";
     public static final String m3 = "m3";
@@ -39,15 +39,15 @@ public class TestHelper {
                 put(thirdStash + Extension, thirdStash());
                 put(dependantStashByUse + Extension, dependantStashByUse());
                 put(cyclicDependantStash + Extension, cyclicDependantStash());
-                put(independentStash + Extension, independentStashInSubPath());
+                put(independentStash + Extension, independentStashInSubStash());
                 put(m1 + Extension, m1());
                 put(m2 + Extension, m2());
                 put(m3 + Extension, m3());
             }};
 
             @Override
-            public Stash stashFrom(String path) {
-                return store.get(path);
+            public Stash stashFrom(String stash) {
+                return store.get(stash);
             }
 
             @Override
@@ -111,7 +111,7 @@ public class TestHelper {
         return stash;
     }
 
-    public static Stash independentStashInSubPath() {
+    public static Stash independentStashInSubStash() {
         Stash stash = emptyStash();
         stash.nodes.add(newNode(independentStash + "#x", list("Mock"), emptyList(), emptyList()));
         return stash;

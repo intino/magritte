@@ -2,6 +2,7 @@ package io.intino.tara.compiler.core.operation.setup;
 
 import io.intino.legio.Artifact;
 import io.intino.legio.Legio;
+import io.intino.legio.Parameter;
 import io.intino.legio.level.LevelArtifact;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -15,7 +16,9 @@ import io.intino.tara.io.StashDeserializer;
 import io.intino.tara.magritte.Graph;
 
 import java.io.File;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static java.lang.System.out;
@@ -56,7 +59,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			extractConfiguration(legio);
 			return checkConfiguration();
 		} catch (Throwable t) {
-			throw new TaraException(t.getMessage());
+			throw new TaraException(t.getMessage() == null ? "java.lang.NullPointerException at " + t.getStackTrace()[0].toString() : t.getMessage());
 		}
 	}
 
@@ -76,10 +79,14 @@ public class SetupConfigurationOperation extends SetupOperation {
 		final Level level = Level.valueOf(artifact.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
 		configuration.outDSL(artifact.name());
 		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name().toLowerCase();
-		configuration.workingPackage(configuration.isTest() ? workingPackage + ".test" : workingPackage);
+		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
 		configuration.artifactId(artifact.name().toLowerCase());
 		configuration.groupId(artifact.groupId());
 		configuration.version(artifact.version());
+		if (legio.artifact().package$() != null) {
+			final Map<String, String> map = legio.artifact().package$().parameterList().stream().collect(Collectors.toMap(Parameter::name$, Parameter::value));
+			configuration.packageParameters(map);
+		}
 		if (configuration.isTest()) {
 			configuration.addLanguage(artifact.name(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);

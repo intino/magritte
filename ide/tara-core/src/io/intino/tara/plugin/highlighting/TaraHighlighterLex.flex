@@ -77,7 +77,7 @@ ENCLOSED            = "enclosed"
 PRIVATE             = "private"
 REACTIVE            = "reactive"
 VOLATILE            = "volatile"
-VERSIONED           = "versioned"
+DECORABLE           = "decorable"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -187,7 +187,7 @@ NEWLINE             = [\n]+
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
     {FINAL}                         {   return TaraTypes.FINAL; }
     {VOLATILE}                      {   return TaraTypes.VOLATILE; }
-    {VERSIONED}                     {   return TaraTypes.VERSIONED; }
+    {DECORABLE}                     {   return TaraTypes.DECORABLE; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 

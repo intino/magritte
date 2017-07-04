@@ -14,7 +14,7 @@ public interface Rule<T> {
 	}
 
 	default String errorMessage() {
-		return "";
+		return "This element is not compliant with the rule " + this.getClass().getSimpleName();
 	}
 
 	default List<Object> errorParameters() {

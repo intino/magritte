@@ -12,7 +12,7 @@ public class M2 extends Layer {
 
 	@SuppressWarnings("unused")
     public List<Concept> conceptList() {
-		return node().graph().conceptList().stream().
+		return core$().graph().conceptList().stream().
 				filter(c -> c.metatype != null).
 				collect(toList());
 	}

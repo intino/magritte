@@ -2,7 +2,6 @@ package io.intino.tara.magritte.stores;
 
 import io.intino.tara.io.Stash;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +22,7 @@ public class InMemoryFileStoreTest {
         store.writeStash(secondStash(), secondStash + Extension);
         store.writeStash(thirdStash(), thirdStash + Extension);
         store.writeStash(dependantStashByUse(), dependantStashByUse + Extension);
-        store.writeStash(independentStashInSubPath(), independentStash + Extension);
+        store.writeStash(independentStashInSubStash(), independentStash + Extension);
         Stash stash = new InMemoryFileStore(temp).stashFrom(secondStash + Extension);
         assertThat(stash.uses.size(), is(5));
     }

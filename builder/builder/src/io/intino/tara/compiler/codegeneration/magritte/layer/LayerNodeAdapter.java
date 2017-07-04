@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static io.intino.tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
+import static io.intino.tara.lang.model.Tag.Decorable;
 import static io.intino.tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
@@ -65,11 +65,12 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		frame.addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
-		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name());
+		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
 		addType(frame, node);
 		addName(frame, node);
 		addParent(frame, node);
-		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
+		if (node.isAbstract() || node.is(Decorable)) frame.addFrame(ABSTRACT, true);
+		if (node.is(Decorable)) frame.addFrame(DECORABLE, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
 		frame.addFrame(PARENT_SUPER, node.parent() != null);
@@ -139,8 +140,11 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
 			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
 			available.addFrame(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
-			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
-			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
+			facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> {
+				Frame varFrame = (Frame) context.build(variable);
+				varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
+				available.addFrame(VARIABLE, varFrame.addTypes(REQUIRED));
+			});
 			frame.addFrame(AVAILABLE_FACET, available);
 		}
 	}
@@ -155,27 +159,23 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return stashQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
-	private String facetName(FacetTarget facetTarget) {
-		return facetTarget != null ? facetTarget.target().replace(".", "") : "";
-	}
-
 	private String buildQN(Node node) {
 		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private void addVariables(final Frame frame, Node node) {
-		node.variables().forEach(v -> addVariable(frame, v));
+		node.variables().forEach(v -> addVariable(frame, node, v));
 		addTerminalVariables(node, frame);
 	}
 
-	private void addVariable(Frame frame, Variable variable) {
+	private void addVariable(Frame frame, Node node, Variable variable) {
 		final Frame varFrame = (Frame) context.build(variable);
 		varFrame.addTypes(OWNER);
+		varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
 	void setInitNode(Node initNode) {
 		this.initNode = initNode;
 	}
-
 }

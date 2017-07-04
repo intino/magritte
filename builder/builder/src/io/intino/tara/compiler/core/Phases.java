@@ -21,7 +21,7 @@ public class Phases {
 		"parsing",
 		"conversion",
 		"dependency resolution",
-		"system dependency resolution",
+		"model dependency resolution",
 		"semantic analysis",
 		"post-analysis resolution",
 		"class generation",

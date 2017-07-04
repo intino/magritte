@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 public class Helper {
 
 	public static Stash newStash(String language, List<String> uses, List<Concept.Content> contentRules, List<Concept> concepts, List<Node> nodes) {
@@ -19,13 +17,19 @@ public class Helper {
 	}
 
 	public static Stash newStash(String language, List<Node> nodes) {
-		Stash stash = new Stash();
-		stash.language = language;
-		stash.nodes.addAll(nodes);
-		return stash;
+        return stash(language, nodes, "", "");
 	}
 
-	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
+    private static Stash stash(String language, List<Node> nodes, String builder, String path) {
+        Stash stash = new Stash();
+        stash.language = language;
+        stash.path = path;
+        stash.builder = builder;
+        stash.nodes.addAll(nodes);
+        return stash;
+    }
+
+    public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
 		Concept concept = new Concept();
 		concept.name = name;
 		concept.isAbstract = isAbstract;

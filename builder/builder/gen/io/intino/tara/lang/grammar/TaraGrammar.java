@@ -20,7 +20,7 @@ public class TaraGrammar extends Parser {
 		SUB=1, USE=2, DSL=3, VAR=4, AS=5, HAS=6, ON=7, IS=8, INTO=9, WITH=10, 
 		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, COMPONENT=16, 
 		FEATURE=17, FINAL=18, ENCLOSED=19, PRIVATE=20, REACTIVE=21, VOLATILE=22, 
-		VERSIONED=23, LEFT_PARENTHESIS=24, RIGHT_PARENTHESIS=25, LEFT_SQUARE=26, 
+		DECORABLE=23, LEFT_PARENTHESIS=24, RIGHT_PARENTHESIS=25, LEFT_SQUARE=26, 
 		RIGHT_SQUARE=27, LEFT_CURLY=28, RIGHT_CURLY=29, INLINE=30, CLOSE_INLINE=31, 
 		AT=32, HASHTAG=33, COLON=34, COMMA=35, DOT=36, EQUALS=37, STAR=38, LIST=39, 
 		SEMICOLON=40, PLUS=41, WORD=42, RESOURCE=43, INT_TYPE=44, FUNCTION_TYPE=45, 
@@ -63,7 +63,7 @@ public class TaraGrammar extends Parser {
 		null, "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", "'on'", "'is'", 
 		"'into'", "'with'", "'any'", "'extends'", "'concept'", "'abstract'", "'terminal'", 
 		"'component'", "'feature'", "'final'", "'enclosed'", "'private'", "'reactive'", 
-		"'volatile'", "'versioned'", "'('", "')'", "'['", "']'", "'{'", "'}'", 
+		"'volatile'", "'decorable'", "'('", "')'", "'['", "']'", "'{'", "'}'", 
 		"'>'", "'<'", "'@'", "'#'", "':'", "','", "'.'", "'='", "'*'", "'...'", 
 		null, "'+'", "'word'", "'resource'", "'integer'", "'function'", "'object'", 
 		"'double'", "'string'", "'boolean'", "'datex'", "'instant'", "'time'", 
@@ -76,7 +76,7 @@ public class TaraGrammar extends Parser {
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", 
 		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "FEATURE", 
-		"FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "VERSIONED", "LEFT_PARENTHESIS", 
+		"FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "DECORABLE", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", 
 		"INLINE", "CLOSE_INLINE", "AT", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", 
 		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "FUNCTION_TYPE", 
@@ -3325,7 +3325,7 @@ public class TaraGrammar extends Parser {
 				setState(516); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << VERSIONED))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << DECORABLE))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -3350,7 +3350,7 @@ public class TaraGrammar extends Parser {
 		public TerminalNode CONCEPT() { return getToken(TaraGrammar.CONCEPT, 0); }
 		public TerminalNode REACTIVE() { return getToken(TaraGrammar.REACTIVE, 0); }
 		public TerminalNode VOLATILE() { return getToken(TaraGrammar.VOLATILE, 0); }
-		public TerminalNode VERSIONED() { return getToken(TaraGrammar.VERSIONED, 0); }
+		public TerminalNode DECORABLE() { return getToken(TaraGrammar.DECORABLE, 0); }
 		public FlagContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3374,7 +3374,7 @@ public class TaraGrammar extends Parser {
 			{
 			setState(518);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << VERSIONED))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << DECORABLE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {

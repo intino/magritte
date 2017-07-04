@@ -47,7 +47,6 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	}
 	);
 
-
 	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
@@ -60,7 +59,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 			final Icon icon = AllIcons.Gutter.OverridingMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
 

@@ -1,0 +1,13 @@
+def type(wrapper)
+	package $workingPackage+lowercase;
+
+	import io.intino.tara.magritte.Graph;
+
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Graph extends $workingPackage+lowercase.AbstractGraph {
+
+		public $generatedLanguage+javaValidName+FirstUpperCase~Graph(Graph graph) {
+			super(graph);
+		}
+	}
+end
+

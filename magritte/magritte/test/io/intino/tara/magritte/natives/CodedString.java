@@ -12,7 +12,7 @@ public class CodedString implements NativeCode, Expression<String> {
 
 	@Override
 	public String value() {
-		return "Hey hey " + self.name();
+		return "Hey hey " + self.name$();
 	}
 
 	@Override

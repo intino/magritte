@@ -60,17 +60,17 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addName(FacetTarget facetTarget, Frame frame) {
-		frame.addFrame(NAME, facetTarget.owner().name() + facetTarget.targetNode().name());
+		frame.addFrame(NAME, name(facetTarget));
 		frame.addFrame(QN, cleanQn(buildQN(facetTarget.targetNode())));
 	}
 
 	private void addConstrains(FacetTarget target, Frame frame) {
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
-				final Frame constraint = new Frame().addTypes(CONSTRAINT);
-				constraint.addFrame(NAME, c.node().name());
-				constraint.addFrame(QN, cleanQn(buildQN(c.node())));
-				frame.addFrame(CONSTRAINT, constraint);
-			}
+					final Frame constraint = new Frame().addTypes(CONSTRAINT);
+					constraint.addFrame(NAME, c.node().name());
+					constraint.addFrame(QN, cleanQn(buildQN(c.node())));
+					frame.addFrame(CONSTRAINT, constraint);
+				}
 		);
 	}
 
@@ -102,17 +102,23 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 
 	private void addVariables(FacetTarget target, final Frame frame) {
 		target.owner().variables().stream().
-			filter(variable -> !variable.isInherited()).
-			forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(OWNER)));
+				filter(variable -> !variable.isInherited()).
+				forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(OWNER).addFrame(CONTAINER, name(target))));
 		target.targetNode().variables().stream().
-			filter(variable -> !variable.isInherited() && !isOverriden(target.owner(), variable)).
-			forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET)));
+				filter(variable -> !variable.isInherited() && !isOverriden(target.owner(), variable)).
+				forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET).addFrame(CONTAINER, name(target))));
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
 			FacetTarget targetOf = findTargetOf(c.node(), target.targetNode());
 			if (targetOf != null && !targetOf.equals(target.targetNode()))
-				targetOf.owner().variables().forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET)));
+				targetOf.owner().variables()
+						.forEach(variable ->
+								frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET).addFrame(CONTAINER, name(target))));
 		});
 		addTerminalVariables(target.owner(), frame);
+	}
+
+	private String name(FacetTarget target) {
+		return target.owner().name() + target.targetNode().name();
 	}
 
 	private FacetTarget findTargetOf(Node node, Node target) {
@@ -121,18 +127,17 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addTargetComponents(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
-		target.targetNode().components().forEach(component -> {
-				if (!isOverriden(component, target)) { //TODO
-					final Frame nodeFrame = (Frame) context.build(component);
-					nodeFrame.addTypes(TARGET);
-					if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (component.destinyOfReference().parent() != null)) {
-						nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
+		target.targetNode().components().forEach((Node component) -> {
+					if (!isOverriden(component, target)) { //TODO
+						final Frame nodeFrame = (Frame) context.build(component);
+						nodeFrame.addTypes(TARGET);
+						if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (component.destinyOfReference().parent() != null))
+							nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
+						nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
+						if (target.targetNode().sizeOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
+						frame.addFrame(NODE, nodeFrame);
 					}
-					nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
-					if (target.targetNode().sizeOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
-					frame.addFrame(NODE, nodeFrame);
 				}
-			}
 		);
 	}
 

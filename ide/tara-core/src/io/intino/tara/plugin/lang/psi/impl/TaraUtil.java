@@ -61,11 +61,17 @@ public class TaraUtil {
 		return LanguageManager.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-	public static String workingPackage(@NotNull PsiElement element) {
+	public static String graphPackage(@NotNull PsiElement element) {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";
 		final Configuration conf = configurationOf(element);
 		if (conf == null) return "";
-		return conf.workingPackage();
+		return conf.workingPackage() + ".graph";
+	}
+
+	public static String graphPackage(@NotNull Module module) {
+		final Configuration conf = configurationOf(module);
+		if (conf == null) return "";
+		return conf.workingPackage() + ".graph";
 	}
 
 	public static Level level(@NotNull PsiElement element) {

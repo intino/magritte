@@ -1,10 +1,7 @@
 def.file
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/View.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Data.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/monet/Monet.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Insight.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Mounter.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/Sumus.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/View.tara#true
 
 project
 sumus
@@ -36,9 +33,3 @@ test.module
 false
 encoding
 UTF-8
-native.language
-Java
-classpath
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/magritte-lite-1.0.0.jar

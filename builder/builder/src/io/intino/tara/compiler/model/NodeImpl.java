@@ -2,7 +2,6 @@ package io.intino.tara.compiler.model;
 
 import io.intino.tara.lang.model.*;
 import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.util.WordGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -206,7 +205,7 @@ public class NodeImpl implements Node {
 	public String cleanQn() {
 		String containerQN = container.cleanQn();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? newUUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
 	}
 
 	private String shortType() {
@@ -389,8 +388,8 @@ public class NodeImpl implements Node {
 		return type + " " + qualifiedName();
 	}
 
-	private String getUID() {
-		if (uid == null) uid = WordGenerator.generate();
+	private String newUUID() {
+		if (uid == null) uid = UUID.randomUUID().toString();
 		return is(Instance) ? uid : firstUpperCase().format(uid).toString();
 	}
 

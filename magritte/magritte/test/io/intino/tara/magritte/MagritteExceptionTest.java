@@ -17,7 +17,7 @@ public class MagritteExceptionTest {
     @Test
     public void should_provide_a_magritte_exception_concept_not_found() throws Exception {
         try {
-            Graph.use(store()).load();
+            new Graph(store()).loadStashes("Model");
             assertFalse(true);
         }catch (MagritteException e){
             assertThat(e.getMessage(), is("Concept Mock not found"));
@@ -27,7 +27,7 @@ public class MagritteExceptionTest {
     private Store store() {
         return new Store() {
             @Override
-            public Stash stashFrom(String path) {
+            public Stash stashFrom(String stash) {
                 return newStash("Proteo", list(), list(), list(), list(newNode("xxx", list("Mock"), list(), list())));
             }
 

@@ -8,17 +8,17 @@ class NodeCloner {
 
     private final List<Node> nodes;
     private final Node node;
-    private final GraphHandler model;
+    private final Graph model;
     private final Map<String, Node> cloneMap = new HashMap<>();
     private final NodeLoader loader = cloneMap::get;
 
-    private NodeCloner(List<Node> nodes, Node node, GraphHandler model) {
+    private NodeCloner(List<Node> nodes, Node node, Graph model) {
         this.nodes = nodes;
         this.node = node;
         this.model = model;
     }
 
-    static void clone(List<Node> toClone, Node node, GraphHandler model) {
+    static void clone(List<Node> toClone, Node node, Graph model) {
         if(toClone.isEmpty()) return;
         new NodeCloner(toClone, node, model).execute();
     }
@@ -40,7 +40,7 @@ class NodeCloner {
     private Node clone(String name, Node toClone, Node owner) {
         Node clone = new Node(name);
         clone.owner(owner);
-        toClone.typeNames.forEach(n -> clone.addLayer(model.$concept(n)));
+        toClone.typeNames.forEach(n -> clone.addLayer(model.concept$(n)));
         clone.syncLayers();
         cloneComponents(toClone, clone, name);
         register(toClone, clone);
@@ -55,16 +55,16 @@ class NodeCloner {
     private void cloneComponents(Node toClone, Node clone, String name) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            toClone.componentList().forEach(c -> destination.addNode(clone(name + "." + c.name(), c, clone)));
+            toClone.componentList().forEach(c -> destination.addNode$(clone(name + "." + c.name(), c, clone)));
         });
     }
 
     private void copyVariables(Node toClone, Node clone) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            origin.variables().entrySet().stream()
+            origin.variables$().entrySet().stream()
                     .filter(e -> !e.getValue().isEmpty())
-                    .forEach(e -> destination._set(e.getKey(), e.getValue()));
+                    .forEach(e -> destination.set$(e.getKey(), e.getValue()));
         });
     }
 

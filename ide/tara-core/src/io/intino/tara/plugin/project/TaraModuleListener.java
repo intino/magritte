@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.List;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.System;
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 
 public class TaraModuleListener implements ModuleComponent {
 
@@ -107,7 +107,7 @@ public class TaraModuleListener implements ModuleComponent {
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
 					final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-					if (facetConfiguration != null && (facetConfiguration.level().equals(System)))
+					if (facetConfiguration != null && (Solution.equals(facetConfiguration.level())))
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");

@@ -5,6 +5,7 @@ import com.intellij.psi.*;
 import io.intino.tara.Checker;
 import io.intino.tara.Language;
 import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.model.rules.CustomRule;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -46,7 +47,7 @@ public class MethodReferenceCreator {
 		this.valued = valued;
 		this.reference = reference.replace("@", "");
 		module = ModuleProvider.moduleOf(valued);
-		workingPackage = TaraUtil.workingPackage(valued);
+		workingPackage = TaraUtil.graphPackage(valued);
 	}
 
 	public PsiMethod create(String methodBody) {
@@ -124,7 +125,15 @@ public class MethodReferenceCreator {
 			return getFunctionReturnType().getPresentableText();
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
 		else if (Primitive.REFERENCE.equals(valued.type())) return getReferenceReturnType(valued);
+		else if (Primitive.WORD.equals(valued.type())) return getWordReturnType(valued);
 		else return valued.type().javaName();
+	}
+
+	private String getWordReturnType(Valued valued) {
+		final Rule rule = valued.rule();
+		if (rule instanceof CustomRule)
+			return ((CustomRule) rule).getExternalWordClass();
+		return valued.name();
 	}
 
 	private String getReferenceReturnType(Valued valued) {

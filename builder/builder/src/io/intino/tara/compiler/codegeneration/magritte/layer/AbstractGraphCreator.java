@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.lang.model.Tag.*;
 
-public class GraphWrapperCreator extends Generator implements TemplateTags {
+public class AbstractGraphCreator extends Generator implements TemplateTags {
 
 	private final Level modelLevel;
 
-	public GraphWrapperCreator(Language language, String outDSL, Level modelLevel, String workingPackage, String languageWorkingPackage) {
+	public AbstractGraphCreator(Language language, String outDSL, Level modelLevel, String workingPackage, String languageWorkingPackage) {
 		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.modelLevel = modelLevel;
 	}
@@ -36,7 +36,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 		frame.addFrame(NAME, outDsl);
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
 				forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.sizeOf(node))));
-		return Format.customize(GraphWrapperTemplate.create()).format(frame);
+		return Format.customize(GraphTemplate.create()).format(frame);
 	}
 
 	private Frame createRootNodeFrame(Node node, Size size) {

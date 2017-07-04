@@ -12,7 +12,7 @@ public class CodedNode implements NativeCode, Expression<MockLayer> {
 
 	@Override
 	public MockLayer value() {
-		return self.graph().loadNode("Empty#mock2").as(MockLayer.class);
+		return self.core$().graph().load("Empty#mock2").as(MockLayer.class);
 	}
 
 	@Override

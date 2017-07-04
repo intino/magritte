@@ -1,9 +1,9 @@
 package io.intino.tara.magritte.stresstests;
 
 import io.intino.tara.io.*;
+import io.intino.tara.magritte.Graph;
 import org.junit.Ignore;
 import org.junit.Test;
-import io.intino.tara.magritte.Graph;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static io.intino.tara.io.Helper.*;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
-import static io.intino.tara.io.Helper.*;
 
 public class StressTests {
 
@@ -35,7 +35,7 @@ public class StressTests {
     @Test
     public void loading_stashes_with_magritte() throws Exception {
         long init = System.nanoTime();
-        Graph.use().load("Members", "Facts");
+        new Graph().loadStashes("Members", "Facts");
         long finish = System.nanoTime();
         System.out.println("Loading stashes with magritte: " + ((finish - init) / 1e6) + " ms");
     }

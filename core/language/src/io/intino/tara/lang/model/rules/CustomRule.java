@@ -6,5 +6,5 @@ public interface CustomRule {
 
 	void setLoadedClass(Class<?> loadedClass);
 
-	String getSource();
+	String getExternalWordClass();
 }

@@ -23,14 +23,14 @@ class CustomRuleLoader {
 	}
 
 	static Class<?> compileAndLoad(CustomRule rule, String workingPackage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
-		final File source = new File(rulesDirectory, rule.getSource() + ".java");
+		final File source = new File(rulesDirectory, rule.getExternalWordClass() + ".java");
 		if (source.exists()) return compileAndLoadRules(rule, workingPackage, classPath, tempDirectory, source);
 		else return tryAsProvided(rule);
 	}
 
 	private static Class<?> tryAsProvided(CustomRule rule) {
 		try {
-			return Class.forName(Url.class.getPackage().getName() + "." + Format.firstUpperCase().format(rule.getSource()));
+			return Class.forName(Url.class.getPackage().getName() + "." + Format.firstUpperCase().format(rule.getExternalWordClass()));
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
@@ -38,7 +38,7 @@ class CustomRuleLoader {
 
 	private static Class<?> compileAndLoadRules(CustomRule rule, String workingPackage, File classPath, File temp, File source) throws TaraException {
 		compile(source, classPath, temp);
-		return load(rule.getSource(), workingPackage, temp, classPath);
+		return load(rule.getExternalWordClass(), workingPackage, temp, classPath);
 	}
 
 	private static File compile(File source, File classPath, File compilationDirectory) throws TaraException {

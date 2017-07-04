@@ -7,18 +7,6 @@ import java.util.Map;
 
 public interface Configuration {
 
-	enum Level {
-		System, Product, Platform;
-
-		public int compareLevelWith(Level type) {
-			return type.ordinal() - this.ordinal();
-		}
-
-		public boolean is(Level type, int level) {
-			return type.ordinal() == level;
-		}
-	}
-
 	default Configuration init() {
 		return null;
 	}
@@ -54,10 +42,6 @@ public interface Configuration {
 
 	String interfaceVersion();
 
-	default Map<String, String> repositories() {
-		return Collections.emptyMap();
-	}
-
 	default Map<String, String> releaseRepositories() {
 		return Collections.emptyMap();
 	}
@@ -82,6 +66,18 @@ public interface Configuration {
 		return Collections.emptyList();
 	}
 
+	enum Level {
+		Solution, Product, Platform;
+
+		public int compareLevelWith(Level type) {
+			return type.ordinal() - this.ordinal();
+		}
+
+		public boolean is(Level type, int level) {
+			return type.ordinal() == level;
+		}
+	}
+
 	interface LanguageLibrary {
 
 		String name();
@@ -98,24 +94,14 @@ public interface Configuration {
 	interface DeployConfiguration {
 		String name();
 
+		boolean pro();
+
 		List<Parameter> parameters();
-
-		List<Service> services();
-
-		String store();
 
 		interface Parameter {
 			String name();
 
-			String type();
-
 			String value();
-		}
-
-		interface Service {
-			String name();
-
-			List<Parameter> parameters();
 		}
 	}
 
