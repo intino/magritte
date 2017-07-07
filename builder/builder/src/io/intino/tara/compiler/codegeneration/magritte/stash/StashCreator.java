@@ -75,7 +75,7 @@ public class StashCreator {
 			Concept concept = Helper.newConcept(name(node),
 					node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.META_CONCEPT),
 					node.container() instanceof Model && !node.is(Tag.Component),
-					node.name() != null && !node.name().isEmpty() ? NameFormatter.stashQn(node, workingPackage).replace("#", "") : null,
+					className(node),
 					node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
 					StashHelper.collectTypes(node),
 					collectContents(nodeList),
@@ -85,6 +85,19 @@ public class StashCreator {
 			stash.concepts.add(concept);
 			for (io.intino.tara.lang.model.Node component : node.components()) create(component, concept);
 		}
+	}
+
+	private String className(io.intino.tara.lang.model.Node node) {
+		return !node.isAnonymous() ? (isInDecorable(node) ? NameFormatter.layerQn(node, workingPackage) : NameFormatter.stashQn(node, workingPackage)).replace("#", "") : null;
+	}
+
+	private boolean isInDecorable(io.intino.tara.lang.model.Node node) {
+		io.intino.tara.lang.model.Node aNode = node.container();
+		while (!(aNode instanceof Model)) {
+			if (aNode.is(Decorable)) return true;
+			aNode = aNode.container();
+		}
+		return false;
 	}
 
 	private List<Concept> create(FacetTarget facetTarget, io.intino.tara.lang.model.Node owner) {

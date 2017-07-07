@@ -208,15 +208,11 @@ public class NodeReference implements Node {
 
 	@Override
 	public String cleanQn() {
-		return getContainerQualifiedNameCleaned() + "$" + destiny.name();
+		return container.cleanQn() + "$" + destiny.name();
 	}
 
 	private String getContainerQualifiedName() {
 		return container.qualifiedName();
-	}
-
-	private String getContainerQualifiedNameCleaned() {
-		return container.cleanQn();
 	}
 
 	@Override

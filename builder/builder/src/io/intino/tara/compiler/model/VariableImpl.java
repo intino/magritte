@@ -167,10 +167,6 @@ public class VariableImpl implements Variable {
 		this.defaultExtension = defaultExtension;
 	}
 
-	public String cleanQn() {
-		return container().cleanQn() + "$" + name();
-	}
-
 	@Override
 	public String getUID() {
 		if (uid == null) uid = NativeCounter.next(this.container(), name()) + "";

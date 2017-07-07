@@ -5,11 +5,12 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.plugin.lang.psi.Identifier;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.lang.model.Node;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +42,17 @@ public class AlternativesForReferenceFix implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		final List<Node> candidates = TaraUtil.getAllNodesOfFile((TaraModel) file).stream().
-			filter(c -> element.getText().equals(c.name()) && !c.qualifiedName().contains(Node.ANONYMOUS)).
-			collect(Collectors.toList());
+				filter(c -> element.getText().equals(c.name()) && !c.isAnonymous() && !isInAnonymous(c)).
+				collect(Collectors.toList());
+	}
+
+	private boolean isInAnonymous(Node node) {
+		Node aNode = node;
+		while (!(aNode.container() instanceof NodeRoot)) {
+			if (aNode.isAnonymous()) return true;
+			aNode = aNode.container();
+		}
+		return false;
 	}
 
 	@Override

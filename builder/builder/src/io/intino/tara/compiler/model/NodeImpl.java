@@ -208,6 +208,13 @@ public class NodeImpl implements Node {
 		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? newUUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
 	}
 
+	public String layerQn() {
+		String containerQN = container instanceof Model ? "" : ((NodeImpl) container).layerQn();
+		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
+		if (name != null && is(Decorable)) name = "Abstract" + name;
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? newUUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
+	}
+
 	private String shortType() {
 		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
 	}

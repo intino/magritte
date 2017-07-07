@@ -1,6 +1,7 @@
 package io.intino.tara.compiler.codegeneration.magritte;
 
 import io.intino.tara.compiler.model.Model;
+import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.lang.model.*;
 
 import java.util.Arrays;
@@ -45,6 +46,13 @@ public class NameFormatter {
 		return facet != null ?
 				facetLayerPackage(facet, workingPackage) + javaClassNames().format(node.cleanQn()).toString() :
 				workingPackage.toLowerCase() + DOT + javaClassNames().format(node.cleanQn()).toString();
+	}
+
+	public static String layerQn(Node node, String workingPackage) {
+		final FacetTarget facet = isInFacetTarget(node);
+		return facet != null ?
+				facetLayerPackage(facet, workingPackage) + javaClassNames().format(((NodeImpl) node).layerQn()).toString() :
+				workingPackage.toLowerCase() + DOT + javaClassNames().format(((NodeImpl) node).layerQn()).toString();
 	}
 
 	private static FacetTarget isInFacetTarget(Node node) {
