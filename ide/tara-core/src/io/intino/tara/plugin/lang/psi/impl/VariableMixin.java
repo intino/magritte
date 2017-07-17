@@ -152,10 +152,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 	}
 
-	public String cleanQn() {
-		return container().cleanQn() + "$" + name();
-	}
-
 	public boolean isTerminal() {
 		return flags().contains(Tag.Terminal);
 	}

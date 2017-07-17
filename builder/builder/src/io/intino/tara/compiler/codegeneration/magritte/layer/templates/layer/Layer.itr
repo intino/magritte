@@ -50,8 +50,8 @@ def type(node) !type(final | instance | abstract) trigger(new)
 end
 
 def type(node) !type(single | final | instance | abstract | overriden) trigger(clear)
-    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
-		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete$$);
+    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}
 end
 
@@ -64,8 +64,8 @@ def type(node & create) !type(final | instance) trigger(new)
 end
 
 def type(node & create) !type(single | final | instance) trigger(clear)
-    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
-		new java.util.ArrayList<>($name+firstLowerCase+javaValidName~List()).forEach(io.intino.tara.magritte.Layer::delete$$);
+    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>($name+firstLowerCase+javaValidName~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}
 end
 
