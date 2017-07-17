@@ -169,7 +169,7 @@ def type(node & concept) !type(final | abstract | component | instance) trigger(
 end
 
 def type(node & concept) !type(single | final | abstract | component | instance) trigger(clear)
-	public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference>... filters) {
-		new java.util.ArrayList<>(AbstractGraph.this.$name+firstLowerCase+javaValidWord~List()).forEach(io.intino.tara.magritte.Layer::delete$$);
+	public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>(AbstractGraph.this.$name+firstLowerCase+javaValidWord~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}
 end
