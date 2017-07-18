@@ -91,10 +91,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addInheritedRules(Model model) {
-		new LanguageInheritanceManager(root, collectInstanceConstraints(), language, model).fill();
+		new LanguageInheritanceManager(root, instanceConstraints(), language, model).fill();
 	}
 
-	private List<String> collectInstanceConstraints() {
+	private List<String> instanceConstraints() {
 		return language.catalog().entrySet().stream().
 				filter(entry -> isInstance(entry.getValue())).
 				map(Map.Entry::getKey).collect(toList());

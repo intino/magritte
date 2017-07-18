@@ -53,10 +53,6 @@ def type(constraint) type(component) trigger(constraint)
 	component($type+quoted, java.util.Arrays.asList($size...[, ])[, $tags...[, ]])
 end
 
-def type(rule & size) trigger(size)
-	new io.intino.tara.lang.model.rules.Size($min, $max)
-end
-
 def type(constraint) type(parameter) type(reference) trigger(constraint)
 	parameter("$name", "$type", ["$facet"?""], $size, $position, "$scope", [$rule?null][, $tags...[, ]])
 end

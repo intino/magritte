@@ -154,6 +154,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void AmidasEbar() {
+		main(new String[]{home + "sandbox/confFiles/amidas/M2.txt"});
+	}
+
+	@Test
 	public void amidasUltimate() {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimate.txt"});
 	}
@@ -280,7 +285,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void sumusEbar() {
-		main(new String[]{home + "sandbox/confFiles/sumus/ebar.txt"});
+		main(new String[]{home + "sandbox/confFiles/ebar/ebar.txt"});
 	}
 
 	@Test

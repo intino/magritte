@@ -1,7 +1,7 @@
 def.file
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Data.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Insight.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/View.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Insight.tara#true
 
 project
 sumus

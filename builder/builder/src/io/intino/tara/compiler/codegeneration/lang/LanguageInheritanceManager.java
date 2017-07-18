@@ -40,9 +40,9 @@ class LanguageInheritanceManager implements TemplateTags {
 		frame.addFrame(CONSTRAINTS, constraintsFrame);
 	}
 
-	private void fillRuleInfo(Frame frame, String aCase) {
-		Context rules = language.catalog().get(aCase);
-		frame.addFrame(TemplateTags.NAME, aCase);
+	private void fillRuleInfo(Frame frame, String instance) {
+		Context rules = language.catalog().get(instance);
+		frame.addFrame(TemplateTags.NAME, instance);
 		addTypes(rules.types(), frame);
 	}
 

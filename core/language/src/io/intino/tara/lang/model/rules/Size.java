@@ -61,7 +61,7 @@ public class Size implements Rule<List> {
 
 	@Override
 	public String errorMessage() {
-		return "reject.element.not.in.range";
+		return min() == 0 && max() == 0 ? "reject.type.not.exists2" : "reject.element.not.in.range";
 	}
 
 	@Override

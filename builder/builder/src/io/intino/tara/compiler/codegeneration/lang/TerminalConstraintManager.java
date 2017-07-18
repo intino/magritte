@@ -169,7 +169,9 @@ class TerminalConstraintManager implements TemplateTags {
 	private void addComponent(Frame frame, Constraint.Component component) {
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, component instanceof Constraint.OneOf ? ONE_OF : COMPONENT);
 		constraint.addFrame(TYPE, component.type());
-		constraint.addFrame(SIZE, sizeOfTerminal(component));
+		final Frame sizeOfTerminal = sizeOfTerminal(component);
+		if (sizeOfTerminal == null) return;
+		constraint.addFrame(SIZE, sizeOfTerminal);
 		constraint.addFrame(TAGS, component.annotations().stream().map(Enum::name).toArray(String[]::new));
 		if (component instanceof Constraint.OneOf)
 			((Constraint.OneOf) component).components().forEach(c -> addComponent(constraint, c));
@@ -180,7 +182,9 @@ class TerminalConstraintManager implements TemplateTags {
 		if (component.name() == null) return;
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		constraint.addFrame(TYPE, component.name());
-		constraint.addFrame(SIZE, new FrameBuilder().build(component.container().sizeOf(component)));
+		final Size size = component.container().sizeOf(component);
+		if (size.min() == 0 && size.max() == 0) return;
+		constraint.addFrame(SIZE, new FrameBuilder().build(size));
 		constraint.addFrame(TAGS, component.flags().stream().map(Enum::name).toArray(String[]::new));
 		frame.addFrame(CONSTRAINT, constraint);
 	}
@@ -189,12 +193,16 @@ class TerminalConstraintManager implements TemplateTags {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		FrameBuilder builder = new FrameBuilder();
 		final Size rule = (Size) constraint.rules().stream().filter(r -> r instanceof Size).findFirst().orElse(Size.MULTIPLE());
-		return (Frame) builder.build(rule.into() != null ? getIntoRule(constraint, rule) : rule);
+		final Size size = rule.into() != null ? getIntoRule(constraint, rule) : rule;
+		if (size.min() == 0 && size.max() == 0) return null;
+		return (Frame) builder.build(size);
 	}
 
 	private Size getIntoRule(Constraint.Component constraint, Size rule) {
+		final boolean existsComponent = existsComponent(constraint.type());
 		if (!rule.into().isRequired()) return rule.into();
-		return existsComponent(constraint.type()) ? new Size(0, rule.into().max()) : rule.into();
+		if (rule.into().isSingle()) return new Size(0, 0);
+		return existsComponent ? new Size(0, rule.into().max()) : rule.into();
 	}
 
 	private Frame sizeOfTerminal(Constraint.Parameter constraint) {

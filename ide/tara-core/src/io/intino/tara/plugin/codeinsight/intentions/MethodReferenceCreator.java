@@ -82,7 +82,7 @@ public class MethodReferenceCreator {
 		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
 		if (valued.getValue() != null) {
 			if (!type.equalsIgnoreCase("void") && !methodBody.startsWith("return "))
-				methodBody = "return " + methodBody;
+				methodBody = "return " + (methodBody.isEmpty() ? "null" : methodBody);
 			if (!methodBody.endsWith(";")) methodBody += ";";
 		}
 		frame.addFrame("body", methodBody);
@@ -126,7 +126,7 @@ public class MethodReferenceCreator {
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
 		else if (Primitive.REFERENCE.equals(valued.type())) return getReferenceReturnType(valued);
 		else if (Primitive.WORD.equals(valued.type())) return getWordReturnType(valued);
-		else return valued.type().javaName();
+		else return valued.type() == null ? "void" : valued.type().javaName();
 	}
 
 	private String getWordReturnType(Valued valued) {

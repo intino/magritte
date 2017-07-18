@@ -428,7 +428,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 				if (language != null)
 					generationPackage(getLanguagePath(name, version, languagesDirectory().getAbsolutePath()));
 				return language;
-			} catch (TaraException e) {
+			} catch (NoClassDefFoundError | TaraException e) {
 				LOG.info("Language " + name() + " cannot be load");
 				return null;
 			}
