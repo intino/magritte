@@ -62,10 +62,7 @@ public class CreateVariableRuleClassIntention extends ClassCreationIntention {
 	}
 
 	public PsiClass createRuleClass(PsiFile file, PsiDirectoryImpl srcPsiDirectory) {
-		PsiClass aClass;
-		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, rulesPath);
-		aClass = createClass(destiny, ((TaraRule) rule).getText());
-		return aClass;
+		return createClass(findDestiny(file, srcPsiDirectory, rulesPath), ((TaraRule) rule).getText());
 	}
 
 	public PsiClass createClass(PsiDirectory destiny, String className) {

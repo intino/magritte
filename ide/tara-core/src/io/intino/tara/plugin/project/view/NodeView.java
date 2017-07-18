@@ -82,7 +82,7 @@ class NodeView extends PsiFileNode implements Navigatable {
 			myName = getName();
 			data.setPresentableText(((TaraModel) value).getPresentableName());
 			final Icon icon = value.getIcon(Iconable.ICON_FLAG_READ_STATUS);
-			data.setIcon(((TaraModel) value).dsl().equalsIgnoreCase("Legio") ?
+			data.setIcon("Legio".equalsIgnoreCase(((TaraModel) value).dsl()) ?
 					icon : new RowIcon(icon, PlatformIcons.PACKAGE_LOCAL_ICON));
 		} else data.setPresentableText(value.getName());
 		VirtualFile file = getVirtualFile();

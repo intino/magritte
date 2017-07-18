@@ -111,12 +111,6 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public Map<String, String> repositories() {
-		return maven.getRemoteRepositories().stream().
-				collect(Collectors.toMap(MavenRemoteRepository::getUrl, MavenRemoteRepository::getId));
-	}
-
-	@Override
 	public Map<String, String> releaseRepositories() {
 		return maven.getRemoteRepositories().stream().
 				filter(repository -> repository.getSnapshotsPolicy() == null).

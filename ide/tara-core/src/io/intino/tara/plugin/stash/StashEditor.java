@@ -42,9 +42,9 @@ class StashEditor implements TextEditor {
 	}
 
 	private void refreshFiles() {
-		final Application application = ApplicationManager.getApplication();
-		if (application.isWriteAccessAllowed()) VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-		else application.invokeAndWait(() -> VirtualFileManager.getInstance().refreshWithoutFileWatcher(false));
+		final Application a = ApplicationManager.getApplication();
+		if (a.isWriteAccessAllowed()) VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+		else a.invokeAndWait(() -> a.runWriteAction(() -> VirtualFileManager.getInstance().refreshWithoutFileWatcher(false)));
 	}
 
 	@NotNull
