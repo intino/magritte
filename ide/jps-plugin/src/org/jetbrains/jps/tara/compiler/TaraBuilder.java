@@ -15,10 +15,13 @@ import org.jetbrains.jps.builders.storage.SourceToOutputMapping;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.fs.CompilationRound;
+import org.jetbrains.jps.incremental.java.ClassPostProcessor;
+import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
 import org.jetbrains.jps.incremental.storage.BuildDataManager;
+import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
@@ -56,7 +59,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String LANGUAGES_DIRECTORY = ".m2";
 	private static final String TARA_DIRECTORY = ".tara";
 	private static final String STASH = ".stash";
-
+	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
+	static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private final String builderName;
 	private JpsModuleConfiguration conf;
 
@@ -64,6 +68,10 @@ class TaraBuilder extends ModuleLevelBuilder {
 		super(BuilderCategory.SOURCE_GENERATOR);
 		LOG.setLevel(Level.WARN);
 		builderName = "Tara compiler";
+	}
+
+	static {
+		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
 	}
 
 	public ExitCode build(CompileContext context,
@@ -152,8 +160,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 				SourceToOutputMapping mapping = dm.getSourceToOutputMap(entry.getKey());
 				for (String source : mapping.getSources()) {
 					if (new File(source).exists()) continue;
-//					mapping.remove(source);
-//					FSOperations.markDeleted(context, new File(source));
+					mapping.remove(source);
+					FSOperations.markDeleted(context, new File(source));
 				}
 			} catch (IOException e) {
 				LOG.error(e.getMessage());
@@ -356,6 +364,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	@Override
 	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {
 		JavaBuilderUtil.cleanupChunkResources(context);
+		STUB_TO_SRC.set(context, null);
 	}
 
 	@Override
@@ -370,5 +379,26 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private boolean isTaraFile(String path) {
 		return conf != null && path.endsWith("." + TARA_EXTENSION);
+	}
+
+	private static class RecompileStubSources implements ClassPostProcessor {
+
+		public void process(CompileContext context, OutputFileObject out) {
+			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
+			if (stubToSrc == null) return;
+			File src = out.getSourceFile();
+			if (src == null) return;
+			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
+			if (tara == null) return;
+			try {
+				final File taraFile = new File(tara);
+				if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, taraFile)) {
+					FSOperations.markDirty(context, CompilationRound.NEXT, taraFile);
+					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
+				}
+			} catch (IOException e) {
+				LOG.error(e);
+			}
+		}
 	}
 }
