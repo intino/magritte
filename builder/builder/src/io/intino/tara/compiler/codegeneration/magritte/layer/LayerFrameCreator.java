@@ -60,6 +60,7 @@ public class LayerFrameCreator implements TemplateTags {
 		final Frame frame = new Frame().addTypes(LAYER, DECORABLE);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
 		frame.addFrame(NAME, node.name());
+		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
 		return new AbstractMap.SimpleEntry<>(calculateDecorablePath(node, aPackage), frame);
 	}
 

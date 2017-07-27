@@ -35,6 +35,7 @@ import static io.intino.tara.lang.model.Tag.Terminal;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -81,7 +82,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		ASTNode next = node.getTreeNext();
 		parentNode.removeChild(node);
 		if ((prev == null || prev.getElementType() == TokenType.WHITE_SPACE) && next != null &&
-			next.getElementType() == TokenType.WHITE_SPACE) {
+				next.getElementType() == TokenType.WHITE_SPACE) {
 			parentNode.removeChild(next);
 		}
 	}
@@ -192,18 +193,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		if (container() == null) return name();
 		String container = container().qualifiedName();
 		return new StringBuilder().append(container.isEmpty() ? "" : container + ".").
-			append(name().isEmpty() ?
-				"[" + ANONYMOUS + shortType() + "]" :
-				name() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
+				append(name().isEmpty() ?
+						"[" + ANONYMOUS + shortType() + "]" :
+						name() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
 	}
 
 	public String cleanQn() {
 		if (container() == null) return firstUpperCase().format(name()).toString();
 		String container = container().qualifiedName();
 		return new StringBuilder().append(container.isEmpty() ? "" : container + "$").
-			append(name().isEmpty() ?
-				"[" + ANONYMOUS + shortType() + "]" :
-				firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
+				append(name().isEmpty() ?
+						"[" + ANONYMOUS + shortType() + "]" :
+						firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
@@ -341,13 +342,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 
 	public List<Tag> annotations() {
-		return getAnnotations().stream().map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(Collectors.toList());
+		return getAnnotations().stream().map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(toList());
 	}
 
 	public List<Tag> flags() {
 		final List<Tag> tags = new ArrayList<>();
 		tags.addAll(getFlags().stream().
-			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
+				map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(toList()));
 		tags.addAll(inheritedFlags);
 		return tags;
 	}
@@ -445,10 +446,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
-	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
+	public void addParameter(String name, String facet, int position, String metric, int line, int column, List<Object> values) {
 		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
 		Map<String, String> params = new HashMap();
-		params.put(name, String.join(" ", toString(values)));
+		params.put(name, String.join(" ", toString(values, metric)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
 		final Parameters parameters = parametersAnchor(facet);
 		if (parameters == null)
@@ -461,9 +462,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	private Parameters parametersAnchor(String facet) {
-		PsiElement element = metaidentifier(facet);
-		while (element != null && !(element instanceof Parameters)) element = element.getPrevSibling();
-		return (Parameters) element;
+		PsiElement metaidentifier = metaidentifier(facet);
+		if (metaidentifier == null) return null;
+		final PsiElement nextSibling = metaidentifier.getNextSibling();
+		return nextSibling instanceof Parameters ? (Parameters) nextSibling : null;
 	}
 
 	private TaraMetaIdentifier metaidentifier(String facet) {
@@ -475,11 +477,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	public List<String> toString(List<Object> values) {
-		return values.stream().map(v -> {
+	public List<String> toString(List<Object> values, String metric) {
+		final List<String> list = new ArrayList<>(values.stream().map(v -> {
 			final String quote = mustBeQuoted(v);
 			return quote + (v instanceof Node ? ((Node) v).qualifiedName() : v.toString()) + quote;
-		}).collect(Collectors.toList());
+		}).collect(toList()));
+		if (metric != null && !metric.isEmpty()) list.add(metric);
+		return list;
 	}
 
 	private String mustBeQuoted(Object v) {

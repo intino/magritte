@@ -6,13 +6,13 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.plugin.annotator.fix.ClassCreationIntention;
 import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
 import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.annotator.fix.ClassCreationIntention;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.lang.model.Node;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
 		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
-		return expressionContext(element) != null && valued != null && valued.name() != null && valued.name().isEmpty();
+		return valued != null && expressionContext(valued) != null && valued.name() != null && !valued.name().isEmpty();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 		if (valued == null) return;
 		final String name = valued.name();
 		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(name);
-		new MethodReferenceCreator(valued, name).create(expressionContext(element).getValue());
+		new MethodReferenceCreator(valued, name).create(expressionContext(valued).getValue());
 		substitute(methodReference, valued);
 		removeOldImports(valued);
 		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
@@ -95,7 +95,8 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 		return getText();
 	}
 
-	private Expression expressionContext(@NotNull PsiElement element) {
-		return TaraPsiImplUtil.getContainerByType(element, Expression.class);
+	private Expression expressionContext(@NotNull Valued element) {
+		final List<TaraExpression> expressionList = element.getValue().getExpressionList();
+		return expressionList.isEmpty() ? null : expressionList.get(0);
 	}
 }
