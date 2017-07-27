@@ -120,8 +120,8 @@ def type(node) trigger(declaration)
 end
 
 def type(node & instance) trigger(update)
-    java.util.List<io.intino.tara.magritte.Node> $name+firstLowerCase+javaValidWord~List = this.graph.rootList(r -> r.id().equals("$generatedLanguage#$name"));
-    if(!$name+firstLowerCase+javaValidWord~List.isEmpty()) this.$name+firstLowercase+javaValidWord = $name+firstLowerCase+javaValidWord~List.get(0).as($conceptLayer.class);
+	io.intino.tara.magritte.Node $name+firstLowerCase+javaValidWord~Node = this.graph.load("$generatedLanguage+firstUpperCase#$name");
+	if($name+firstLowerCase+javaValidWord~Node != null) this.$name+firstLowercase+javaValidWord = $name+firstLowercase+javaValidWord~Node.as($conceptLayer.class);
 end
 
 def type(node & single) trigger(update)
