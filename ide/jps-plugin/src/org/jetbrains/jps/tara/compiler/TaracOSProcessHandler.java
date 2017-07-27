@@ -7,16 +7,16 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
+import io.intino.tara.compiler.shared.TaraBuildConstants;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
-import io.intino.tara.compiler.shared.TaraBuildConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.intino.tara.compiler.shared.TaraBuildConstants.TARAC;
+import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 import static io.intino.tara.compiler.shared.TaraCompilerMessageCategories.ERROR;
 import static io.intino.tara.compiler.shared.TaraCompilerMessageCategories.WARNING;
 
@@ -42,7 +42,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 	public void notifyTextAvailable(final String text, final Key outputType) {
 		super.notifyTextAvailable(text, outputType);
-		if (LOG.isDebugEnabled()) LOG.debug("Received from tarac: " + text);
+		System.out.println("tarac: " + text);
 		if (outputType == ProcessOutputTypes.SYSTEM) return;
 		if (outputType == ProcessOutputTypes.STDERR) {
 			stdErr.append(StringUtil.convertLineSeparators(text));
@@ -57,8 +57,8 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 	private void parseOutput(String text) {
 		final String trimmed = text.trim();
-		if (trimmed.startsWith(TaraBuildConstants.PRESENTABLE_MESSAGE)) {
-			updateStatus(trimmed.substring(TaraBuildConstants.PRESENTABLE_MESSAGE.length()));
+		if (trimmed.startsWith(PRESENTABLE_MESSAGE)) {
+			updateStatus(trimmed.substring(PRESENTABLE_MESSAGE.length()));
 			return;
 		}
 		if (TaraBuildConstants.CLEAR_PRESENTABLE.equals(trimmed)) {
@@ -66,21 +66,23 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			return;
 		}
 		if (StringUtil.isNotEmpty(text)) {
-			if (text.startsWith(TaraBuildConstants.COMPILED_START)) {
-				outputBuffer.append(text);
+			if (trimmed.startsWith(COMPILED_START)) {
+				outputBuffer.append(trimmed);
 				updateStatus("Finishing...");
-				processCompiledItems();
-			} else if (text.startsWith(TaraBuildConstants.MESSAGES_START)) {
+			} else if (trimmed.startsWith(MESSAGES_START)) {
 				outputBuffer.append(text);
 				processMessage();
+			}
+			if (trimmed.endsWith(COMPILED_END)) {
+				if (!trimmed.startsWith(COMPILED_START)) outputBuffer.append(trimmed);
+				processCompiledItems();
 			}
 		}
 	}
 
 	private void processMessage() {
-		String text;
-		if (outputBuffer.indexOf(TaraBuildConstants.MESSAGES_END) == -1) return;
-		text = handleOutputBuffer(TaraBuildConstants.MESSAGES_START, TaraBuildConstants.MESSAGES_END);
+		if (outputBuffer.indexOf(MESSAGES_END) == -1) return;
+		String text = handleOutputBuffer(MESSAGES_START, MESSAGES_END);
 		List<String> tokens = splitAndTrim(text);
 		LOG.assertTrue(tokens.size() > 4, "Wrong number of output params");
 		String category = tokens.get(0);
@@ -98,24 +100,24 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			columnInt = 0;
 		}
 		BuildMessage.Kind kind = category.equals(ERROR)
-			? BuildMessage.Kind.ERROR
-			: category.equals(WARNING)
-			? BuildMessage.Kind.WARNING
-			: BuildMessage.Kind.INFO;
+				? BuildMessage.Kind.ERROR
+				: category.equals(WARNING)
+				? BuildMessage.Kind.WARNING
+				: BuildMessage.Kind.INFO;
 		CompilerMessage compilerMessage = new CompilerMessage(TARAC, kind, message, url, -1, -1, -1, lineInt, columnInt);
 		if (LOG.isDebugEnabled()) LOG.debug("Message: " + compilerMessage);
 		compilerMessages.add(compilerMessage);
 	}
 
 	private void processCompiledItems() {
-		if (outputBuffer.indexOf(TaraBuildConstants.COMPILED_END) == -1) return;
-		final String compiled = handleOutputBuffer(TaraBuildConstants.COMPILED_START, TaraBuildConstants.COMPILED_END);
+		if (outputBuffer.indexOf(COMPILED_END) == -1) return;
+		final String compiled = handleOutputBuffer(COMPILED_START, COMPILED_END);
 		final List<String> list = splitAndTrim(compiled);
 		String outputFile = list.get(0);
 		String sourceFile = list.get(1);
 
 		OutputItem item = new OutputItem(outputFile, sourceFile);
-		if (LOG.isDebugEnabled()) LOG.debug("Output: " + item);
+		LOG.info("Output: " + item);
 		compiledItems.add(item);
 	}
 
