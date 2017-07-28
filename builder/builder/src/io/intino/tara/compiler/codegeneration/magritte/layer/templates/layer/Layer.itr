@@ -76,7 +76,7 @@ end
 
 def type(availableFacet) slot(variable) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
-		return core$$().as($qn+reference.class);
+		return a$$($qn+reference.class);
 	}
 
 	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
@@ -96,7 +96,7 @@ end
 
 def type(availableFacet) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
-		io.intino.tara.magritte.Layer as = core$$().as($qn+reference.class);
+		io.intino.tara.magritte.Layer as = a$$($qn+reference.class);
 		return as != null ? ($qn+reference) as : [$abstract?core$$().addFacet($qn+reference.class)];
 	}
 
@@ -107,7 +107,7 @@ end
 
 def type(core) trigger(asCore)
 	public $qn+reference as$name() {
-		return ($qn+reference) core$$().as($qn+reference.class);
+		return ($qn+reference) a$$($qn+reference.class);
 	}
 end
 
@@ -134,8 +134,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 		public $decorable$name+javaValidName(io.intino.tara.magritte.Node node) {
 			super(node);[
-			_metaType = core$$().as($metaType+typeInit.class);][
-			_$metaFacet+name = core$$().as($metaFacet+typeInit.class);]
+			_metaType = a$$($metaType+typeInit.class);][
+			_$metaFacet+name = a$$($metaFacet+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][

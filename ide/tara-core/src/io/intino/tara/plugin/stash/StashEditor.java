@@ -4,6 +4,7 @@ import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.*;
@@ -44,7 +45,7 @@ class StashEditor implements TextEditor {
 	private void refreshFiles() {
 		final Application a = ApplicationManager.getApplication();
 		if (a.isWriteAccessAllowed()) VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-		else a.invokeAndWait(() -> a.runWriteAction(() -> VirtualFileManager.getInstance().refreshWithoutFileWatcher(false)));
+		else a.invokeAndWait(() -> a.runWriteAction(() -> VirtualFileManager.getInstance().refreshWithoutFileWatcher(false)), ModalityState.NON_MODAL);
 	}
 
 	@NotNull

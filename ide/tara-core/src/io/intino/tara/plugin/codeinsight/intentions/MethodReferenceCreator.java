@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static com.intellij.pom.java.LanguageLevel.JDK_1_8;
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.intellij.psi.search.GlobalSearchScope.moduleWithDependenciesScope;
+import static com.intellij.psi.search.GlobalSearchScope.*;
 import static io.intino.tara.plugin.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
@@ -42,12 +41,14 @@ public class MethodReferenceCreator {
 	private final String reference;
 	private final Module module;
 	private final String workingPackage;
+	private final String languageWorkingPackage;
 
 	public MethodReferenceCreator(Valued valued, String reference) {
 		this.valued = valued;
 		this.reference = reference.replace("@", "");
 		module = ModuleProvider.moduleOf(valued);
 		workingPackage = TaraUtil.graphPackage(valued);
+		languageWorkingPackage = TaraUtil.languageGraphPackage(valued);
 	}
 
 	public PsiMethod create(String methodBody) {
@@ -143,7 +144,10 @@ public class MethodReferenceCreator {
 
 	private PsiType getFunctionReturnType() {
 		final String workingPackage = valued instanceof Variable ? this.workingPackage : valued.scope().toLowerCase();
-		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(workingPackage + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), moduleWithDependenciesScope(module));
+		final JavaPsiFacade facade = JavaPsiFacade.getInstance(valued.getProject());
+		PsiClass aClass = facade.findClass(workingPackage + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), moduleWithDependenciesScope(module));
+		if (aClass == null)
+			aClass = facade.findClass(languageWorkingPackage + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), moduleWithDependenciesAndLibrariesScope(module));
 		if (aClass == null || !aClass.isInterface()) return PsiType.VOID;
 		return aClass.getMethods()[0].getReturnType();
 	}

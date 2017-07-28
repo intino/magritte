@@ -162,7 +162,7 @@ end
 
 def type(node & concept) !type(final | abstract | component | instance) trigger(new)
 	public $qn+reference $name+firstLowerCase+javaValidWord([$variable+parameters...[, ]]) {
-		$qn+reference newElement = AbstractGraph.this.graph.createRoot($qn+reference.class, stash, name).core$$().as($qn+reference.class);
+		$qn+reference newElement = AbstractGraph.this.graph.createRoot($qn+reference.class, stash, name).a$$($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}

@@ -17,7 +17,12 @@ public abstract class Layer {
         return node.name();
     }
 
-    public Node core$() {
+	public <T extends Layer> T a$(Class<T> layerClass) {
+		if (this.getClass() == layerClass) return (T) this;
+		return node.as(layerClass);
+	}
+
+	public Node core$() {
         return node;
     }
 

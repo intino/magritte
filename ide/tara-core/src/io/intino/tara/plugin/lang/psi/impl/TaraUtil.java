@@ -68,6 +68,16 @@ public class TaraUtil {
 		return conf.workingPackage() + ".graph";
 	}
 
+
+	public static String languageGraphPackage(@NotNull PsiElement element) {
+		if (!(element.getContainingFile() instanceof TaraModel)) return "";
+		final Configuration conf = configurationOf(element);
+		if (conf == null) return "";
+		final Configuration.LanguageLibrary lib = conf.languages().get(0);
+		if (lib == null) return null;
+		return lib.generationPackage();
+	}
+
 	public static String graphPackage(@NotNull Module module) {
 		final Configuration conf = configurationOf(module);
 		if (conf == null) return "";
