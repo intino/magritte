@@ -22,6 +22,18 @@ public abstract class Layer {
 		return node.as(layerClass);
 	}
 
+	public boolean i$(Class<? extends Layer> layerClass) {
+		return node.is(layerClass);
+	}
+
+	public boolean i$(String concept) {
+		return node.is(concept);
+	}
+
+	public boolean i$(Concept concept) {
+		return node.is(concept.id());
+	}
+
 	public Node core$() {
         return node;
     }
