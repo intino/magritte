@@ -13,8 +13,16 @@ def type(graph)
 			this.graph.i18n().register("$name");
 		}
 
+        @Override
 		public void update() {
 			$node+update...[$NL]
+		}
+
+        @Override
+		public AbstractGraph clone() {
+		    AbstractGraph graph = (AbstractGraph)super.clone();
+			$node+clone...[$NL]
+			return graph;
 		}
 
 		@Override
@@ -130,6 +138,14 @@ end
 
 def type(node) trigger(update)
 	$name+firstLowerCase~List = this.graph.rootList($qn+reference.class);
+end
+
+def type(node) type(instance | single) trigger(clone)
+	graph.$name+firstLowercase+javaValidWord = this.$name+firstLowercase+javaValidWord;
+end
+
+def type(node) trigger(clone)
+	graph.$name+firstLowerCase~List = new java.util.ArrayList<>(this.$name+firstLowerCase~List);
 end
 
 def type(node & instance) trigger(getter)
