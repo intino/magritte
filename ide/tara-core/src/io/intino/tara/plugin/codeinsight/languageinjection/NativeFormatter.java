@@ -62,16 +62,16 @@ public class NativeFormatter implements TemplateTags {
 		if (nativeInterface == null) return;
 		imports.addAll(collectImports((io.intino.tara.plugin.lang.psi.Valued) variable));
 		imports.addAll(collectImports((PsiClass) nativeInterface));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(NAME, variable.name());
-		frame.addFrame(SIGNATURE, getSignature((PsiClass) nativeInterface));
-		frame.addFrame(GENERATED_LANGUAGE, workingPackage.toLowerCase());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addSlot(NAME, variable.name());
+		frame.addSlot(SIGNATURE, getSignature((PsiClass) nativeInterface));
+		frame.addSlot(GENERATED_LANGUAGE, workingPackage.toLowerCase());
+		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
 		if (!(language instanceof Proteo) && !(language instanceof Verso))
-			frame.addFrame(LANGUAGE, language.languageName());
-		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
+			frame.addSlot(LANGUAGE, language.languageName());
+		if (ruleContainer.getRule() != null) frame.addSlot(RULE, ruleContainer.getRule().getText());
 		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
-		if (!aReturn.isEmpty() && !isMultiline) frame.addFrame(RETURN, aReturn);
+		if (!aReturn.isEmpty() && !isMultiline) frame.addSlot(RETURN, aReturn);
 	}
 
 	void fillFrameForFunctionParameter(Frame frame, Parameter parameter, String body, boolean isMultiLine) {
@@ -79,41 +79,41 @@ public class NativeFormatter implements TemplateTags {
 		final String signature = getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
 		imports.addAll(collectImports((Valued) parameter));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(GENERATED_LANGUAGE, workingPackage.toLowerCase());
-		frame.addFrame(SCOPE, parameter.scope());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addSlot(NAME, parameter.name());
+		frame.addSlot(GENERATED_LANGUAGE, workingPackage.toLowerCase());
+		frame.addSlot(SCOPE, parameter.scope());
+		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
 		if (!(language instanceof Proteo) && !(language instanceof Verso))
-			frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
-		if (signature != null) frame.addFrame(SIGNATURE, signature);
+			frame.addSlot(LANGUAGE, getLanguageScope(parameter, language));
+		if (signature != null) frame.addSlot(SIGNATURE, signature);
 		final String anInterface = getInterface(parameter);
-		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
+		if (anInterface != null) frame.addSlot(RULE, cleanQn(anInterface));
 		if (signature != null) {
 			final String aReturn = NativeFormatter.getReturn(body, signature);
-			if (!aReturn.isEmpty() && !isMultiLine) frame.addFrame(RETURN, aReturn);
+			if (!aReturn.isEmpty() && !isMultiLine) frame.addSlot(RETURN, aReturn);
 		}
 	}
 
 	void fillFrameExpressionVariable(Frame frame, Variable variable, String body, boolean isMultiline) {
 		final List<String> imports = new ArrayList<>(collectImports((Valued) variable));
-		frame.addFrame(NAME, variable.name());
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(GENERATED_LANGUAGE, workingPackage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, workingPackage, m0));
-		frame.addFrame(TYPE, typeFrame(type(variable), variable.isMultiple()));
-		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+		frame.addSlot(NAME, variable.name());
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addSlot(GENERATED_LANGUAGE, workingPackage);
+		frame.addSlot(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, workingPackage, m0));
+		frame.addSlot(TYPE, typeFrame(type(variable), variable.isMultiple()));
+		if (!isMultiline) frame.addSlot(RETURN, NativeFormatter.getReturn(body));
 	}
 
 	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, boolean isMultiline) {
 		final List<String> imports = new ArrayList<>(collectImports((Valued) parameter));
 		frame.addTypes(NATIVE);
-		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(GENERATED_LANGUAGE, workingPackage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, workingPackage));
-		frame.addFrame(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
-		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+		frame.addSlot(NAME, parameter.name());
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addSlot(GENERATED_LANGUAGE, workingPackage);
+		frame.addSlot(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, workingPackage));
+		frame.addSlot(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
+		if (!isMultiline) frame.addSlot(RETURN, NativeFormatter.getReturn(body));
 	}
 
 	private boolean isMultiple(Parameter parameter) {
@@ -122,7 +122,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private Frame typeFrame(String type, boolean multiple) {
-		return multiple ? new Frame().addTypes("type", "list").addFrame("value", type) : new Frame().addTypes("type").addFrame("value", type);
+		return multiple ? new Frame().addTypes("type", "list").addSlot("value", type) : new Frame().addTypes("type").addSlot("value", type);
 	}
 
 	private String type(Variable variable) {
