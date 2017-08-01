@@ -5,10 +5,7 @@ import io.intino.tara.magritte.Node;
 import io.intino.tara.magritte.loaders.NodeLoader;
 import io.intino.tara.magritte.tags.Terminal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -16,6 +13,7 @@ import static java.util.stream.Collectors.toList;
 public class MockLayer extends Layer implements Terminal {
 
     private MockLayer mockLayer;
+    private List<MockLayer> varMockList = new ArrayList<>();
 	private List<MockLayer> mockList = new ArrayList<>();
 
 	public MockLayer(Node _node) {
@@ -24,6 +22,10 @@ public class MockLayer extends Layer implements Terminal {
 
 	public MockLayer mockLayer() {
 		return mockLayer;
+	}
+
+	public List<MockLayer> varMockList() {
+		return varMockList;
 	}
 
 	public void mockLayer(MockLayer mockLayer) {
@@ -35,7 +37,7 @@ public class MockLayer extends Layer implements Terminal {
 	}
 
 	@Override
-	protected void addNode$(Node node) {
+	public void addNode$(Node node) {
 		if(node.is("Mock")) mockList.add(node.as(MockLayer.class));
 	}
 
@@ -46,7 +48,10 @@ public class MockLayer extends Layer implements Terminal {
 
 	@Override
 	public Map<String, List<?>> variables$() {
-		return Collections.singletonMap("mockLayer", new ArrayList<>(singletonList(mockLayer)));
+		java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>();
+		map.put("mockLayer", new ArrayList<>(singletonList(mockLayer)));
+		map.put("varMockList", this.varMockList);
+		return map;
 	}
 
 	@Override
@@ -56,7 +61,9 @@ public class MockLayer extends Layer implements Terminal {
 
 	@Override
 	public List<Node> componentList$() {
-		return new ArrayList<>(mockList.stream().map(Layer::core$).collect(toList()));
+		Set<Node> components = new HashSet<>();
+		new ArrayList<>(mockList).forEach(m -> components.add(m.core$()));
+		return new ArrayList<>(components);
 	}
 
 	public MockLayer mock(int index) {
