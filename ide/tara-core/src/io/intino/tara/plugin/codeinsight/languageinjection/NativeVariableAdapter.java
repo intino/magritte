@@ -2,6 +2,7 @@ package io.intino.tara.plugin.codeinsight.languageinjection;
 
 import com.intellij.openapi.module.Module;
 import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
 import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.plugin.lang.psi.TaraVariable;
@@ -18,7 +19,8 @@ class NativeVariableAdapter implements Adapter<Variable> {
 	}
 
 	@Override
-	public void execute(Frame frame, Variable source, FrameContext<Variable> context) {
+	public void adapt(Variable source, Context context) {
+		final Frame frame = context.frame();
 		if (source.type() == null) return;
 		frame.addTypes(source.type().getName());
 		for (Tag tag : source.flags()) frame.addTypes(tag.name().toLowerCase());

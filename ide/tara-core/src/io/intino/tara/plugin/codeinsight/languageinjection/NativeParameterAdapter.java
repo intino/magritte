@@ -1,16 +1,17 @@
 package io.intino.tara.plugin.codeinsight.languageinjection;
 
 import com.intellij.openapi.module.Module;
-import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
-import io.intino.tara.plugin.lang.psi.Expression;
-import io.intino.tara.plugin.lang.psi.TaraVarInit;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.plugin.lang.psi.Expression;
+import io.intino.tara.plugin.lang.psi.TaraVarInit;
+import io.intino.tara.plugin.lang.psi.Valued;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
+import org.siani.itrules.model.Frame;
 
 import static io.intino.tara.lang.model.Primitive.FUNCTION;
 
@@ -23,7 +24,8 @@ class NativeParameterAdapter implements Adapter<Parameter> {
 	}
 
 	@Override
-	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
+	public void adapt(Parameter source, Context context) {
+		final Frame frame = context.frame();
 		if (source.type() == null) return;
 		frame.addTypes(source.type().getName());
 		frame.addTypes(source.flags().stream().map(tag -> tag.name().toLowerCase()).toArray(String[]::new));

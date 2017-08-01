@@ -1,17 +1,14 @@
 package io.intino.tara.plugin.codeinsight.languageinjection.helpers;
 
-import io.intino.tara.Language;
-import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.siani.itrules.engine.FormatterStore;
 import io.intino.tara.Checker;
+import io.intino.tara.Language;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
-
-import java.util.Locale;
+import io.intino.tara.plugin.lang.psi.Valued;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 
 import static io.intino.tara.dsl.ProteoConstants.FACET;
 import static io.intino.tara.dsl.ProteoConstants.METAFACET;
@@ -28,22 +25,18 @@ public class QualifiedNameFormatter {
 		return container.name().toLowerCase() + "." + node.cleanQn().replace("$", ".");
 	}
 
-	public static Object firstUpperCase(String name) {
-		return new FormatterStore(Locale.ENGLISH).get("firstUpperCase").format(name);
-	}
-
 	public static String getQn(FacetTarget target, String generatedLanguage) {
 		if (target == null) return "";
 		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT +
-			(!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
-			Format.qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
+				(!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
+				Format.qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
 		if (target == null || owner == null || target.targetNode() == null) return "";
 		return generatedLanguage.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-			(!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
-			Format.qualifiedName().format(owner.name() + target.targetNode().name()).toString();
+				(!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
+				Format.qualifiedName().format(owner.name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(Node owner, String language, boolean m0) {
@@ -81,12 +74,12 @@ public class QualifiedNameFormatter {
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
 		if (language == null || node == null) return "";
 		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.cleanQn().replace("$", ".") : composeInFacetTargetQN(node, facetTarget)) :
-			language.toLowerCase() + DOT + node.type();
+				language.toLowerCase() + DOT + node.type();
 	}
 
 	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
 		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-			Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
+				Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {

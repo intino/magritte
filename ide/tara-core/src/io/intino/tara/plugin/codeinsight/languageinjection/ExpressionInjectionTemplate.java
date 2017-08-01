@@ -26,10 +26,10 @@ public class ExpressionInjectionTemplate extends Template {
 			rule().add((condition("type", "function & kotlin"))).add(literal("package ")).add(mark("generatedLanguage", "LowerCase")).add(literal(".natives;\n\n")).add(mark("imports").multiple("\n")).add(literal("\n\nclass ")).add(mark("name", "firstUpperCase")).add(literal(" implements ")).add(expression().add(mark("scope", "lowercase")).add(literal(".functions."))).add(mark("rule", "firstUpperCase")).add(literal(", io.intino.tara.magritte.Function {\n\tinternal var self: ")).add(mark("nativeContainer", "reference")).add(literal("\n\n\t")).add(mark("signature")).add(literal(" {")).add(literal("\n")).add(literal("\t")).add(literal("\t")).add(mark("return")),
 			rule().add(not(condition("type", "list")), (condition("trigger", "type"))).add(mark("value", "javaType")),
 			rule().add((condition("type", "list")), (condition("trigger", "type"))).add(literal("java.util.List<")).add(mark("value", "javaType")).add(literal(">")),
-			rule().add((condition("value", "instant")), (condition("trigger", "javaType"))).add(literal("java.time.Instant")),
-			rule().add((condition("value", "date")), (condition("trigger", "javaType"))).add(literal("Date")),
-			rule().add((condition("value", "time")), (condition("trigger", "javaType"))).add(literal("java.time.LocalTime")),
-			rule().add((condition("value", "resource")), (condition("trigger", "javaType"))).add(literal("java.net.URL"))
+			rule().add((condition("attribute", "instant")), (condition("trigger", "javaType"))).add(literal("java.time.Instant")),
+			rule().add((condition("attribute", "date")), (condition("trigger", "javaType"))).add(literal("Date")),
+			rule().add((condition("attribute", "time")), (condition("trigger", "javaType"))).add(literal("java.time.LocalTime")),
+			rule().add((condition("attribute", "resource")), (condition("trigger", "javaType"))).add(literal("java.net.URL"))
 		);
 		return this;
 	}

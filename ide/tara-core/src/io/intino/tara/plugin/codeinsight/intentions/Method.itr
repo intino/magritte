@@ -10,78 +10,78 @@ def type(method)
 	}
 end
 
-def value(instant) trigger(type)
+def attribute(instant) trigger(type)
 	java.time.Instant
 end
 
-def value(date) trigger(type)
+def attribute(date) trigger(type)
 	Date
 end
 
-def value(time) trigger(type)
+def attribute(time) trigger(type)
 	java.time.LocalTime
 end
 
-def value(Double) trigger(type)
+def attribute(Double) trigger(type)
 	double
 end
 
-def value(INTEGER) trigger(type)
+def attribute(INTEGER) trigger(type)
 	int
 end
 
-def value(OBJECT) trigger(type)
+def attribute(OBJECT) trigger(type)
 	Object
 end
 
-def value(RESOURCE) trigger(type)
+def attribute(RESOURCE) trigger(type)
 	java.net.URL
 end
 
-def value(string) trigger(type)
+def attribute(string) trigger(type)
 	String
 end
 
-def value(boolean) trigger(type)
+def attribute(boolean) trigger(type)
 	boolean
 end
 
-def value(int) trigger(list)
+def attribute(int) trigger(list)
 	Integer
 end
 
-def value(instant) trigger(list)
+def attribute(instant) trigger(list)
 	java.time.Instant
 end
 
-def value(date) trigger(list)
+def attribute(date) trigger(list)
 	Date
 end
 
-def value(time) trigger(list)
+def attribute(time) trigger(list)
 	java.time.LocalTime
 end
 
-def value(double) trigger(list)
+def attribute(double) trigger(list)
 	Double
 end
 
-def value(OBJECT) trigger(list)
+def attribute(OBJECT) trigger(list)
 	Object
 end
 
-def value(boolean) trigger(list)
+def attribute(boolean) trigger(list)
 	Boolean
 end
 
-def value(string) trigger(list)
+def attribute(string) trigger(list)
 	String
 end
 
-def value(resource) trigger(list)
+def attribute(resource) trigger(list)
 	java.net.URL
 end
 
-def value(type) trigger(list)
+def attribute(type) trigger(list)
 	Concept
 end

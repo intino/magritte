@@ -77,17 +77,17 @@ public class MethodReferenceCreator {
 		Size size = valued instanceof Parameter ? parameterSize() : ((Variable) valued).size();
 		final String type = type();
 		if (size != null && !size.isSingle() && !"void".equals(type)) frame.addTypes("multiple");
-		frame.addFrame("name", reference);
-		frame.addFrame("type", type);
+		frame.addSlot("name", reference);
+		frame.addSlot("type", type);
 		final String[] parameters = findParameters();
-		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
+		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addSlot("parameter", parameters);
 		if (valued.getValue() != null) {
 			if (!type.equalsIgnoreCase("void") && !methodBody.startsWith("return "))
 				methodBody = "return " + (methodBody.isEmpty() ? "null" : methodBody);
 			if (!methodBody.endsWith(";")) methodBody += ";";
 		}
-		frame.addFrame("body", methodBody);
-		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), TaraPsiImplUtil.getContainerNodeOf(valued), workingPackage)));
+		frame.addSlot("body", methodBody);
+		frame.addSlot("scope", cleanQn(buildContainerPath(valued.scope(), TaraPsiImplUtil.getContainerNodeOf(valued), workingPackage)));
 		return MethodTemplate.create().format(frame);
 	}
 

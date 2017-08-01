@@ -83,11 +83,11 @@ public class ModuleMavenCreator {
 
 	private Frame createModuleFrame(Module module) {
 		Frame frame = new Frame().addTypes("pom");
-		frame.addFrame("project", module.getProject().getName());
-		frame.addFrame("name", module.getName());
-		frame.addFrame("version", "1.0");
+		frame.addSlot("project", module.getProject().getName());
+		frame.addSlot("name", module.getName());
+		frame.addSlot("version", "1.0");
 		if (new File(module.getModuleFilePath()).getParent().equals(new File(module.getProject().getBasePath()).getAbsolutePath()))
-			frame.addFrame("default", "");
+			frame.addSlot("default", "");
 		return frame;
 	}
 
