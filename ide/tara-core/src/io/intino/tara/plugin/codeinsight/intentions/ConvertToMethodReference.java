@@ -96,6 +96,7 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 	}
 
 	private Expression expressionContext(@NotNull Valued element) {
+		if (element.getValue() == null) return null;
 		final List<TaraExpression> expressionList = element.getValue().getExpressionList();
 		return expressionList.isEmpty() ? null : expressionList.get(0);
 	}
