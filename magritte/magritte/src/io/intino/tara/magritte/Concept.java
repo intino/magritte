@@ -182,7 +182,7 @@ public class Concept extends Predicate {
     }
 
     public boolean is(String concept) {
-        return typeNames.contains(concept);
+        return name().equals(concept) || typeNames.contains(concept);
     }
 
     static class Content {

@@ -43,7 +43,7 @@ def type(Node & single & owner) !type(inherited | overriden | instance) trigger(
 end
 
 def type(Node & owner) !type(inherited | overriden | instance) trigger(componentList)
-	$name+toCamelCase+toCamelCase+firstLowerCase~List.stream().forEach(c -> components.add(c.core$$()));
+	new java.util.ArrayList<>($name+toCamelCase+toCamelCase+firstLowerCase~List).forEach(c -> components.add(c.core$$()));
 end
 
 def type(Node) trigger(list)

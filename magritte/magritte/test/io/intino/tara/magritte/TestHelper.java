@@ -1,8 +1,10 @@
 package io.intino.tara.magritte;
 
 import io.intino.tara.io.Stash;
+import io.intino.tara.magritte.stores.FileSystemStore;
 import io.intino.tara.magritte.stores.ResourcesStore;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,45 +33,67 @@ public class TestHelper {
     public static Store mockStore() {
         return new Store() {
 
-            Map<String, Stash> store = new HashMap<String, Stash>() {{
-                put(emptyStash + Extension, emptyStash());
-                put(oneMockStash + Extension, oneMockStash());
-                put(firstStash + Extension, firstStash());
-                put(secondStash + Extension, secondStash());
-                put(thirdStash + Extension, thirdStash());
-                put(dependantStashByUse + Extension, dependantStashByUse());
-                put(cyclicDependantStash + Extension, cyclicDependantStash());
-                put(independentStash + Extension, independentStashInSubStash());
-                put(m1 + Extension, m1());
-                put(m2 + Extension, m2());
-                put(m3 + Extension, m3());
-            }};
+			Map<String, Stash> store = new HashMap<String, Stash>() {{
+				put(emptyStash + Extension, emptyStash());
+				put(oneMockStash + Extension, oneMockStash());
+				put(firstStash + Extension, firstStash());
+				put(secondStash + Extension, secondStash());
+				put(thirdStash + Extension, thirdStash());
+				put(dependantStashByUse + Extension, dependantStashByUse());
+				put(cyclicDependantStash + Extension, cyclicDependantStash());
+				put(independentStash + Extension, independentStashInSubStash());
+				put(m1 + Extension, m1());
+				put(m2 + Extension, m2());
+				put(m3 + Extension, m3());
+			}};
 
-            @Override
-            public Stash stashFrom(String stash) {
-                return store.get(stash);
-            }
+			@Override
+			public Stash stashFrom(String stash) {
+				return store.get(stash);
+			}
 
-            @Override
-            public void writeStash(Stash stash, String path) {
-                store.put(path, composeStash(path, stash));
-            }
+			@Override
+			public void writeStash(Stash stash, String path) {
+				store.put(path, composeStash(path, stash));
+			}
 
-            @Override
-            public URL resourceFrom(String path) {
-                return new ResourcesStore().resourceFrom(path);
-            }
+			@Override
+			public URL resourceFrom(String path) {
+				return new ResourcesStore().resourceFrom(path);
+			}
 
-            @Override
-            public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
-                return null;
-            }
+			@Override
+			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
+				return null;
+			}
 
-            @Override
-            public String relativePathOf(URL url) {
-                return null;
-            }
-        };
+			@Override
+			public String relativePathOf(URL url) {
+				return null;
+			}
+		};
+    }
+
+    public static Store fileSystemMockStore(File file) {
+        return new FileSystemStore(file) {
+
+			Map<String, Stash> store = new HashMap<String, Stash>() {{
+				put(m1 + Extension, m1());
+				put(m2 + Extension, m2());
+				put(m3 + Extension, m3());
+			}};
+
+			@Override
+			public Stash stashFrom(String stash) {
+				return store.containsKey(stash) ? store.get(stash) : super.stashFrom(stash);
+			}
+
+			@Override
+			public void writeStash(Stash stash, String path) {
+				super.writeStash(stash, path);
+			}
+
+		};
     }
 
     public static Stash firstStash() {
