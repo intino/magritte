@@ -210,7 +210,7 @@ public abstract class Generator implements TemplateTags {
 			frame.addSlot("returnType", extractor.returnType());
 			frame.addSlot(RULE, rule.interfaceClass());
 			frame.addSlot(OUT_LANGUAGE, parameter.scope());
-			imports.addAll(rule.imports().stream().collect(Collectors.toList()));
+			imports.addAll(new ArrayList<>(rule.imports()));
 		}
 		if (!Arrays.asList(frame.slots()).contains(OUT_LANGUAGE.toLowerCase()))
 			frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
@@ -230,5 +230,13 @@ public abstract class Generator implements TemplateTags {
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
 		if (parent != null) frame.addSlot(PARENT, NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		final List<String> slots = Arrays.asList(frame.slots());
+		if ((slots.contains(CREATE) || slots.contains(NODE)) || !node.children().isEmpty()) {
+			frame.addSlot(PARENT_SUPER, node.parent() != null);
+			if (node.parent() != null) frame.addSlot("parentName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		}
+
+		if ((slots.contains(NODE)) && node.parent() != null && !node.parent().components().isEmpty())
+			frame.addSlot("parentClearName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
 	}
 }
