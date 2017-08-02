@@ -10,8 +10,8 @@ import io.intino.tara.lang.model.rules.variable.ReferenceRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
+import org.siani.itrules.engine.ExcludeAdapter;
 import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
@@ -56,16 +56,16 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void addName(Frame constraints, String relation) {
-		constraints.addFrame(relation, NAME);
+		constraints.addSlot(relation, NAME);
 	}
 
 	private void addFacet(Frame constraints, Constraint.Facet facet) {
 		final Frame frame = new Frame().addTypes(CONSTRAINT, FACET);
-		frame.addFrame(VALUE, facet.type());
-		if (facet.terminal()) frame.addFrame(TERMINAL, "true");
-		frame.addFrame(WITH, facet.with());
+		frame.addSlot(VALUE, facet.type());
+		if (facet.terminal()) frame.addSlot(TERMINAL, "true");
+		frame.addSlot(WITH, facet.with());
 		addConstraints(facet.constraints(), frame);
-		constraints.addFrame(CONSTRAINT, frame);
+		constraints.addSlot(CONSTRAINT, frame);
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
@@ -76,7 +76,7 @@ class TerminalConstraintManager implements TemplateTags {
 			primitiveFrame.addTypes(REFERENCE);
 		}
 		renderPrimitive(primitiveFrame, parameters, relation);
-		constraints.addFrame(relation, primitiveFrame);
+		constraints.addSlot(relation, primitiveFrame);
 	}
 
 	private void fillAllowedReferences(Constraint.Parameter constraint) {
@@ -94,26 +94,26 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void fillParameterFrame(Object[] parameters, Frame frame) {
-		frame.addFrame(NAME, parameters[0]).
-				addFrame(TYPE, parameters[1]).
-				addFrame(SIZE, (Frame) parameters[2]).
-				addFrame(FACET, parameters[3]).
-				addFrame(POSITION, parameters[4]).
-				addFrame(SCOPE, parameters[5]);
-		if (parameters[6] != null) frame.addFrame(RULE, (Frame) parameters[6]);
-		frame.addFrame(TAGS, (String[]) parameters[7]);
+		frame.addSlot(NAME, parameters[0]).
+				addSlot(TYPE, parameters[1]).
+				addSlot(SIZE, (Frame) parameters[2]).
+				addSlot(FACET, parameters[3]).
+				addSlot(POSITION, parameters[4]).
+				addSlot(SCOPE, parameters[5]);
+		if (parameters[6] != null) frame.addSlot(RULE, (Frame) parameters[6]);
+		frame.addSlot(TAGS, (String[]) parameters[7]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
 		if (rule == null) return null;
 		final FrameBuilder frameBuilder = new FrameBuilder();
+
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		final Frame frame = rule.getClass().isEnum() ? new Frame().addTypes("customrule", "rule") : (Frame) frameBuilder.build(rule);
 		if (rule instanceof VariableCustomRule) fillCustomRule((VariableCustomRule) rule, frame);
 		else if (rule.getClass().isEnum()) fillInheritedCustomRule(rule, frame);
 		return frame;
 	}
-
 
 	private String[] instancesOfNonTerminalReference(ReferenceRule rule) {
 		List<Node> instances = new ArrayList<>();
@@ -151,46 +151,46 @@ class TerminalConstraintManager implements TemplateTags {
 
 
 	private void fillCustomRule(VariableCustomRule rule, Frame frame) {
-		frame.addFrame(QN, rule.getLoadedClass().getName());
+		frame.addSlot(QN, rule.getLoadedClass().getName());
 		if (rule.isMetric()) {
 			frame.addTypes(METRIC);
-			frame.addFrame(DEFAULT, rule.getDefaultUnit());
+			frame.addSlot(DEFAULT, rule.getDefaultUnit());
 		}
 	}
 
 	private void fillInheritedCustomRule(Rule rule, Frame frame) {
-		frame.addFrame(QN, rule.getClass().getName());
+		frame.addSlot(QN, rule.getClass().getName());
 		if (rule instanceof Metric) {
 			frame.addTypes(METRIC);
-			frame.addFrame(DEFAULT, ((Enum) rule).name());
+			frame.addSlot(DEFAULT, ((Enum) rule).name());
 		}
 	}
 
 	private void addComponent(Frame frame, Constraint.Component component) {
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, component instanceof Constraint.OneOf ? ONE_OF : COMPONENT);
-		constraint.addFrame(TYPE, component.type());
+		constraint.addSlot(TYPE, component.type());
 		final Frame sizeOfTerminal = sizeOfTerminal(component);
 		if (sizeOfTerminal == null) return;
-		constraint.addFrame(SIZE, sizeOfTerminal);
-		constraint.addFrame(TAGS, component.annotations().stream().map(Enum::name).toArray(String[]::new));
+		constraint.addSlot(SIZE, sizeOfTerminal);
+		constraint.addSlot(TAGS, component.annotations().stream().map(Enum::name).toArray(String[]::new));
 		if (component instanceof Constraint.OneOf)
 			((Constraint.OneOf) component).components().forEach(c -> addComponent(constraint, c));
-		frame.addFrame(CONSTRAINT, constraint);
+		frame.addSlot(CONSTRAINT, constraint);
 	}
 
 	private void addComponent(Frame frame, Node component) {
 		if (component.name() == null) return;
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
-		constraint.addFrame(TYPE, component.name());
+		constraint.addSlot(TYPE, component.name());
 		final Size size = component.container().sizeOf(component);
 		if (size.min() == 0 && size.max() == 0) return;
-		constraint.addFrame(SIZE, new FrameBuilder().build(size));
-		constraint.addFrame(TAGS, component.flags().stream().map(Enum::name).toArray(String[]::new));
-		frame.addFrame(CONSTRAINT, constraint);
+		constraint.addSlot(SIZE, new FrameBuilder().build(size));
+		constraint.addSlot(TAGS, component.flags().stream().map(Enum::name).toArray(String[]::new));
+		frame.addSlot(CONSTRAINT, constraint);
 	}
 
 	private Frame sizeOfTerminal(Constraint.Component constraint) {
-		if (constraint == null) return new Frame().addFrame("value", "null");
+		if (constraint == null) return new Frame().addSlot("value", "null");
 		FrameBuilder builder = new FrameBuilder();
 		final Size rule = (Size) constraint.rules().stream().filter(r -> r instanceof Size).findFirst().orElse(Size.MULTIPLE());
 		final Size size = rule.into() != null ? getIntoRule(constraint, rule) : rule;
@@ -206,7 +206,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private Frame sizeOfTerminal(Constraint.Parameter constraint) {
-		if (constraint == null) return new Frame().addFrame("value", "null");
+		if (constraint == null) return new Frame().addSlot("value", "null");
 		boolean isFilled = isParameterFilled(constraint.name());
 		FrameBuilder builder = new FrameBuilder();
 		final Size size = constraint.size();

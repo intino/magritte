@@ -17,6 +17,7 @@ import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Constraint.Component;
 import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
 import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import static io.intino.tara.lang.model.Tag.Instance;
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
 	private Node initNode;
-	private FrameContext context;
+	private Context context;
 	private final Level level;
 
 	LayerNodeAdapter(String outDsl, Level level, Language language, Node initNode, String workingPackage, String languageWorkingPackage) {
@@ -44,14 +45,15 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	@Override
-	public void execute(Frame frame, Node node, FrameContext context) {
+	public void adapt(Node node, Context context) {
 		this.context = context;
+		Frame frame = context.frame();
 		frame.addTypes(getTypes(node, language));
-		frame.addFrame(MODEL_TYPE, level == Level.Platform ? PLATFORM : PRODUCT);
+		frame.addSlot(MODEL_TYPE, level == Level.Platform ? PLATFORM : PRODUCT);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 		addNonAbstractCreates(frame, node);
-		addAllowedFacets(frame, node, context);
+		addAllowedFacets(frame, node);
 	}
 
 	private Model findModel(Node node) {
@@ -62,20 +64,20 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addNodeInfo(Frame frame, Node node) {
-		frame.addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
-		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
-		if (node.doc() != null) frame.addFrame(DOC, node.doc());
-		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
+		frame.addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
+		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addSlot(INNER, true);
+		if (node.doc() != null) frame.addSlot(DOC, node.doc());
+		if (node.container() != null) frame.addSlot(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
 		addType(frame, node);
 		addName(frame, node);
 		addParent(frame, node);
-		if (node.isAbstract() || node.is(Decorable)) frame.addFrame(ABSTRACT, true);
-		if (node.is(Decorable)) frame.addFrame(DECORABLE, true);
-		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
+		if (node.isAbstract() || node.is(Decorable)) frame.addSlot(ABSTRACT, true);
+		if (node.is(Decorable)) frame.addSlot(DECORABLE, true);
+		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addSlot(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
-		frame.addFrame(PARENT_SUPER, node.parent() != null);
+		frame.addSlot(PARENT_SUPER, node.parent() != null);
 		if (node.components().stream().anyMatch(c -> c.is(Instance)))
-			frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
+			frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 		addVariables(frame, node);
 	}
 
@@ -88,7 +90,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 					List<Frame> children = new ArrayList<>();
 					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
 							forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
-					for (Frame child : children) frame.addFrame(CREATE, child.addTypes(NODE, OWNER));
+					for (Frame child : children) frame.addSlot(CREATE, child.addTypes(NODE, OWNER));
 				});
 	}
 
@@ -111,8 +113,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 
 	private void addType(Frame frame, Node node) {
 		if (!(language instanceof Proteo || language instanceof Verso)) {
-			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
-			frame.addFrame(TYPE, nodeType(node, sizeConstraint(node)));
+			frame.addSlot(CONCEPT_LAYER, language.doc(node.type()).layer());
+			frame.addSlot(TYPE, nodeType(node, sizeConstraint(node)));
 		}
 	}
 
@@ -128,31 +130,31 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return Resolver.shortType(node.type()) + (!size.isSingle() ? "List" : "");
 	}
 
-	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {
+	private void addAllowedFacets(Frame frame, Node node) {
 		for (String facet : node.allowedFacets()) {
 			Frame available = new Frame().addTypes(AVAILABLE_FACET);
-			available.addFrame(NAME, facet);
+			available.addSlot(NAME, facet);
 			FacetTarget facetTarget = findFacetTarget(findModel(node), node, facet);
 			if (facetTarget == null) {
 				LOG.severe("error finding facet: " + facet + " in node " + node.name());
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
-			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
-			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
-			available.addFrame(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
+			if (facetTarget.owner().isAbstract()) available.addSlot(ABSTRACT, "null");
+			available.addSlot(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
+			available.addSlot(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
 			facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> {
 				Frame varFrame = (Frame) context.build(variable);
-				varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
-				available.addFrame(VARIABLE, varFrame.addTypes(REQUIRED));
+				varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
+				available.addSlot(VARIABLE, varFrame.addTypes(REQUIRED));
 			});
-			frame.addFrame(AVAILABLE_FACET, available);
+			frame.addSlot(AVAILABLE_FACET, available);
 		}
 	}
 
 	private void addName(Frame frame, Node node) {
-		if (node.name() != null) frame.addFrame(NAME, node.name() + facetName(node.facetTarget()));
-		frame.addFrame(QN, cleanQn(buildQN(node)));
-		frame.addFrame(STASH_QN, stashQN(node));
+		if (node.name() != null) frame.addSlot(NAME, node.name() + facetName(node.facetTarget()));
+		frame.addSlot(QN, cleanQn(buildQN(node)));
+		frame.addSlot(STASH_QN, stashQN(node));
 	}
 
 	private String stashQN(Node node) {
@@ -171,8 +173,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private void addVariable(Frame frame, Node node, Variable variable) {
 		final Frame varFrame = (Frame) context.build(variable);
 		varFrame.addTypes(OWNER);
-		varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
-		frame.addFrame(VARIABLE, varFrame);
+		varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
+		frame.addSlot(VARIABLE, varFrame);
 	}
 
 	void setInitNode(Node initNode) {

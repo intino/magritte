@@ -150,13 +150,13 @@ def type(stringRule) trigger(rule)
 	new io.intino.tara.lang.model.rules.variable.StringRule($regex+quoted)
 end
 
-def value(Infinity) trigger(cast)
+def attribute(Infinity) trigger(cast)
 	Double.POSITIVE_INFINITY
 end
-def value(-Infinity) trigger(cast)
+def attribute(-Infinity) trigger(cast)
 	Double.NEGATIVE_INFINITY
 end
-def !value(-Infinity) !value(Infinity) trigger(cast)
+def !attribute(-Infinity) !attribute(Infinity) trigger(cast)
 	$value
 end
 
@@ -180,10 +180,10 @@ def trigger(primitive)
 	io.intino.tara.lang.model.Primitive.$value+UpperCase
 end
 
-def trigger(locale) value(es)
+def trigger(locale) attribute(es)
 	new Locale("es", "Spain", "es_ES")
 end
 
-def trigger(locale) value(en)
+def trigger(locale) attribute(en)
 	Locale.ENGLISH
 end

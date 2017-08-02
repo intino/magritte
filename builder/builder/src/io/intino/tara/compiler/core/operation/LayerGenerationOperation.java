@@ -109,8 +109,8 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private String createGraph() {
 		Frame frame = new Frame().addTypes("wrapper");
-		frame.addFrame(OUT_LANGUAGE, conf.outDSL());
-		frame.addFrame(WORKING_PACKAGE, conf.workingPackage());
+		frame.addSlot(OUT_LANGUAGE, conf.outDSL());
+		frame.addSlot(WORKING_PACKAGE, conf.workingPackage());
 		return Format.customize(GraphTemplate.create()).format(frame);
 	}
 

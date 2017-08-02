@@ -60,7 +60,7 @@ public class Format {
 	}
 
 	private static String firstLowerCase(String val) {
-		return val.substring(0, 1).toLowerCase() + val.substring(1);
+		return org.siani.itrules.engine.formatters.StringFormatter.firstLowerCase().format(val).toString();
 	}
 
 	private static String referenceFormat(String val) {
@@ -77,7 +77,7 @@ public class Format {
 		};
 	}
 
-	public static Formatter snakeCaseToCamelCase() {
+	private static Formatter snakeCaseToCamelCase() {
 		return s -> {
 			String value = s.toString();
 			if (value.isEmpty()) return "";
@@ -138,7 +138,7 @@ public class Format {
 		};
 	}
 
-	public static Formatter withoutGeneric() {
+	private static Formatter withoutGeneric() {
 		return s -> {
 			final String value = s.toString();
 			return value.contains("<") ? value.substring(0, value.indexOf("<")) : value;
@@ -198,7 +198,7 @@ public class Format {
 
 	public static String capitalize(String value) {
 		if (value.isEmpty()) return "";
-		return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
+		return org.siani.itrules.engine.formatters.StringFormatter.capitalize().format(value).toString();
 	}
 
 	private static Formatter key() {
@@ -213,7 +213,7 @@ public class Format {
 	}
 
 	public static Formatter firstUpperCase() {
-		return (value) -> value.toString().isEmpty() ? "" : value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
+		return org.siani.itrules.engine.formatters.StringFormatter.firstUpperCase();
 	}
 
 	private static class StringFormatter implements Formatter {

@@ -30,35 +30,35 @@ class LanguageInheritanceManager implements TemplateTags {
 			fillRuleInfo(nodeFrame, instance);
 			addConstraints(nodeFrame, language.constraints(instance));
 			addAssumptions(nodeFrame, language.assumptions(instance));
-			root.addFrame(NODE, nodeFrame);
+			root.addSlot(NODE, nodeFrame);
 		}
 	}
 
 	private void addConstraints(Frame frame, List<Constraint> constraints) {
 		Frame constraintsFrame = new Frame().addTypes(CONSTRAINTS);
 		manager.addConstraints(constraints, constraintsFrame);
-		frame.addFrame(CONSTRAINTS, constraintsFrame);
+		frame.addSlot(CONSTRAINTS, constraintsFrame);
 	}
 
 	private void fillRuleInfo(Frame frame, String instance) {
 		Context rules = language.catalog().get(instance);
-		frame.addFrame(TemplateTags.NAME, instance);
+		frame.addSlot(TemplateTags.NAME, instance);
 		addTypes(rules.types(), frame);
 	}
 
 	private void addTypes(String[] types, Frame frame) {
 		if (types == null) return;
 		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
-		for (String type : types) typesFrame.addFrame(TemplateTags.TYPE, type);
-		if (typesFrame.slots().length > 0) frame.addFrame(NODE_TYPE, typesFrame);
+		for (String type : types) typesFrame.addSlot(TemplateTags.TYPE, type);
+		if (typesFrame.slots().length > 0) frame.addSlot(NODE_TYPE, typesFrame);
 	}
 
 	private void addAssumptions(Frame frame, List<Assumption> assumptions) {
 		Frame assumptionsFrame = new Frame().addTypes(ASSUMPTIONS);
 		for (Assumption assumption : assumptions)
-			assumptionsFrame.addFrame(ASSUMPTION, getAssumptionValue(assumption));
+			assumptionsFrame.addSlot(ASSUMPTION, getAssumptionValue(assumption));
 		if (assumptionsFrame.slots().length != 0)
-			frame.addFrame(ASSUMPTIONS, assumptionsFrame);
+			frame.addSlot(ASSUMPTIONS, assumptionsFrame);
 	}
 
 	private Object getAssumptionValue(Assumption assumption) {
