@@ -7,13 +7,17 @@ import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
-import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.model.EmptyNode;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Primitive;
+import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.NativeCustomWordRule;
 import io.intino.tara.lang.model.rules.NativeWordRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.model.rules.variable.WordRule;
 import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
 import org.siani.itrules.model.Frame;
 
 import java.util.*;
@@ -33,19 +37,20 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	@Override
-	public void execute(Frame frame, Variable variable, FrameContext<Variable> context) {
+	public void adapt(Variable variable, Context context) {
+		Frame frame = context.frame();
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
-		frame.addFrame(NAME, variable.name());
-		frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
-		frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
-		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
+		frame.addSlot(NAME, variable.name());
+		frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
+		frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
+		frame.addSlot(LANGUAGE, language.languageName().toLowerCase());
 		Node container = variable.container();
-		frame.addFrame(CONTAINER_NAME, container.name());
-		frame.addFrame(QN, buildQN(container));
+		frame.addSlot(CONTAINER_NAME, container.name());
+		frame.addSlot(QN, buildQN(container));
 		if (variable.values().stream().filter(Objects::nonNull).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
-		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
-		frame.addFrame(TYPE, getType(variable));
+		if (variable.rule() != null) frame.addSlot(RULE, (Frame) ruleToFrame(variable.rule()));
+		frame.addSlot(TYPE, getType(variable));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
 		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Reactive))
 			fillNativeVariable(frame, variable);
@@ -57,7 +62,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 			frame.addTypes(OUTDEFINED);
 		else {
 			final List<String> allowedWords = (variable.rule() instanceof NativeRule) ? ((NativeWordRule) variable.rule()).words() : ((WordRule) variable.rule()).words();
-			frame.addFrame(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
+			frame.addSlot(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
 		}
 	}
 
@@ -66,9 +71,9 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private void addValues(Frame frame, Variable variable) {
-		if (Primitive.WORD.equals(variable.type())) frame.addFrame(WORD_VALUES, getWordValues(variable));
-		else if (Primitive.STRING.equals(variable.type())) frame.addFrame(VALUES, asString(variable.values()));
-		else frame.addFrame(VALUES, variable.values().toArray());
+		if (Primitive.WORD.equals(variable.type())) frame.addSlot(WORD_VALUES, getWordValues(variable));
+		else if (Primitive.STRING.equals(variable.type())) frame.addSlot(VALUES, asString(variable.values()));
+		else frame.addSlot(VALUES, variable.values().toArray());
 	}
 
 	private String[] getWordValues(Variable variable) {

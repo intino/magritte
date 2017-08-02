@@ -62,99 +62,99 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForFunctionVariable(Frame frame, Variable variable, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = getSignature(variable);
-		frame.addFrame(PACKAGE, this.aPackage);
+		frame.addSlot(PACKAGE, this.aPackage);
 		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
 		imports.addAll(collectImports(variable));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!slots.contains(SCOPE.toLowerCase())) frame.addFrame(SCOPE, workingPackage);
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		if (!slots.contains(SCOPE.toLowerCase())) frame.addSlot(SCOPE, workingPackage);
+		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
-		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
-		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, variable.container().qualifiedName());
-		frame.addFrame(FILE, variable.file());
-		frame.addFrame(LINE, variable.line());
-		frame.addFrame(COLUMN, variable.column());
-		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), signature));
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
-		frame.addFrame(SIGNATURE, signature);
-		frame.addFrame(UID, variable.getUID());
+			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!slots.contains(RULE.toLowerCase())) frame.addSlot(RULE, cleanQn(getInterface(variable)));
+		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, variable.name());
+		if (!slots.contains(QN.toLowerCase())) frame.addSlot(QN, variable.container().qualifiedName());
+		frame.addSlot(FILE, variable.file());
+		frame.addSlot(LINE, variable.line());
+		frame.addSlot(COLUMN, variable.column());
+		if (body != null) frame.addSlot(BODY, formatBody(body.toString(), signature));
+		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
+		frame.addSlot(SIGNATURE, signature);
+		frame.addSlot(UID, variable.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
-		frame.addFrame("methodName", extractor.methodName());
-		frame.addFrame("parameters", extractor.parameters());
-		frame.addFrame("returnType", extractor.returnType());
-		frame.addFrame("exception", extractor.exceptions());
+		frame.addSlot("methodName", extractor.methodName());
+		frame.addSlot("parameters", extractor.parameters());
+		frame.addSlot("returnType", extractor.returnType());
+		frame.addSlot("exception", extractor.exceptions());
 	}
 
 	public void fillFrameForFunctionParameter(Frame frame, Parameter parameter, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = getSignature(parameter);
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, this.outDsl);
-		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
-		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
-		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, parameter.container().qualifiedName());
-		if (!slots.contains(SCOPE.toLowerCase())) frame.addFrame(SCOPE, workingPackageScope(parameter, workingPackage));
+		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, this.outDsl);
+		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, parameter.name());
+		if (!this.aPackage.isEmpty()) frame.addSlot(PACKAGE, this.aPackage.toLowerCase());
+		if (!slots.contains(QN.toLowerCase())) frame.addSlot(QN, parameter.container().qualifiedName());
+		if (!slots.contains(SCOPE.toLowerCase())) frame.addSlot(SCOPE, workingPackageScope(parameter, workingPackage));
 		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(parameter)));
+			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!slots.contains(RULE.toLowerCase())) frame.addSlot(RULE, cleanQn(getInterface(parameter)));
 		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
 		imports.addAll(collectImports(parameter));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(SIGNATURE, signature);
-		frame.addFrame(FILE, parameter.file());
-		frame.addFrame(LINE, parameter.line());
-		frame.addFrame(COLUMN, parameter.column());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
-		frame.addFrame(UID, parameter.getUID());
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addSlot(SIGNATURE, signature);
+		frame.addSlot(FILE, parameter.file());
+		frame.addSlot(LINE, parameter.line());
+		frame.addSlot(COLUMN, parameter.column());
+		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
+		frame.addSlot(UID, parameter.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
-		frame.addFrame("methodName", extractor.methodName());
-		frame.addFrame("parameters", extractor.parameters());
-		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), signature));
-		frame.addFrame("returnType", extractor.returnType());
-		frame.addFrame("exception", extractor.exceptions());
+		frame.addSlot("methodName", extractor.methodName());
+		frame.addSlot("parameters", extractor.parameters());
+		if (body != null) frame.addSlot(BODY, formatBody(body.toString(), signature));
+		frame.addSlot("returnType", extractor.returnType());
+		frame.addSlot("exception", extractor.exceptions());
 	}
 
 	public void fillFrameNativeVariable(Frame frame, Variable variable, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		frame.addTypes(NATIVE);
-		frame.addFrame(FILE, variable.file());
-		frame.addFrame(LINE, variable.line());
-		frame.addFrame(COLUMN, variable.column());
+		frame.addSlot(FILE, variable.file());
+		frame.addSlot(LINE, variable.line());
+		frame.addSlot(COLUMN, variable.column());
 		final Set<String> imports = new HashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new HashSet<>());
 		imports.addAll(collectImports(variable));
-		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
-		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl);
+		if (!slots.contains(RULE.toLowerCase())) frame.addSlot(RULE, cleanQn(getInterface(variable)));
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		if (!aPackage.isEmpty()) frame.addSlot(PACKAGE, aPackage.toLowerCase());
+		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, variable.name());
+		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, outDsl);
 		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
-		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable));
-		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, typeFrame(type(variable), variable.isMultiple()));
-		frame.addFrame(UID, variable.getUID());
-		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), variable.type().getName()));
+			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
+		frame.addSlot(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addSlot(TYPE, typeFrame(type(variable), variable.isMultiple()));
+		frame.addSlot(UID, variable.getUID());
+		if (body != null) frame.addSlot(BODY, formatBody(body.toString(), variable.type().getName()));
 	}
 
 	public void fillFrameNativeParameter(Frame frame, Parameter parameter, String body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		frame.addTypes(NATIVE);
-		frame.addFrame(FILE, parameter.file());
-		frame.addFrame(LINE, parameter.line());
-		frame.addFrame(COLUMN, parameter.column());
+		frame.addSlot(FILE, parameter.file());
+		frame.addSlot(LINE, parameter.line());
+		frame.addSlot(COLUMN, parameter.column());
 		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
 		imports.addAll(collectImports(parameter));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter));
-		frame.addFrame(UID, parameter.getUID());
-		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
-		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
+		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addSlot(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter));
+		frame.addSlot(UID, parameter.getUID());
+		if (!aPackage.isEmpty()) frame.addSlot(PACKAGE, aPackage.toLowerCase());
+		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, parameter.name());
+		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
+			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!slots.contains(TYPE.toLowerCase()))
-			frame.addFrame(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
-		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
+			frame.addSlot(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
+		if (body != null) frame.addSlot(BODY, formatBody(body, parameter.type().getName()));
 	}
 
 	public String type(Variable variable) {
@@ -181,7 +181,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private Frame typeFrame(String type, boolean multiple) {
-		return multiple ? new Frame().addTypes(TYPE, "list").addFrame("value", type) : new Frame().addTypes(TYPE).addFrame("value", type);
+		return multiple ? new Frame().addTypes(TYPE, "list").addSlot("value", type) : new Frame().addTypes(TYPE).addSlot("value", type);
 	}
 
 	private List<String> collectImports(Valued parameter) {

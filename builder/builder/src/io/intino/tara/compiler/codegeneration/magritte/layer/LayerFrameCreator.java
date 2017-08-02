@@ -49,7 +49,7 @@ public class LayerFrameCreator implements TemplateTags {
 		layerNodeAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		layerNodeAdapter.setInitNode(initNode);
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
+		final Frame frame = new Frame().addTypes(LAYER).addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
 		createFrame(frame, node);
 		addNodeImports(frame);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
@@ -59,8 +59,8 @@ public class LayerFrameCreator implements TemplateTags {
 	public Map.Entry<String, Frame> createDecorable(Node node) {
 		final Frame frame = new Frame().addTypes(LAYER, DECORABLE);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
-		frame.addFrame(NAME, node.name());
-		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
+		frame.addSlot(NAME, node.name());
+		if (node.isAbstract()) frame.addSlot(ABSTRACT, true);
 		return new AbstractMap.SimpleEntry<>(calculateDecorablePath(node, aPackage), frame);
 	}
 
@@ -77,7 +77,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget, Node owner) {
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
+		final Frame frame = new Frame().addTypes(LAYER).addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
 		layerFacetTargetAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		createFrame(frame, facetTarget);
@@ -89,33 +89,33 @@ public class LayerFrameCreator implements TemplateTags {
 	private void addNodeImports(Frame frame) {
 		Set<String> set = new HashSet<>(layerNodeAdapter.getImports());
 		set.addAll(variableAdapter.getImports());
-		frame.addFrame(IMPORTS, set.toArray(new String[set.size()]));
+		frame.addSlot(IMPORTS, set.toArray(new String[set.size()]));
 	}
 
 	private void addFacetImports(Frame frame) {
 		Set<String> set = new HashSet<>(layerFacetTargetAdapter.getImports());
 		set.addAll(variableAdapter.getImports());
-		frame.addFrame(IMPORTS, set.toArray(new String[set.size()]));
+		frame.addSlot(IMPORTS, set.toArray(new String[set.size()]));
 	}
 
 	private void createFrame(Frame frame, Node node) {
 		if (node instanceof NodeReference || node.is(Tag.Instance)) return;
-		frame.addFrame(NODE, builder.build(node));
+		frame.addSlot(NODE, builder.build(node));
 	}
 
 	private void createFrame(Frame frame, FacetTarget facet) {
-		frame.addFrame(NODE, builder.build(facet));
+		frame.addSlot(NODE, builder.build(facet));
 	}
 
 	private String addPackage(Frame frame) {
 		String packagePath = workingPackage.toLowerCase();
-		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
+		if (!packagePath.isEmpty()) frame.addSlot(PACKAGE, packagePath);
 		return packagePath;
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
 		String packagePath = facetLayerPackage(target, workingPackage);
-		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath.substring(0, packagePath.length() - 1));
+		if (!packagePath.isEmpty()) frame.addSlot(PACKAGE, packagePath.substring(0, packagePath.length() - 1));
 		return packagePath;
 	}
 }

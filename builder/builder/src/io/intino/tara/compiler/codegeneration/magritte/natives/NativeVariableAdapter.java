@@ -4,6 +4,7 @@ import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
 import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.lang.model.Primitive;
@@ -25,9 +26,10 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 	}
 
 	@Override
-	public void execute(Frame frame, Variable source, FrameContext<Variable> frameContext) {
-		frame.addTypes(TypesProvider.getTypes(source, Platform));
-		createFrame(frame, source);
+	public void adapt(Variable variable, Context context) {
+		Frame frame = context.frame();
+		frame.addTypes(TypesProvider.getTypes(variable, Platform));
+		createFrame(frame, variable);
 	}
 
 	private void createFrame(Frame frame, final Variable variable) {
@@ -41,6 +43,5 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 		NativeFormatter formatter = new NativeFormatter(language, outDsl, subPackage, workingPackage, languageWorkingPackage, false, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForFunctionVariable(frame, variable, value);
 		else formatter.fillFrameNativeVariable(frame, variable, value);
-
 	}
 }

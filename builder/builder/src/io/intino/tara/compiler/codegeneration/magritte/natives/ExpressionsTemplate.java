@@ -26,10 +26,10 @@ public class ExpressionsTemplate extends Template {
 			rule().add((condition("type", "kotlin"))).add(literal("package ")).add(mark("workingPackage", "lowercase", "javaValidName")).add(literal(".natives")).add(expression().add(literal(".")).add(mark("package", "lowercase", "javaValidName"))).add(literal(";\n\n")).add(expression().add(mark("imports", "removeStatic").multiple("\n"))).add(literal("\n\n/**")).add(mark("qn")).add(literal("#")).add(mark("file")).add(literal("#")).add(mark("line")).add(literal("#")).add(mark("column")).add(literal("**/\nclass ")).add(mark("name", "FirstUpperCase", "javaValidName")).add(literal("_")).add(mark("uid")).add(literal(" : io.intino.tara.magritte.Expression<")).add(mark("type")).add(literal("> {\n\tinternal var self: ")).add(mark("nativeContainer", "reference")).add(literal("? = null\n\n\toverride fun value():")).add(mark("type")).add(literal(" {\n\t\t")).add(mark("body")).add(literal("\n\t}\n\n\toverride fun self(context: io.intino.tara.magritte.Layer) {\n\t\tself = context as ")).add(mark("nativeContainer", "reference")).add(literal("\n\t}\n\n\toverride fun selfClass(): Class<out io.intino.tara.magritte.Layer> {\n\t\treturn ")).add(mark("nativeContainer", "reference")).add(literal("::class.java\n\t}\n}")),
 			rule().add(not(condition("type", "list")), (condition("trigger", "type"))).add(mark("value", "javaType")),
 			rule().add((condition("type", "list")), (condition("trigger", "type"))).add(literal("java.util.List<")).add(mark("value", "javaType")).add(literal(">")),
-			rule().add((condition("value", "instant")), (condition("trigger", "javaType"))).add(literal("java.time.Instant")),
-			rule().add((condition("value", "date")), (condition("trigger", "javaType"))).add(literal("Date")),
-			rule().add((condition("value", "time")), (condition("trigger", "javaType"))).add(literal("java.time.LocalTime")),
-			rule().add((condition("value", "resource")), (condition("trigger", "javaType"))).add(literal("java.net.URL"))
+			rule().add((condition("attribute", "instant")), (condition("trigger", "javaType"))).add(literal("java.time.Instant")),
+			rule().add((condition("attribute", "date")), (condition("trigger", "javaType"))).add(literal("Date")),
+			rule().add((condition("attribute", "time")), (condition("trigger", "javaType"))).add(literal("java.time.LocalTime")),
+			rule().add((condition("attribute", "resource")), (condition("trigger", "javaType"))).add(literal("java.net.URL"))
 		);
 		return this;
 	}

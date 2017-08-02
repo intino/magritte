@@ -1,4 +1,4 @@
-def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
+def type(variable & word & outDefined & multiple) attribute(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$externalClass> values) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(values);
 		return ($container+firstUpperCase+javaValidName) this;
@@ -13,7 +13,7 @@ def type(Variable & word & outDefined & multiple) !type(inherited | overriden | 
 end
 
 
-def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
+def type(variable & word & outDefined) attribute(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public $container+firstUpperCase+javaValidName $name+firstLowerCase+javaValidName($workingPackage.rules.$externalClass value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidName(value);
 		return ($container+firstUpperCase+javaValidName) this;

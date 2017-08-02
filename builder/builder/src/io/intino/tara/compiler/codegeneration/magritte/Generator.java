@@ -13,9 +13,9 @@ import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.model.rules.variable.WordRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
-import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
+import org.siani.itrules.engine.ExcludeAdapter;
 import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 
 import java.util.*;
@@ -42,14 +42,14 @@ public abstract class Generator implements TemplateTags {
 		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
-	protected void addComponents(Frame frame, Node node, Adapter.FrameContext<FacetTarget> context) {
+	protected void addComponents(Frame frame, Node node, Context context) {
 		if (node instanceof NodeReference) return;
 		node.components().stream().
 				filter(component -> !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
 				forEach(component -> {
 					final Frame nodeFrame = (Frame) context.build(component);
 					nodeFrame.addTypes(OWNER);
-					frame.addFrame(NODE, nodeFrame);
+					frame.addSlot(NODE, nodeFrame);
 				});
 	}
 
@@ -77,10 +77,10 @@ public abstract class Generator implements TemplateTags {
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		final Frame frame = (Frame) frameBuilder.build(rule);
 		if (rule instanceof VariableCustomRule) {
-			frame.addFrame(QN, ((VariableCustomRule) rule).getLoadedClass().getName());
+			frame.addSlot(QN, ((VariableCustomRule) rule).getLoadedClass().getName());
 			if (((VariableCustomRule) rule).isMetric()) {
 				frame.addTypes(METRIC);
-				frame.addFrame(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
+				frame.addSlot(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
 			}
 		}
 		return frame;
@@ -95,12 +95,12 @@ public abstract class Generator implements TemplateTags {
 		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
 			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
-				frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
+				frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 		}
 		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		addFacetVariables(node, frame);
 		if (!Arrays.asList(frame.slots()).contains(CONTAINER))
-			frame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
+			frame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
 	}
 
 	private boolean isRequired(Node node, Constraint.Parameter allow) {
@@ -115,7 +115,7 @@ public abstract class Generator implements TemplateTags {
 
 	private void addFacetVariables(Node node, Frame frame) {
 		for (Facet facet : node.facets())
-			frame.addFrame(META_FACET, new Frame().addTypes(META_FACET).addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
+			frame.addSlot(META_FACET, new Frame().addTypes(META_FACET).addSlot(NAME, facet.type()).addSlot(TYPE, metaType(facet)));
 		collectTerminalFacetVariables(node).forEach((key, value) -> value.forEach(c ->
 				addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), key, languageWorkingPackage)));
 	}
@@ -172,8 +172,8 @@ public abstract class Generator implements TemplateTags {
 	private void addTerminalVariable(Node node, String type, Frame frame, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
 		Frame varFrame = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
 		if (!Arrays.asList(varFrame.slots()).contains(CONTAINER))
-			varFrame.addFrame(CONTAINER, node.name() + facetName(node.facetTarget()));
-		frame.addFrame(VARIABLE, varFrame);
+			varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
+		frame.addSlot(VARIABLE, varFrame);
 	}
 
 	protected String facetName(FacetTarget facetTarget) {
@@ -186,34 +186,34 @@ public abstract class Generator implements TemplateTags {
 		if (inherited) frame.addTypes(INHERITED);
 		frame.addTypes(META_TYPE);
 		frame.addTypes(TARGET);
-		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(CONTAINER_NAME, containerName);
-		frame.addFrame(QN, type);
-		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
-		frame.addFrame(WORKING_PACKAGE, workingPackage);
-		frame.addFrame(TYPE, type(parameter));
+		frame.addSlot(NAME, parameter.name());
+		frame.addSlot(CONTAINER_NAME, containerName);
+		frame.addSlot(QN, type);
+		frame.addSlot(LANGUAGE, language.languageName().toLowerCase());
+		frame.addSlot(WORKING_PACKAGE, workingPackage);
+		frame.addSlot(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
 			final WordRule rule = (WordRule) parameter.rule();
 			final List<String> words = rule.words();
 			if (rule.isCustom()) {
 				frame.addTypes(OUTDEFINED);
-				frame.addFrame(EXTERNAL_CLASS, rule.externalWordClass());
+				frame.addSlot(EXTERNAL_CLASS, rule.externalWordClass());
 			}
-			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
+			frame.addSlot(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION)) {
 			final NativeRule rule = (NativeRule) parameter.rule();
 			final String signature = rule.signature();
 			NativeExtractor extractor = new NativeExtractor(signature);
-			frame.addFrame("methodName", extractor.methodName());
-			frame.addFrame("parameters", extractor.parameters());
-			frame.addFrame("returnType", extractor.returnType());
-			frame.addFrame(RULE, rule.interfaceClass());
-			frame.addFrame(OUT_LANGUAGE, parameter.scope());
+			frame.addSlot("methodName", extractor.methodName());
+			frame.addSlot("parameters", extractor.parameters());
+			frame.addSlot("returnType", extractor.returnType());
+			frame.addSlot(RULE, rule.interfaceClass());
+			frame.addSlot(OUT_LANGUAGE, parameter.scope());
 			imports.addAll(rule.imports().stream().collect(Collectors.toList()));
 		}
 		if (!Arrays.asList(frame.slots()).contains(OUT_LANGUAGE.toLowerCase()))
-			frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
+			frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
 		return frame;
 	}
 
@@ -229,6 +229,6 @@ public abstract class Generator implements TemplateTags {
 
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		if (parent != null) frame.addFrame(PARENT, NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		if (parent != null) frame.addSlot(PARENT, NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
 	}
 }

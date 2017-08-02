@@ -24,15 +24,14 @@ class LanguageCreator {
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
 		Frame frame = null;
-		for (Model model : models) {
+		for (Model model : models)
 			if (frame == null) frame = createFrame(model);
 			else merge(frame, createFrame(model));
-		}
 		return template.format(frame).replace("$", "");
 	}
 
 	private void merge(Frame main, Frame newFrame) {
-		newFrame.frames("node").forEachRemaining(n -> main.addFrame("node", n));
+		newFrame.frames("node").forEachRemaining(n -> main.addSlot("node", n));
 	}
 
 	private Frame createFrame(final Model model) {

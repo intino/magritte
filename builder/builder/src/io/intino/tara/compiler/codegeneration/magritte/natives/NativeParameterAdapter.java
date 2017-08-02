@@ -1,14 +1,15 @@
 package io.intino.tara.compiler.codegeneration.magritte.natives;
 
-import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
+import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
+import org.siani.itrules.model.Frame;
 
 import java.io.File;
 
@@ -28,9 +29,10 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 	}
 
 	@Override
-	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
-		frame.addTypes(TypesProvider.getTypes(source));
-		createFrame(frame, source);
+	public void adapt(Parameter parameter, Context context) {
+		Frame frame = context.frame();
+		frame.addTypes(TypesProvider.getTypes(parameter));
+		createFrame(frame, parameter);
 	}
 
 	private void createFrame(Frame frame, final Parameter parameter) {

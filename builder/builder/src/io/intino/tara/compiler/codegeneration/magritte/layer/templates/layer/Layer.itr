@@ -44,7 +44,7 @@ end
 def type(node) !type(final | instance | abstract) trigger(new)
     public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(name, core$$()).as($qn+reference.class);
-		$variable+assign...[$NL] |:
+		$variable+assign...[$NL]
         return newElement;
     }
 end
@@ -58,7 +58,7 @@ end
 def type(node & create) !type(final | instance) trigger(new)
     public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(name, core$$()).as($qn+reference.class);
-		$variable+assign...[$NL] |:
+		$variable+assign...[$NL]
         return newElement;
     }
 end
@@ -74,14 +74,14 @@ end
 def type(node & owner) trigger(clear)
 end
 
-def type(availableFacet) slot(variable) trigger(availableFacet)
+def type(availableFacet) attribute(variable) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
 		return a$$($qn+reference.class);
 	}
 
 	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
 		$qn+reference newElement = core$$().addFacet($qn+reference.class);
-		$variable+assign...[$NL] |:
+		$variable+assign...[$NL]
         return newElement;
     }
 
@@ -151,14 +151,14 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 		protected java.util.List<io.intino.tara.magritte.Node> componentList$$() {
 			java.util.Set<io.intino.tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList$$());
-			$node+componentList...[$NL]|:
+			$node+componentList...[$NL]
 			return new java.util.ArrayList<>(components);
 		}]
 
 		@Override
 		protected java.util.Map<java.lang.String, java.util.List<?>> variables$$() {
 			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
-			$variable+list...[$NL]|:
+			$variable+list...[$NL]
 			return map;
 		}[
 
@@ -248,18 +248,18 @@ def trigger(typeInit)
 	$value
 end
 
-def value(true) trigger(parentinit)
+def attribute(true) trigger(parentinit)
 	super(name);
 end
 
-def value(false) trigger(parentinit)
+def attribute(false) trigger(parentinit)
 	this.name = name;
 end
 
-def value(true) trigger(parentvariable)
+def attribute(true) trigger(parentvariable)
 end
 
-def value(false) trigger(parentvariable)
+def attribute(false) trigger(parentvariable)
 	protected final java.lang.String name;
 end
 
@@ -291,17 +291,17 @@ def trigger(tag)
 	io.intino.tara.magritte.tags.$value+lowerCase+FirstUpperCase
 end
 
-def value(Layer) trigger(var)
+def attribute(Layer) trigger(var)
 
 end
 
 def trigger(var)
 	super.variables$$()
 end
-def value(true) trigger(inner)
+def attribute(true) trigger(inner)
 	static
 end
 
-def value(true) trigger(abstract)
+def attribute(true) trigger(abstract)
 	abstract
 end

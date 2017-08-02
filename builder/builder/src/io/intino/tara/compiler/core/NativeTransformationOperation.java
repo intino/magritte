@@ -66,7 +66,7 @@ class NativeTransformationOperation extends ModelOperation {
 		final Frame frame = new Frame().addTypes(v.type().name(), "native");
 		String toAdd = value.toString();
 		if (value instanceof File) toAdd = ((File) value).getAbsolutePath().replace("\\", "/");
-		frame.addFrame("value", toAdd);
+		frame.addSlot("value", toAdd);
 		return template.format(frame);
 	}
 
