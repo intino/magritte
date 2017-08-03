@@ -285,7 +285,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void sumusEbar() {
-		main(new String[]{home + "sandbox/confFiles/ebar/ebar.txt"});
+		main(new String[]{home + "sandbox/confFiles/ebar/ebar jose.txt"});
 	}
 
 	@Test

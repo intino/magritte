@@ -270,4 +270,12 @@ public class GraphTest {
         handler.flush();
         assertThat(outputStream.toString(), not(containsString("non_existing_stash.stash does not exist")));
     }
+
+	@Test
+	public void should_create_new_graph_and_wrappers_when_cloned() throws Exception {
+		MockApplication application = new Graph(mockStore()).loadStashes("m2").as(MockApplication.class);
+		MockApplication clonedApplication = application.core$().clone().as(MockApplication.class);
+		assertNotEquals(clonedApplication, application);
+		assertNotEquals(clonedApplication.core$(), application.core$());
+	}
 }

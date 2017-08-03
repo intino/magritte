@@ -8,6 +8,10 @@ def type(wrapper)
 		public $generatedLanguage+javaValidName+FirstUpperCase~Graph(Graph graph) {
 			super(graph);
 		}
+
+		public $generatedLanguage+javaValidName+FirstUpperCase~Graph(io.intino.tara.magritte.Graph graph, $generatedLanguage+javaValidName+FirstUpperCase~Graph wrapper) {
+		    super(graph, wrapper);
+		}
 	}
 end
 
