@@ -160,7 +160,7 @@ public class MethodReferenceCreator {
 		Module module = ModuleProvider.moduleOf(valued);
 		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
 		final String qualifiedName = TaraUtil.methodReference(valued);
-		return TaraModuleType.isTara(module) && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, allScope(module.getProject())) : null;
+		return TaraModuleType.isTara(module) && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, moduleWithDependenciesScope(module)) : null;
 	}
 
 	private void addImports(PsiClass aClass) {
