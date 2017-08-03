@@ -10,12 +10,19 @@ import java.util.List;
 
 public class MockPlatform extends GraphWrapper {
 
-	private final Graph graph;
+	protected final Graph graph;
 	private List<MockLayer> mockLayerList = new ArrayList<>();
 
 	@SuppressWarnings("WeakerAccess")
     public MockPlatform(Graph graph){
 		this.graph = graph;
+		execute();
+	}
+
+	@SuppressWarnings("WeakerAccess")
+    public MockPlatform(Graph graph, MockPlatform mockPlatform){
+		this.graph = graph;
+		this.mockLayerList = new ArrayList<>(mockPlatform.mockLayerList);
 		execute();
 	}
 
@@ -40,5 +47,9 @@ public class MockPlatform extends GraphWrapper {
 	@Override
 	public void update() {
 		execute();
+	}
+
+	public Graph core$() {
+		return graph;
 	}
 }

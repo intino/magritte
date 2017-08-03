@@ -13,16 +13,15 @@ def type(graph)
 			this.graph.i18n().register("$name");
 		}
 
-        @Override
-		public void update() {
-			$node+update...[$NL]
+		public AbstractGraph(io.intino.tara.magritte.Graph graph, AbstractGraph wrapper) {
+			this.graph = graph;
+			this.graph.i18n().register("$name");
+			$node+clone...[$NL]
 		}
 
         @Override
-		public AbstractGraph clone() {
-		    AbstractGraph graph = (AbstractGraph)super.clone();
-			$node+clone...[$NL]
-			return graph;
+		public void update() {
+			$node+update...[$NL]
 		}
 
 		@Override
@@ -141,11 +140,11 @@ def type(node) trigger(update)
 end
 
 def type(node) type(instance | single) trigger(clone)
-	graph.$name+firstLowercase+javaValidWord = this.$name+firstLowercase+javaValidWord;
+	this.$name+firstLowercase+javaValidWord = wrapper.$name+firstLowercase+javaValidWord;
 end
 
 def type(node) trigger(clone)
-	graph.$name+firstLowerCase~List = new java.util.ArrayList<>(this.$name+firstLowerCase~List);
+	this.$name+firstLowerCase~List = new java.util.ArrayList<>(wrapper.$name+firstLowerCase~List);
 end
 
 def type(node & instance) trigger(getter)

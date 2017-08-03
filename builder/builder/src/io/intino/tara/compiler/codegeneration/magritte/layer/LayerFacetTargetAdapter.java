@@ -1,10 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
-import org.siani.itrules.Adapter;
-import org.siani.itrules.engine.Context;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
+import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
@@ -12,9 +10,13 @@ import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Variable;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.Context;
+import org.siani.itrules.model.Frame;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
@@ -44,6 +46,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
+		addParent(frame, target);
 		if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()) && target.owner().components().stream().anyMatch(c -> c.is(Instance)))
 			frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(target.owner()));
 	}
@@ -52,7 +55,6 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addName(target, frame);
 		addConstrains(target, frame);
 		addTags(target, frame);
-		addParent(target, frame);
 		addFacetTarget(target, frame);
 		addVariables(target, frame);
 	}
@@ -76,16 +78,16 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		);
 	}
 
-	private void addParent(FacetTarget target, Frame newFrame) {
+	private void addParent(Frame frame, FacetTarget target) {
 		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
-		if (target.owner().isAbstract()) newFrame.addSlot("abstract", true);
-		if (parent != null) {
-			newFrame.addSlot(PARENT, getQn(parent, workingPackage));
-			newFrame.addSlot(PARENT_SUPER, true);
-		} else if (target.owner().isSub() && target.owner().parent() != null) {
-			newFrame.addSlot(PARENT, getQn(target.owner().parent(), workingPackage));
-			newFrame.addSlot(PARENT_SUPER, true);
-		} else newFrame.addSlot(PARENT_SUPER, false);
+		if (parent != null) frame.addSlot(PARENT, NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		final List<String> slots = Arrays.asList(frame.slots());
+		if ((slots.contains(CREATE) || slots.contains(NODE)) || !target.owner().children().isEmpty()) {
+			frame.addSlot(PARENT_SUPER, parent != null);
+			if (parent != null) frame.addSlot("parentName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		}
+		if ((slots.contains(NODE)) && parent != null && (!parent.components().isEmpty() || !target.targetNode().components().isEmpty()))
+			frame.addSlot("parentClearName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {

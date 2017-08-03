@@ -157,7 +157,7 @@ public class Graph {
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public Graph clone() {
+    public synchronized Graph clone() {
         return GraphCloner.doClone(this, new Graph(this.store));
     }
 

@@ -22,6 +22,15 @@ class GraphHelper {
         }
     }
 
+    static <T extends GraphWrapper> T create(Class<T> aClass, Graph graph, GraphWrapper wrapper) {
+        try {
+			return aClass.getConstructor(Graph.class, aClass).newInstance(graph, wrapper);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     static void saveStashes(Graph graph, String[] paths) {
         Set<String> set = new HashSet(asList(paths));
         Map<String, List<Node>> pathNodes = new HashMap<>();

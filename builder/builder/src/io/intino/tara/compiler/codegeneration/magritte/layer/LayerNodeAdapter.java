@@ -54,6 +54,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		addComponents(frame, node, context);
 		addNonAbstractCreates(frame, node);
 		addAllowedFacets(frame, node);
+		addParent(frame, node);
 	}
 
 	private Model findModel(Node node) {
@@ -70,12 +71,10 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if (node.container() != null) frame.addSlot(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
 		addType(frame, node);
 		addName(frame, node);
-		addParent(frame, node);
 		if (node.isAbstract() || node.is(Decorable)) frame.addSlot(ABSTRACT, true);
 		if (node.is(Decorable)) frame.addSlot(DECORABLE, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addSlot(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
-		frame.addSlot(PARENT_SUPER, node.parent() != null);
 		if (node.components().stream().anyMatch(c -> c.is(Instance)))
 			frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 		addVariables(frame, node);

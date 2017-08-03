@@ -198,7 +198,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		    $facetTarget+facet...[$NL~else ]
 		    $constraint+facet...[$NL~else ]
 		}]
-
+		[
 		public Create create() {
 			return new Create(null);
 		}
@@ -207,26 +207,25 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			return new Create(name);
 		}
 
+		public class Create $parentName+parentCreate {
+			$parentSuper+parentvariable
+
+			public Create(java.lang.String name) {
+				$parentSuper+parentinit
+			}
+
+			$node+new...[$NL$NL]
+			$create+new...[$NL$NL]
+		}]
+		[
 		public Clear clear() {
 			return new Clear();
 		}
 
-		public class Create[ extends $parent.Create] {
-			[$parentSuper+parentvariable]
-
-			public Create(java.lang.String name) {
-				[$parentSuper+parentinit]
-			}[
-
-			$node+new...[$NL$NL]]
-			$create+new...[$NL$NL]
+		public class Clear $parentClearName+parentClear {
+			$node+clear...[$NL$NL]
 		}
-
-		public class Clear[ extends $parent.Clear] {
-			[
-			$node+clear...[$NL$NL]]
-		}
-		[
+		][
 		$node...[$NL]
 		]
 		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~Graph graph() {
@@ -234,6 +233,14 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		}
 	}
 
+end
+
+def trigger(parentCreate)
+	extends $value.Create
+end
+
+def trigger(parentClear)
+	extends $value.Clear
 end
 
 def type(metaFacet) trigger(name)
