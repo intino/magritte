@@ -235,7 +235,6 @@ public abstract class Generator implements TemplateTags {
 			frame.addSlot(PARENT_SUPER, node.parent() != null);
 			if (node.parent() != null) frame.addSlot("parentName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
 		}
-
 		if ((slots.contains(NODE)) && node.parent() != null && !node.parent().components().isEmpty())
 			frame.addSlot("parentClearName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
 	}
