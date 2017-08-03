@@ -156,6 +156,15 @@ def attribute(instant) trigger(javaType)
 	java.time.Instant
 end
 
+
+def attribute(Instant) trigger(javaType)
+	java.time.Instant
+end
+
+def attribute(Date) trigger(javaType)
+	Date
+end
+
 def attribute(date) trigger(javaType)
 	Date
 end
@@ -163,6 +172,16 @@ end
 def attribute(time) trigger(javaType)
 	java.time.LocalTime
 end
+
+
+def attribute(Time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def attribute(Resource) trigger(javaType)
+	java.net.URL
+end
+
 
 def attribute(resource) trigger(javaType)
 	java.net.URL

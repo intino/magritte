@@ -27,8 +27,12 @@ public class ExpressionsTemplate extends Template {
 			rule().add(not(condition("type", "list")), (condition("trigger", "type"))).add(mark("value", "javaType")),
 			rule().add((condition("type", "list")), (condition("trigger", "type"))).add(literal("java.util.List<")).add(mark("value", "javaType")).add(literal(">")),
 			rule().add((condition("attribute", "instant")), (condition("trigger", "javaType"))).add(literal("java.time.Instant")),
+			rule().add((condition("attribute", "Instant")), (condition("trigger", "javaType"))).add(literal("java.time.Instant")),
+			rule().add((condition("attribute", "Date")), (condition("trigger", "javaType"))).add(literal("Date")),
 			rule().add((condition("attribute", "date")), (condition("trigger", "javaType"))).add(literal("Date")),
 			rule().add((condition("attribute", "time")), (condition("trigger", "javaType"))).add(literal("java.time.LocalTime")),
+			rule().add((condition("attribute", "Time")), (condition("trigger", "javaType"))).add(literal("java.time.LocalTime")),
+			rule().add((condition("attribute", "Resource")), (condition("trigger", "javaType"))).add(literal("java.net.URL")),
 			rule().add((condition("attribute", "resource")), (condition("trigger", "javaType"))).add(literal("java.net.URL"))
 		);
 		return this;
