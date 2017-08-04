@@ -83,7 +83,7 @@ public interface Variable extends Valued, Cloneable {
 	class NativeCounter {
 		private static Map<String, Integer> map = new HashMap<>();
 
-		public static int next(NodeContainer container, String name) {
+		public synchronized static int next(NodeContainer container, String name) {
 			final String key = calculatePackage(container) + "." + name;
 			map.put(key, map.containsKey(key) ? map.get(key) + 1 : 0);
 			return map.get(key);

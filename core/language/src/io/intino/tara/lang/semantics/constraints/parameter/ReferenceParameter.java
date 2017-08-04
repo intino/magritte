@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.RECOVERABLE_ERROR;
+
 public final class ReferenceParameter extends ParameterConstraint {
 
 	private final String name;
@@ -141,11 +144,11 @@ public final class ReferenceParameter extends ParameterConstraint {
 	protected void error(Element element, io.intino.tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
 		switch (errorType) {
 			case TYPE:
-				throw new SemanticException(new SemanticNotification(SemanticNotification.Level.ERROR, "reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), allowedValues(", "))));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), allowedValues(", "))));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticNotification(SemanticNotification.Level.ERROR, "required.parameter.in.context", element, Arrays.asList(this.name, "{" + allowedValues(", ") + "}")));
+				throw new SemanticException(new SemanticNotification(RECOVERABLE_ERROR, "required.parameter.in.context", element, Arrays.asList(this.name, "{" + allowedValues(", ") + "}")));
 			case RULE:
-				throw new SemanticException(new SemanticNotification(SemanticNotification.Level.ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
+				throw new SemanticException(new SemanticNotification(ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
 		}
 	}
 
