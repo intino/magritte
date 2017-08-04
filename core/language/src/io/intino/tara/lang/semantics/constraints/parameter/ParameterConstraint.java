@@ -10,7 +10,7 @@ import java.util.List;
 abstract class ParameterConstraint implements Constraint.Parameter {
 
 	enum ParameterError {
-		TYPE, NOT_FOUND, RULE, SIZE
+		TYPE, NOT_FOUND, RECOVERABLE_ERROR, RULE, SIZE
 	}
 
 	protected ParameterError error = ParameterError.TYPE;

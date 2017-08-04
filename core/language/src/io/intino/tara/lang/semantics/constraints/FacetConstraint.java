@@ -1,11 +1,9 @@
 package io.intino.tara.lang.semantics.constraints;
 
 import io.intino.tara.lang.model.Element;
-import io.intino.tara.lang.model.FacetTarget;
+import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
-import io.intino.tara.Resolver;
-import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
@@ -13,11 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.Resolver.shortType;
+import static io.intino.tara.lang.model.FacetTarget.ANY;
+import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
-class FacetConstraint implements Constraint.Facet {
+public class FacetConstraint implements Constraint.Facet {
 	private final String type;
 	private final boolean terminal;
 	private final String[] with;
@@ -65,8 +65,8 @@ class FacetConstraint implements Constraint.Facet {
 	@Override
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
-		io.intino.tara.lang.model.Facet facet = findFacet(node);
-		if (facet == null && !FacetTarget.ANY.equals(type())) return;
+		io.intino.tara.lang.model.Facet facet = findFacet(node, this.type);
+		if (facet == null && !ANY.equals(type())) return;
 		final boolean hasType = is(node.types(), with);
 		final boolean hasIncompatibles = isAny(node.types(), withOut);
 		if (!hasType || hasIncompatibles || !checkFacetConstrains(node)) {
@@ -77,9 +77,9 @@ class FacetConstraint implements Constraint.Facet {
 		}
 	}
 
-	private io.intino.tara.lang.model.Facet findFacet(Node node) {
+	public static io.intino.tara.lang.model.Facet findFacet(Node node, String type) {
 		for (io.intino.tara.lang.model.Facet facet : node.facets())
-			if (this.type.equals(Resolver.shortType(facet.type()))) return facet;
+			if (type.equals(shortType(facet.type()))) return facet;
 		return null;
 	}
 

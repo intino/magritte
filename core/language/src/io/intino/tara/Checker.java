@@ -4,17 +4,18 @@ import io.intino.tara.lang.model.Element;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.lang.semantics.constraints.FacetConstraint;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 public class Checker {
 
@@ -31,7 +32,24 @@ public class Checker {
 		exceptions.clear();
 		resolver.resolve(node);
 		checkConstraints(node);
-		if (!exceptions.isEmpty()) throw new SemanticFatalException(exceptions);
+		if (!exceptions.isEmpty()) {
+			recoverErrors();
+			if (!exceptions.isEmpty()) throw new SemanticFatalException(exceptions);
+		}
+	}
+
+	private void recoverErrors() {
+		final List<SemanticException> toRemove = exceptions.stream().filter(e -> e.getNotification().key().equals("required.parameter.in.context") && isParameterNotFoundRecoverable(e.getNotification().origin()[0], e.getNotification().parameters().get(0).toString(), e.getNotification().parameters().get(1).toString())).collect(toList());
+		exceptions.removeAll(toRemove);
+	}
+
+	private boolean isParameterNotFoundRecoverable(Element element, String name, String type) {
+		final Node node = (Node) element;
+		final List<Constraint.Facet> facets = language.constraints(node.type()).stream().filter(c -> c instanceof Constraint.Facet && FacetConstraint.findFacet(node, ((Constraint.Facet) c).type()) != null).map(c -> (Constraint.Facet) c).collect(toList());
+		for (Constraint.Facet facet : facets)
+			for (Constraint.Parameter c : facet.constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(p -> (Constraint.Parameter) p).collect(toList()))
+				if (c.type().name().equalsIgnoreCase(type) && c.name().equals(name) && !c.size().isRequired()) return true;
+		return false;
 	}
 
 	private boolean hasFatal() {
@@ -68,7 +86,7 @@ public class Checker {
 			try {
 				constraint.check(node);
 			} catch (SemanticException e) {
-				if (e.level() == ERROR && e.isFatal()) throw new SemanticFatalException(Collections.singletonList(e));
+				if (e.level() == ERROR && e.isFatal()) throw new SemanticFatalException(singletonList(e));
 				else exceptions.add(e);
 			}
 	}

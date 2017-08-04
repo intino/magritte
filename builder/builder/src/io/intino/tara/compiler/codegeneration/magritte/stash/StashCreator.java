@@ -247,6 +247,7 @@ public class StashCreator {
 		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
 	}
 
+	@SuppressWarnings("SuspiciousToArrayCall")
 	private List<?> convert(Valued valued) {
 		final Primitive type = valued.type();
 		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
@@ -272,12 +273,12 @@ public class StashCreator {
 
 	private String buildReferenceName(Object o) {
 		if (o instanceof Primitive.Reference && !((Reference) o).isToInstance())
-			return noName(((Reference) o).reference());
-		else if (o instanceof io.intino.tara.lang.model.Node) return noName((io.intino.tara.lang.model.Node) o);
+			return nodeStashQualifiedName(((Reference) o).reference());
+		else if (o instanceof io.intino.tara.lang.model.Node) return nodeStashQualifiedName((io.intino.tara.lang.model.Node) o);
 		return StashHelper.buildInstanceReference(o);
 	}
 
-	private String noName(io.intino.tara.lang.model.Node node) {
+	private String nodeStashQualifiedName(io.intino.tara.lang.model.Node node) {
 		return (((node).is(Instance)) ? getStash(node) + "#" : "") + (node).cleanQn();
 	}
 
@@ -286,11 +287,7 @@ public class StashCreator {
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {
-		return test ? getStashByNode(node) : stashName(node);
-	}
-
-	private String stashName(io.intino.tara.lang.model.Node node) {
-		return level.compareLevelWith(Solution) == 0 ? getStashByNode(node) : generatedLanguage;
+		return test || level.compareLevelWith(Solution) == 0 ? getStashByNode(node) : generatedLanguage;
 	}
 
 	private String getStashByNode(io.intino.tara.lang.model.Node node) {

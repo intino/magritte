@@ -4,6 +4,7 @@ import io.intino.tara.lang.model.Element;
 import io.intino.tara.lang.semantics.MessageProvider;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SemanticException extends Exception {
@@ -25,7 +26,7 @@ public class SemanticException extends Exception {
 	}
 
 	public String[] getParameters() {
-		List<String> parameters = notification.parameters().stream().filter(o -> o != null).map(Object::toString).collect(Collectors.toList());
+		List<String> parameters = notification.parameters().stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.toList());
 		return parameters.toArray(new String[parameters.size()]);
 	}
 

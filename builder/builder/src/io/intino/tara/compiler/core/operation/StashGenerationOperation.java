@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static java.lang.System.out;
 
 public class StashGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(StashGenerationOperation.class.getName());
@@ -45,23 +46,23 @@ public class StashGenerationOperation extends ModelOperation {
 		this.outDSL = conf.level().equals(Solution) ? conf.getModule() : conf.outDSL();
 		try {
 			if (conf.isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
-			if (conf.isTest()) createTestStashes(model);
-			else createStash(model);
+				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
+			if (conf.isTest() || conf.level().equals(Solution)) createSeparatedStashes(model);
+			else createFullStash(model);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
 
-	private void createTestStashes(Model model) throws TaraException {
+	private void createSeparatedStashes(Model model) throws TaraException {
 		for (List<Node> nodes : pack(model)) {
 			if (nodes.isEmpty()) continue;
 			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
 		}
 	}
 
-	private void createStash(Model model) throws TaraException {
+	private void createFullStash(Model model) throws TaraException {
 		if (model.components().isEmpty()) return;
 		writeStashTo(stashDestiny(new File(model.components().get(0).file())), stashOf(model.components(), model.language()));
 	}

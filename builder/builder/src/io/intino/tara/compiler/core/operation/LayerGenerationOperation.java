@@ -19,7 +19,6 @@ import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
-import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 
 import java.io.BufferedWriter;
@@ -44,7 +43,6 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
-	private Template template;
 	private final File srcFolder;
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
@@ -58,7 +56,6 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	@Override
 	public void call(Model model) {
-		this.template = Format.customize(LayerTemplate.create());
 		try {
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Cleaning Old Layers...");
@@ -117,7 +114,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		model.components().forEach(node -> {
+		model.components().parallelStream().forEach(node -> {
 			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) return;
 			if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
 			else renderNode(map, node);
@@ -232,7 +229,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return false;
 	}
 
-	private String format(Map.Entry<String, Frame> layerFrame) {
-		return template.format(layerFrame.getValue());
+	private static String format(Map.Entry<String, Frame> layerFrame) {
+		return Format.customize(LayerTemplate.create()).format(layerFrame.getValue());
 	}
 }
