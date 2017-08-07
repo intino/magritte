@@ -3,7 +3,7 @@ def type(java) !type(function)
 
 	$imports...[$NL]
 
-	class $name+firstUpperCase implements io.intino.tara.magritte.Expression<$type> {
+	class $name+FirstUpperCase implements io.intino.tara.magritte.Expression<$type> {
 		$nativeContainer self;
 
 		public $type value() {$NL[\t\t$return]
@@ -14,7 +14,7 @@ def type(function & java)
 
 	$imports...[$NL]
 
-	class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		$nativeContainer self;
 
 		@Override
@@ -28,7 +28,7 @@ def type(groovy) !type(function)
 	$imports...[$NL]
 
 	@SuppressWarnings("UnnecessaryQualifiedReference")
-	class $name+firstUpperCase implements io.intino.tara.magritte.Expression<$type> {
+	class $name+FirstUpperCase implements io.intino.tara.magritte.Expression<$type> {
 		$nativeContainer self;
 
 		public $type value() {$NL[\n\n$return]
@@ -41,7 +41,7 @@ def type(function & groovy)
 	$imports...[$NL]
 
 	@SuppressWarnings("UnnecessaryQualifiedReference")
-	class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		$nativeContainer self;
 
 		$signature {$NL$TAB$TAB$return
@@ -52,7 +52,7 @@ def type(kotlin) !type(function)
 
 	$imports...[$NL]
 
-	class $name+firstUpperCase : io.intino.tara.magritte.Expression<$type> {
+	class $name+FirstUpperCase : io.intino.tara.magritte.Expression<$type> {
 		internal var self: $nativeContainer+reference
 
 		override fun value():$type {$NL$TAB$TAB$return
@@ -65,7 +65,7 @@ def type(function & kotlin)
 
 	$imports...[$NL]
 
-	class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		internal var self: $nativeContainer+reference
 
 		$signature {$NL$TAB$TAB$return

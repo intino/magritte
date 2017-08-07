@@ -16,7 +16,10 @@ import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
@@ -70,7 +73,7 @@ class TaraRunner {
 		if (!conf.groupID.isEmpty()) writer.write(GROUP_ID + NL + conf.groupID + NL);
 		if (!conf.artifactID.isEmpty()) writer.write(ARTIFACT_ID + NL + conf.artifactID + NL);
 		if (!conf.version.isEmpty()) writer.write(VERSION + NL + conf.version + NL);
-		writer.write(WORKING_PACKAGE + NL + (conf.workingPackage.isEmpty() ? conf.outDSL : conf.workingPackage) + NL);
+		writer.write(WORKING_PACKAGE + NL + (conf.workingPackage.isEmpty() ? conf.outDSL : conf.workingPackage) + ".graph" + NL);
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {

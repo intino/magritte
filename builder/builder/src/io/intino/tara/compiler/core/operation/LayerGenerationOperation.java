@@ -19,6 +19,7 @@ import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
+import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 
 import java.io.BufferedWriter;
@@ -45,6 +46,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private final CompilerConfiguration conf;
 	private final File srcFolder;
 	private File outFolder;
+	private Template template;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
@@ -52,6 +54,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();
 		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
+		this.template = Format.customize(LayerTemplate.create());
 	}
 
 	@Override
@@ -114,11 +117,11 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		model.components().parallelStream().forEach(node -> {
-			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) return;
+		for (Node node : model.components()) {
+			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) continue;
 			if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
 			else renderNode(map, node);
-		});
+		}
 		return map;
 	}
 
@@ -229,7 +232,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return false;
 	}
 
-	private static String format(Map.Entry<String, Frame> layerFrame) {
-		return Format.customize(LayerTemplate.create()).format(layerFrame.getValue());
+	private String format(Map.Entry<String, Frame> layerFrame) {
+		return template.format(layerFrame.getValue());
 	}
 }
