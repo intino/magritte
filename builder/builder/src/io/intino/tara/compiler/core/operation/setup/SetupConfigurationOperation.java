@@ -1,9 +1,9 @@
 package io.intino.tara.compiler.core.operation.setup;
 
-import io.intino.legio.Artifact;
-import io.intino.legio.Legio;
-import io.intino.legio.Parameter;
-import io.intino.legio.level.LevelArtifact;
+import io.intino.legio.graph.Artifact;
+import io.intino.legio.graph.Parameter;
+import io.intino.legio.graph.LegioGraph;
+import io.intino.legio.graph.level.LevelArtifact;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -52,9 +52,9 @@ public class SetupConfigurationOperation extends SetupOperation {
 			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
 			if (!file.exists()) return checkConfiguration();
 			final Stash stash = StashDeserializer.stashFrom(file);
-			final Graph graph = Graph.use(Legio.class, null).loadStashes(stash);
+			final Graph graph = new Graph().loadStashes(stash);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
-			Legio legio = graph.wrapper(Legio.class);
+			LegioGraph legio = graph.as(LegioGraph.class);
 			if (legio == null) return checkConfiguration();
 			extractConfiguration(legio);
 			return checkConfiguration();
@@ -73,14 +73,14 @@ public class SetupConfigurationOperation extends SetupOperation {
 		return true;
 	}
 
-	private void extractConfiguration(Legio legio) {
+	private void extractConfiguration(LegioGraph legio) {
 		Artifact artifact = legio.artifact();
 		Artifact.Code code = artifact.code();
-		final Level level = Level.valueOf(artifact.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
-		configuration.outDSL(artifact.name());
-		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name().toLowerCase();
+		final Level level = Level.valueOf(artifact.core$().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
+		configuration.outDSL(artifact.name$());
+		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name$().toLowerCase();
 		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
-		configuration.artifactId(artifact.name().toLowerCase());
+		configuration.artifactId(artifact.name$().toLowerCase());
 		configuration.groupId(artifact.groupId());
 		configuration.version(artifact.version());
 		if (legio.artifact().package$() != null) {
@@ -88,7 +88,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.packageParameters(map);
 		}
 		if (configuration.isTest()) {
-			configuration.addLanguage(artifact.name(), artifact.version());
+			configuration.addLanguage(artifact.name$(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else if (artifact.isLevel()) {
 			final LevelArtifact.Model model = artifact.asLevel().model();

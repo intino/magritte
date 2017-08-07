@@ -1,39 +1,39 @@
 def type(facetTarget & overriden) trigger(set)
-	_$name+firstLowerCase.node().set(_$name+firstLowerCase, name, values);
+	_$name+FirstLowerCase.core$$().set(_$name+FirstLowerCase, name, values);
 end
 
 def type(variable & word & outDefined & owner & multiple) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name")) this.$name+javaValidName+firstLowerCase = new java.util.ArrayList<>((java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass>) values);
+	if (name.equalsIgnoreCase("$name")) this.$name+javaValidName+FirstLowerCase = new java.util.ArrayList<>((java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass>) values);
 end
 
 def type(variable & word & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name")) this.$name+javaValidName+firstLowerCase = new java.util.ArrayList<>((java.util.List<$type>) values);
+	if (name.equalsIgnoreCase("$name")) this.$name+javaValidName+FirstLowerCase = new java.util.ArrayList<>((java.util.List<$type>) values);
 end
 
 def type(variable & word) type(outDefined) !type(inherited | overriden | reactive) type(owner)  trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = ($workingPackage+LowerCase.rules.$rule+externalWordClass) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($workingPackage+LowerCase.rules.$rule+externalWordClass) values.get(0);
 end
 
 def type(variable & word & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = ($type) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($type) values.get(0);
 end
 
 def type(variable & reactive & owner) !type(inherited | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, io.intino.tara.magritte.Expression.class);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, io.intino.tara.magritte.Expression.class);
 end
 
 def type(variable & function & owner) !type(inherited | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, $workingPackage.functions.$rule+interfaceClass.class);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, $workingPackage.functions.$rule+interfaceClass.class);
 end
 
 def type(variable & time & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = new java.util.ArrayList<>((List<java.time.LocalTime>) values);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((List<java.time.LocalTime>) values);
 end
 
 def type(variable & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<$type+fullType>) values);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<$type+fullType>) values);
 end
 
 def type(variable & owner) !type(multiple | concept | inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = ($type+fullType) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($type+fullType) values.get(0);
 end

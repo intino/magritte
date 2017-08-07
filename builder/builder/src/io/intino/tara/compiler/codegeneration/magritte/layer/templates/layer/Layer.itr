@@ -1,9 +1,9 @@
 def type(Layer & decorable)
 	package $package+javaValidName+lowercase;
 
-	public class $name+javaValidName+firstUpperCase extends Abstract$name+javaValidName+firstUpperCase {
+	public class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 
-		public $name+firstUpperCase+javaValidName(io.intino.tara.magritte.Node node) {
+		public $name+FirstUpperCase+javaValidName(io.intino.tara.magritte.Node node) {
 			super(node);
 		}
 	}
@@ -20,29 +20,29 @@ def type(Layer)
 end
 
 def type(single & owner) !type(overriden | instance) trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = node.as($qn+reference.class);
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = node.as($qn+reference.class);
 end
 
 def type(owner) !type(overriden | instance) trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.add(node.as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.add(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(add)
 end
 
 def type(single & owner) !type(overriden | instance) trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidName = null;
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = null;
 end
 
 def type(owner) !type(overriden | instance) trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+firstLowercase~List.remove(node.as($qn+reference.class));
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.remove(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(remove)
 end
 
 def type(node) !type(final | instance | abstract) trigger(new)
-    public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
+    public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
         return newElement;
@@ -50,13 +50,13 @@ def type(node) !type(final | instance | abstract) trigger(new)
 end
 
 def type(node) !type(single | final | instance | abstract | overriden) trigger(clear)
-    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
-		new java.util.ArrayList<>($name+firstLowerCase+javaValidWord~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
+    public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>($name+FirstLowerCase+javaValidWord~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}
 end
 
 def type(node & create) !type(final | instance) trigger(new)
-    public $qn+reference $name+firstLowerCase+javaValidName($variable+parameters...[, ]) {
+    public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
         $qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
         return newElement;
@@ -64,8 +64,8 @@ def type(node & create) !type(final | instance) trigger(new)
 end
 
 def type(node & create) !type(single | final | instance) trigger(clear)
-    public void $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
-		new java.util.ArrayList<>($name+firstLowerCase+javaValidName~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
+    public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>($name+FirstLowerCase+javaValidName~List()).stream().filter(filter).forEach(io.intino.tara.magritte.Layer::delete$$);
 	}
 end
 
@@ -75,32 +75,32 @@ def type(node & owner) trigger(clear)
 end
 
 def type(availableFacet) attribute(variable) trigger(availableFacet)
-	public $qn+reference as$name+firstUpperCase() {
+	public $qn+reference as$name+FirstUpperCase() {
 		return a$$($qn+reference.class);
 	}
 
-	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
+	public $qn+reference as$name+FirstUpperCase([$variable+parameters...[, ]]) {
 		$qn+reference newElement = core$$().addFacet($qn+reference.class);
 		$variable+assign...[$NL]
         return newElement;
     }
 
-    public boolean is$name+firstUpperCase() {
+    public boolean is$name+FirstUpperCase() {
     	return core$$().is($qn+reference.class);
     }
 
-    public void remove$name+firstUpperCase() {
+    public void remove$name+FirstUpperCase() {
 		core$$().removeFacet($qn+reference.class);
     }
 end
 
 def type(availableFacet) trigger(availableFacet)
-	public $qn+reference as$name+firstUpperCase() {
+	public $qn+reference as$name+FirstUpperCase() {
 		io.intino.tara.magritte.Layer as = a$$($qn+reference.class);
 		return as != null ? ($qn+reference) as : [$abstract?core$$().addFacet($qn+reference.class)];
 	}
 
-	public boolean is$name+firstUpperCase() {
+	public boolean is$name+FirstUpperCase() {
 		return core$$().is($qn+reference.class);
 	}
 end
@@ -112,11 +112,11 @@ def type(core) trigger(asCore)
 end
 
 def type(facetTarget) !type(overriden) trigger(facet)
-	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+FirstLowerCase = ($qn+reference) layer;
 end
 
 def type(constraint) trigger(facet)
-	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+FirstLowerCase = ($qn+reference) layer;
 end
 
 def trigger(decorable)
@@ -124,7 +124,7 @@ def trigger(decorable)
 end
 
 def !type(target) type(nodeimpl) !type(instance) trigger(Node)
-	public[ $inner][ $abstract] class $decorable$name+firstUpperCase+javaValidName[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
+	public[ $inner][ $abstract] class $decorable$name+FirstUpperCase+javaValidName[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
 		$variable+declaration...[$NL][
 		$node+declaration...[$NL]][
 		$facetTarget+declaration...[$NL]][
@@ -228,8 +228,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		][
 		$node...[$NL]
 		]
-		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~Graph graph() {
-			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~Graph) core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+firstUpperCase~Graph.class);
+		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph graph() {
+			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph) core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
 	}
 
@@ -244,7 +244,7 @@ def trigger(parentClear)
 end
 
 def type(metaFacet) trigger(name)
-	$name+javaValidName+firstLowerCase
+	$name+javaValidName+FirstLowerCase
 end
 
 def type(metaFacet) trigger(typeInit)
@@ -279,11 +279,11 @@ def trigger(metaTypeSet)
 end
 
 def trigger(metaFacetLoad)
-	core$$().load(_$name+firstLowerCase, name, values);
+	core$$().load(_$name+FirstLowerCase, name, values);
 end
 
 def trigger(metaFacetSet)
-	core$$().set(_$name+firstLowerCase, name, values);
+	core$$().set(_$name+FirstLowerCase, name, values);
 end
 
 def trigger(metaType)
@@ -291,7 +291,7 @@ def trigger(metaType)
 end
 
 def trigger(metaFacet)
-	protected $type _$name+firstLowerCase;
+	protected $type _$name+FirstLowerCase;
 end
 
 def trigger(tag)

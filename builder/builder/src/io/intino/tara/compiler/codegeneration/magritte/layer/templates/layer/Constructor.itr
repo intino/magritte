@@ -1,43 +1,43 @@
 def type(Variable & word & multiple) type(owner) !type(inherited) attribute(words) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end
 
 def type(Variable & word) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end
 
 def type(Variable & reactive) type(owner) !type(inherited | empty) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
 end
 
 def type(Variable & function) type(owner) !type(inherited | empty) attribute(body) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
 end
 
 def type(Variable & date) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
 end
 
 def type(Variable & time) type(owner) !type(inherited | empty) attribute(values) !type(multiple) trigger(constructor)
-	_load("$name+firstLowerCase",  new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
+	_load("$name+FirstLowerCase",  new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
 end
 
 def type(Variable & double & multiple) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(new Double$[$] {$values...[, ]})));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(new Double$[$] {$values...[, ]})));
 end
 
 def type(Variable & double) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList((double) $values)));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList((double) $values)));
 end
 
 def type(Variable & reference) type(owner) !type(inherited | empty) attribute(values) type(multiple) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(graph().concept("$type"))));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(graph().concept("$type"))));
 end
 
 def type(Variable & resource) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+firstLowerCase", io.intino.tara.magritte.loaders.StringLoader.load(Arrays.asList($values+quoted...[, ])));
+	_load("$name+FirstLowerCase", io.intino.tara.magritte.loaders.StringLoader.load(Arrays.asList($values+quoted...[, ])));
 end
 
 def type(Variable & owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
 end

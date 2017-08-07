@@ -4,7 +4,7 @@ def type(function & java)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+FirstUpperCase+javaValidName_$uid implements [$scope+lowercase+javaValidName.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	public class $name+FirstUpperCase+javaValidName_$uid implements [$scope+lowercase+javaValidName.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -56,7 +56,7 @@ def type(function & groovy)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+firstUpperCase+javaValidName_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase+javaValidName_$uid implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		private $nativeContainer+reference self
 
 		$signature {
@@ -103,7 +103,7 @@ def type(function & kotlin)
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+FirstUpperCase+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase+javaValidName_$uid : [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		internal var self: $nativeContainer+reference? = null
 
 		$signature {

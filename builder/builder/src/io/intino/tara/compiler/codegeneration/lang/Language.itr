@@ -6,14 +6,14 @@ def type(Model)
 	import java.util.Locale;
 	import static io.intino.tara.lang.semantics.constraints.RuleFactory.*;
 
-	public class $name+reference+firstUpperCase extends io.intino.tara.dsl.Tara {
-		public $name+reference+firstUpperCase() {
+	public class $name+reference+FirstUpperCase extends io.intino.tara.dsl.Tara {
+		public $name+reference+FirstUpperCase() {
 			$node...[$NL]
 		}
 
 		@Override
 		public String languageName() {
-			return "$name+firstUpperCase";
+			return "$name+FirstUpperCase";
 		}
 
 		@Override

@@ -34,7 +34,7 @@ model
 version
 2.1.0
 working.package
-io.intino.legio
+io.intino.legio.graph
 make
 false
 test.module
