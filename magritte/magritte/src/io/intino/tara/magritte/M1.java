@@ -23,7 +23,7 @@ public class M1 extends Layer {
 
 	@Override
 	public List<Node> componentList$() {
-		return components;
+		return new ArrayList<>(components);
 	}
 
 }
