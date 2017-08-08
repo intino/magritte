@@ -70,7 +70,6 @@ public class FileListener implements com.intellij.openapi.components.Application
 					JavaMoveClassesOrPackagesHandler handler = new JavaMoveClassesOrPackagesHandler();
 					handler.doMove(project, new PsiElement[]{psiFile}, handler.adjustTargetForMove(dataContext(), destiny), null);
 				});
-
 			}
 
 			private VirtualFile findOldJava(String file, VirtualFile parent) {

@@ -6,7 +6,7 @@ intino
 module
 model
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Application Support/IntelliJIdea2017.2/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/intino/model/gen
 final_outputpath
@@ -32,7 +32,7 @@ io.intino.legio
 artifactId
 model
 version
-2.1.0
+3.1.0
 working.package
 io.intino.legio.graph
 make
@@ -41,5 +41,3 @@ test.module
 false
 encoding
 UTF-8
-native.language
-Java

@@ -67,6 +67,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private String workingPackage;
 	private String nativeLanguage = "java";
 	private Map<String, String> packageParameters;
+	private boolean stashGeneration = false;
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
@@ -360,6 +361,14 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public void packageParameters(Map<String, String> packageParameters) {
 		this.packageParameters = packageParameters;
+	}
+
+	public void setStashGeneration() {
+		this.stashGeneration = true;
+	}
+
+	public boolean isStashGeneration() {
+		return this.stashGeneration;
 	}
 
 	public class DSL implements LanguageLibrary {

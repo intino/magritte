@@ -136,7 +136,7 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void pandora_M2() {
+	public void konos_M2() {
 		main(new String[]{home + "sandbox/confFiles/konos/m2.txt"});
 	}
 

@@ -47,7 +47,7 @@ public class StashGenerationOperation extends ModelOperation {
 		try {
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
-			if (conf.isTest() || conf.level().equals(Solution)) createSeparatedStashes(model);
+			if ((conf.isTest() || conf.level().equals(Solution)) && !conf.isStashGeneration()) createSeparatedStashes(model);
 			else createFullStash(model);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);

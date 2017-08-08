@@ -28,6 +28,7 @@ public class HelpersTemplate extends Template {
 			rule().add((condition("attribute", "type")), (condition("trigger", "variableType"))).add(literal("Concept")),
 			rule().add((condition("attribute", "String")), (condition("trigger", "variableType"))).add(literal("java.lang.String")),
 			rule().add((condition("attribute", "string")), (condition("trigger", "variableType"))).add(literal("java.lang.String")),
+			rule().add((condition("attribute", "Boolean")), (condition("trigger", "variableType"))).add(literal("boolean")),
 			rule().add((condition("attribute", "boolean")), (condition("trigger", "variableType"))).add(literal("boolean")),
 			rule().add((condition("attribute", "Resource")), (condition("trigger", "variableType"))).add(literal("java.net.URL")),
 			rule().add((condition("attribute", "resource")), (condition("trigger", "variableType"))).add(literal("java.net.URL")),
