@@ -2,7 +2,6 @@ package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
-import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
@@ -80,14 +79,14 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 
 	private void addParent(Frame frame, FacetTarget target) {
 		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
-		if (parent != null) frame.addSlot(PARENT, NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		if (parent != null) frame.addSlot(PARENT, cleanQn(getQn(parent, workingPackage)));
 		final List<String> slots = Arrays.asList(frame.slots());
 		if ((slots.contains(CREATE) || slots.contains(NODE)) || !target.owner().children().isEmpty()) {
 			frame.addSlot(PARENT_SUPER, parent != null);
-			if (parent != null) frame.addSlot("parentName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+			if (parent != null) frame.addSlot("parentName", cleanQn(getQn(parent, workingPackage)));
 		}
-		if ((slots.contains(NODE)) && parent != null && (!parent.components().isEmpty() || !target.targetNode().components().isEmpty()))
-			frame.addSlot("parentClearName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		if ((slots.contains(NODE)) && parent != null && (!parent.components().isEmpty() || (parent.facetTarget() != null && !parent.facetTarget().targetNode().components().isEmpty())))
+			frame.addSlot("parentClearName", cleanQn(getQn(parent, workingPackage)));
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {

@@ -3,7 +3,7 @@ def type(Layer & decorable)
 
 	public class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 
-		public $name+FirstUpperCase+javaValidName(io.intino.tara.magritte.Node node) {
+		public $name+javaValidName+FirstUpperCase(io.intino.tara.magritte.Node node) {
 			super(node);
 		}
 	}
@@ -124,7 +124,7 @@ def trigger(decorable)
 end
 
 def !type(target) type(nodeimpl) !type(instance) trigger(Node)
-	public[ $inner][ $abstract] class $decorable$name+FirstUpperCase+javaValidName[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
+	public[ $inner][ $abstract] class $decorable$name+javaValidName+FirstUpperCase[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
 		$variable+declaration...[$NL][
 		$node+declaration...[$NL]][
 		$facetTarget+declaration...[$NL]][
@@ -132,7 +132,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		$metaType][
 		$metaFacet...[$NL]]
 
-		public $decorable$name+javaValidName(io.intino.tara.magritte.Node node) {
+		public $decorable$name+javaValidName+FirstUpperCase(io.intino.tara.magritte.Node node) {
 			super(node);[
 			_metaType = a$$($metaType+typeInit.class);][
 			_$metaFacet+name = a$$($metaFacet+typeInit.class);]

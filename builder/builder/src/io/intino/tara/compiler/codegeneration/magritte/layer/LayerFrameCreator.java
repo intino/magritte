@@ -1,7 +1,6 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.tara.Language;
-import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.NodeReference;
@@ -18,6 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
+import static io.intino.tara.compiler.codegeneration.Format.javaValidName;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
 
 
@@ -65,11 +66,11 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private String calculateDecorablePath(Node node, String aPackage) {
-		return aPackage + DOT + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
+		return aPackage + DOT + firstUpperCase().format(javaValidName().format(node.name()).toString()) + facetName(node.facetTarget());
 	}
 
 	private String calculateLayerPath(Node node, String aPackage) {
-		return aPackage + DOT + (node.is(Tag.Decorable) ? "Abstract" : "") + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
+		return aPackage + DOT + (node.is(Tag.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(node.name()).toString()) + facetName(node.facetTarget());
 	}
 
 	private String facetName(FacetTarget facetTarget) {
@@ -83,7 +84,7 @@ public class LayerFrameCreator implements TemplateTags {
 		createFrame(frame, facetTarget);
 		addFacetImports(frame);
 		return new AbstractMap.SimpleEntry<>(addPackage(facetTarget, frame) + DOT +
-				Format.javaValidName().format(owner.name() + facetTarget.targetNode().name()).toString(), frame);
+				javaValidName().format(owner.name() + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void addNodeImports(Frame frame) {

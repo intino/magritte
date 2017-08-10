@@ -112,22 +112,24 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Tag> annotations() {
-		List<Tag> collect = destinyOfReference().annotations();
+		final Node node = destinyOfReference();
+		if (node == null) return Collections.emptyList();
+		List<Tag> annotations = node.annotations();
 		if (getAnnotationsNode() != null)
-			collect.addAll(getAnnotationsNode().getAnnotationList().stream().
+			annotations.addAll(getAnnotationsNode().getAnnotationList().stream().
 				map(a -> Tag.valueOf(a.getText().toUpperCase())).collect(Collectors.toList()));
-		return collect;
+		return annotations;
 	}
 
 	public List<Tag> flags() {
 		final Node node = destinyOfReference();
 		if (node == null) return Collections.emptyList();
-		List<Tag> collect = node.flags();
-		collect.addAll(inheritedFlags);
+		List<Tag> flags = node.flags();
+		flags.addAll(inheritedFlags);
 		if (getFlagsNode() != null)
-			collect.addAll(getFlagsNode().getFlagList().stream().
+			flags.addAll(getFlagsNode().getFlagList().stream().
 				map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(Collectors.toList()));
-		return collect;
+		return flags;
 	}
 
 	public String name() {

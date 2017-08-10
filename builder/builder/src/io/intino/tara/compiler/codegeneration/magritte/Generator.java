@@ -22,6 +22,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
+import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
 import static io.intino.tara.lang.model.Tag.Terminal;
 import static java.util.Collections.emptyList;
@@ -55,7 +57,7 @@ public abstract class Generator implements TemplateTags {
 
 	protected String getType(Variable variable) {
 		if (variable instanceof VariableReference)
-			return NameFormatter.cleanQn(NameFormatter.getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
+			return cleanQn(getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
 					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getExternalWordClass()) :
@@ -229,13 +231,14 @@ public abstract class Generator implements TemplateTags {
 
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		if (parent != null) frame.addSlot(PARENT, NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		if (parent != null) frame.addSlot(PARENT, cleanQn(getQn(parent, workingPackage)));
 		final List<String> slots = Arrays.asList(frame.slots());
 		if ((slots.contains(CREATE) || slots.contains(NODE)) || !node.children().isEmpty()) {
 			frame.addSlot(PARENT_SUPER, node.parent() != null);
-			if (node.parent() != null) frame.addSlot("parentName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+			if (node.parent() != null) frame.addSlot("parentName", cleanQn(getQn(parent, workingPackage)));
 		}
-		if ((slots.contains(NODE)) && node.parent() != null && !node.parent().components().isEmpty())
-			frame.addSlot("parentClearName", NameFormatter.cleanQn(NameFormatter.getQn(parent, workingPackage)));
+		if ((slots.contains(NODE)) && node.parent() != null && !node.parent().components().isEmpty()) {
+			frame.addSlot("parentClearName", cleanQn(getQn(parent, workingPackage)));
+		}
 	}
 }
