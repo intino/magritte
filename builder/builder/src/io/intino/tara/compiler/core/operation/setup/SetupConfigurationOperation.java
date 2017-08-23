@@ -84,7 +84,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 		configuration.groupId(artifact.groupId());
 		configuration.version(artifact.version());
 		if (legio.artifact().package$() != null) {
-			final Map<String, String> map = legio.artifact().package$().parameterList().stream().collect(Collectors.toMap(Parameter::name$, Parameter::value));
+			final Map<String, String> map = legio.artifact().package$().parameterList().stream().collect(Collectors.toMap(Parameter::name, Parameter::value));
 			configuration.packageParameters(map);
 		}
 		if (configuration.isTest()) {

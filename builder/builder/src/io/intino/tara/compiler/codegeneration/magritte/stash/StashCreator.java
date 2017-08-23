@@ -37,17 +37,19 @@ public class StashCreator {
 	private final CompilerConfiguration.Level level;
 	private final boolean test;
 	private final Stash stash = new Stash();
-	private final String generatedLanguage;
+	private final String outDSL;
 	private final String workingPackage;
+	private final boolean stashGeneration;
 
-	public StashCreator(List<io.intino.tara.lang.model.Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
+	public StashCreator(List<io.intino.tara.lang.model.Node> nodes, Language language, String outDSL, CompilerConfiguration conf) {
 		this.nodes = nodes;
 		this.language = language;
-		this.generatedLanguage = Format.javaValidName().format(Format.firstUpperCase().format(genLanguage)).toString();
+		this.outDSL = Format.javaValidName().format(Format.firstUpperCase().format(outDSL)).toString();
 		this.workingPackage = conf.workingPackage();
 		this.resourceFolder = conf.resourcesDirectory();
 		this.level = conf.level();
 		this.test = conf.isTest();
+		this.stashGeneration = conf.isStashGeneration();
 		this.stash.language = language.languageName();
 	}
 
@@ -287,7 +289,7 @@ public class StashCreator {
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {
-		return test || level.compareLevelWith(Solution) == 0 ? getStashByNode(node) : generatedLanguage;
+		return (test || level.compareLevelWith(Solution) == 0) && !stashGeneration ? getStashByNode(node) : outDSL;
 	}
 
 	private String getStashByNode(io.intino.tara.lang.model.Node node) {

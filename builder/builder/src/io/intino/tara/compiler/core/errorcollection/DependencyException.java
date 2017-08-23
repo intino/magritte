@@ -30,11 +30,11 @@ public class DependencyException extends TaraException {
 	}
 
 	private String getElement(Element element) {
+		if (element == null) return "";
 		if (element instanceof Variable)
 			return "variable " + element.toString();
 		else if (element instanceof Parameter) return "parameter";
 		else return element.toString();
-
 	}
 
 	public Element getElement() {

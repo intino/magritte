@@ -1,5 +1,6 @@
 package io.intino.tara.lang.semantics.constraints;
 
+import io.intino.tara.Language;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
@@ -188,7 +189,11 @@ public class GlobalConstraints {
 	}
 
 	private boolean isRedefiningTerminal(Variable variable) {
-		final Constraint constraint = variable.language().constraints(variable.container().type()).stream().filter(c -> c instanceof Constraint.Parameter && ((Constraint.Parameter) c).name().equals(variable.name())).findFirst().orElse(null);
+		final Language language = variable.language();
+		if (language == null || variable.container() == null) return false;
+		final List<Constraint> constraints = language.constraints(variable.container().type());
+		if (constraints == null) return false;
+		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.Parameter && ((Constraint.Parameter) c).name().equals(variable.name())).findFirst().orElse(null);
 		return constraint != null && (((Constraint.Parameter) constraint).flags().contains(Tag.Terminal));
 	}
 

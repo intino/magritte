@@ -5,6 +5,8 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
+import static com.intellij.openapi.module.ModuleUtilCore.findModuleForFile;
+
 public class ModuleProvider {
 
 	private ModuleProvider() {
@@ -17,6 +19,6 @@ public class ModuleProvider {
 	}
 
 	public static com.intellij.openapi.module.Module moduleOf(PsiFile element) {
-		return ModuleUtil.findModuleForFile(element.getOriginalFile().getVirtualFile(), element.getProject());
+		return findModuleForFile(element.getOriginalFile().getVirtualFile(), element.getProject());
 	}
 }

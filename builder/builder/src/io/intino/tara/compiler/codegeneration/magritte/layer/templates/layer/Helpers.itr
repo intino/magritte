@@ -40,6 +40,10 @@ def attribute(string) trigger(variableType)
 	java.lang.String
 end
 
+def attribute(Boolean) trigger(variableType)
+	boolean
+end
+
 def attribute(boolean) trigger(variableType)
 	boolean
 end
@@ -100,7 +104,6 @@ def attribute(Instant) trigger(fullType)
 	java.time.Instant
 end
 
-
 def attribute(instant) trigger(fullType)
 	java.time.Instant
 end
@@ -124,7 +127,6 @@ end
 def type(wordrule) trigger(externalWordClass)
 	$externalWordClass+javaValidName
 end
-
 
 def type(nativeCustomWordRule) trigger(externalWordClass)
 	$source+javaValidName

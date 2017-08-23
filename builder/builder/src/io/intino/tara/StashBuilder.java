@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
+
 public class StashBuilder {
 
 	private final String dsl;
@@ -64,7 +66,7 @@ public class StashBuilder {
 
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
-		configuration.level(CompilerConfiguration.Level.Solution);
+		configuration.level(Solution);
 		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".m2"));
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);
@@ -72,9 +74,9 @@ public class StashBuilder {
 		configuration.setExcludedPhases(Arrays.asList(1, 8, 10, 11));
 		configuration.setMake(true);
 		configuration.systemStashName(module);
-		if (language == null) {
-			configuration.addLanguage(dsl, dslVersion);
-		} else configuration.addLanguage(language);
+		configuration.setStashGeneration();
+		if (language == null) configuration.addLanguage(dsl, dslVersion);
+		else configuration.addLanguage(language);
 		return configuration;
 	}
 }

@@ -52,7 +52,7 @@ public class StressTests {
     }
 
     private Stash factsStash() {
-        return newStash("Proteo", list(), list(), list(), facts());
+        return newStash("Members", list(), list(), list(), facts());
     }
 
     private List<Concept> concepts() {
