@@ -74,6 +74,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private void writeStashTo(File taraFile, Stash stash) {
 		final byte[] content = StashSerializer.serialize(stash);
 		final File file = stashDestiny(taraFile);
+		stash.path = file.getName();
 		file.getParentFile().mkdirs();
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			stream.write(content);
