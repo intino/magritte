@@ -278,4 +278,11 @@ public class GraphTest {
 		assertNotEquals(clonedApplication, application);
 		assertNotEquals(clonedApplication.core$(), application.core$());
 	}
+
+	@Test
+	public void should_not_crash_when_language_is_included_in_the_list_of_stashes_to_open() throws Exception {
+		MockApplication application = new Graph(mockStore()).loadStashes("m1", "m2", "m3").as(MockApplication.class);
+		assertEquals(2, application.core$().languages.size());
+		assertEquals(3, application.core$().openedStashes.size());
+	}
 }

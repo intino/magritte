@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Arrays.stream;
 import static java.util.logging.Logger.getGlobal;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
 
 public class Graph {
@@ -81,8 +81,8 @@ public class Graph {
 		return url;
 	}
 
-	public Set<String> openedStashes() {
-		return new HashSet<>(openedStashes);
+	public String[] openedStashes() {
+		return new HashSet<>(openedStashes).toArray(new String[openedStashes.size()]);
 	}
 
 	public Store store() {
@@ -254,9 +254,25 @@ public class Graph {
 	}
 
 	private void doLoadStashes(String... stashes) {
-		doLoadStashes(stream(stashes)
+		doLoadStashes(sort(stream(stashes)
 				.map(StashHelper::stashWithExtension)
-				.map(this::stashOf).toArray(Stash[]::new));
+				.collect(toMap(s -> s, this::stashOf))));
+	}
+
+	private Stash[] sort(Map<String, Stash> stashes) {
+		Set<String> languages = stashes.values().stream().map(s -> stashWithExtension(s.language)).collect(toSet());
+		return stashes.entrySet().stream()
+				.filter(e -> e.getValue() != null)
+				.sorted((e1, e2) -> compare(e1, e2, languages))
+				.map(Map.Entry::getValue)
+				.toArray(Stash[]::new);
+	}
+
+	private int compare(Map.Entry<String, Stash> e1, Map.Entry<String, Stash> e2, Set<String> languages) {
+		return isMetaLanguage(e1.getValue().language) ? -1 :
+				isMetaLanguage(e2.getValue().language) ? 1 :
+						languages.contains(e1.getKey()) ? -1 :
+								languages.contains(e2.getKey()) ? 1 : 0;
 	}
 
 	void doLoadStashes(Stash... stashes) {
@@ -350,9 +366,13 @@ public class Graph {
 			languages.add(language);
 			return;
 		}
-		if (languages.contains(language) || "Verso".equals(language) || "Proteo".equals(language)) return;
+		if (languages.contains(language) || isMetaLanguage(language)) return;
 		if (language == null || language.isEmpty()) return;
 		doInit(language);
+	}
+
+	private boolean isMetaLanguage(String language) {
+		return "Verso".equals(language) || "Proteo".equals(language);
 	}
 
 	private void doInit(String language) {
@@ -381,7 +401,7 @@ public class Graph {
 	private void commit(Node node) {
 		model.add(node);
 		register(node);
-		openedStashes.add(StashHelper.stashWithExtension(node.stash()));
+		openedStashes.add(stashWithExtension(node.stash()));
 	}
 
 }
