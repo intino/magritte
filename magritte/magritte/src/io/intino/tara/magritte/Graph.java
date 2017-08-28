@@ -15,7 +15,8 @@ import java.util.stream.Stream;
 import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Arrays.stream;
 import static java.util.logging.Logger.getGlobal;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.of;
 
 public class Graph {
@@ -254,25 +255,7 @@ public class Graph {
 	}
 
 	private void doLoadStashes(String... stashes) {
-		doLoadStashes(sort(stream(stashes)
-				.map(StashHelper::stashWithExtension)
-				.collect(toMap(s -> s, this::stashOf))));
-	}
-
-	private Stash[] sort(Map<String, Stash> stashes) {
-		Set<String> languages = stashes.values().stream().map(s -> stashWithExtension(s.language)).collect(toSet());
-		return stashes.entrySet().stream()
-				.filter(e -> e.getValue() != null)
-				.sorted((e1, e2) -> compare(e1, e2, languages))
-				.map(Map.Entry::getValue)
-				.toArray(Stash[]::new);
-	}
-
-	private int compare(Map.Entry<String, Stash> e1, Map.Entry<String, Stash> e2, Set<String> languages) {
-		return isMetaLanguage(e1.getValue().language) ? -1 :
-				isMetaLanguage(e2.getValue().language) ? 1 :
-						languages.contains(e1.getKey()) ? -1 :
-								languages.contains(e2.getKey()) ? 1 : 0;
+		stream(stashes).forEach(s -> doLoadStashes(stashOf(stashWithExtension(s))));
 	}
 
 	void doLoadStashes(Stash... stashes) {
