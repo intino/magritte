@@ -1,6 +1,7 @@
 package io.intino.tara.magritte;
 
 import io.intino.tara.magritte.layers.MockLayer;
+import io.intino.tara.magritte.layers.SubMockLayer;
 import io.intino.tara.magritte.modelviews.MockApplication;
 import io.intino.tara.magritte.modelviews.MockPlatform;
 import io.intino.tara.magritte.stores.FileSystemStore;
@@ -284,5 +285,30 @@ public class GraphTest {
 		MockApplication application = new Graph(mockStore()).loadStashes("m1", "m2", "m3").as(MockApplication.class);
 		assertEquals(2, application.core$().languages.size());
 		assertEquals(3, application.core$().openedStashes.size());
+	}
+
+	@Test
+	public void node_should_have_complete_hierarchy_of_concepts_when_loading_root() throws Exception {
+		MockApplication application = new Graph(mockStore()).loadStashes(highHierarchy).as(MockApplication.class);
+		assertEquals(6, application.core$().rootList(SubMockLayer.class).get(0).core$().typeNames.size());
+	}
+
+	@Test
+	public void node_should_have_complete_hierarchy_of_concepts_when_creating_root() throws Exception {
+		MockApplication application = new Graph(mockStore()).loadStashes(highHierarchy).as(MockApplication.class);
+		Node mock = application.core$().createRoot("Mock", highHierarchy);
+		assertEquals(6, mock.typeNames.size());
+	}
+
+	@Test
+	public void should_show_severe_log_when_creating_two_components_with_the_same_name_returning_null() throws Exception {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		StreamHandler handler = new StreamHandler(outputStream, new SimpleFormatter());
+		getGlobal().addHandler(handler);
+		MockApplication application = new Graph(mockStore()).loadStashes(m1).as(MockApplication.class);
+		application.core$().concept("Mock").createNode("a", application.mockLayerList().get(0).core$());
+		application.core$().concept("Mock").createNode("a", application.mockLayerList().get(0).core$());
+		handler.flush();
+		assertThat(outputStream.toString(), containsString("component named a"));
 	}
 }

@@ -166,8 +166,7 @@ public class Node extends Predicate {
 	}
 
 	public Layer addFacet(Concept concept) {
-		concept.createLayersFor(this);
-		syncLayers();
+		concept.prepareNode(this, this.graph());
 		return as(concept);
 	}
 
