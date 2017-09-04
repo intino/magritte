@@ -24,6 +24,7 @@ public class FileSystemStore implements Store {
 
 	public FileSystemStore(File file) {
 		this.file = file;
+		file.mkdirs();
 	}
 
 	public File directory() {

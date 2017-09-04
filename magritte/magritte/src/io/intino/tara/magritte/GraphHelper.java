@@ -66,6 +66,6 @@ class GraphHelper {
 			getGlobal().warning("Node with id " + path + "#" + name + " already exists");
 			return null;
 		}
-		return concept.createNode(canonicalPath(path), name == null ? graph.createNodeName() : name, graph.model);
+		return concept.createRoot(canonicalPath(path), name == null ? graph.createNodeName() : name, graph.model);
 	}
 }

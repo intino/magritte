@@ -13,25 +13,27 @@ import java.util.Map;
 import static io.intino.tara.io.Helper.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 @SuppressWarnings("WeakerAccess")
 public class TestHelper {
 
-    public static final String emptyStash = "Empty";
-    public static final String oneMockStash = "OneMock";
-    public static final String firstStash = "firstStash";
-    public static final String secondStash = "secondStash";
-    public static final String thirdStash = "thirdStash";
-    public static final String dependantStashByUse = "dependantStashByUse";
-    public static final String cyclicDependantStash = "cyclicDependantStash";
-    public static final String independentStash = "substash/independant";
-    public static final String m1 = "m1";
-    public static final String m2 = "m2";
-    public static final String m3 = "m3";
-    public static final String Extension = ".stash";
+	public static final String emptyStash = "Empty";
+	public static final String oneMockStash = "OneMock";
+	public static final String firstStash = "firstStash";
+	public static final String secondStash = "secondStash";
+	public static final String thirdStash = "thirdStash";
+	public static final String dependantStashByUse = "dependantStashByUse";
+	public static final String cyclicDependantStash = "cyclicDependantStash";
+	public static final String independentStash = "substash/independant";
+	public static final String m1 = "m1";
+	public static final String m2 = "m2";
+	public static final String m3 = "m3";
+	public static final String highHierarchy = "highHierarchy";
+	public static final String Extension = ".stash";
 
-    public static Store mockStore() {
-        return new Store() {
+	public static Store mockStore() {
+		return new Store() {
 
 			Map<String, Stash> store = new HashMap<String, Stash>() {{
 				put(emptyStash + Extension, emptyStash());
@@ -45,6 +47,7 @@ public class TestHelper {
 				put(m1 + Extension, m1());
 				put(m2 + Extension, m2());
 				put(m3 + Extension, m3());
+				put(highHierarchy + Extension, highHierarchy());
 			}};
 
 			@Override
@@ -72,10 +75,10 @@ public class TestHelper {
 				return null;
 			}
 		};
-    }
+	}
 
-    public static Store fileSystemMockStore(File file) {
-        return new FileSystemStore(file) {
+	public static Store fileSystemMockStore(File file) {
+		return new FileSystemStore(file) {
 
 			Map<String, Stash> store = new HashMap<String, Stash>() {{
 				put(m1 + Extension, m1());
@@ -94,88 +97,101 @@ public class TestHelper {
 			}
 
 		};
-    }
+	}
 
-    public static Stash firstStash() {
-        Stash stash = emptyStash();
-        stash.nodes.add(newNode(firstStash + "#x", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
-        return stash;
-    }
+	public static Stash firstStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(firstStash + "#x", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
+		return stash;
+	}
 
-    public static Stash secondStash() {
-        Stash stash = emptyStash();
-        stash.nodes.add(newNode(secondStash + "#y", list("Mock"), list(newReference("mockLayer", thirdStash + "#z")), emptyList()));
-        return stash;
-    }
+	public static Stash secondStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(secondStash + "#y", list("Mock"), list(newReference("mockLayer", thirdStash + "#z")), emptyList()));
+		return stash;
+	}
 
-    public static Stash thirdStash() {
-        Stash stash = emptyStash();
-        stash.nodes.add(newNode(thirdStash + "#z", list("Mock"), list(newReference("mockLayer", firstStash + "#x")), emptyList()));
-        return stash;
-    }
+	public static Stash thirdStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(thirdStash + "#z", list("Mock"), list(newReference("mockLayer", firstStash + "#x")), emptyList()));
+		return stash;
+	}
 
-    public static Stash oneMockStash() {
-        Stash stash = emptyStash();
-        stash.nodes.add(newNode(oneMockStash + "#x", list("Mock"), emptyList(), emptyList()));
-        stash.nodes.add(newNode(oneMockStash + "#y", list("Mock"), emptyList(), emptyList()));
-        return stash;
-    }
+	public static Stash oneMockStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(oneMockStash + "#x", list("Mock"), emptyList(), emptyList()));
+		stash.nodes.add(newNode(oneMockStash + "#y", list("Mock"), emptyList(), emptyList()));
+		return stash;
+	}
 
-    public static Stash dependantStashByUse() {
-        Stash stash = emptyStash();
-        stash.uses.addAll(asList(oneMockStash, cyclicDependantStash));
-        stash.nodes.add(newNode(dependantStashByUse + "#x", list("Mock"), emptyList(), emptyList()));
-        return stash;
-    }
+	public static Stash dependantStashByUse() {
+		Stash stash = emptyStash();
+		stash.uses.addAll(asList(oneMockStash, cyclicDependantStash));
+		stash.nodes.add(newNode(dependantStashByUse + "#x", list("Mock"), emptyList(), emptyList()));
+		return stash;
+	}
 
-    public static Stash cyclicDependantStash() {
-        Stash stash = emptyStash();
-        stash.uses.add(dependantStashByUse);
-        stash.nodes.add(newNode(cyclicDependantStash + "#x", list("Mock"), list(newReference("mockLayer", dependantStashByUse + "#x")), emptyList()));
-        return stash;
-    }
+	public static Stash cyclicDependantStash() {
+		Stash stash = emptyStash();
+		stash.uses.add(dependantStashByUse);
+		stash.nodes.add(newNode(cyclicDependantStash + "#x", list("Mock"), list(newReference("mockLayer", dependantStashByUse + "#x")), emptyList()));
+		return stash;
+	}
 
-    public static Stash independentStashInSubStash() {
-        Stash stash = emptyStash();
-        stash.nodes.add(newNode(independentStash + "#x", list("Mock"), emptyList(), emptyList()));
-        return stash;
-    }
+	public static Stash independentStashInSubStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(independentStash + "#x", list("Mock"), emptyList(), emptyList()));
+		return stash;
+	}
 
-    public static Stash m1() {
-        Stash stash = newStash("m2", list());
-        stash.nodes.add(newNode(m1 + "#x", list("Mock"), emptyList(), emptyList()));
-        stash.nodes.add(newNode(m1 + "#y", list("Mock"), emptyList(), emptyList()));
-        return stash;
-    }
+	public static Stash m1() {
+		Stash stash = newStash("m2", list());
+		stash.nodes.add(newNode(m1 + "#x", list("Mock"), emptyList(), emptyList()));
+		stash.nodes.add(newNode(m1 + "#y", list("Mock"), emptyList(), emptyList()));
+		return stash;
+	}
 
-    public static Stash m2() {
-        return newStash("m3", list());
-    }
+	public static Stash m2() {
+		return newStash("m3", list());
+	}
 
-    public static Stash m3() {
-        return newStash("Proteo", emptyList(), emptyList(),
-                list(newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
-                emptyList());
-    }
+	public static Stash m3() {
+		return newStash("Proteo", emptyList(), emptyList(),
+				list(newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+				emptyList());
+	}
 
-    static Stash emptyStash() {
-        return newStash("m3", list());
-    }
+	public static Stash highHierarchy() {
+		return newStash("Proteo", emptyList(), emptyList(),
+				list(
+						newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.SubMockLayer", "Super1Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super1Mock", false, false, true, "io.intino.tara.magritte.layers.Super1MockLayer", "Super2Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super2Mock", false, false, true, "io.intino.tara.magritte.layers.Super2MockLayer", "Super3Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super3Mock", false, false, true, "io.intino.tara.magritte.layers.Super3MockLayer", "Super4Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super4Mock", false, false, true, "io.intino.tara.magritte.layers.Super4MockLayer", "Super5Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super5Mock", false, false, true, "io.intino.tara.magritte.layers.Super5MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())
+				),
+				singletonList(newNode(m1 + "#y", list("Mock"), emptyList(), emptyList())));
+	}
 
-    public static class Test {
-        public static void main(String[] args) {
-            String hex = "4d2";
-            long longHex = parseUnsignedHex(hex);
-            double d = Double.longBitsToDouble(longHex);
-            System.out.println(d);
-        }
+	static Stash emptyStash() {
+		return newStash("m3", list());
+	}
 
-        public static long parseUnsignedHex(String text) {
-            if (text.length() == 16) {
-                return (parseUnsignedHex(text.substring(0, 1)) << 60)
-                        | parseUnsignedHex(text.substring(1));
-            }
-            return Long.parseLong(text, 16);
-        }
-    }
+	public static class Test {
+		public static void main(String[] args) {
+			String hex = "4d2";
+			long longHex = parseUnsignedHex(hex);
+			double d = Double.longBitsToDouble(longHex);
+			System.out.println(d);
+		}
+
+		public static long parseUnsignedHex(String text) {
+			if (text.length() == 16) {
+				return (parseUnsignedHex(text.substring(0, 1)) << 60)
+						| parseUnsignedHex(text.substring(1));
+			}
+			return Long.parseLong(text, 16);
+		}
+	}
 }
