@@ -3,11 +3,11 @@ package io.intino.tara.compiler.dependencyresolution;
 import io.intino.tara.compiler.core.errorcollection.DependencyException;
 import io.intino.tara.compiler.model.FacetTargetImpl;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.model.NodeReference;
-import io.intino.tara.lang.model.*;
 import io.intino.tara.compiler.model.NodeImpl;
+import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 
 import java.util.*;
@@ -36,7 +36,7 @@ public class InheritanceResolver {
 
 	private void resolve(Node node) throws DependencyException {
 		List<Node> children = getChildrenSorted(node);
-		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.Abstract);
+		if (!node.isAbstract() && !node.subs().isEmpty()) node.addFlag(Tag.Abstract);
 		for (Node child : children) resolve(node, child);
 		resolveAsFacetTargetFragment(node);
 	}
@@ -248,8 +248,8 @@ public class InheritanceResolver {
 
 	private void resolveFlags(Node parent, Node child) {
 		parent.flags().stream().
-			filter(tag -> !tag.equals(Tag.Abstract) && !child.flags().contains(tag)).
-			forEach(child::addFlag);
+				filter(tag -> !tag.equals(Tag.Abstract) && !child.flags().contains(tag)).
+				forEach(child::addFlag);
 	}
 
 	private void resolveAnnotations(Node parent, Node child) {
@@ -298,7 +298,7 @@ public class InheritanceResolver {
 
 	private List<Node> getChildrenSorted(Node parent) {
 		List<Node> children = parent.children().stream().
-			map(node -> node).collect(Collectors.toList());
+				map(node -> node).collect(Collectors.toList());
 		sort(children);
 		return children;
 	}

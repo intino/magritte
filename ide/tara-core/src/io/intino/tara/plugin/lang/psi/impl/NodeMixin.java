@@ -492,9 +492,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		else return "";
 	}
 
-	public PsiElement calculateAnchor() {
+	private PsiElement calculateAnchor() {
 		List<Parameter> parameters = getSignature().getParameters().getParameters();
-		return (PsiElement) parameters.get(parameters.size() - 1);
+		return parameters.isEmpty() ? null : (PsiElement) parameters.get(parameters.size() - 1);
 	}
 
 
