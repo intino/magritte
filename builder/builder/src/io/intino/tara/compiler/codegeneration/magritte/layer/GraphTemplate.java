@@ -26,6 +26,4 @@ public class GraphTemplate extends Template {
 		add(HelpersTemplate.create().rules());
 		return this;
 	}
-
-
 }
