@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static com.intellij.pom.java.LanguageLevel.JDK_1_8;
 import static com.intellij.psi.search.GlobalSearchScope.*;
+import static io.intino.tara.lang.model.Primitive.FUNCTION;
 import static io.intino.tara.plugin.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
@@ -92,7 +93,7 @@ public class MethodReferenceCreator {
 	}
 
 	private String[] findParameters() {
-		if (valued.type().equals(Primitive.FUNCTION)) if (valued instanceof Parameter) {
+		if (FUNCTION.equals(valued.type())) if (valued instanceof Parameter) {
 			final NativeRule rule = (NativeRule) valued.rule();
 			if (rule.signature() == null || rule.signature().isEmpty()) return new String[0];
 			return new String[]{new NativeExtractor(rule.interfaceClass(), valued.name(), rule.signature()).parameters()};
@@ -122,7 +123,7 @@ public class MethodReferenceCreator {
 		} catch (SemanticFatalException ignored) {
 		}
 		if (valued.flags().contains(Tag.Concept)) return "io.intino.tara.magritte.Concept";
-		if (Primitive.FUNCTION.equals(valued.type()) && valued.rule() instanceof NativeRule)
+		if (FUNCTION.equals(valued.type()) && valued.rule() instanceof NativeRule)
 			return getFunctionReturnType().getPresentableText();
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
 		else if (Primitive.REFERENCE.equals(valued.type())) return getReferenceReturnType(valued);
@@ -164,7 +165,7 @@ public class MethodReferenceCreator {
 	}
 
 	private void addImports(PsiClass aClass) {
-		if (valued.type().equals(Primitive.FUNCTION))
+		if (valued.type().equals(FUNCTION))
 			addImports(aClass, valued instanceof Variable ? findFunctionImports() : ((NativeRule) valued.rule()).imports());
 		Imports imports = new Imports(module.getProject());
 		String qn = qnOf(valued);

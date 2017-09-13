@@ -1,6 +1,8 @@
 def.file
 /Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Operations.tara#true
 /Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Sumus.tara#true
+/Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/view/View.tara#true
+/Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/view/Molds.tara#true
 /Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Ontology.tara#true
 
 project
@@ -8,7 +10,7 @@ cesar
 module
 cesar
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Application Support/IntelliJIdea2016.3/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/cesar/cesar/gen
 final_outputpath
@@ -25,9 +27,9 @@ src.path
 version
 1.0.0
 working.package
-
+.graph
 make
-false
+true
 test.module
 false
 encoding

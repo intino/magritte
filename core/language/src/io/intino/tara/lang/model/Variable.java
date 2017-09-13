@@ -71,7 +71,7 @@ public interface Variable extends Valued, Cloneable {
 
 	default NodeRoot nodeRoot() {
 		Node container = container();
-		while (!(container instanceof NodeRoot))
+		while (container != null && !(container instanceof NodeRoot))
 			container = container.container();
 		return (NodeRoot) container;
 	}

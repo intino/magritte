@@ -2,12 +2,12 @@ package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.model.rules.variable.VariableRule;
 import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.lang.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,6 +133,9 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public void metric(String metric) {
+		final TaraMetric newMetric = TaraElementFactory.getInstance(this.getProject()).createMetric(metric);
+		if (getMetric() == null) addAfter(newMetric.copy(), this.getValue());
+		else getMetric().replace(newMetric.copy());
 	}
 
 	public boolean isVariableInit() {
