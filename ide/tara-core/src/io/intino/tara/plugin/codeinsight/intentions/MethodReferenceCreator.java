@@ -232,6 +232,4 @@ public class MethodReferenceCreator {
 		}
 		return list;
 	}
-
-
 }

@@ -53,8 +53,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			final String langName = ctx.headerReference().getText();
 			for (CompilerConfiguration.DSL language : languages)
 				if (language.name().equalsIgnoreCase(langName)) model.setLanguage(language.get());
-			if (model.languageName().isEmpty())
-				addError("Language " + langName + " not found", ctx);
+			if (model.languageName().isEmpty()) addError("Language " + langName + " not found", ctx);
 		} else addError("Language not found", ctx);
 	}
 
@@ -446,13 +445,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private String format(String text) {
 		String pattern = pattern(text);
-		String result = "";
-		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
-		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);
-		return result;
+		StringBuilder result = new StringBuilder();
+		for (String line : text.split("\\n")) result.append(line.replaceFirst(pattern, "")).append("\n");
+		while (result.toString().endsWith("\n")) result = new StringBuilder(result.substring(0, result.length() - 1));
+		return result.toString();
 	}
 
 	private String pattern(String text) {
+		if (text.isEmpty() || !text.contains("\n")) return text;
 		final String replace = text.substring(0, text.indexOf("\n"));
 		return replace.replace(replace.trim(), "");
 	}
