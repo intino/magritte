@@ -1,11 +1,11 @@
 package io.intino.tara.lang.semantics.constraints.component;
 
+import io.intino.tara.Resolver;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.NodeRule;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
-import io.intino.tara.Resolver;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class OneOf implements Constraint.OneOf {
 	private final List<Rule> rules;
@@ -36,9 +36,13 @@ public class OneOf implements Constraint.OneOf {
 			requireTypes.add(Resolver.shortType(((Component) constraint).type()));
 			try {
 				constraint.check(node);
-				accepted += filterByType(node, (Component) constraint).size();
 			} catch (SemanticException ignored) {
 			}
+			final List<Node> components = filterByType(node, (Component) constraint);
+			final List<Node> acceptedNodes = acceptedComponents(components);
+			accepted += acceptedNodes.size();
+			final List<Node> notAccepted = notAccepted(components, acceptedNodes);
+			if (!notAccepted.isEmpty()) error(notAccepted.get(0));
 		}
 		Size size = (Size) rules.stream().filter(r -> r instanceof Size).findFirst().orElse(null);
 		if (size != null) {
@@ -86,6 +90,25 @@ public class OneOf implements Constraint.OneOf {
 		for (io.intino.tara.lang.model.Facet facet : node.facets())
 			if (facet.type().equals(Resolver.shortType(type))) return true;
 		return false;
+	}
+
+
+	private List<Node> acceptedComponents(List<Node> components) {
+		return components.stream().filter(component -> rules.stream().allMatch(r -> accept(r, components, component))).collect(Collectors.toList());
+	}
+
+	private List<Node> notAccepted(List<Node> components, List<Node> accepted) {
+		return components.stream().filter(c -> !accepted.contains(c)).collect(Collectors.toList());
+	}
+
+	private boolean accept(Rule r, List<Node> components, Node component) {
+		return r instanceof Size ? r.accept(components) : r.accept(component);
+	}
+
+	private void error(Node notAccepted) throws SemanticException {
+		for (Rule rule : rules)
+			if (!accept(rule, notAccepted.container().components(), notAccepted))
+				throw new SemanticException(new SemanticNotification(ERROR, rule.errorMessage(), notAccepted, rule.errorParameters()));
 	}
 
 	@Override

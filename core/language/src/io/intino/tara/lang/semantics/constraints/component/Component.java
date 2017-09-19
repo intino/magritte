@@ -68,7 +68,7 @@ public class Component implements Constraint.Component {
 		return components.stream().filter(c -> !accepted.contains(c)).collect(Collectors.toList());
 	}
 
-	public void error(Node notAccepted) throws SemanticException {
+	private void error(Node notAccepted) throws SemanticException {
 		for (Rule rule : rules)
 			if (!accept(rule, notAccepted.container().components(), notAccepted))
 				throw new SemanticException(new SemanticNotification(ERROR, rule.errorMessage(), notAccepted, rule.errorParameters()));

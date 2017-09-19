@@ -1,7 +1,10 @@
 def.file
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/datawarehouse/Data.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/View.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Elements.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Toolbar.tara#true
 /Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus/platform/src/io/intino/sumus/analytics/Olap.tara#true
 
 project
 sumus
@@ -26,7 +29,7 @@ src.path
 version
 1.0.0
 working.package
-
+.graph
 make
 false
 test.module
