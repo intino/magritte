@@ -111,7 +111,7 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	private static List<Constraint.Parameter> parameterConstraintsOf(Node node) {
+	public static List<Constraint.Parameter> parameterConstraintsOf(Node node) {
 		Language language = getLanguage((PsiElement) node);
 		if (language == null) return Collections.emptyList();
 		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
@@ -120,9 +120,13 @@ public class TaraUtil {
 		List<Constraint.Parameter> parameters = new ArrayList<>();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
-			else if (constraint instanceof Constraint.Facet)
+			else if (constraint instanceof Constraint.Facet && hasFacet(node, (Constraint.Facet) constraint))
 				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
+	}
+
+	private static boolean hasFacet(Node node, Constraint.Facet constraint) {
+		return node.facets().stream().anyMatch(facet -> facet.type().equalsIgnoreCase(constraint.type()));
 	}
 
 	@Nullable

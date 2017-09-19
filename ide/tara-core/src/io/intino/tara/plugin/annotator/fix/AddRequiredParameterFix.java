@@ -12,21 +12,22 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.lang.psi.TaraElementFactory;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext;
-import io.intino.tara.plugin.lang.psi.TaraFacetApply;
-import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Parametrized;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext;
+import io.intino.tara.plugin.lang.psi.TaraElementFactory;
+import io.intino.tara.plugin.lang.psi.TaraFacetApply;
+import io.intino.tara.plugin.lang.psi.TaraNode;
+import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +163,14 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 
 	private void addVariables(Template template, List<Constraint.Parameter> requires) {
 		for (int i = 0; i < requires.size(); i++)
-			template.addVariable("VALUE" + i, "", '"' + (mustBeQuoted(requires.get(i)) ? "\\\"\\\"" : "") + '"', true);
+			template.addVariable("VALUE" + i, "", '"' + defaultValue(requires, i), true);
+	}
+
+	@NotNull
+	private String defaultValue(List<Constraint.Parameter> requires, int i) {
+		final Constraint.Parameter parameter = requires.get(i);
+		if (parameter instanceof ReferenceParameter) return "empty";
+		return (mustBeQuoted(parameter) ? "\\\"\\\"" : "") + '"';
 	}
 
 	private boolean mustBeQuoted(Constraint.Parameter parameter) {
@@ -170,10 +178,10 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	}
 
 	private String createTemplateText(PsiElement anchor, List<Constraint.Parameter> requires) {
-		String text = "";
+		StringBuilder text = new StringBuilder();
 		for (int i = 0; i < requires.size(); i++)
-			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
-		return !hasParameters(anchor) && !text.isEmpty() ? text.substring(2) : text;
+			text.append(", ").append(requires.get(i).name()).append(" = ").append("$VALUE").append(i).append("$");
+		return !hasParameters(anchor) && (text.length() > 0) ? text.substring(2) : text.toString();
 	}
 
 	private void filterPresentParameters(List<Constraint.Parameter> requires) {
