@@ -151,7 +151,7 @@ public class Concept extends Predicate {
 			getGlobal().severe("Owner " + owner.name() + " contains a component named " + name);
 			return null;
 		}
-		return newNode(owner.stash() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+		return newNode(owner.id() + "$" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
 	private Node newNode(String name, Node owner) {

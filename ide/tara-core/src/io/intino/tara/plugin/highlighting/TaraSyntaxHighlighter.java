@@ -5,12 +5,14 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
@@ -147,15 +149,26 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	@Override
 	public Lexer getHighlightingLexer() {
 		if (project == null) {
-			DataContext result = getContext();
-			if (EventQueue.isDispatchThread() && result == null)
-				result = DataManager.getInstance().getDataContextFromFocus().getResultSync(100);
-			project = result != null ? result.getData(LangDataKeys.PROJECT) : null;
+			final DataContext[] result = {context()};
+			if (result[0] == null)
+				if (!EventQueue.isDispatchThread())
+					ApplicationManager.getApplication().invokeAndWait(() -> result[0] = syncContext());
+				else result[0] = syncContext();
+			project = result[0] != null ? result[0].getData(LangDataKeys.PROJECT) : WindowManager.getInstance().getAllProjectFrames()[0].getProject();
 		}
+
 		return new TaraHighlighterLexAdapter(project);
 	}
 
-	private DataContext getContext() {
+	private DataContext syncContext() {
+		try {
+			return DataManager.getInstance().getDataContextFromFocus().getResultSync(100);
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	private DataContext context() {
 		try {
 			return DataManager.getInstance().getDataContextFromFocus().getResult();
 		} catch (Throwable e) {

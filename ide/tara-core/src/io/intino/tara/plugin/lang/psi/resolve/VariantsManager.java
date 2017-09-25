@@ -1,11 +1,6 @@
 package io.intino.tara.plugin.lang.psi.resolve;
 
 import com.intellij.psi.PsiElement;
-import io.intino.tara.plugin.lang.LanguageManager;
-import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
 import io.intino.tara.Checker;
 import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
@@ -15,6 +10,11 @@ import io.intino.tara.lang.model.rules.variable.ReferenceRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
+import io.intino.tara.plugin.lang.LanguageManager;
+import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
