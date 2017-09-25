@@ -19,13 +19,18 @@ public abstract class Predicate {
     }
 
     public String name() {
-        String shortName = id.contains(".") ? id.substring(id.lastIndexOf(".") + 1) : id;
-        shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
-        shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
-        return shortName;
+		return nameOf(this.id);
     }
 
-    public abstract List<Concept> conceptList();
+	@SuppressWarnings("WeakerAccess")
+	public static String nameOf(String id) {
+		String shortName = id.contains(".") ? id.substring(id.lastIndexOf(".") + 1) : id;
+		shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
+		shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
+		return shortName;
+	}
+
+	public abstract List<Concept> conceptList();
 
     void putType(Concept concept) {
         typeNames.add(concept.id);
