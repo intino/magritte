@@ -45,7 +45,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 
 	private void semanticErrors(SemanticFatalException fatal) {
 		for (io.intino.tara.lang.semantics.errorcollector.SemanticException e : fatal.exceptions()) {
-			Element[] origins = e.origin() != null ? e.origin() : null;
+			Element[] origins = e.origin();
 			if (origins == null || origins.length == 0) return;
 			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), origins[0]);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());

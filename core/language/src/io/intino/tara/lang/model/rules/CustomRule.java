@@ -2,7 +2,7 @@ package io.intino.tara.lang.model.rules;
 
 public interface CustomRule {
 
-	Class<?> getLoadedClass();
+	Class<?> loadedClass();
 
 	void setLoadedClass(Class<?> loadedClass);
 

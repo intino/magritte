@@ -132,6 +132,10 @@ def type(nativeCustomWordRule) trigger(externalWordClass)
 	$source+javaValidName
 end
 
+def type(variablecustomrule) trigger(externalWordClass)
+	$aClass+javaValidName
+end
+
 def type(customrule) trigger(name)
 	$aClass+javaValidName
 end

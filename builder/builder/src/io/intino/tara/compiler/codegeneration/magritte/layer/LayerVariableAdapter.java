@@ -49,7 +49,10 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		frame.addSlot(QN, buildQN(container));
 		if (variable.values().stream().filter(Objects::nonNull).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
-		if (variable.rule() != null) frame.addSlot(RULE, (Frame) ruleToFrame(variable.rule()));
+		if (variable.rule() != null) {
+			final Frame ruleFrame = ruleToFrame(variable.rule());
+			if (ruleFrame != null) frame.addSlot(RULE, (Frame) ruleFrame);
+		}
 		frame.addSlot(TYPE, getType(variable));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
 		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Reactive))

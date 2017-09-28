@@ -19,6 +19,10 @@ def type(graph)
 			$node+clone...[$NL]
 		}
 
+		public <T extends GraphWrapper> T a$(Class<T> t) {
+			return this.core$().as(t);
+		}
+
         @Override
 		public void update() {
 			$node+update...[$NL]

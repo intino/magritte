@@ -151,7 +151,7 @@ class TerminalConstraintManager implements TemplateTags {
 
 
 	private void fillCustomRule(VariableCustomRule rule, Frame frame) {
-		frame.addSlot(QN, rule.getLoadedClass().getName());
+		frame.addSlot(QN, rule.loadedClass().getName());
 		if (rule.isMetric()) {
 			frame.addTypes(METRIC);
 			frame.addSlot(DEFAULT, rule.getDefaultUnit());
