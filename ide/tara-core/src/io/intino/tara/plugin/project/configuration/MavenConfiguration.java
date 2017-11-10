@@ -149,7 +149,12 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public String interfaceVersion() {
+	public String boxVersion() {
 		return maven.getProperties().getProperty(MavenTags.INTERFACE_VERSION);
+	}
+
+	@Override
+	public String boxPackage() {
+		return "box";
 	}
 }

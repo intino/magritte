@@ -151,9 +151,12 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		if (project == null) {
 			final DataContext[] result = {context()};
 			if (result[0] == null)
-				if (!EventQueue.isDispatchThread())
-					ApplicationManager.getApplication().invokeAndWait(() -> result[0] = syncContext());
-				else result[0] = syncContext();
+				if (!EventQueue.isDispatchThread()) {
+					try {
+						ApplicationManager.getApplication().invokeAndWait(() -> result[0] = syncContext());
+					} catch (Throwable ignored) {
+					}
+				} else result[0] = syncContext();
 			project = result[0] != null ? result[0].getData(LangDataKeys.PROJECT) : WindowManager.getInstance().getAllProjectFrames()[0].getProject();
 		}
 

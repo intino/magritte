@@ -238,8 +238,13 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	}
 
 	@Override
-	public String interfaceVersion() {
+	public String boxVersion() {
 		return "1.0.0";
+	}
+
+	@Override
+	public String boxPackage() {
+		return "box";
 	}
 
 	public void systemStashName(String name) {

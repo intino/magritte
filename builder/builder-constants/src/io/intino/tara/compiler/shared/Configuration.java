@@ -40,7 +40,9 @@ public interface Configuration {
 
 	String outDSL();
 
-	String interfaceVersion();
+	String boxVersion();
+
+	String boxPackage();
 
 	default Map<String, String> releaseRepositories() {
 		return Collections.emptyMap();
