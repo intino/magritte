@@ -8,6 +8,7 @@ import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
+import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
 import org.siani.itrules.engine.FrameBuilder;
@@ -89,10 +90,12 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		frame.addSlot(TAGS, getFlags(variable));
 		frame.addSlot(SCOPE, workingPackage);
 		frame.addSlot(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
-		final Frame rule = ruleToFrame(variable.rule());
+		final Frame rule = (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null) ? null: ruleToFrame(variable.rule());
 		if (rule != null) frame.addSlot(RULE, rule);
-		else if (variable.flags().contains(Reactive))
-			frame.addSlot(RULE, ruleToFrame(new NativeRule("", "", emptyList())));
+		else if (variable.flags().contains(Reactive)) {
+			final Frame ruleFrame = ruleToFrame(new NativeRule("", "", emptyList()));
+			if (ruleFrame != null) frame.addSlot(RULE, ruleFrame);
+		}
 	}
 
 	private boolean isTerminal(Variable variable) {

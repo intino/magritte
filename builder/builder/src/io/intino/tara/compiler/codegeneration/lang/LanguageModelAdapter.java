@@ -410,7 +410,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame buildCustomRuleFrame(NodeCustomRule rule) {
-		return new Frame().addTypes("rule", "customRule").addSlot("qn", rule.getLoadedClass().getName());
+		return new Frame().addTypes("rule", "customRule").addSlot("qn", rule.loadedClass().getName());
 	}
 
 	private static List<Tag> annotations(Constraint constraint) {

@@ -1,16 +1,20 @@
 package io.intino.tara.compiler.core.operation.model;
 
+import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
+import io.intino.tara.compiler.core.SourceUnit;
 import io.intino.tara.compiler.core.errorcollection.DependencyException;
+import io.intino.tara.compiler.core.errorcollection.message.DependencyErrorMessage;
+import io.intino.tara.compiler.core.errorcollection.message.WarningMessage;
 import io.intino.tara.compiler.dependencyresolution.*;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.errorcollection.message.DependencyErrorMessage;
+import io.intino.tara.lang.model.Element;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
-import static java.lang.System.out;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static java.lang.System.out;
 
 public class ModelDependencyResolutionOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getGlobal();
@@ -26,7 +30,9 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			final CompilerConfiguration conf = unit.getConfiguration();
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Resolving dependencies...");
-			new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
+			final DependencyResolver dependencyResolver = new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory());
+			dependencyResolver.resolve();
+			notifyRulesNotLoaded(dependencyResolver);
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, conf.level()).resolve();
@@ -35,5 +41,19 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			unit.getErrorCollector().addError(DependencyErrorMessage.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
 		}
+	}
+
+	private void notifyRulesNotLoaded(DependencyResolver dependencyResolver) {
+		for (DependencyException entry : dependencyResolver.rulesNotLoaded()) {
+			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), entry.getElement());
+			unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, entry.getMessage(), sourceFromFile, entry.getLine(), entry.getElement().column()));
+		}
+	}
+
+	private SourceUnit getSourceFromFile(Collection<SourceUnit> values, Element origin) {
+		if (origin == null) return null;
+		for (SourceUnit value : values)
+			if (value.getName().equals(origin.file())) return value;
+		return null;
 	}
 }

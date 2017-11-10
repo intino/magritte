@@ -15,6 +15,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 	private final String aClass;
 	private Class<?> loadedClass;
 	private VariableRule object;
+	private String qualifiedName;
 
 	public VariableCustomRule(String aClass) {
 		this.aClass = aClass;
@@ -22,12 +23,12 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 
 	@Override
 	public boolean accept(List<Object> values) {
-		return loadedClass != null && (!isMetric()) && invokeWith(values);
+		return loadedClass == null || (!isMetric()) && invokeWith(values);
 	}
 
 	@Override
 	public boolean accept(List<Object> values, String metric) {
-		return isMetric() || accept(values);
+		return loadedClass == null || isMetric() || accept(values);
 	}
 
 	@Override
@@ -47,14 +48,18 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 	}
 
 	public boolean isMetric() {
-		if (!loadedClass.isEnum()) return false;
+		if (loadedClass == null || !loadedClass.isEnum()) return false;
 		for (Class<?> aClass : loadedClass.getInterfaces())
 			if (aClass.getName().equals(Metric.class.getName())) return true;
 		return false;
 	}
 
-	public Class<?> getLoadedClass() {
+	public Class<?> loadedClass() {
 		return loadedClass;
+	}
+
+	public String qualifiedName() {
+		return loadedClass == null ? qualifiedName : loadedClass.getName();
 	}
 
 	public void setLoadedClass(Class<?> loadedClass) {
@@ -89,4 +94,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 		}
 	}
 
+	public void qualifiedName(String qualifiedName) {
+		this.qualifiedName = qualifiedName;
+	}
 }

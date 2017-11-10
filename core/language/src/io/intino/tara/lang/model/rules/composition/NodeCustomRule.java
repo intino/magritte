@@ -26,7 +26,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 		return Collections.emptyList();
 	}
 
-	public Class<?> getLoadedClass() {
+	public Class<?> loadedClass() {
 		return loadedClass;
 	}
 

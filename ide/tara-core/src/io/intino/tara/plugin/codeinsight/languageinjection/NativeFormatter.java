@@ -3,40 +3,40 @@ package io.intino.tara.plugin.codeinsight.languageinjection;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.TemplateTags;
-import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
-import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.lang.model.*;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.Verso;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
-import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
-import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.NativeWordRule;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeReferenceRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.TemplateTags;
+import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
+import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
+import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.plugin.lang.psi.Valued;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.emptySet;
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
+import static io.intino.tara.lang.model.Primitive.*;
+import static io.intino.tara.lang.model.Tag.Feature;
+import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
 import static io.intino.tara.plugin.lang.psi.resolve.ReferenceManager.resolveRule;
-import static io.intino.tara.lang.model.Tag.Feature;
-import static io.intino.tara.lang.model.Tag.Instance;
-import static io.intino.tara.lang.model.Primitive.*;
+import static java.util.Collections.emptySet;
 
 @SuppressWarnings("Duplicates")
 public class NativeFormatter implements TemplateTags {
@@ -194,10 +194,11 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String buildContainerPathOfExpression(Parameter parameter, String outDsl) {
-		return  buildExpressionContainerPath(parameter.scope(), parameter.container(), outDsl);
+		return buildExpressionContainerPath(parameter.scope(), parameter.container(), outDsl);
 	}
 
 	public static String getSignature(Parameter parameter) {
+		if (!(parameter.rule() instanceof NativeRule)) return "";
 		final NativeRule rule = (NativeRule) parameter.rule();
 		return rule != null ? rule.signature() : null;
 	}
@@ -224,7 +225,6 @@ public class NativeFormatter implements TemplateTags {
 		} else return getQn(owner.facetTarget(), owner, workingPackage);
 	}
 
-
 	private static String buildExpressionContainerPath(String typeWorkingPackage, Node owner, String workingPackage) {
 		final String trueWorkingPackage = extractWorkingPackage(typeWorkingPackage, workingPackage);
 		if (owner != null && owner.facetTarget() == null) {
@@ -241,6 +241,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String getTypeAsScope(Node scope, String language) {
+		if (language == null || scope == null) return "";
 		return language.toLowerCase() + QualifiedNameFormatter.DOT + cleanQn(scope.type());
 	}
 

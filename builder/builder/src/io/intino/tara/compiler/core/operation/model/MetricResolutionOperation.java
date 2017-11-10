@@ -54,7 +54,7 @@ public class MetricResolutionOperation extends ModelOperation {
 		for (Variable variable : variables) {
 			if ((variable.rule() instanceof VariableCustomRule) && ((VariableCustomRule) variable.rule()).isMetric() && variable.defaultMetric() != null) {
 				final VariableCustomRule rule = (VariableCustomRule) variable.rule();
-				final Metric metric = findMetric(rule.getLoadedClass(), variable.defaultMetric());
+				final Metric metric = findMetric(rule.loadedClass(), variable.defaultMetric());
 				if (metric == null) throw new DependencyException("Metric not found", variable);
 				variable.values(variable.values().stream().map((Function<Object, Object>) metric::value).collect(Collectors.toList()));
 			}

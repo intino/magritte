@@ -85,8 +85,14 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 			frame.addSlot(PARENT_SUPER, parent != null);
 			if (parent != null) frame.addSlot("parentName", cleanQn(getQn(parent, workingPackage)));
 		}
-		if ((slots.contains(NODE)) && parent != null && (!parent.components().isEmpty() || (parent.facetTarget() != null && !parent.facetTarget().targetNode().components().isEmpty())))
+		if ((slots.contains(NODE)) && parent != null &&
+				(!parent.components().isEmpty() ||
+						(parent.facetTarget() != null && !parent.facetTarget().targetNode().components().isEmpty() && hasLists(parent.facetTarget().targetNode()))))
 			frame.addSlot("parentClearName", cleanQn(getQn(parent, workingPackage)));
+	}
+
+	private boolean hasLists(Node node) {
+		return node.components().stream().anyMatch(c -> !node.sizeOf(c).isSingle());
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {

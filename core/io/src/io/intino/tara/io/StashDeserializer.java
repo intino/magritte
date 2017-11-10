@@ -10,11 +10,9 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.logging.Logger;
 
 public class StashDeserializer extends Deserializer {
 
-	private static final Logger LOG = Logger.getLogger(StashDeserializer.class.getName());
 
 	static {
 		Log.ERROR();
@@ -40,8 +38,7 @@ public class StashDeserializer extends Deserializer {
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
 			kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
 			result = kryo.readObject(input, Stash.class);
-		} catch (KryoException e) {
-			LOG.severe(e.getMessage());
+		} catch (Throwable e) {
 		}
 		return result;
 	}

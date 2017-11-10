@@ -33,7 +33,7 @@ public class NativeCustomWordRule extends NativeRule implements CustomRule {
 	}
 
 	@Override
-	public Class<?> getLoadedClass() {
+	public Class<?> loadedClass() {
 		return null;
 	}
 

@@ -1,20 +1,22 @@
 package io.intino.tara.plugin.annotator.fix;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Rule;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.TaraModel;
+import io.intino.tara.plugin.lang.psi.TaraRule;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraRule;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.Rule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +73,18 @@ public class CreateNodeRuleClassIntention extends ClassCreationIntention {
 		PsiFile file = destiny.findFile(className + ".java");
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
+		if (ApplicationManager.getApplication().isWriteAccessAllowed()) return createClass(destiny, className, additionalProperties);
+		else return ApplicationManager.getApplication().runWriteAction(
+				new Computable<PsiClass>() {
+					@Override
+					public PsiClass compute() {
+						return createClass(destiny, className, additionalProperties);
+					}
+				}
+		);
+	}
+
+	public PsiClass createClass(PsiDirectory destiny, String className, Map<String, String> additionalProperties) {
 		return JavaDirectoryService.getInstance().createClass(destiny, className, "NodeRule", true, additionalProperties);
 	}
 

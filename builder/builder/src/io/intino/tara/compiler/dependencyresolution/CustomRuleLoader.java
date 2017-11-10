@@ -61,7 +61,7 @@ class CustomRuleLoader {
 		});
 	}
 
-	private static String composeQualifiedName(String generatedDslName, String aClass) {
-		return generatedDslName.toLowerCase() + ".rules." + aClass;
+	static String composeQualifiedName(String workingPackage, String aClass) {
+		return workingPackage.toLowerCase() + ".rules." + aClass;
 	}
 }

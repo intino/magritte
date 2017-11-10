@@ -62,7 +62,7 @@ public class PsiCustomWordRule implements VariableRule<Object>, CustomRule {
 	}
 
 	@Override
-	public Class<?> getLoadedClass() {
+	public Class<?> loadedClass() {
 		return null;
 	}
 

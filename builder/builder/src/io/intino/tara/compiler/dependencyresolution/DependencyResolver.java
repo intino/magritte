@@ -25,6 +25,7 @@ public class DependencyResolver {
 	private ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
 	private String workingPackage;
+	private List<DependencyException> rulesNotLoaded = new ArrayList<>();
 
 	public DependencyResolver(Model model, String workingPackage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
 		this.model = model;
@@ -40,6 +41,10 @@ public class DependencyResolver {
 		resolveParentReference(model);
 		resolveInNodes(model);
 		resolveFacetTargets(model);
+	}
+
+	public List<DependencyException> rulesNotLoaded() {
+		return rulesNotLoaded;
 	}
 
 	private void resolveParentReference(Node node) throws DependencyException {
@@ -178,16 +183,19 @@ public class DependencyResolver {
 	private void loadCustomRule(Variable variable) throws DependencyException {
 		final VariableCustomRule rule = (VariableCustomRule) variable.rule();
 		final String source = rule.getExternalWordClass();
-		final Class<?> aClass;
+		Class<?> aClass = null;
 		try {
 			aClass = loadedRules.containsKey(source) ?
 					loadedRules.get(source) :
 					CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
-			throw new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass(), e.getMessage());
+			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass(), e.getMessage()));
+			rule.qualifiedName(CustomRuleLoader.composeQualifiedName(workingPackage, rule.getExternalWordClass()));
 		}
-		if (aClass != null) loadedRules.put(source, aClass);
-		else throw new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass());
+		if (aClass == null) {
+			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass()));
+			return;
+		} else loadedRules.put(source, aClass);
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);
 	}

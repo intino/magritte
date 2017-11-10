@@ -84,7 +84,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if (node instanceof NodeReference) return;
 		final List<Node> components = node.components();
 		components.stream().
-				filter(c -> !c.isAnonymous() && c.isAbstract()).
+				filter(c -> !c.isAnonymous()).
 				forEach(c -> {
 					List<Frame> children = new ArrayList<>();
 					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).

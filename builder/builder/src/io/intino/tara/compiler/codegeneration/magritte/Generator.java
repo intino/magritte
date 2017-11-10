@@ -26,6 +26,7 @@ import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.clea
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
 import static io.intino.tara.lang.model.Tag.Terminal;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -79,7 +80,7 @@ public abstract class Generator implements TemplateTags {
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		final Frame frame = (Frame) frameBuilder.build(rule);
 		if (rule instanceof VariableCustomRule) {
-			frame.addSlot(QN, ((VariableCustomRule) rule).getLoadedClass().getName());
+			frame.addSlot(QN, ((VariableCustomRule) rule).qualifiedName());
 			if (((VariableCustomRule) rule).isMetric()) {
 				frame.addTypes(METRIC);
 				frame.addSlot(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
@@ -96,12 +97,12 @@ public abstract class Generator implements TemplateTags {
 	protected void addTerminalVariables(Node node, final Frame frame) {
 		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
-			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
+			if (!asList(frame.slots()).contains(META_TYPE.toLowerCase()))
 				frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 		}
 		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		addFacetVariables(node, frame);
-		if (!Arrays.asList(frame.slots()).contains(CONTAINER))
+		if (!asList(frame.slots()).contains(CONTAINER))
 			frame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
 	}
 
@@ -173,7 +174,7 @@ public abstract class Generator implements TemplateTags {
 
 	private void addTerminalVariable(Node node, String type, Frame frame, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
 		Frame varFrame = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
-		if (!Arrays.asList(varFrame.slots()).contains(CONTAINER))
+		if (!asList(varFrame.slots()).contains(CONTAINER))
 			varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
 		frame.addSlot(VARIABLE, varFrame);
 	}
@@ -214,7 +215,7 @@ public abstract class Generator implements TemplateTags {
 			frame.addSlot(OUT_LANGUAGE, parameter.scope());
 			imports.addAll(new ArrayList<>(rule.imports()));
 		}
-		if (!Arrays.asList(frame.slots()).contains(OUT_LANGUAGE.toLowerCase()))
+		if (!asList(frame.slots()).contains(OUT_LANGUAGE.toLowerCase()))
 			frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
 		return frame;
 	}
@@ -232,7 +233,7 @@ public abstract class Generator implements TemplateTags {
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
 		if (parent != null) frame.addSlot(PARENT, cleanQn(getQn(parent, workingPackage)));
-		final List<String> slots = Arrays.asList(frame.slots());
+		final List<String> slots = asList(frame.slots());
 		if ((slots.contains(CREATE) || slots.contains(NODE)) || !node.children().isEmpty()) {
 			frame.addSlot(PARENT_SUPER, node.parent() != null);
 			if (node.parent() != null) frame.addSlot("parentName", cleanQn(getQn(parent, workingPackage)));

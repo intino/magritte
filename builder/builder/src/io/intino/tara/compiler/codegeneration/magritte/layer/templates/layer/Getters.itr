@@ -187,7 +187,7 @@ def type(variable & word & outDefined & multiple) !type(inherited | overriden | 
 	}
 end
 
-def type(variable & word & outDefined) !type(inherited | reactive) trigger(getter)
+def type(variable & word & outDefined) !type(inherited | reactive | multiple) trigger(getter)
 	public $workingPackage.rules.$rule+externalWordClass $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName;
 	}
