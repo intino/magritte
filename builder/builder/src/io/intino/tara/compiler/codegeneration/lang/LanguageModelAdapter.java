@@ -159,8 +159,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private int terminalParameterIndex(Frame constraints) {
 		final Iterator<AbstractFrame> iterator = constraints.frames(CONSTRAINT);
 		int index = 0;
-		while (iterator.hasNext())
-			if (iterator.next().is(PARAMETER)) index++;
+		while (iterator.hasNext()) if (iterator.next().is(PARAMETER)) index++;
 		return index;
 	}
 
