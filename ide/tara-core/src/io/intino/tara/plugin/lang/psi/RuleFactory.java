@@ -53,7 +53,7 @@ public class RuleFactory {
 	}
 
 	private static VariableRule createIntegerRule(TaraRule rule) {
-		return new IntegerRule(minOf(rule.getRange()).intValue(), maxOf(rule.getRange()).intValue(), valueOf(Arrays.asList(rule.getChildren()), Arrays.asList(TaraMetric.class, TaraIdentifierImpl.class)));
+		return new IntegerRule(minOf(rule.getRange()).intValue(), maxOf(rule.getRange()).intValue(), valueOf(Arrays.asList(rule.getChildren()), Arrays.asList(TaraMetricImpl.class, TaraIdentifierImpl.class)));
 	}
 
 	private static VariableRule createDoubleRule(TaraRule rule) {

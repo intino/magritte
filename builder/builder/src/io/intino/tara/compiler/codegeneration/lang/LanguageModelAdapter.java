@@ -223,10 +223,19 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addTerminalConstrains(Node container, Frame frame) {
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
-				filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
-						(c instanceof Constraint.Parameter && ((Constraint.Parameter) c).flags().contains(Tag.Terminal) && !isRedefined((Constraint.Parameter) c, container.variables()))).
+				filter(c -> validComponent(container, c) || validParameter(container, c)).
 				collect(toList());
 		new TerminalConstraintManager(language, container).addConstraints(terminalConstraints, frame);
+	}
+
+	private boolean validParameter(Node container, Constraint c) {
+		if (!(c instanceof Constraint.Parameter)) return false;
+		return ((Constraint.Parameter) c).flags().contains(Tag.Terminal) && !isRedefined((Constraint.Parameter) c, container.variables());
+	}
+
+	private boolean validComponent(Node container, Constraint c) {
+		if (!(c instanceof Constraint.Component)) return false;
+		return is(annotations(c), Instance) && !sizeComplete(container, typeOf(c));
 	}
 
 	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {

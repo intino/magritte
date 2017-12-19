@@ -193,16 +193,17 @@ class TerminalConstraintManager implements TemplateTags {
 		if (constraint == null) return new Frame().addSlot("value", "null");
 		FrameBuilder builder = new FrameBuilder();
 		final Size rule = (Size) constraint.rules().stream().filter(r -> r instanceof Size).findFirst().orElse(Size.MULTIPLE());
-		final Size size = rule.into() != null ? getIntoRule(constraint, rule) : rule;
-		if (size.min() == 0 && size.max() == 0) return null;
+		final Size size = rule.into() != null ? obtainRule(constraint, rule.into()) : rule;
+		if (size == null) return null;
 		return (Frame) builder.build(size);
 	}
 
-	private Size getIntoRule(Constraint.Component constraint, Size rule) {
+	private Size obtainRule(Constraint.Component constraint, Size rule) {
 		final boolean existsComponent = existsComponent(constraint.type());
-		if (!rule.into().isRequired()) return rule.into();
-		if (rule.into().isSingle()) return new Size(0, 0);
-		return existsComponent ? new Size(0, rule.into().max()) : rule.into();
+		if (existsComponent) {
+			if (rule.isSingle()) return null;
+			return new Size(0, rule.max());
+		} else return rule;
 	}
 
 	private Frame sizeOfTerminal(Constraint.Parameter constraint) {

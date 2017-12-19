@@ -1,31 +1,31 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
-import org.siani.itrules.model.Frame;
-import io.intino.tara.Language;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
+import org.siani.itrules.model.Frame;
 
 import java.util.List;
 
 class LanguageInheritanceManager implements TemplateTags {
 	private final Frame root;
-	private final List<String> instances;
+	private final List<String> instanceConstraints;
 	private final Language language;
 	private TerminalConstraintManager manager;
 
-	LanguageInheritanceManager(Frame root, List<String> instances, Language language, Model model) {
+	LanguageInheritanceManager(Frame root, List<String> instanceConstraints, Language language, Model model) {
 		this.root = root;
-		this.instances = instances;
+		this.instanceConstraints = instanceConstraints;
 		this.language = language;
-		manager = new TerminalConstraintManager(language, model);
+		this.manager = new TerminalConstraintManager(language, model);
 	}
 
 	void fill() {
-		if (instances == null || root == null) return;
-		for (String instance : instances) {
+		if (instanceConstraints == null || root == null) return;
+		for (String instance : instanceConstraints) {
 			Frame nodeFrame = new Frame().addTypes(NODE);
 			fillRuleInfo(nodeFrame, instance);
 			addConstraints(nodeFrame, language.constraints(instance));
@@ -42,7 +42,7 @@ class LanguageInheritanceManager implements TemplateTags {
 
 	private void fillRuleInfo(Frame frame, String instance) {
 		Context rules = language.catalog().get(instance);
-		frame.addSlot(TemplateTags.NAME, instance);
+		frame.addSlot(NAME, instance);
 		addTypes(rules.types(), frame);
 	}
 
