@@ -96,6 +96,10 @@ def attribute(String) trigger(fulltype)
 	java.lang.String
 end
 
+def attribute(Date) trigger(fullType)
+	io.intino.tara.magritte.types.Date
+end
+
 def attribute(date) trigger(fullType)
 	io.intino.tara.magritte.types.Date
 end
@@ -106,6 +110,10 @@ end
 
 def attribute(instant) trigger(fullType)
 	java.time.Instant
+end
+
+def attribute(Time) trigger(fullType)
+	java.time.LocalTime
 end
 
 def attribute(time) trigger(fullType)
