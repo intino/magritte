@@ -200,10 +200,8 @@ class TerminalConstraintManager implements TemplateTags {
 
 	private Size obtainRule(Constraint.Component constraint, Size rule) {
 		final boolean existsComponent = existsComponent(constraint.type());
-		if (existsComponent) {
-			if (rule.isSingle()) return null;
-			return new Size(0, rule.max());
-		} else return rule;
+		if (existsComponent) return rule.isSingle() ? null : new Size(0, rule.max());
+		else return rule;
 	}
 
 	private Frame sizeOfTerminal(Constraint.Parameter constraint) {

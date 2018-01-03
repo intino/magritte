@@ -4,7 +4,6 @@ import io.intino.tara.lang.model.Element;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
-import io.intino.tara.lang.semantics.constraints.FacetConstraint;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static io.intino.tara.lang.semantics.constraints.FacetConstraint.findFacet;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -45,11 +45,16 @@ public class Checker {
 
 	private boolean isParameterNotFoundRecoverable(Element element, String name, String type) {
 		final Node node = (Node) element;
-		final List<Constraint.Facet> facets = language.constraints(node.type()).stream().filter(c -> c instanceof Constraint.Facet && FacetConstraint.findFacet(node, ((Constraint.Facet) c).type()) != null).map(c -> (Constraint.Facet) c).collect(toList());
+		if (language == null) return false;
+		final List<Constraint.Facet> facets = language.constraints(node.type()).stream().filter(c -> sameFacet(node, c)).map(c -> (Constraint.Facet) c).collect(toList());
 		for (Constraint.Facet facet : facets)
 			for (Constraint.Parameter c : facet.constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(p -> (Constraint.Parameter) p).collect(toList()))
 				if (c.type().name().equalsIgnoreCase(type) && c.name().equals(name) && !c.size().isRequired()) return true;
 		return false;
+	}
+
+	private boolean sameFacet(Node node, Constraint c) {
+		return c instanceof Constraint.Facet && findFacet(node, ((Constraint.Facet) c).type()) != null;
 	}
 
 	private boolean hasFatal() {

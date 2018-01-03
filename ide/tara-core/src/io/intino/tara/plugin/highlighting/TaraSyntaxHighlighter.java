@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -153,7 +154,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 			if (result[0] == null)
 				if (!EventQueue.isDispatchThread()) {
 					try {
-						ApplicationManager.getApplication().invokeAndWait(() -> result[0] = syncContext());
+						final Application application = ApplicationManager.getApplication();
+						application.acquireReadActionLock().close();
+						application.invokeAndWait(() -> result[0] = syncContext());
 					} catch (Throwable ignored) {
 					}
 				} else result[0] = syncContext();
