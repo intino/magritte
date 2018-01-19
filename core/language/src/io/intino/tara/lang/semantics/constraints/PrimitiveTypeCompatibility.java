@@ -1,6 +1,7 @@
 package io.intino.tara.lang.semantics.constraints;
 
 import io.intino.tara.lang.model.EmptyNode;
+import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
 
 import java.io.File;
@@ -14,19 +15,19 @@ public class PrimitiveTypeCompatibility {
 
 	public static boolean checkCompatiblePrimitives(Primitive type, Primitive inferredType, boolean multiple) {
 		return type.equals(inferredType)
-			|| emptyInfersEmptyList(type, inferredType, multiple)
-			|| integerInfersInteger(type, inferredType)
-			|| booleanOrFunctionInfersBoolean(type, inferredType)
-			|| nativeOrEmptyInfersObject(type, inferredType)
-			|| stringInfersString(type, inferredType)
-			|| integerInfersDouble(type, inferredType)
-			|| stringFunctionOrEmptyInfersDate(type, inferredType)
-			|| stringFunctionOrEmptyInfersInstant(type, inferredType)
-			|| stringInfersTime(type, inferredType)
-			|| nativeOrEmptyInfersNative(type, inferredType)
-			|| emptyInfersReference(type, inferredType)
-			|| referenceInfersWord(type, inferredType)
-			|| stringOrEmptyInfersFile(type, inferredType);
+				|| emptyInfersEmptyList(type, inferredType, multiple)
+				|| integerInfersInteger(type, inferredType)
+				|| booleanOrFunctionInfersBoolean(type, inferredType)
+				|| nativeOrEmptyInfersObject(type, inferredType)
+				|| stringInfersString(type, inferredType)
+				|| integerInfersDouble(type, inferredType)
+				|| stringFunctionOrEmptyInfersDate(type, inferredType)
+				|| stringFunctionOrEmptyInfersInstant(type, inferredType)
+				|| stringInfersTime(type, inferredType)
+				|| nativeOrEmptyInfersNative(type, inferredType)
+				|| emptyInfersReference(type, inferredType)
+				|| referenceInfersWord(type, inferredType)
+				|| stringOrEmptyInfersFile(type, inferredType);
 	}
 
 	private static boolean stringInfersTime(Primitive type, Primitive inferredType) {
@@ -84,7 +85,7 @@ public class PrimitiveTypeCompatibility {
 	public static Primitive inferType(Object value) {
 		if (value == null || value instanceof EmptyNode) return EMPTY;
 		if (value instanceof String) return STRING;
-		if (value instanceof Reference) return REFERENCE;
+		if (value instanceof Reference || value instanceof Node) return REFERENCE;
 		if (value instanceof Double) return DOUBLE;
 		if (value instanceof Boolean) return BOOLEAN;
 		if (value instanceof Integer) return INTEGER;

@@ -13,6 +13,7 @@ import java.util.*;
 
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.RECOVERABLE_ERROR;
+import static java.lang.Enum.valueOf;
 import static java.util.Collections.unmodifiableList;
 
 public final class PrimitiveParameter extends ParameterConstraint {
@@ -97,14 +98,16 @@ public final class PrimitiveParameter extends ParameterConstraint {
 			parameter.scope(this.scope);
 			if (parameter.rule() == null) parameter.rule(rule());
 			else fillRule(parameter);
-			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());
-			else error(element, parameter, error = ParameterError.RULE);
+			if (compliesWithTheConstraints(parameter)) {
+				if (isReferenceInWord(parameter)) parameter.values(parameter.originalValues());
+				parameter.flags(flags());
+			} else error(element, parameter, error = ParameterError.RULE);
 			if (!size().accept(parameter.values())) error(element, parameter, error = ParameterError.SIZE);
 			else parameter.multiple(!size().isSingle());
 		} else error(element, parameter, error = ParameterError.TYPE);
 	}
 
-	private void fillRule(io.intino.tara.lang.model.Parameter parameter) throws SemanticException {
+	private void fillRule(io.intino.tara.lang.model.Parameter parameter) {
 		final VariableRule toFill = parameter.rule();
 		if (toFill instanceof NativeRule && this.rule() instanceof NativeObjectRule)
 			parameter.rule(new NativeObjectRule(((NativeObjectRule) this.rule()).declaredType()));
@@ -130,10 +133,14 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	private boolean accept(io.intino.tara.lang.model.Parameter parameter, Rule rule) {
 		try {
 			return rule instanceof NativeRule || parameter.values().isEmpty() ||
-					parameter.values().get(0) instanceof EmptyNode || rule.accept(parameter.values(), parameter.metric());
+					parameter.values().get(0) instanceof EmptyNode || rule.accept(isReferenceInWord(parameter) ? parameter.originalValues() : parameter.values(), parameter.metric());
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	private boolean isReferenceInWord(io.intino.tara.lang.model.Parameter parameter) {
+		return type().equals(Primitive.WORD) && !parameter.values().isEmpty() && parameter.values().get(0) instanceof Node;
 	}
 
 	@SuppressWarnings("ConstantConditions")

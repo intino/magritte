@@ -180,7 +180,7 @@ public class DependencyResolver {
 		}
 	}
 
-	private void loadCustomRule(Variable variable) throws DependencyException {
+	private void loadCustomRule(Variable variable) {
 		final VariableCustomRule rule = (VariableCustomRule) variable.rule();
 		final String source = rule.getExternalWordClass();
 		Class<?> aClass = null;

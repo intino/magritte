@@ -66,7 +66,7 @@ public interface Variable extends Valued, Cloneable {
 	String getUID();
 
 	default Language language() {
-		return nodeRoot().language();
+		return nodeRoot() == null ? null : nodeRoot().language();
 	}
 
 	default NodeRoot nodeRoot() {
