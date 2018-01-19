@@ -15,7 +15,6 @@ import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
-import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
@@ -32,9 +31,11 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
 import static io.intino.tara.compiler.codegeneration.Format.javaValidName;
+import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static java.io.File.separator;
 import static java.lang.System.out;
+import static java.util.Objects.requireNonNull;
 
 public class LayerGenerationOperation extends ModelOperation implements TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
@@ -60,12 +61,10 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose())
-				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Cleaning Old Layers...");
-			if (!conf.level().equals(Level.Solution)) cleanOldLayers(model);
-			if (conf.isVerbose())
-				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Generating Layers...");
-			if (!model.level().equals(Level.Solution)) createLayers(model);
+			if (conf.isVerbose()) out.println(prefix() + " Cleaning Old Layers...");
+			if (!conf.level().equals(Solution)) cleanOldLayers(model);
+			if (conf.isVerbose()) out.println(prefix() + " Generating Layers...");
+			if (!model.level().equals(Solution)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
@@ -130,6 +129,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
+			renderDecorable(map, node, layerFrame);
 		}
 	}
 
@@ -137,6 +137,10 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
+		renderDecorable(map, node, layerFrame);
+	}
+
+	private void renderDecorable(Map<String, Map<String, String>> map, Node node, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
 			layerFrame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
 			map.get(node.file()).put(srcDestiny(layerFrame), format(layerFrame));
@@ -149,12 +153,12 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		if (file.exists()) file.delete();
 	}
 
-	private String destiny(Map.Entry<String, Frame> layerFrame) {
-		return new File(outFolder, layerFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
+	private String destiny(Map.Entry<String, Frame> layerFrameMap) {
+		return new File(outFolder, layerFrameMap.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
-	private String srcDestiny(Map.Entry<String, Frame> layerFrame) {
-		return new File(srcFolder, layerFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
+	private String srcDestiny(Map.Entry<String, Frame> layerFrameMap) {
+		return new File(srcFolder, layerFrameMap.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
 	private void writeLayers(Map<String, String> layersMap) {
@@ -214,7 +218,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		List<File> list = new ArrayList<>();
 		if (!out.isDirectory() && !out.getName().equals(GRAPH + JAVA)) list.add(out);
 		else if (!out.isDirectory())
-			for (File file : out.listFiles(f -> !"natives".equals(f.getName())))
+			for (File file : requireNonNull(out.listFiles(f -> !"natives".equals(f.getName()))))
 				list.addAll(collectAllLayers(file));
 		return list;
 	}
@@ -234,5 +238,9 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private String format(Map.Entry<String, Frame> layerFrame) {
 		return template.format(layerFrame.getValue());
+	}
+
+	private String prefix() {
+		return PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]";
 	}
 }

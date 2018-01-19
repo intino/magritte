@@ -21,6 +21,7 @@ import java.util.Set;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.tara.compiler.shared.Configuration.Level.Platform;
+import static io.intino.tara.lang.model.Tag.Decorable;
 import static io.intino.tara.lang.model.Tag.Instance;
 
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
@@ -42,6 +43,8 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		frame.addTypes("nodeimpl");
 		frame.addSlot(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : PRODUCT);
 		frame.addSlot(OUT_LANGUAGE, outDSL).addSlot(WORKING_PACKAGE, workingPackage);
+		if (target.owner().isAbstract() || target.owner().is(Decorable)) frame.addSlot(ABSTRACT, true);
+		if (target.owner().is(Decorable)) frame.addSlot(DECORABLE, true);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
@@ -126,7 +129,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addTerminalVariables(target.owner(), frame);
 	}
 
-	private String name(FacetTarget target) {
+	static String name(FacetTarget target) {
 		return target.owner().name() + target.targetNode().name();
 	}
 

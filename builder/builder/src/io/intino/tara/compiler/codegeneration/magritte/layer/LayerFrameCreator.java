@@ -12,7 +12,7 @@ import io.intino.tara.lang.model.Variable;
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +20,7 @@ import java.util.Set;
 import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
 import static io.intino.tara.compiler.codegeneration.Format.javaValidName;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
+import static io.intino.tara.compiler.codegeneration.magritte.layer.LayerFacetTargetAdapter.name;
 
 
 public class LayerFrameCreator implements TemplateTags {
@@ -53,16 +54,24 @@ public class LayerFrameCreator implements TemplateTags {
 		final Frame frame = new Frame().addTypes(LAYER).addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
 		createFrame(frame, node);
 		addNodeImports(frame);
-		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
-		return new AbstractMap.SimpleEntry<>(calculateLayerPath(node, aPackage), frame);
+		return new SimpleEntry<>(calculateLayerPath(node, packageOf(frame)), frame);
+	}
+
+	public Map.Entry<String, Frame> create(FacetTarget facetTarget, Node owner) {
+		final Frame frame = new Frame().addTypes(LAYER).addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
+		layerFacetTargetAdapter.getImports().clear();
+		variableAdapter.getImports().clear();
+		createFrame(frame, facetTarget);
+		addFacetImports(frame);
+		return new SimpleEntry<>(calculateLayerPath(owner, packageOf(facetTarget, frame)), frame);
 	}
 
 	public Map.Entry<String, Frame> createDecorable(Node node) {
 		final Frame frame = new Frame().addTypes(LAYER, DECORABLE);
-		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
-		frame.addSlot(NAME, node.name());
+		final String aPackage = node.facetTarget() != null ? packageOf(node.facetTarget(), frame) : packageOf(frame);
+		frame.addSlot(NAME, node.facetTarget() != null ? name(node.facetTarget()) : node.name());
 		if (node.isAbstract()) frame.addSlot(ABSTRACT, true);
-		return new AbstractMap.SimpleEntry<>(calculateDecorablePath(node, aPackage), frame);
+		return new SimpleEntry<>(calculateDecorablePath(node, aPackage), frame);
 	}
 
 	private String calculateDecorablePath(Node node, String aPackage) {
@@ -75,16 +84,6 @@ public class LayerFrameCreator implements TemplateTags {
 
 	private String facetName(FacetTarget facetTarget) {
 		return facetTarget != null ? facetTarget.target() : "";
-	}
-
-	public Map.Entry<String, Frame> create(FacetTarget facetTarget, Node owner) {
-		final Frame frame = new Frame().addTypes(LAYER).addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
-		layerFacetTargetAdapter.getImports().clear();
-		variableAdapter.getImports().clear();
-		createFrame(frame, facetTarget);
-		addFacetImports(frame);
-		return new AbstractMap.SimpleEntry<>(addPackage(facetTarget, frame) + DOT +
-				javaValidName().format(owner.name() + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void addNodeImports(Frame frame) {
@@ -108,15 +107,15 @@ public class LayerFrameCreator implements TemplateTags {
 		frame.addSlot(NODE, builder.build(facet));
 	}
 
-	private String addPackage(Frame frame) {
+	private String packageOf(Frame frame) {
 		String packagePath = workingPackage.toLowerCase();
 		if (!packagePath.isEmpty()) frame.addSlot(PACKAGE, packagePath);
 		return packagePath;
 	}
 
-	private String addPackage(FacetTarget target, Frame frame) {
+	private String packageOf(FacetTarget target, Frame frame) {
 		String packagePath = facetLayerPackage(target, workingPackage);
 		if (!packagePath.isEmpty()) frame.addSlot(PACKAGE, packagePath.substring(0, packagePath.length() - 1));
-		return packagePath;
+		return packagePath.endsWith(".") ? packagePath.substring(0, packagePath.length() - 1) : packagePath;
 	}
 }
