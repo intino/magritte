@@ -9,10 +9,10 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import io.intino.tara.plugin.lang.psi.TaraTypes;
 import io.intino.tara.plugin.lang.psi.impl.TaraElementFactoryImpl;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraTypes;
 
 import static com.intellij.psi.TokenType.NEW_LINE_INDENT;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
@@ -72,7 +72,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 	}
 
 	private boolean is(PsiElement element, IElementType type) {
-		return element != null && element.getNode().getElementType().equals(type);
+		return element != null && element.getNode() != null && element.getNode().getElementType().equals(type);
 	}
 
 	@Override

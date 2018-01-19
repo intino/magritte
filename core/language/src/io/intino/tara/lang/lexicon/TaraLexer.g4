@@ -150,7 +150,7 @@ STRING_MULTILINE    : EQUALS EQUALS+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE)
 
 SINGLE_QUOTE        : '\'' {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_QUOTED);
 EXPRESSION_MULTILINE: DASH DASH+  {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_MULTILINE_MODE);
-CLASS_TYPE   		: IDENTIFIER CLOSE_INLINE IDENTIFIER (COMMA IDENTIFIER)? INLINE;
+CLASS_TYPE   		: IDENTIFIER CLOSE_INLINE ((IDENTIFIER DOT)* IDENTIFIER) (COMMA ((IDENTIFIER DOT)* IDENTIFIER))? INLINE;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH)*;
 
 MEASURE_VALUE       : (LETTER| PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)*;
@@ -171,8 +171,8 @@ UNKNOWN_TOKEN: . ;
 
 mode QUOTED;
 	QUOTE:'"'                           {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
-    Q:'\"'                              {   setType(CHARACTER); };
-    SLASH_Q:'\\\"'                      {   setType(CHARACTER); };
+//    Q:'\"'                              {   setType(CHARACTER); };
+//    SLASH_Q:'\\\"'                      {   setType(CHARACTER); };
     SLASH:'\\'                          {   setType(CHARACTER); };
     CHARACTER:.                         {   setType(CHARACTER); };
 
