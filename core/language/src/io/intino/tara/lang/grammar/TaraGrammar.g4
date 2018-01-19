@@ -25,7 +25,7 @@ facets : AS facet+;
 
 facet: metaidentifier parameters?;
 
-withTable : LIST WITH identifierReference tableParameters;
+//withTable : LIST WITH identifierReference tableParameters;
 tableParameters :LEFT_PARENTHESIS (IDENTIFIER+ (COMMA IDENTIFIER+)*)? RIGHT_PARENTHESIS;
 
 

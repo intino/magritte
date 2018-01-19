@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.6
+// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.7
 package io.intino.tara.lang.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -155,18 +155,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFacet(TaraGrammar.FacetContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWithTable(TaraGrammar.WithTableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWithTable(TaraGrammar.WithTableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

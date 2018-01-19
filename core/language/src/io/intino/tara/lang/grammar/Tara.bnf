@@ -89,8 +89,7 @@ variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS 
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.VariableMixin'
 	implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Variable, io.intino.tara.plugin.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }
-bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT
-{
+bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT {
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.ValueMixin'
     implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.plugin.lang.psi.Value'
 }
