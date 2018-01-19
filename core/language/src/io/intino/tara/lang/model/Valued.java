@@ -37,6 +37,10 @@ public interface Valued extends Element {
 
 	List<Object> values();
 
+	default List<Object> originalValues() {
+		return values();
+	}
+
 	Primitive type();
 
 	boolean isMultiple();

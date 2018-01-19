@@ -18,3 +18,5 @@ ide/legio/legio-core/test-gen/
 .tara/
 builder/builder/test-res/stashes/
 test-gen
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml

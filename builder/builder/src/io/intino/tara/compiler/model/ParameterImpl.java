@@ -10,6 +10,7 @@ import java.util.List;
 public class ParameterImpl implements Parameter {
 
 	private final List<Object> values = new ArrayList<>();
+	private final List<Object> originalValues = new ArrayList<>();
 	private String name;
 	private int position;
 	private String facet = "";
@@ -31,6 +32,7 @@ public class ParameterImpl implements Parameter {
 		this.name = name;
 		this.position = position;
 		this.metric = (metric == null ? "" : metric);
+		addOriginalValues(values);
 		addValues(values);
 	}
 
@@ -106,6 +108,10 @@ public class ParameterImpl implements Parameter {
 	@Override
 	public List<Object> values() {
 		return Collections.unmodifiableList(makeUp(model().resourcesRoot(), inferredType, values));
+	}
+
+	public List<Object> originalValues() {
+		return originalValues;
 	}
 
 	private NodeRoot model() {
@@ -207,6 +213,11 @@ public class ParameterImpl implements Parameter {
 	private void addValues(List<Object> values) {
 		this.values.clear();
 		this.values.addAll(values);
+	}
+
+	private void addOriginalValues(List<Object> values) {
+		this.originalValues.clear();
+		this.originalValues.addAll(values);
 	}
 
 }
