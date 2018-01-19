@@ -19,10 +19,14 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void octanaM2() {
+		main(new String[]{home + "sandbox/confFiles/octana/M2.txt"});
+	}
+
+	@Test
 	public void octanaM1() {
 		main(new String[]{home + "sandbox/confFiles/octana/M1.txt"});
 	}
-
 
 	@Test
 	public void cesarM2() {
