@@ -18,17 +18,14 @@ import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.methodReference;
 
 public class MethodReferenceSolver extends TaraReferenceSolver {
 	private final Module module;
-	private String outputDsl;
 
 	public MethodReferenceSolver(Identifier identifier, TextRange range) {
 		super(identifier, range);
 		this.module = ModuleProvider.moduleOf(identifier);
-		this.outputDsl = (TaraModuleType.isTara(module)) ? TaraUtil.graphPackage(identifier) : null;
 	}
 
 	@Override
 	protected List<PsiElement> doMultiResolve() {
-		if (outputDsl == null) return Collections.emptyList();
 		final PsiClass aClass = JavaPsiFacade.getInstance(myElement.getProject()).findClass(methodReference(myElement), moduleScope(module));
 		if (aClass == null) return Collections.emptyList();
 		else return Collections.singletonList(findMethod(aClass.getMethods()));

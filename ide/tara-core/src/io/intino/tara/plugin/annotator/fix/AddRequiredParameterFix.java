@@ -169,7 +169,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	@NotNull
 	private String defaultValue(List<Constraint.Parameter> requires, int i) {
 		final Constraint.Parameter parameter = requires.get(i);
-		if (parameter instanceof ReferenceParameter) return "empty";
+		if (parameter instanceof ReferenceParameter) return "empty ";
 		return (mustBeQuoted(parameter) ? "\\\"\\\"" : "") + '"';
 	}
 

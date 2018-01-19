@@ -38,7 +38,10 @@ public class ToBodyParameters extends ParametersIntentionAction {
 		else addNewLineIndent((PsiElement) container);
 		((PsiElement) container).add(varInit.copy());
 		if (parametersData.isEmpty()) parameters.delete();
-		else parameters.replace(factory.createExplicitParameters(parametersData));
+		else {
+			Parameters explicitParameters = factory.createExplicitParameters(parametersData);
+			if (explicitParameters != null) parameters.replace(explicitParameters);
+		}
 		PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
 	}
 
@@ -53,12 +56,12 @@ public class ToBodyParameters extends ParametersIntentionAction {
 		return container instanceof TaraNode && ((TaraNode) container).getBody() != null;
 	}
 
-	private PsiElement addNewLine(PsiElement node) {
-		return node.add(TaraElementFactory.getInstance(node.getProject()).createBodyNewLine(TaraPsiImplUtil.getIndentation(node) + 1));
+	private void addNewLine(PsiElement node) {
+		node.add(TaraElementFactory.getInstance(node.getProject()).createBodyNewLine(TaraPsiImplUtil.getIndentation(node) + 1));
 	}
 
-	private PsiElement addNewLineIndent(PsiElement container) {
-		return container.add(TaraElementFactory.getInstance(container.getProject()).createNewLineIndent(TaraPsiImplUtil.getIndentation(container) + 1));
+	private void addNewLineIndent(PsiElement container) {
+		container.add(TaraElementFactory.getInstance(container.getProject()).createNewLineIndent(TaraPsiImplUtil.getIndentation(container) + 1));
 	}
 
 	@Override
