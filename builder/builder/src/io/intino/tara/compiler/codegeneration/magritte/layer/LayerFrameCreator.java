@@ -12,6 +12,7 @@ import io.intino.tara.lang.model.Variable;
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 
+import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashSet;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class LayerFrameCreator implements TemplateTags {
 		variableAdapter.getImports().clear();
 		createFrame(frame, facetTarget);
 		addFacetImports(frame);
-		return new SimpleEntry<>(calculateLayerPath(owner, packageOf(facetTarget, frame)), frame);
+		return new AbstractMap.SimpleEntry<>(calculateFacetLayerPath(facetTarget, owner, frame), frame);
 	}
 
 	public Map.Entry<String, Frame> createDecorable(Node node) {
@@ -74,12 +75,17 @@ public class LayerFrameCreator implements TemplateTags {
 		return new SimpleEntry<>(calculateDecorablePath(node, aPackage), frame);
 	}
 
-	private String calculateDecorablePath(Node node, String aPackage) {
-		return aPackage + DOT + firstUpperCase().format(javaValidName().format(node.name()).toString()) + facetName(node.facetTarget());
+	private String calculateFacetLayerPath(FacetTarget facetTarget, Node node, Frame frame) {
+		return packageOf(facetTarget, frame) + DOT +
+				(node.is(Tag.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(node.name() + facetTarget.targetNode().name()).toString()).toString();
 	}
 
 	private String calculateLayerPath(Node node, String aPackage) {
 		return aPackage + DOT + (node.is(Tag.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(node.name()).toString()) + facetName(node.facetTarget());
+	}
+
+	private String calculateDecorablePath(Node node, String aPackage) {
+		return aPackage + DOT + firstUpperCase().format(javaValidName().format(node.name()).toString()) + facetName(node.facetTarget());
 	}
 
 	private String facetName(FacetTarget facetTarget) {
@@ -110,7 +116,7 @@ public class LayerFrameCreator implements TemplateTags {
 	private String packageOf(Frame frame) {
 		String packagePath = workingPackage.toLowerCase();
 		if (!packagePath.isEmpty()) frame.addSlot(PACKAGE, packagePath);
-		return packagePath;
+		return packagePath.endsWith(".") ? packagePath.substring(0, packagePath.length() - 1) : packagePath;
 	}
 
 	private String packageOf(FacetTarget target, Frame frame) {
