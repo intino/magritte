@@ -106,6 +106,10 @@ def type(rule & size) trigger(size)
 	new io.intino.tara.lang.model.rules.Size($min, $max[, $into+size])
 end
 
+def type(rule & size) trigger(rule)
+	new io.intino.tara.lang.model.rules.Size($min, $max[, $into+size])
+end
+
 def type(nativeObjectRule) trigger(rule)
 	new io.intino.tara.lang.model.rules.variable.NativeObjectRule("$type")
 end
