@@ -79,6 +79,13 @@ def type(variable & word & outDefined) !type(target | inherited | overriden | mu
 	}
 end
 
+def type(Variable & word & outDefined & multiple) !type(target | inherited | overriden) trigger(setter)
+	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
+		this.$name+FirstLowerCase+javaValidName = values;
+		return ($container+FirstUpperCase+javaValidName) this;
+	}
+end
+
 def type(variable & word) !type(target | inherited | overriden | multiple | final | reactive) trigger(setter)
 	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName([$qn+reference.]$name+FirstUpperCase+javaValidName+reference value) {
 		this.$name+FirstLowerCase+javaValidName = value;

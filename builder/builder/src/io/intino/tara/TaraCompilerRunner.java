@@ -75,21 +75,15 @@ class TaraCompilerRunner {
 	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, Map<File, Boolean> testFiles, List<CompilerMessage> compilerMessages) {
 		if (testFiles.isEmpty()) return Collections.emptyList();
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
+		out.println();
 		CompilerConfiguration testConf = config.clone();
 		testConf.setTest(true);
 		testConf.workingPackage(testConf.workingPackage() + ".test");
 		if (config.outDSL() != null) testConf.addLanguage(config.outDSL(), config.version());
-		if (config.level() != null)
-			testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
-		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
-		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
-			final CompilationUnit unit = new CompilationUnit(testConf);
-			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling test: " + file.getKey().getName());
-			unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
-			compiledFiles.addAll(new TaraCompiler(compilerMessages).compile(unit));
-			out.println();
-		}
-		return compiledFiles;
+		if (config.level() != null) testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
+		final CompilationUnit unit = new CompilationUnit(config);
+		addSources(testFiles, unit);
+		return new TaraCompiler(compilerMessages).compile(unit);
 	}
 
 	private static void processErrors(List<CompilerMessage> compilerMessages) {

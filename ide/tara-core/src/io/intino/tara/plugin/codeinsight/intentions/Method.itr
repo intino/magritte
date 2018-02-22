@@ -38,6 +38,10 @@ def attribute(RESOURCE) trigger(type)
 	java.net.URL
 end
 
+def attribute(resource) trigger(type)
+	java.net.URL
+end
+
 def attribute(string) trigger(type)
 	String
 end

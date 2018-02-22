@@ -30,7 +30,7 @@ public class TaraCompiler {
 			addCompiledFiles(unit, compiledFiles);
 		} catch (CompilationFailedException e) {
 			processCompilationException(e);
-		} catch (IOException | TaraRuntimeException e) {
+		} catch (TaraRuntimeException e) {
 			processException(e);
 		} finally {
 			addWarnings(unit.getErrorCollector(), collector);
@@ -38,7 +38,7 @@ public class TaraCompiler {
 		return compiledFiles;
 	}
 
-	private void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
+	private void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) {
 		for (Map.Entry<String, List<String>> entry : compilationUnit.getOutputItems().entrySet())
 			compiledFiles.addAll(entry.getValue().stream().map(outFile -> new OutputItem(entry.getKey(), outFile)).collect(Collectors.toList()));
 	}

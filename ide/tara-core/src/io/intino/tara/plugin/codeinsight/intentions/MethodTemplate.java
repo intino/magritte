@@ -27,6 +27,7 @@ public class MethodTemplate extends Template {
 			rule().add((condition("attribute", "INTEGER")), (condition("trigger", "type"))).add(literal("int")),
 			rule().add((condition("attribute", "OBJECT")), (condition("trigger", "type"))).add(literal("Object")),
 			rule().add((condition("attribute", "RESOURCE")), (condition("trigger", "type"))).add(literal("java.net.URL")),
+			rule().add((condition("attribute", "resource")), (condition("trigger", "type"))).add(literal("java.net.URL")),
 			rule().add((condition("attribute", "string")), (condition("trigger", "type"))).add(literal("String")),
 			rule().add((condition("attribute", "boolean")), (condition("trigger", "type"))).add(literal("boolean")),
 			rule().add((condition("attribute", "int")), (condition("trigger", "list"))).add(literal("Integer")),
