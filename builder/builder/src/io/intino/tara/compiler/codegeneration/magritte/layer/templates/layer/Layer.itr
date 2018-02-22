@@ -1,7 +1,7 @@
 def type(Layer & decorable)
 	package $package+javaValidName+lowercase;
 
-	public class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
+	public class [$abstract ]$name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 
 		public $name+javaValidName+FirstUpperCase(io.intino.tara.magritte.Node node) {
 			super(node);

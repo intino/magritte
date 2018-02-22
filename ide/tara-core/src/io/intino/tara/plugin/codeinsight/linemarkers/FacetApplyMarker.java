@@ -11,16 +11,16 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.ui.ClassCellRenderer;
+import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.messages.MessageProvider;
+import io.intino.tara.plugin.project.TaraModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.engine.formatters.inflectors.PluralInflector;
-import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.plugin.project.TaraModuleType;
-import io.intino.tara.lang.model.Facet;
-import io.intino.tara.lang.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -40,12 +40,12 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		Node node = (Node) element;
 		List<PsiElement> references = getFacetClasses(node);
 		String start = (references.size() == 1 ? "Facet" : "Facets") + " declared in ";
-		@NonNls String pattern = "";
+		@NonNls StringBuilder pattern = new StringBuilder();
 		if (references.isEmpty()) return "";
 		for (PsiElement reference : references)
-			pattern += ", " + reference.getNavigationElement().getContainingFile().getName();
-		pattern = pattern.substring(2);
-		return GutterIconTooltipHelper.composeText(references.toArray(new PsiElement[references.size()]), start, pattern);
+			pattern.append(", ").append(reference.getNavigationElement().getContainingFile().getName());
+		pattern = new StringBuilder(pattern.substring(2));
+		return GutterIconTooltipHelper.composeText(references.toArray(new PsiElement[references.size()]), start, pattern.toString());
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
@@ -60,7 +60,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 			String title = MessageProvider.message("facet.class.chooser", node.name(), facetClasses.size());
 			ClassCellRenderer renderer = new ClassCellRenderer(null);
 			PsiElementListNavigator.openTargets(e, facetClasses.toArray(toNavigatable(facetClasses)), title,
-				"Facet implementations of " + (node.name()), renderer);
+					"Facet implementations of " + (node.name()), renderer);
 		}
 	}
 	);
@@ -97,7 +97,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
-				markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+					markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
 

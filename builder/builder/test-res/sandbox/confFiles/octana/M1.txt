@@ -1,30 +1,31 @@
 def.file
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/Delitos.tara#true
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/Paises.tara#true
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/eventos/AbelArtilesCruz.tara#true
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/Personas.tara#true
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/Regimenes.tara#true
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/eventos/TaniaSalazarSalinas.tara#true
-/Users/oroncal/workspace/sandbox/octana/solution/src/io/intino/octana/solution/Gestiones.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/Personas.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/Regimenes.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/Prisiones.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/Paises.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/eventos/AbelArtilesCruz.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/Eventos.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/eventos/TaniaSalazarSalinas.tara#true
+/Users/oroncal/workspace/sandbox/octana/product/test/io/intino/octana/solution/Delitos.tara#true
 
 project
 octana
 module
-solution
+product
 semantic.lib
 /Users/oroncal/Library/Application Support/IntelliJIdea2017.3/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/octana/solution/gen
+/Users/oroncal/workspace/sandbox/octana/product/test-gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/octana/out/production/solution/
+/Users/oroncal/workspace/sandbox/octana/out/test/product/
 resources
-/Users/oroncal/workspace/sandbox/octana/solution/res
+/Users/oroncal/workspace/sandbox/octana/product/test-res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/sandbox/octana/.tara
 src.path
-/Users/oroncal/workspace/sandbox/octana/solution/src
+/Users/oroncal/workspace/sandbox/octana/product/test
 
 version
 1.0.0
@@ -33,6 +34,6 @@ working.package
 make
 false
 test.module
-false
+true
 encoding
 UTF-8

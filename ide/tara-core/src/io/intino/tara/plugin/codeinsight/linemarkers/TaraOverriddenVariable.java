@@ -12,9 +12,9 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
+import io.intino.tara.lang.model.Variable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.lang.model.Variable;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -48,7 +48,6 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 	}
 	);
 
-
 	public TaraOverriddenVariable(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
@@ -61,13 +60,11 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 			final Icon icon = AllIcons.Gutter.OverridingMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
-
 
 	private boolean isOverridden(Variable variable) {
 		return getOverriddenVariable(variable) != null;
 	}
-
 }

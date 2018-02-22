@@ -270,7 +270,7 @@ public class ReferenceManager {
 	public static PsiElement resolveTaraNativeImplementationToJava(io.intino.tara.plugin.lang.psi.Valued valued) {
 		String workingPackage = TaraUtil.graphPackage(valued);
 		if (ModuleProvider.moduleOf(valued) == null) return null;
-		if (workingPackage == null || workingPackage.isEmpty())
+		if (workingPackage.isEmpty())
 			workingPackage = ModuleProvider.moduleOf(valued).getName();
 		for (PsiClass aClass : getCandidates(valued, workingPackage.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), io.intino.tara.plugin.lang.psi.Valued.class)))

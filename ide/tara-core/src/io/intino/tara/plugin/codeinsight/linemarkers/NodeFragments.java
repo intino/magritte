@@ -14,11 +14,11 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.NodeContainer;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -66,7 +66,7 @@ public class NodeFragments extends JavaLineMarkerProvider {
 			final Icon icon = AllIcons.Gutter.Unique;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
 
