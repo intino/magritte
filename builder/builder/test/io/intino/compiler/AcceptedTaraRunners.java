@@ -231,6 +231,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void happySenseM1Test() {
+		main(new String[]{home + "sandbox/confFiles/happysense/M1test.txt"});
+	}
+
+	@Test
 	public void MonetM2() {
 		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
 	}

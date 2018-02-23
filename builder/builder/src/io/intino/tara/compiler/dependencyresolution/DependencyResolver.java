@@ -77,7 +77,7 @@ public class DependencyResolver {
 
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
-		resolveComponentReferenceNodes(node);
+		resolveNodesReferences(node);
 		resolveVariables(node);
 		resolveParametersReference(node);
 		resolveInNodes(node);
@@ -138,7 +138,7 @@ public class DependencyResolver {
 		}
 	}
 
-	private void resolveComponentReferenceNodes(Node node) throws DependencyException {
+	private void resolveNodesReferences(Node node) throws DependencyException {
 		for (Node nodeReference : node.referenceComponents()) {
 			resolveNodeReference((NodeReference) nodeReference);
 			resolveCustomRules(nodeReference);

@@ -32,7 +32,7 @@ public class UnifyModelOperation extends ModuleUnitOperation {
 			Map<Language, Model> models = new ASTMerger(sources, unit.getConfiguration()).doMerge();
 			for (Language language : models.keySet())
 				unit.addModel(language, models.get(language));
-		} catch (MergeException e) {
+		} catch (Throwable e) {
 			LOG.log(Level.SEVERE, "Error merging sources representations: " + e.getMessage(), e);
 		}
 	}

@@ -5,6 +5,7 @@ import io.intino.tara.compiler.model.FacetTargetImpl;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
+import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
@@ -31,7 +32,7 @@ public class InheritanceResolver {
 		model.components().forEach(this::resolveAsMetaFacet);
 		for (Node node : nodes) resolve(node);
 		model.components().forEach(this::resolveAsFacetTargetFragment);
-		mergeFragmentNodes(model);
+		mergeFragmentNodes();
 	}
 
 	private void resolve(Node node) throws DependencyException {
@@ -80,13 +81,13 @@ public class InheritanceResolver {
 		resolve(child);
 	}
 
-	private void mergeFragmentNodes(Model model) throws DependencyException {
-		Map<String, List<Node>> toMerge = fragmentNodes(model);
-		for (List<Node> nodes : toMerge.values()) merge(nodes);
+	private void mergeFragmentNodes() throws DependencyException {
+		if (model.level().equals(Configuration.Level.Solution)) return;
+		for (List<Node> nodes : fragmentNodes().values()) merge(nodes);
 	}
 
 	private void merge(List<Node> nodes) throws DependencyException {
-		if (nodes.size() < 2) return;
+		if (nodes.size() <= 1) return;
 		if (!correctParent(nodes))
 			throw new DependencyException("Error merging extension elements. Parents are not homogeneous.", nodes.get(0));
 		Node parent = selectParent(nodes);
@@ -103,19 +104,16 @@ public class InheritanceResolver {
 	}
 
 	private Node selectParent(List<Node> nodes) {
-		for (Node node : nodes) {
-			if (node.facetTarget() != null && node.facetTarget().targetNode().isAbstract() && !hasParent(node, nodes)) return node;
-		}
-		return null;
+		return nodes.stream().
+				filter(node -> node.facetTarget() != null && node.facetTarget().targetNode().isAbstract() && !hasParent(node, nodes)).
+				findFirst().orElse(null);
 	}
 
 	private boolean hasParent(Node node, List<Node> nodes) {
-		for (Node candidate : nodes)
-			if (candidate.equals(node.parent())) return true;
-		return false;
+		return nodes.stream().anyMatch(candidate -> candidate.equals(node.parent()));
 	}
 
-	private Map<String, List<Node>> fragmentNodes(Model model) {
+	private Map<String, List<Node>> fragmentNodes() {
 		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
 		for (Node node : model.components()) {
 			if (node.isAnonymous()) continue;
@@ -135,13 +133,12 @@ public class InheritanceResolver {
 		List<Rule> parentRules = parent.container().rulesOf(parent);
 		List<Rule> childRules = child.container().rulesOf(child);
 		Size size = child.container().sizeOf(child);
-		for (Rule rule : parentRules) {
+		for (Rule rule : parentRules)
 			if (!(rule instanceof Size)) childRules.add(rule);
 			else if (isMoreRestrictiveThan((Size) rule, size)) {
 				childRules.remove(size);
 				childRules.add(rule);
 			}
-		}
 	}
 
 	private boolean isMoreRestrictiveThan(Size parent, Size child) {
@@ -224,7 +221,7 @@ public class InheritanceResolver {
 		for (Node component : node.components()) collect(component, collection);
 	}
 
-	private List<Node> resolveComponents(Node parent, Node child) {
+	private void resolveComponents(Node parent, Node child) {
 		Map<Node, List<Rule>> nodes = new LinkedHashMap<>();
 		for (Node component : parent.components()) {
 			if (isOverridden(child, component)) continue;
@@ -238,7 +235,6 @@ public class InheritanceResolver {
 		}
 		for (Map.Entry<Node, List<Rule>> entry : nodes.entrySet())
 			child.add(entry.getKey(), entry.getValue());
-		return new ArrayList<>(nodes.keySet());
 	}
 
 	private void addTags(Node component, NodeReference reference) {
@@ -290,22 +286,18 @@ public class InheritanceResolver {
 	}
 
 	private boolean isOverridden(Node child, Variable variable) {
-		for (Variable childVar : child.variables())
-			if (childVar.name().equals(variable.name()) && childVar.type().equals(variable.type()))
-				return true;
-		return false;
+		return child.variables().stream().anyMatch(childVar -> childVar.name().equals(variable.name()) && childVar.type().equals(variable.type()));
 	}
 
 	private List<Node> getChildrenSorted(Node parent) {
-		List<Node> children = parent.children().stream().
-				map(node -> node).collect(Collectors.toList());
+		List<Node> children = new ArrayList<>(parent.children());
 		sort(children);
 		return children;
 	}
 
 	private void sort(List<Node> nodes) {
 		if (nodes.isEmpty()) return;
-		Collections.sort(nodes, inheritanceComparator());
+		nodes.sort(inheritanceComparator());
 		Collections.reverse(nodes);
 	}
 
@@ -319,7 +311,7 @@ public class InheritanceResolver {
 			private int maxLevel(Node node) {
 				List<Integer> levels = new ArrayList<>(Collections.singletonList(0));
 				levels.addAll(node.children().stream().map(child -> maxLevel((Node) child)).collect(Collectors.toList()));
-				Collections.sort(levels, Collections.reverseOrder());
+				levels.sort(Collections.reverseOrder());
 				return 1 + levels.get(0);
 			}
 

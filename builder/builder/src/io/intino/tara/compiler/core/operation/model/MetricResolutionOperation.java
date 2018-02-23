@@ -1,10 +1,10 @@
 package io.intino.tara.compiler.core.operation.model;
 
-import io.intino.tara.compiler.core.errorcollection.DependencyException;
-import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
+import io.intino.tara.compiler.core.errorcollection.DependencyException;
 import io.intino.tara.compiler.core.errorcollection.message.Message;
+import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.lang.model.Metric;
 import io.intino.tara.lang.model.Node;
@@ -37,28 +37,25 @@ public class MetricResolutionOperation extends ModelOperation {
 		}
 	}
 
-
 	public void resolve(Model model) throws DependencyException {
-		for (Node node : model.components())
-			resolve(node);
+		for (Node node : model.components()) resolve(node);
 	}
 
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
 		resolveMeasures(node.parameters());
 		resolveVariableMetrics(node.variables());
-		for (Node include : node.components()) resolve(include);
+		for (Node component : node.components()) resolve(component);
 	}
 
 	private void resolveVariableMetrics(List<Variable> variables) throws DependencyException {
-		for (Variable variable : variables) {
+		for (Variable variable : variables)
 			if ((variable.rule() instanceof VariableCustomRule) && ((VariableCustomRule) variable.rule()).isMetric() && variable.defaultMetric() != null) {
 				final VariableCustomRule rule = (VariableCustomRule) variable.rule();
 				final Metric metric = findMetric(rule.loadedClass(), variable.defaultMetric());
 				if (metric == null) throw new DependencyException("Metric not found", variable);
 				variable.values(variable.values().stream().map((Function<Object, Object>) metric::value).collect(Collectors.toList()));
 			}
-		}
 	}
 
 	private void resolveMeasures(List<Parameter> parameters) throws DependencyException {
@@ -72,14 +69,13 @@ public class MetricResolutionOperation extends ModelOperation {
 	}
 
 	private Metric findMetric(Class<?> aClass, String metric) {
-		for (Field field : aClass.getDeclaredFields()) {
+		for (Field field : aClass.getDeclaredFields())
 			if (field.isEnumConstant() && field.getName().equals(metric))
 				try {
 					return (Metric) field.get(null);
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					LOG.severe(e.getMessage());
 				}
-		}
 		return null;
 	}
 }

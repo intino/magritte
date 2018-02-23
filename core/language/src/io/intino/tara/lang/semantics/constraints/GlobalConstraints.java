@@ -33,6 +33,7 @@ public class GlobalConstraints {
 				referencesInInstances(),
 				invalidNodeFlags(),
 				duplicatedTags(),
+				duplicatedInstances(),
 				tagsCoherence(),
 				invalidNodeRules(),
 				checkVariables(),
@@ -75,16 +76,15 @@ public class GlobalConstraints {
 		};
 	}
 
-	private static void error(String message, Element element, List<?> parameters) throws SemanticException {
-		throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
-	}
-
-	private static void error(String message, Element element) throws SemanticException {
-		throw new SemanticException(new SemanticNotification(ERROR, message, element));
-	}
-
-	private void warning(String message, Element element) throws SemanticException {
-		throw new SemanticException(new SemanticNotification(WARNING, message, element));
+	private Constraint duplicatedInstances() {
+		return element -> {
+			Node node = (Node) element;
+			if (!node.is(Instance) || node.isAnonymous()) return;
+			final List<Node> siblings = node.siblings();
+			for (Node sibling : siblings)
+				if (node.name().equals(sibling.name()) && node.name().equals(sibling.file()))
+					error("reject.duplicate.entries", node, Collections.singletonList(node.container().name()));
+		};
 	}
 
 	private Constraint duplicatedTags() {
@@ -343,5 +343,18 @@ public class GlobalConstraints {
 				error("no.targets.in.facet", node, singletonList(node.name()));
 		};
 	}
+
+	private static void error(String message, Element element, List<?> parameters) throws SemanticException {
+		throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
+	}
+
+	private static void error(String message, Element element) throws SemanticException {
+		throw new SemanticException(new SemanticNotification(ERROR, message, element));
+	}
+
+	private void warning(String message, Element element) throws SemanticException {
+		throw new SemanticException(new SemanticNotification(WARNING, message, element));
+	}
+
 
 }
