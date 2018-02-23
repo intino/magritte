@@ -22,7 +22,7 @@ public class ASTMerger {
 		this.conf = conf;
 	}
 
-	public Map<Language, Model> doMerge() throws MergeException {
+	public Map<Language, Model> doMerge() {
 		final Map<Language, List<SourceUnit>> languageListMap = groupByLanguage();
 		Map<Language, Model> models = new HashMap<>();
 		for (Language language : languageListMap.keySet())

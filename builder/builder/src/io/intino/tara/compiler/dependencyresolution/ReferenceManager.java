@@ -1,8 +1,8 @@
 package io.intino.tara.compiler.dependencyresolution;
 
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.NodeImpl;
+import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
@@ -43,6 +43,7 @@ public class ReferenceManager {
 	Node resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = findRoots(node, path);
+		roots = sortRootsByFile(roots, node.file());
 		if (roots.isEmpty()) return null;
 		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
 		for (Node root : roots) {
@@ -50,6 +51,12 @@ public class ReferenceManager {
 			if (candidate != null) return candidate;
 		}
 		return null;
+	}
+
+	private Collection<Node> sortRootsByFile(Collection<Node> roots, String file) {
+		List<Node> nodes = roots.stream().filter(node -> node.file().equals(file)).collect(Collectors.toList());
+		roots.stream().filter(root -> !nodes.contains(root)).forEach(nodes::add);
+		return nodes;
 	}
 
 	private Collection<Node> findRoots(Node node, String[] path) {
@@ -135,8 +142,8 @@ public class ReferenceManager {
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().
-			filter(node -> areNamesake(name, node)).
-			collect(Collectors.toList()));
+				filter(node -> areNamesake(name, node)).
+				collect(Collectors.toList()));
 	}
 
 	private void addInContext(String name, Set<Node> set, Node node, boolean parent) {
@@ -155,8 +162,8 @@ public class ReferenceManager {
 
 	private static void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
 		set.addAll(parent.components().stream().
-			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
-			collect(Collectors.toList()));
+				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
+				collect(Collectors.toList()));
 	}
 
 	private void checkSiblings(String name, Set<Node> set, Node container) {

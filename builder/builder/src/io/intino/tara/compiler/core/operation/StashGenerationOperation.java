@@ -68,7 +68,11 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private Stash stashOf(List<Node> nodes, Language language) throws TaraException {
-		return new StashCreator(nodes, language, outDSL, conf).create();
+		try {
+			return new StashCreator(nodes, language, outDSL, conf).create();
+		} catch (Throwable e) {
+			throw new TaraException("Error creating stashes: " + e.getMessage());
+		}
 	}
 
 	private void writeStashTo(File taraFile, Stash stash) {
