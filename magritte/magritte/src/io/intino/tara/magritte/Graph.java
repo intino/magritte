@@ -3,7 +3,6 @@ package io.intino.tara.magritte;
 import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.stores.ResourcesStore;
 import io.intino.tara.magritte.utils.I18n;
-import io.intino.tara.magritte.utils.StashHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,22 +15,22 @@ import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Arrays.stream;
 import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.of;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Graph {
 
 	Model model;
 	Store store;
-	Map<Node, Map<String, List<?>>> variables = new HashMap<>();
 	Map<String, Node> nodes = new HashMap<>();
 	Map<String, Concept> concepts = new HashMap<>();
 	Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers = new HashMap<>();
 	List<NodeLoader> loaders = new ArrayList<>();
-	I18n i18n = new I18n();
 	LayerFactory layerFactory = new LayerFactory();
 	Set<String> languages = new LinkedHashSet<>();
 	Set<String> openedStashes = new HashSet<>();
+	private Map<Node, Map<String, List<?>>> variables = new HashMap<>();
+	private I18n i18n = new I18n();
 
 	public Graph() {
 		this(new ResourcesStore());
@@ -74,10 +73,14 @@ public class Graph {
 		return i18n;
 	}
 
-	@SuppressWarnings("unused")
 	public URL loadResource(String path) {
+		return loadResource(path, true);
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	public URL loadResource(String path, boolean logFail) {
 		URL url = store.resourceFrom(path);
-		if (url == null)
+		if (url == null && logFail)
 			getGlobal().severe("Resource at " + path + " not found");
 		return url;
 	}

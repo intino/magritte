@@ -2,6 +2,7 @@ package io.intino.tara.magritte;
 
 import java.util.List;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class RemounterGraph extends Graph {
 
 	public RemounterGraph(Store store) {
@@ -53,9 +54,27 @@ public class RemounterGraph extends Graph {
 		super.remove(node);
 	}
 
+	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	@Override
 	public synchronized Graph clone() {
 		return this;
+	}
+
+	@Override
+	void save(Node node) {
+		save(node.stash());
+	}
+
+	@Override
+	public void save(String... stashes) {
+		if (!store.allowWriting()) return;
+		super.save(stashes);
+	}
+
+	@Override
+	public void saveAll(String... excludedStashes) {
+		if (!store.allowWriting()) return;
+		super.saveAll(excludedStashes);
 	}
 
 	public synchronized RemounterGraph realClone() {

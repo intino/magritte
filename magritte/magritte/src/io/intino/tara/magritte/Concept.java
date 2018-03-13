@@ -29,6 +29,15 @@ public class Concept extends Predicate {
 		super(name);
 	}
 
+	static List<Concept> metaTypesOf(Collection<Concept> metaConcepts) {
+		List<Concept> concepts = new ArrayList<>();
+		for (Concept metaConcept : metaConcepts) {
+			concepts.addAll(metaTypesOf(metaConcept.concepts));
+			concepts.add(metaConcept);
+		}
+		return concepts;
+	}
+
 	public boolean isAbstract() {
 		return isAbstract;
 	}
@@ -82,12 +91,18 @@ public class Concept extends Predicate {
 		concept.instances.add(this);
 	}
 
-	@SuppressWarnings("unused")
-	public List<Concept> instanceList() {
+	public List<Concept> allInstances() {
 		Set<Concept> instances = new LinkedHashSet<>();
 		instances.addAll(this.instances);
-		this.instances.forEach(s -> instances.addAll(s.instanceList()));
+		this.instances.forEach(s -> instances.addAll(s.allInstances()));
 		return new ArrayList<>(instances);
+	}
+
+	public List<Concept> allChildren() {
+		Set<Concept> children = new LinkedHashSet<>();
+		children.addAll(this.children);
+		this.children.forEach(s -> children.addAll(s.allChildren()));
+		return new ArrayList<>(children);
 	}
 
 	public List<Concept> multipleAllowed() {
@@ -142,6 +157,7 @@ public class Concept extends Predicate {
 		return createNode(owner.graph().createNodeName(), owner);
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	public Node createNode(String name, Node owner) {
 		if (isMetaConcept) {
 			getGlobal().severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
@@ -162,12 +178,11 @@ public class Concept extends Predicate {
 		return node;
 	}
 
-	Node prepareNode(Node node, Graph graph) {
+	void prepareNode(Node node, Graph graph) {
 		List<Concept> metaTypes = metaTypesOf(singletonList(this));
 		addConcepts(node, metaTypes);
 		cloneNodes(node, graph);
 		fillVariables(node, metaTypes);
-		return node;
 	}
 
 	private void addConcepts(Node node, List<Concept> metaTypes) {
@@ -190,15 +205,6 @@ public class Concept extends Predicate {
 		return nodes;
 	}
 
-	private List<Concept> metaTypesOf(Collection<Concept> metaConcepts) {
-		List<Concept> concepts = new ArrayList<>();
-		for (Concept metaConcept : metaConcepts) {
-			concepts.addAll(metaTypesOf(metaConcept.concepts));
-			concepts.add(metaConcept);
-		}
-		return concepts;
-	}
-
 	@Override
 	public String toString() {
 		return id + "{names=" + concepts.stream().map(m -> m.id).collect(toList()) + '}';
@@ -206,6 +212,10 @@ public class Concept extends Predicate {
 
 	public boolean is(String concept) {
 		return name().equals(concept) || typeNames.contains(concept);
+	}
+
+	public boolean isFacet() {
+		return id.contains("#");
 	}
 
 	static class Content {
