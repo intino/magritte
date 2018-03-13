@@ -7,14 +7,21 @@ import io.intino.tara.compiler.parser.antlr.ModelGenerator;
 import io.intino.tara.compiler.parser.antlr.TaraErrorStrategy;
 import io.intino.tara.lang.grammar.TaraGrammar;
 import io.intino.tara.lang.grammar.TaraLexer;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.VocabularyImpl;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.nio.file.Files.readAllBytes;
+import static org.antlr.v4.runtime.CharStreams.fromString;
 
 public class Parser {
 
@@ -30,8 +37,7 @@ public class Parser {
 		this.file = file;
 		this.languages = languages;
 		this.outDsl = outDsl;
-		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), sourceEncoding);
-		TaraLexer lexer = new TaraLexer(input);
+		TaraLexer lexer = new TaraLexer(fromString(new String(readAllBytes(file.toPath()), Charset.forName(sourceEncoding)).trim()));
 		lexer.reset();
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		grammar = new TaraGrammar(tokens);
