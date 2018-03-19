@@ -25,9 +25,6 @@ facets : AS facet+;
 
 facet: metaidentifier parameters?;
 
-//withTable : LIST WITH identifierReference tableParameters;
-tableParameters :LEFT_PARENTHESIS (IDENTIFIER+ (COMMA IDENTIFIER+)*)? RIGHT_PARENTHESIS;
-
 
 value : identifierReference+
 		| stringValue+
@@ -75,7 +72,7 @@ listRange    : (NATURAL_VALUE | STAR) DOT DOT (NATURAL_VALUE | STAR);
 
 methodReference : AT identifierReference;
 
-stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
+stringValue  : NEWLINE? (STRING);
 booleanValue : BOOLEAN_VALUE;
 tupleValue   : stringValue COLON doubleValue;
 integerValue : NATURAL_VALUE | NEGATIVE_VALUE;

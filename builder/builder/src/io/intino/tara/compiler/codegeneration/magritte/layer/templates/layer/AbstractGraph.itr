@@ -8,6 +8,8 @@ def type(graph)
 		protected io.intino.tara.magritte.Graph graph;
 		$node+declaration...[$NL]
 
+		private java.util.Map<String, Indexer> index = fillIndex();
+
 		public AbstractGraph(io.intino.tara.magritte.Graph graph) {
 			this.graph = graph;
 			this.graph.i18n().register("$name");
@@ -19,23 +21,26 @@ def type(graph)
 			$node+clone...[$NL]
 		}
 
-		public <T extends GraphWrapper> T a$$(Class<T> t) {
-			return this.core$().as(t);
+		public <T extends io.intino.tara.magritte.GraphWrapper> T a$$(Class<T> t) {
+			return this.core$$().as(t);
 		}
 
         @Override
 		public void update() {
-			$node+update...[$NL]
+			index.values().forEach(v -> v.clear());
+			graph.rootList().forEach(r -> addNode$$(r));
 		}
 
 		@Override
 		protected void addNode$$(io.intino.tara.magritte.Node node) {
-			$node+add...[$NL]
+			for (io.intino.tara.magritte.Concept c : node.conceptList()) if (index.containsKey(c.id())) index.get(c.id()).add(node);
+			if (index.containsKey(node.id())) index.get(node.id()).add(node);
 		}
 
 		@Override
 		protected void removeNode$$(io.intino.tara.magritte.Node node) {
-			$node+remove...[$NL]
+			for (io.intino.tara.magritte.Concept c : node.conceptList()) if (index.containsKey(c.id())) index.get(c.id()).remove(node);
+			if (index.containsKey(node.id())) index.get(node.id()).remove(node);
 		}
 
 		public java.net.URL resourceAsMessage$$(String language, String key) {
@@ -85,37 +90,65 @@ def type(graph)
 		public class Clear {[
 		    $node+clear...[$NL$NL]]
 		}
+
+
+		private java.util.HashMap<String, Indexer> fillIndex() {
+			return new java.util.HashMap<String, Indexer>() {{
+				$node+put...[$NL]
+			}};
+		}
+
+		public static class Indexer {
+			Add add;
+			Remove remove;
+			IndexClear clear;
+
+			public Indexer(Add add, Remove remove, IndexClear clear) {
+				this.add = add;
+				this.remove = remove;
+				this.clear = clear;
+			}
+
+			void add(io.intino.tara.magritte.Node node) {
+				this.add.add(node);
+			}
+
+			void remove(io.intino.tara.magritte.Node node) {
+				this.remove.remove(node);
+			}
+
+			void clear() {
+				this.clear.clear();
+			}
+		}
+
+		interface Add {
+			void add(io.intino.tara.magritte.Node node);
+		}
+
+		interface Remove {
+			void remove(io.intino.tara.magritte.Node node);
+		}
+
+		interface IndexClear {
+			void clear();
+		}
 	}
 end
 
-def type(instance) trigger(add)
-	if(node.id().equals("$generatedLanguage#$name")) this.$name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class);
+def type(instance) trigger(put)
+	put("$generatedLanguage#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
 end
 
-def type(single) !type(instance) trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidWord = node.as($qn+reference.class);
+def !type(instance) type(single)  trigger(put)
+	put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($qn+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
 end
 
-def !type(instance) trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase~List.add(node.as($qn+reference.class));
+def !type(instance) trigger(put)
+	put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase~List.add(node.as($qn+reference.class)), node -> $name+FirstLowerCase~List.remove(node.as($qn+reference.class)), () -> $name+FirstLowerCase~List.clear()));
 end
 
 def trigger(add)
-end
-
-def type(instance) trigger(remove)
-	if(node.id().equals("$generatedLanguage#$name")) this.$name+FirstLowerCase+javaValidWord = null;
-end
-
-def type(single) !type(instance) trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidWord = null;
-end
-
-def !type(instance) trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase~List.remove(node.as($qn+reference.class));
-end
-
-def trigger(remove)
 end
 
 def type(node & instance) trigger(declaration)
@@ -127,12 +160,12 @@ def type(node & single) trigger(declaration)
 end
 
 def type(node) trigger(declaration)
-	private java.util.List<$qn+reference> $name+FirstLowerCase~List;
+	private java.util.List<$qn+reference> $name+FirstLowerCase~List = new java.util.ArrayList<>();
 end
 
 def type(node & instance) trigger(update)
 	io.intino.tara.magritte.Node $name+FirstLowerCase+javaValidWord~Node = this.graph.load("$generatedLanguage+FirstUpperCase#$name");
-	if($name+FirstLowerCase+javaValidWord~Node != null) this.$name+FirstLowerCase+javaValidWord = $name+FirstLowerCase+javaValidWord~Node.as($conceptLayer.class);
+	if ($name+FirstLowerCase+javaValidWord~Node != null) this.$name+FirstLowerCase+javaValidWord = $name+FirstLowerCase+javaValidWord~Node.as($conceptLayer.class);
 end
 
 def type(node & single) trigger(update)

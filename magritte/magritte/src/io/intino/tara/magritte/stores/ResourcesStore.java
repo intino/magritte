@@ -47,7 +47,7 @@ public class ResourcesStore implements Store {
     }
 
     @Override
-    public URL resourceFrom(String path) {
+    public URL  resourceFrom(String path) {
         return ClassFinder.getResource(getPath(path));
     }
 

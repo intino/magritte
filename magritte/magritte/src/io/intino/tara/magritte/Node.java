@@ -4,6 +4,8 @@ import io.intino.tara.magritte.utils.StashHelper;
 
 import java.util.*;
 
+import static io.intino.tara.magritte.Concept.metaTypesOf;
+import static java.util.Collections.singletonList;
 import static java.util.logging.Logger.getGlobal;
 import static java.util.stream.Collectors.toList;
 
@@ -146,7 +148,7 @@ public class Node extends Predicate {
 	}
 
 	public boolean is(Concept concept) {
-		return typeNames.contains(concept.name());
+		return typeNames.contains(concept.id());
 	}
 
 	public boolean is(Class<? extends Layer> layer) {
@@ -157,38 +159,9 @@ public class Node extends Predicate {
 		return as(concept.id);
 	}
 
-	public <T extends Layer> T addFacet(Class<T> layerClass) {
-		return (T) addFacet(graph().layerFactory.names(layerClass).get(0));
-	}
-
-	public Layer addFacet(String concept) {
-		return addFacet(graph().concept(concept));
-	}
-
-	public Layer addFacet(Concept concept) {
-		concept.prepareNode(this, this.graph());
-		return as(concept);
-	}
-
-	public void removeFacet(Class<? extends Layer> layerClass) {
-		removeFacet(graph().layerFactory.names(layerClass).get(0));
-	}
-
-	public void removeFacet(String concept) {
-		removeFacet(graph().concept(concept));
-	}
-
-	public void removeFacet(Concept concept) {
-		removeLayer(concept);
-	}
-
 	private void createLayer(Concept concept) {
 		Layer layer = graph().layerFactory.create(concept.id, this);
 		if (layer != null) this.layers.add(0, layer);
-	}
-
-	private void deleteLayer(Class<? extends Layer> layerClass) {
-		layers.remove(as(layerClass));
 	}
 
 	private void createLayer(Class<? extends Layer> layerClass) {
@@ -211,13 +184,27 @@ public class Node extends Predicate {
 		layers.forEach(l -> l.removeNode$(node));
 	}
 
+	public <T extends Layer> T addFacet(Class<T> layerClass) {
+		return (T) addFacet(graph().concept(layerClass));
+	}
+
+	public Layer addFacet(String concept) {
+		return addFacet(graph().concept(concept));
+	}
+
+	public Layer addFacet(Concept concept) {
+		model().remove(this);
+		concept.prepareNode(this, this.graph());
+		model().add(this);
+		return as(concept);
+	}
+
 	void addLayers(List<Concept> concepts) {
 		concepts.forEach(this::addLayer);
 	}
 
-	Node addLayer(Class<? extends Layer> layerClass) {
+	void addLayer(Class<? extends Layer> layerClass) {
 		createLayer(layerClass);
-		return this;
 	}
 
 	Node addLayer(Concept concept) {
@@ -228,20 +215,30 @@ public class Node extends Predicate {
 		return this;
 	}
 
-	void removeLayers(List<Concept> concepts) {
-		concepts.forEach(this::removeLayer);
+	void removeFacets(List<Concept> concepts) {
+		concepts.forEach(this::removeFacet);
 	}
 
-	Node removeLayer(Concept concept) {
-		if (!is(concept.id())) return this;
-		deleteType(concept);
-		deleteLayer(concept.layerClass());
-		return this;
+	public void removeFacet(Class<? extends Layer> layerClass) {
+		removeFacet(graph().layerFactory.names(layerClass).get(0));
 	}
 
-	Node removeLayer(Class<? extends Layer> layerClass) {
-		deleteLayer(layerClass);
-		return this;
+	public void removeFacet(String concept) {
+		removeFacet(graph().concept(concept));
+	}
+
+	public void removeFacet(Concept concept) {
+		if (!is(concept.id()) || !concept.isFacet()) return;
+		model().remove(this);
+		Set<Concept> toRemove = new HashSet<>(metaTypesOf(singletonList(concept)));
+		toRemove.addAll(concept.allChildren());
+		toRemove.addAll(concept.allInstances());
+		toRemove.forEach(c -> typeNames.remove(c.id()));
+		List<Concept> list = conceptList();
+		typeNames.clear();
+		list.forEach(c -> metaTypesOf(singletonList(c)).forEach(c1 -> typeNames.add(c1.id())));
+		toRemove.stream().filter(r -> !typeNames.contains(r.id())).forEach(r -> layers.remove(as(r.layerClass)));
+		model().add(this);
 	}
 
 	boolean isAnyOf(List<String> concepts) {

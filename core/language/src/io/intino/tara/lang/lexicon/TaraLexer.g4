@@ -145,8 +145,8 @@ NATURAL_VALUE       : PLUS? DIGIT+;
 NEGATIVE_VALUE      : DASH DIGIT+;
 DOUBLE_VALUE        : (PLUS | DASH)? DIGIT+ DOT DIGIT+;
 
-APHOSTROPHE         : '"' {setType(QUOTE_BEGIN);} -> mode(QUOTED);
-STRING_MULTILINE    : EQUALS EQUALS+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE);
+STRING         		: '"' (~('"' | '\\') | '\\' ('"' | '\\'))* '"';
+STRING_MULTILINE    : EQUALS EQUALS+  (~('=' | '\\') | '\\' ('=' | '\\'))* EQUALS EQUALS+ {setType(STRING);};
 
 SINGLE_QUOTE        : '\'' {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_QUOTED);
 EXPRESSION_MULTILINE: DASH DASH+  {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_MULTILINE_MODE);
@@ -168,17 +168,6 @@ NEW_LINE_INDENT: 'indent';
 DEDENT         : 'dedent';
 
 UNKNOWN_TOKEN: . ;
-
-mode QUOTED;
-	QUOTE:'"'                           {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
-//    Q:'\"'                              {   setType(CHARACTER); };
-//    SLASH_Q:'\\\"'                      {   setType(CHARACTER); };
-    SLASH:'\\'                          {   setType(CHARACTER); };
-    CHARACTER:.                         {   setType(CHARACTER); };
-
-mode MULTILINE;
-    M_QUOTE: EQUALS EQUALS+             {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
-	M_CHARACTER:.                       {   setType(CHARACTER); };
 
 mode EXPRESSION_MULTILINE_MODE;
 	ME_STRING_MULTILINE: DASH DASH+     {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);

@@ -7,20 +7,12 @@ import java.util.Set;
 
 public abstract class Predicate {
 
-    protected final String id;
-    final Set<String> typeNames = new LinkedHashSet<>();
+	protected final String id;
+	final Set<String> typeNames = new LinkedHashSet<>();
 
-    Predicate(String id) {
-        this.id = id;
-    }
-
-    public String id() {
-        return id;
-    }
-
-    public String name() {
-		return nameOf(this.id);
-    }
+	Predicate(String id) {
+		this.id = id;
+	}
 
 	@SuppressWarnings("WeakerAccess")
 	public static String nameOf(String id) {
@@ -30,19 +22,23 @@ public abstract class Predicate {
 		return shortName;
 	}
 
+	public String id() {
+		return id;
+	}
+
+	public String name() {
+		return nameOf(this.id);
+	}
+
 	public abstract List<Concept> conceptList();
 
-    void putType(Concept concept) {
-        typeNames.add(concept.id);
-    }
+	void putType(Concept concept) {
+		typeNames.add(concept.id);
+	}
 
-    void deleteType(Concept concept) {
-        typeNames.remove(concept.id());
-    }
+	public abstract List<Node> componentList();
 
-    public abstract List<Node> componentList();
-
-    public abstract Map<String, List<?>> variables();
+	public abstract Map<String, List<?>> variables();
 
 	public abstract <T extends Layer> List<T> findNode(Class<T> aClass);
 }
