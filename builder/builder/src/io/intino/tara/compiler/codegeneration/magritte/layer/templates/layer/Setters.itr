@@ -94,32 +94,34 @@ def type(variable & word) !type(target | inherited | overriden | multiple | fina
 end
 
 def type(variable & resource) !type(target | inherited | overriden | reactive | multiple | final) trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($type+fulltype+reference url, String destiny) {
-		this.$name+FirstLowerCase+javaValidName = graph().core$$().save(url, destiny, this.$name+FirstLowerCase+javaValidName, core$$());
+	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($type+fulltype+reference url, String destination) {
+		if (url == null) this.$name+FirstLowerCase+javaValidName = null;
+		else this.$name+FirstLowerCase+javaValidName = graph().core$$().save(url, destination, this.$name+FirstLowerCase+javaValidName, core$$());
 		return ($container+FirstUpperCase+javaValidName) this;
     }
 
-    public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.io.InputStream stream, String destiny) {
-		this.$name+FirstLowerCase+javaValidName = graph().core$$().save(stream, destiny, this.$name+FirstLowerCase+javaValidName, core$$());
+    public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.io.InputStream stream, String destination) {
+		if (stream == null) this.$name+FirstLowerCase+javaValidName = null;
+		else this.$name+FirstLowerCase+javaValidName = graph().core$$().save(stream, destination, this.$name+FirstLowerCase+javaValidName, core$$());
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 end
 
 def type(variable & resource & multiple) !type(target | inherited | overriden | reactive | final) trigger(setter)
-	public $container+FirstUpperCase+javaValidName add$name+FirstUpperCase($type+fulltype+reference url, String destiny) {
-		$type+fulltype+reference newElement = graph().core$$().save(url, destiny, null, core$$());
+	public $container+FirstUpperCase+javaValidName add$name+FirstUpperCase($type+fulltype+reference url, String destination) {
+		$type+fulltype+reference newElement = graph().core$$().save(url, destination, null, core$$());
 		this.$name+FirstLowerCase+javaValidName.add(newElement);
     	return ($container+FirstUpperCase+javaValidName) this;
     }
 
-    public $container+FirstUpperCase+javaValidName add$name+FirstUpperCase(java.io.InputStream stream, String destiny) {
-		$type+fulltype+reference newElement = graph().core$$().save(stream, destiny, null, core$$());
+    public $container+FirstUpperCase+javaValidName add$name+FirstUpperCase(java.io.InputStream stream, String destination) {
+		$type+fulltype+reference newElement = graph().core$$().save(stream, destination, null, core$$());
 		this.$name+FirstLowerCase+javaValidName.add(newElement);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
-    public java.io.OutputStream add$name+FirstUpperCase+javaValidName(String destiny) {
-    	$type+fulltype+reference newElement = graph().core$$().save((java.io.InputStream)null, destiny, null, core$$());
+    public java.io.OutputStream add$name+FirstUpperCase+javaValidName(String destination) {
+    	$type+fulltype+reference newElement = graph().core$$().save((java.io.InputStream)null, destination, null, core$$());
     	this.$name+FirstLowerCase+javaValidName.add(newElement);
     	try {
 			return newElement.openConnection().getOutputStream();
