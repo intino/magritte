@@ -28,6 +28,7 @@ import io.intino.tara.plugin.project.configuration.ConfigurationManager;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,11 +64,33 @@ public class TaraUtil {
 
 	public static String graphPackage(@NotNull PsiElement element) {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";
-		final Configuration conf = configurationOf(element);
+		final Module module = ModuleProvider.moduleOf(element);
+		final Configuration conf = configurationOf(module);
 		if (conf == null) return "";
-		return conf.workingPackage() + ".graph";
+		return conf.workingPackage() + (isTest(element.getContainingFile(), module) ? ".test" : "") + ".graph";
 	}
 
+	public static boolean isTest(PsiElement dir, Module module) {
+		final List<VirtualFile> roots = testContentRoot(module);
+		for (VirtualFile root : roots) if (isIn(root, dir)) return true;
+		return false;
+	}
+
+	private static boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
+		if (modelSourceRoot == null) return false;
+		PsiElement parent = dir;
+		while (parent != null && !modelSourceRoot.equals(virtualFileOf(parent)))
+			parent = parent.getParent();
+		return parent != null && virtualFileOf(parent).equals(modelSourceRoot);
+	}
+
+	private static VirtualFile virtualFileOf(PsiElement element) {
+		return element instanceof PsiDirectory ? ((PsiDirectory) element).getVirtualFile() : ((PsiFile) element).getVirtualFile();
+	}
+
+	private static List<VirtualFile> testContentRoot(Module module) {
+		return ModuleRootManager.getInstance(module).getSourceRoots(JavaModuleSourceRootTypes.TESTS);
+	}
 
 	public static String languageGraphPackage(@NotNull PsiElement element) {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";

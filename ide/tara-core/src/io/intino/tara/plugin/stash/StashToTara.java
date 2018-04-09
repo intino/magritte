@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -24,7 +25,7 @@ class StashToTara {
 	static Path createTara(VirtualFile stash, File destiny) throws IOException {
 		destiny.deleteOnExit();
 		final String stashText = taraFrom(stashFrom(new File(stash.getPath())));
-		Files.write(destiny.toPath(), stashText.getBytes());
+		Files.write(destiny.toPath(), stashText.getBytes(Charset.forName("UTF-8")));
 		return destiny.toPath();
 	}
 
