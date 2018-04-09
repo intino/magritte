@@ -75,16 +75,16 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		return valued;
 	}
 
-	private boolean isAvailable(PsiClass psiClass, String dsl) {
+	private boolean isAvailable(PsiClass psiClass, String graphPackage) {
 		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
 			psiClass.getParent() instanceof PsiJavaFile &&
-			correctPackage(psiClass, dsl);
+			correctPackage(psiClass, graphPackage);
 	}
 
-	private boolean correctPackage(PsiClass psiClass, String dsl) {
+	private boolean correctPackage(PsiClass psiClass, String graphPackage) {
 		final Module module = ModuleProvider.moduleOf(psiClass);
 		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
-		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
+		return packageName.startsWith(graphPackage.toLowerCase() + '.' + NATIVE_PACKAGE) ||
 			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 

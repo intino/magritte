@@ -31,6 +31,8 @@ import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import java.util.List;
 import java.util.Map;
 
+import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.isTest;
+
 public class CreateModelFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreateModelFileAction() {
@@ -81,27 +83,7 @@ public class CreateModelFileAction extends JavaCreateTemplateInPackageAction<Tar
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}
 
-	private boolean isTest(PsiElement dir, Module module) {
-		final List<VirtualFile> roots = testContentRoot(module);
-		for (VirtualFile root : roots) if (isIn(root, dir)) return true;
-		return false;
-	}
 
-	private boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
-		if (modelSourceRoot == null) return false;
-		PsiElement parent = dir;
-		while (parent != null && !modelSourceRoot.equals(virtualFileOf(parent)))
-			parent = parent.getParent();
-		return parent != null && virtualFileOf(parent).equals(modelSourceRoot);
-	}
-
-	private VirtualFile virtualFileOf(PsiElement element) {
-		return element instanceof PsiDirectory ? ((PsiDirectory) element).getVirtualFile() : ((PsiFile) element).getVirtualFile();
-	}
-
-	private List<VirtualFile> testContentRoot(Module module) {
-		return ModuleRootManager.getInstance(module).getSourceRoots(JavaModuleSourceRootTypes.TESTS);
-	}
 
 	private TaraModelImpl error(PsiFile file) {
 		final String description = file.getFileType().getDescription();
