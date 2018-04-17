@@ -38,7 +38,7 @@ public class StashGenerationOperation extends ModelOperation {
 	public StashGenerationOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
-		this.conf = compilationUnit.getConfiguration();
+		this.conf = compilationUnit.configuration();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class StashGenerationOperation extends ModelOperation {
 		this.outDSL = conf.level().equals(Solution) ? conf.getModule() : conf.outDSL();
 		try {
 			if (conf.isVerbose())
-				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
+				conf.out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
 			if ((conf.isTest() || conf.level().equals(Solution)) && !conf.isStashGeneration()) createSeparatedStashes(model);
 			else createFullStash(model);
 		} catch (TaraException e) {

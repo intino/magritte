@@ -10,13 +10,14 @@ import io.intino.tara.compiler.shared.TaraBuildConstants;
 import io.intino.tara.compiler.shared.TaraCompilerMessageCategories;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.*;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
-import static java.lang.System.out;
 
 class TaraCompilerRunner {
 	private final boolean verbose;
+	private PrintStream out;
 
 	TaraCompilerRunner(boolean verbose) {
 		this.verbose = verbose;
@@ -24,9 +25,10 @@ class TaraCompilerRunner {
 
 	boolean run(File argsFile) {
 		final CompilerConfiguration config = new CompilerConfiguration();
-		config.setVerbose(verbose);
 		final Map<File, Boolean> sources = new LinkedHashMap<>();
 		CompilationInfoExtractor.getInfoFromArgsFile(argsFile, config, sources);
+		config.setVerbose(verbose);
+		this.out = config.out();
 		if (sources.isEmpty()) return true;
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final List<CompilerMessage> messages = new ArrayList<>();
@@ -39,6 +41,7 @@ class TaraCompilerRunner {
 
 	boolean run(CompilerConfiguration config, List<File> files) {
 		config.setVerbose(verbose);
+		this.out = config.out();
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final List<CompilerMessage> messages = new ArrayList<>();
 		final Map<File, Boolean> sources = new LinkedHashMap<>();
@@ -86,7 +89,7 @@ class TaraCompilerRunner {
 		return new TaraCompiler(compilerMessages).compile(unit);
 	}
 
-	private static void processErrors(List<CompilerMessage> compilerMessages) {
+	private void processErrors(List<CompilerMessage> compilerMessages) {
 		int errorCount = 0;
 		for (CompilerMessage message : compilerMessages) {
 			if (message.getCategory().equals(TaraCompilerMessageCategories.ERROR)) {
@@ -97,11 +100,11 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void addSources(Map<File, Boolean> srcFiles, final CompilationUnit unit) {
-		srcFiles.entrySet().forEach(file -> unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue())));
+	private void addSources(Map<File, Boolean> srcFiles, final CompilationUnit unit) {
+		srcFiles.forEach((key, value) -> unit.addSource(new SourceUnit(key, unit.configuration(), unit.getErrorCollector(), value)));
 	}
 
-	private static void printMessage(CompilerMessage message) {
+	private void printMessage(CompilerMessage message) {
 		out.print(MESSAGES_START);
 		out.print(message.getCategory());
 		out.print(SEPARATOR);
@@ -117,7 +120,7 @@ class TaraCompilerRunner {
 		out.println();
 	}
 
-	private static void reportCompiledItems(List<TaraCompiler.OutputItem> compiledFiles) {
+	private void reportCompiledItems(List<TaraCompiler.OutputItem> compiledFiles) {
 		for (TaraCompiler.OutputItem compiledFile : compiledFiles) {
 			out.print(COMPILED_START);
 			out.print(compiledFile.getOutputPath());
@@ -128,7 +131,7 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void reportNotCompiledItems(Map<File, Boolean> toRecompile) {
+	private void reportNotCompiledItems(Map<File, Boolean> toRecompile) {
 		for (File file : toRecompile.keySet()) {
 			out.print(TO_RECOMPILE_START);
 			out.print(file.getAbsolutePath());

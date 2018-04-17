@@ -26,14 +26,14 @@ public class SemanticAnalysisOperation extends ModelOperation {
 
 	public SemanticAnalysisOperation(CompilationUnit unit) {
 		this.unit = unit;
-		this.conf = unit.getConfiguration();
+		this.conf = unit.configuration();
 	}
 
 	@Override
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.getConfiguration().outDSL() + "]" + " Analyzing semantic...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.configuration().outDSL() + "]" + " Analyzing semantic...");
 			if (model.language() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model).analyze();
 		} catch (TaraException e) {

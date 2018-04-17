@@ -63,13 +63,13 @@ public abstract class Tara implements Language {
 
 	@Override
 	public String[] lexicon() {
-		if (!lexicon.isEmpty()) return lexicon.toArray(new String[lexicon.size()]);
+		if (!lexicon.isEmpty()) return lexicon.toArray(new String[0]);
 		return calculateLexicon();
 	}
 
 	private String[] calculateLexicon() {
 		lexicon.addAll(collectTokens());
-		return lexicon.toArray(new String[lexicon.size()]);
+		return lexicon.toArray(new String[0]);
 	}
 
 	private Collection<String> collectTokens() {

@@ -44,7 +44,7 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.languageName(components.get(0).languageName());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
+		if (conf.isVerbose()) conf.out().println(PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
 		return model;
 	}
 

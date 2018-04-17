@@ -11,7 +11,7 @@ public class MultipleCompilationErrorsException extends CompilationFailedExcepti
 	public MultipleCompilationErrorsException(ErrorCollector ec) {
 		super(0, null);
 		if (ec == null) {
-			CompilerConfiguration config = super.getUnit() != null ? super.getUnit().getConfiguration() : new CompilerConfiguration();
+			CompilerConfiguration config = super.getUnit() != null ? super.getUnit().configuration() : new CompilerConfiguration();
 			this.collector = new ErrorCollector(config);
 		} else
 			this.collector = ec;

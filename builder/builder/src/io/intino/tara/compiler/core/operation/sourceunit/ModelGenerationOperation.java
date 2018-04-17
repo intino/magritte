@@ -25,8 +25,8 @@ public class ModelGenerationOperation extends SourceUnitOperation {
 	@Override
 	public void call(SourceUnit source) {
 		try {
-			if (unit.getConfiguration().isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "Converting " + source.getName());
+			if (unit.configuration().isVerbose())
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "Converting " + source.getName());
 			source.importData();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

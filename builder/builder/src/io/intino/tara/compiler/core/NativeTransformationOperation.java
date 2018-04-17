@@ -28,8 +28,8 @@ class NativeTransformationOperation extends ModelOperation {
 	private final List<File> sources;
 
 	NativeTransformationOperation(CompilationUnit unit) {
-		this.resources = unit.getConfiguration().resourcesDirectory();
-		this.sources = unit.getConfiguration().sourceDirectories();
+		this.resources = unit.configuration().resourcesDirectory();
+		this.sources = unit.configuration().sourceDirectories();
 	}
 
 	@Override
