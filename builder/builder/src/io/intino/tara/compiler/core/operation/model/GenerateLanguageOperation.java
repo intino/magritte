@@ -24,10 +24,10 @@ public class GenerateLanguageOperation extends ModelCollectionOperation {
 	@Override
 	public void call(Collection<Model> models) {
 		try {
-			if (unit.getConfiguration().level().equals(CompilerConfiguration.Level.Solution)) return;
-			if (unit.getConfiguration().isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDSL() + "] Generating language...");
-			new LanguageSerializer(unit.getConfiguration(), models).write();
+			if (unit.configuration().level().equals(CompilerConfiguration.Level.Solution)) return;
+			if (unit.configuration().isVerbose())
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + unit.configuration().getModule() + " - " + unit.configuration().outDSL() + "] Generating language...");
+			new LanguageSerializer(unit.configuration(), models).write();
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
 			LOG.log(java.util.logging.Level.SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);

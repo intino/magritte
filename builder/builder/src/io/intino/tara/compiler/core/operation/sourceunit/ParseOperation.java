@@ -1,11 +1,11 @@
 package io.intino.tara.compiler.core.operation.sourceunit;
 
+import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.SourceUnit;
+import io.intino.tara.compiler.core.errorcollection.ErrorCollector;
 import io.intino.tara.compiler.core.errorcollection.SyntaxException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.errorcollection.message.Message;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.errorcollection.ErrorCollector;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,8 +25,7 @@ public class ParseOperation extends SourceUnitOperation {
 	@Override
 	public void call(SourceUnit source) {
 		try {
-			if (unit.getConfiguration().isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "Parsing " + source.getName());
+			if (unit.configuration().isVerbose()) unit.configuration().out().println(PRESENTABLE_MESSAGE + "Parsing " + source.getName());
 			source.parse();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

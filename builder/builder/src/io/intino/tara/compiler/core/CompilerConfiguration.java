@@ -8,6 +8,7 @@ import io.intino.tara.compiler.shared.Configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private String nativeLanguage = "java";
 	private Map<String, String> packageParameters;
 	private boolean stashGeneration = false;
+	private PrintStream out;
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
@@ -374,6 +376,14 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public boolean isStashGeneration() {
 		return this.stashGeneration;
+	}
+
+	public PrintStream out() {
+		return out;
+	}
+
+	public void out(PrintStream out) {
+		this.out = out;
 	}
 
 	public class DSL implements LanguageLibrary {

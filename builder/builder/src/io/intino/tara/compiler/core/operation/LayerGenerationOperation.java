@@ -52,7 +52,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
 		this.compilationUnit = compilationUnit;
-		this.conf = compilationUnit.getConfiguration();
+		this.conf = compilationUnit.configuration();
 		this.outFolder = conf.getOutDirectory();
 		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
 		this.template = Format.customize(LayerTemplate.create());
@@ -61,9 +61,9 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose()) out.println(prefix() + " Cleaning Old Layers...");
+			if (conf.isVerbose()) conf.out().println(prefix() + " Cleaning Old Layers...");
 			if (!conf.level().equals(Solution)) cleanOldLayers(model);
-			if (conf.isVerbose()) out.println(prefix() + " Generating Layers...");
+			if (conf.isVerbose()) conf.out().println(prefix() + " Generating Layers...");
 			if (!model.level().equals(Solution)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);

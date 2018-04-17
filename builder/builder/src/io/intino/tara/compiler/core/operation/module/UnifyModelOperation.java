@@ -3,7 +3,6 @@ package io.intino.tara.compiler.core.operation.module;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.SourceUnit;
-import io.intino.tara.compiler.core.errorcollection.MergeException;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.parser.ASTMerger;
 
@@ -27,9 +26,9 @@ public class UnifyModelOperation extends ModuleUnitOperation {
 	@Override
 	public void call(Collection<SourceUnit> sources) {
 		try {
-			if (unit.getConfiguration().isVerbose())
-				out.println(PRESENTABLE_MESSAGE + "Tarac: Merging to global models");
-			Map<Language, Model> models = new ASTMerger(sources, unit.getConfiguration()).doMerge();
+			if (unit.configuration().isVerbose())
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "Tarac: Merging to global models");
+			Map<Language, Model> models = new ASTMerger(sources, unit.configuration()).doMerge();
 			for (Language language : models.keySet())
 				unit.addModel(language, models.get(language));
 		} catch (Throwable e) {

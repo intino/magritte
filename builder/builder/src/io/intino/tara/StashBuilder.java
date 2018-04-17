@@ -6,6 +6,7 @@ import io.intino.tara.io.StashDeserializer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -15,9 +16,11 @@ import java.util.Map;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 
+@SuppressWarnings("unused")
 public class StashBuilder {
 
 	private final String dsl;
+	private PrintStream stream;
 	private final String dslVersion;
 	private final String module;
 	private final List<File> files;
@@ -25,11 +28,12 @@ public class StashBuilder {
 	private final Charset charset;
 	private File workingDirectory;
 
-	public StashBuilder(List<File> files, String dsl, String dslVersion, String module) {
+	public StashBuilder(List<File> files, String dsl, String dslVersion, String module, PrintStream stream) {
 		this.files = files;
 		this.dsl = dsl;
 		this.dslVersion = dslVersion;
 		this.module = module;
+		this.stream = stream;
 		this.language = null;
 		this.charset = Charset.forName("UTF-8");
 		try {
@@ -38,11 +42,12 @@ public class StashBuilder {
 		}
 	}
 
-	public StashBuilder(Map<File, Charset> files, Language language, String module) {
+	public StashBuilder(Map<File, Charset> files, Language language, String module, PrintStream stream) {
 		this.files = new ArrayList<>(files.keySet());
 		this.charset = files.entrySet().iterator().next().getValue();
 		this.language = language;
 		this.dsl = language.languageName();
+		this.stream = stream;
 		this.dslVersion = null;
 		this.module = module;
 		try {
@@ -53,7 +58,7 @@ public class StashBuilder {
 
 	public Stash build() {
 		try {
-			new TaraCompilerRunner(false).run(createConfiguration(), files);
+			new TaraCompilerRunner(true).run(createConfiguration(), files);
 			final File createdStash = findCreatedStash();
 			if (createdStash == null || !createdStash.exists()) return null;
 			final Stash stash = StashDeserializer.stashFrom(createdStash);
@@ -82,6 +87,7 @@ public class StashBuilder {
 		configuration.systemStashName(module);
 		configuration.sourceEncoding(charset.name());
 		configuration.setStashGeneration();
+		configuration.out(this.stream);
 		if (language == null) configuration.addLanguage(dsl, dslVersion);
 		else configuration.addLanguage(language);
 		return configuration;

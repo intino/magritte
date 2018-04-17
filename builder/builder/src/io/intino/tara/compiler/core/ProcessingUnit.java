@@ -18,7 +18,7 @@ public abstract class ProcessingUnit {
 		else this.errorCollector = er;
 	}
 
-	public CompilerConfiguration getConfiguration() {
+	public CompilerConfiguration configuration() {
 		return this.configuration;
 	}
 

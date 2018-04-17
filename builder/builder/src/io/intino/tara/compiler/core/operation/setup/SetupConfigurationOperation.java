@@ -30,13 +30,13 @@ public class SetupConfigurationOperation extends SetupOperation {
 	private final CompilationUnit unit;
 
 	public SetupConfigurationOperation(CompilationUnit unit) {
-		this.configuration = unit.getConfiguration();
+		this.configuration = unit.configuration();
 		this.unit = unit;
 	}
 
 	@Override
 	public void call() throws CompilationFailedException {
-		if (configuration.isVerbose()) out.println(PRESENTABLE_MESSAGE + "Tarac: Setup configuration...");
+		if (configuration.isVerbose()) configuration.out().println(PRESENTABLE_MESSAGE + "Tarac: Setup configuration...");
 		try {
 			readConfiguration();
 		} catch (TaraException e) {
