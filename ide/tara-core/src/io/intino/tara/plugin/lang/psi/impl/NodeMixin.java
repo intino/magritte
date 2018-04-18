@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
@@ -428,7 +429,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public String file() {
-		return this.getContainingFile().getVirtualFile().getPath();
+		final PsiFile containingFile = this.getContainingFile();
+		return containingFile == null || containingFile.getVirtualFile() == null ? null : containingFile.getVirtualFile().getPath();
 	}
 
 	public List<String> uses() {
@@ -452,12 +454,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		params.put(name, String.join(" ", toString(values, metric)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
 		final Parameters parameters = parametersAnchor(facet);
-		if (parameters == null)
-			getSignature().addAfter(newParameters, metaidentifier(facet));
+		if (parameters == null) getSignature().addAfter(newParameters, metaidentifier(facet));
 		else {
 			PsiElement anchor = calculateAnchor();
-			final PsiElement separator = parameters.addAfter(factory.createParameterSeparator(), anchor);
-			parameters.addAfter((PsiElement) newParameters.getParameters().get(0), separator);
+			if (anchor == null) parameters.add((PsiElement) newParameters.getParameters().get(0));
+			else {
+				final PsiElement separator = parameters.addAfter(factory.createParameterSeparator(), anchor);
+				parameters.addAfter((PsiElement) newParameters.getParameters().get(0), separator);
+			}
 		}
 	}
 

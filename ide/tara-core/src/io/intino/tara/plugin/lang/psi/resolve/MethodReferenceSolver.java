@@ -3,12 +3,10 @@ package io.intino.tara.plugin.lang.psi.resolve;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import io.intino.tara.plugin.lang.psi.Identifier;
+import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.lang.psi.Identifier;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.plugin.project.TaraModuleType;
-import io.intino.tara.plugin.project.module.ModuleProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +24,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 
 	@Override
 	protected List<PsiElement> doMultiResolve() {
+		if (module == null) return Collections.emptyList();
 		final PsiClass aClass = JavaPsiFacade.getInstance(myElement.getProject()).findClass(methodReference(myElement), moduleScope(module));
 		if (aClass == null) return Collections.emptyList();
 		else return Collections.singletonList(findMethod(aClass.getMethods()));

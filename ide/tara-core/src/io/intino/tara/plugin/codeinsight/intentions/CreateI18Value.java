@@ -1,15 +1,16 @@
 package io.intino.tara.plugin.codeinsight.intentions;
 
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.codeinsight.intentions.dialog.CreateStringValues;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.StringValue;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 public class CreateI18Value extends PsiElementBaseIntentionAction {
 
@@ -18,7 +19,8 @@ public class CreateI18Value extends PsiElementBaseIntentionAction {
 		final CreateStringValues dialog = new CreateStringValues(element, TaraPsiImplUtil.getContainerByType(element, StringValue.class).getValue());
 		dialog.pack();
 		dialog.setLocationRelativeTo(dialog.getParent());
-		dialog.setVisible(true);
+		if (ApplicationManager.getApplication().isDispatchThread()) dialog.setVisible(true);
+		else ApplicationManager.getApplication().invokeLater(() -> dialog.setVisible(true));
 	}
 
 	@Override

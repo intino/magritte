@@ -13,7 +13,7 @@ public class ModuleProvider {
 	}
 
 	public static com.intellij.openapi.module.Module moduleOf(PsiElement element) {
-		if (element == null || (!(element instanceof PsiDirectory) && element.getContainingFile().getVirtualFile() == null && element.getContainingFile().getOriginalFile().getVirtualFile() == null))
+		if (element == null || element.getProject().isDisposed() || (!(element instanceof PsiDirectory) && element.getContainingFile().getVirtualFile() == null && element.getContainingFile().getOriginalFile().getVirtualFile() == null))
 			return null;
 		return ModuleUtil.findModuleForPsiElement(element);
 	}

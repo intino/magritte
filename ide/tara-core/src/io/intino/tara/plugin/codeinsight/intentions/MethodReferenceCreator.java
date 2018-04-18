@@ -47,12 +47,13 @@ public class MethodReferenceCreator {
 	public MethodReferenceCreator(Valued valued, String reference) {
 		this.valued = valued;
 		this.reference = reference.replace("@", "");
-		module = ModuleProvider.moduleOf(valued);
+		module = valued != null ? ModuleProvider.moduleOf(valued) : null;
 		workingPackage = TaraUtil.graphPackage(valued);
 		languageWorkingPackage = TaraUtil.languageGraphPackage(valued);
 	}
 
 	public PsiMethod create(String methodBody) {
+		if (valued == null || module == null) return null;
 		resolve(valued);
 		PsiClass aClass = findClass();
 		return addMethod(aClass != null ? aClass : createClass(), methodBody);

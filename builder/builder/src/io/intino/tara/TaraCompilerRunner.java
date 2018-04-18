@@ -28,6 +28,7 @@ class TaraCompilerRunner {
 		final Map<File, Boolean> sources = new LinkedHashMap<>();
 		CompilationInfoExtractor.getInfoFromArgsFile(argsFile, config, sources);
 		config.setVerbose(verbose);
+		config.out(System.out);
 		this.out = config.out();
 		if (sources.isEmpty()) return true;
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");

@@ -1,5 +1,7 @@
 package io.intino.tara.plugin.annotator.fix;
 
+import com.intellij.openapi.application.AccessToken;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -73,8 +75,13 @@ public class CreateNodeRuleClassIntention extends ClassCreationIntention {
 		PsiFile file = destiny.findFile(className + ".java");
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
-		if (ApplicationManager.getApplication().isWriteAccessAllowed()) return createClass(destiny, className, additionalProperties);
-		else return ApplicationManager.getApplication().runWriteAction(
+		final Application application = ApplicationManager.getApplication();
+		if (application.isWriteAccessAllowed()) {
+			final AccessToken accessToken = application.acquireWriteActionLock(CreateNodeRuleClassIntention.class);
+			final PsiClass aClass = createClass(destiny, className, additionalProperties);
+			accessToken.close();
+			return aClass;
+		} else return ApplicationManager.getApplication().runWriteAction(
 				new Computable<PsiClass>() {
 					@Override
 					public PsiClass compute() {

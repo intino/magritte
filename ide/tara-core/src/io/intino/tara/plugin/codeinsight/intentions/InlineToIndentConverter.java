@@ -72,7 +72,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 	}
 
 	private boolean is(PsiElement element, IElementType type) {
-		return element != null && element.getNode() != null && element.getNode().getElementType().equals(type);
+		return element != null && element.getNode() != null && type.equals(element.getNode().getElementType());
 	}
 
 	@Override
