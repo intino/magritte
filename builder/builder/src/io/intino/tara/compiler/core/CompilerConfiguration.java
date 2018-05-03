@@ -69,7 +69,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private String nativeLanguage = "java";
 	private Map<String, String> packageParameters;
 	private boolean stashGeneration = false;
-	private PrintStream out;
+	private PrintStream out = System.out;
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
@@ -96,7 +96,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 			this.warningLevel = level;
 	}
 
-	String sourceEncoding() {
+	public String sourceEncoding() {
 		return this.sourceEncoding;
 	}
 

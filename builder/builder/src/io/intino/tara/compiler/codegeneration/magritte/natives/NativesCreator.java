@@ -114,7 +114,7 @@ public class NativesCreator {
 		try {
 			file.getParentFile().mkdirs();
 			file.createNewFile();
-			Files.write(file.toPath(), nativeText.getBytes());
+			Files.write(file.toPath(), nativeText.getBytes(conf.sourceEncoding()));
 		} catch (IOException e) {
 			LOG.severe(e.getMessage());
 		}
