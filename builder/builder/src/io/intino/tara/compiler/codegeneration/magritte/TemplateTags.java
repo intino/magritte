@@ -70,6 +70,7 @@ public interface TemplateTags {
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";
 	String NODE = "node";
+	String ROOT = "root";
 	String NAME = "name";
 	String SINGLE = "single";
 	String TYPE = "type";

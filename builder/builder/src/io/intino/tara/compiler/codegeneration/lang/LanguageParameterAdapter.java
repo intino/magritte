@@ -40,21 +40,37 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		else frame.addSlot(relation, primitiveParameter(position, facet, variable, relation));
 	}
 
-	int addTerminalParameterConstraints(Node node, Frame allowsFrame) {
+	int addTerminalParameterConstraints(Node node, Frame constraintsFrame) {
 		int index = 0;
 		Collection<Constraint> constraints = language.constraints(node.type());
 		if (constraints == null) return 0;
 		for (Constraint c : constraints) {
-			if (c instanceof Constraint.Parameter &&
-					isTerminal((Constraint.Parameter) c) &&
-					!isRedefined((Constraint.Parameter) c, node.variables()) &&
-					!isRequired((Constraint.Parameter) c) &&
-					!isFilled(node, (Constraint.Parameter) c)) {
-				addTerminalParameter(allowsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
+			if (isSuitableParameter(node, c)) {
+				addTerminalParameter(constraintsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
 				index++;
 			}
 		}
 		return index;
+	}
+
+	static int terminalParameters(Language language, Node node) {
+		int index = 0;
+		Collection<Constraint> constraints = language.constraints(node.type());
+		if (constraints == null) return 0;
+		for (Constraint c : constraints) {
+			if (isSuitableParameter(node, c)) {
+				index++;
+			}
+		}
+		return index;
+	}
+
+	private static boolean isSuitableParameter(Node node, Constraint c) {
+		return c instanceof Constraint.Parameter &&
+				isTerminal((Constraint.Parameter) c) &&
+				!isRedefined((Constraint.Parameter) c, node.variables()) &&
+				!isRequired((Constraint.Parameter) c) &&
+				!isFilled(node, (Constraint.Parameter) c);
 	}
 
 	private void addTerminalParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
@@ -63,22 +79,22 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		else frame.addSlot(type, primitiveParameter(parameter, position, type));
 	}
 
-	private boolean isTerminal(Constraint.Parameter constraint) {
+	private static boolean isTerminal(Constraint.Parameter constraint) {
 		for (Tag flag : constraint.flags())
 			if (flag.equals(Tag.Terminal)) return true;
 		return false;
 	}
 
-	private boolean isRequired(Constraint.Parameter constraint) {
+	private static boolean isRequired(Constraint.Parameter constraint) {
 		return constraint.size().isRequired();
 	}
 
-	private boolean isRedefined(Constraint.Parameter constraint, List<? extends Variable> variables) {
+	private static boolean isRedefined(Constraint.Parameter constraint, List<? extends Variable> variables) {
 		for (Variable variable : variables) if (variable.name().equals(constraint.name())) return true;
 		return false;
 	}
 
-	private boolean isFilled(Node node, Constraint.Parameter constraint) {
+	private static boolean isFilled(Node node, Constraint.Parameter constraint) {
 		for (Parameter parameter : node.parameters())
 			if (parameter.name().equals(constraint.name()) && (constraint.size() == null || constraint.size().accept(parameter.values())))
 				return true;
@@ -90,7 +106,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		frame.addSlot(TAGS, getFlags(variable));
 		frame.addSlot(SCOPE, workingPackage);
 		frame.addSlot(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
-		final Frame rule = (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null) ? null: ruleToFrame(variable.rule());
+		final Frame rule = (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null) ? null : ruleToFrame(variable.rule());
 		if (rule != null) frame.addSlot(RULE, rule);
 		else if (variable.flags().contains(Reactive)) {
 			final Frame ruleFrame = ruleToFrame(new NativeRule("", "", emptyList()));

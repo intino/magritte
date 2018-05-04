@@ -40,7 +40,7 @@ class TerminalConstraintManager implements TemplateTags {
 			else if (c instanceof Constraint.Component)
 				asComponent(constraintsFrame, (Constraint.Component) c);
 			else if (c instanceof Constraint.Parameter)
-				addParameter(constraintsFrame, (Constraint.Parameter) c, CONSTRAINT);
+				addParameter(constraintsFrame, (Constraint.Parameter) c);
 			else if (c instanceof Constraint.Facet)
 				addFacet(constraintsFrame, ((Constraint.Facet) c));
 		}
@@ -68,15 +68,15 @@ class TerminalConstraintManager implements TemplateTags {
 		constraints.addSlot(CONSTRAINT, frame);
 	}
 
-	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
+	private void addParameter(Frame constraints, Constraint.Parameter constraint) {
 		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.facet(), constraint.position(), constraint.scope(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences(constraint);
 			primitiveFrame.addTypes(REFERENCE);
 		}
-		renderPrimitive(primitiveFrame, parameters, relation);
-		constraints.addSlot(relation, primitiveFrame);
+		renderPrimitive(primitiveFrame, parameters, TemplateTags.CONSTRAINT);
+		constraints.addSlot(TemplateTags.CONSTRAINT, primitiveFrame);
 	}
 
 	private void fillAllowedReferences(Constraint.Parameter constraint) {

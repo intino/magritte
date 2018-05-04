@@ -33,10 +33,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private final Level level;
 	private final String workingPackage;
 	private final String languageWorkingPackage;
-	private Frame root;
 	private Model model;
 	private Set<Node> processed = new HashSet<>();
 	private String outDSL;
+	private int rootNumber = 0;
 	private Locale locale;
 	private Language language;
 
@@ -51,30 +51,41 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	@Override
 	public void adapt(Model model, org.siani.itrules.engine.Context context) {
-		this.root = context.frame();
+		Frame root = context.frame();
 		this.model = model;
-		initRoot();
-		buildNode(model);
-		addInheritedRules(model);
+		initRoot(root);
+		buildRootNodes(model, root);
+		addInheritedRules(model, root);
 	}
 
-	private void initRoot() {
-		this.root.addSlot(NAME, outDSL);
-		this.root.addSlot(TERMINAL, level.equals(Product));
-		this.root.addSlot(META_LANGUAGE, language.languageName());
-		this.root.addSlot(LOCALE, locale.getLanguage());
+	private void initRoot(Frame root) {
+		root.addSlot(NAME, outDSL);
+		root.addSlot(TERMINAL, level.equals(Product));
+		root.addSlot(META_LANGUAGE, language.languageName());
+		root.addSlot(LOCALE, locale.getLanguage());
 	}
 
-	private void buildNode(Node node) {
+	private void buildRootNodes(Model model, Frame root) {
+		Frame frame = new Frame().addTypes(NODE);
+		createRuleFrame(model, frame, root);
+		model.components().forEach(n -> {
+			final Frame rootNodeFrame = new Frame(ROOT);
+			rootNodeFrame.addSlot("number", rootNumber = ++rootNumber);
+			root.addSlot("root", rootNodeFrame);
+			buildNode(n, rootNodeFrame);
+		});
+	}
+
+	private void buildNode(Node node, Frame root) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRuleFrame(node, frame);
+		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRuleFrame(node, frame, root);
 		else if (node.is(Instance) && !node.isAnonymous()) root.addSlot(NODE, createInstanceFrame(node));
 		if (!node.isAnonymous())
-			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(n -> buildNode(n, root));
 	}
 
-	private void createRuleFrame(Node node, Frame frame) {
+	private void createRuleFrame(Node node, Frame frame, Frame root) {
 		frame.addSlot(NAME, name(node));
 		addTypes(node, frame);
 		addConstraints(node, frame);
@@ -90,7 +101,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return frame;
 	}
 
-	private void addInheritedRules(Model model) {
+	private void addInheritedRules(Model model, Frame root) {
 		new LanguageInheritanceManager(root, instanceConstraints(), language, model).fill();
 	}
 
@@ -149,7 +160,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
-					new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+					LanguageParameterAdapter.terminalParameters(language, node) + terminalParameterIndex(constraints));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
 			addMetaFacetConstraints(node, constraints);

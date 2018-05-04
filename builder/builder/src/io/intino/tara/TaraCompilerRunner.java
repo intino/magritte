@@ -17,7 +17,7 @@ import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraCompilerRunner {
 	private final boolean verbose;
-	private PrintStream out;
+	private PrintStream out = System.out;
 
 	TaraCompilerRunner(boolean verbose) {
 		this.verbose = verbose;
