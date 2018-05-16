@@ -1,29 +1,25 @@
 def.file
-/Users/oroncal/workspace/amidas/test/test/io/intino/amidas/test/RegistroSolicitantes.tara#true
-/Users/oroncal/workspace/amidas/test/test/io/intino/amidas/test/WorkForceTest.tara#true
-/Users/oroncal/workspace/amidas/test/test/io/intino/amidas/test/Sumus.tara#true
-/Users/oroncal/workspace/amidas/test/test/io/intino/amidas/test/WorksTest.tara#true
-/Users/oroncal/workspace/amidas/test/test/io/intino/amidas/test/Sales.tara#true
-/Users/oroncal/workspace/amidas/test/test/io/intino/amidas/test/GreenPower.tara#true
+/Users/oroncal/workspace/amidas/test/src/io/intino/amidas/test/Main.tara#true
 
 project
 amidas
 module
 test
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Caches/IntelliJIdea2018.1/plugins-sandbox/plugins/tara-plugin/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/amidas/test/test-gen
+/Users/oroncal/workspace/amidas/test/gen
 final_outputpath
-/Users/oroncal/workspace/amidas/out/test/test/
+/Users/oroncal/workspace/amidas/out/production/test/
 resources
-/Users/oroncal/workspace/amidas/test/test-res
+/Users/oroncal/workspace/amidas/test/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/amidas/.tara
 src.path
-/Users/oroncal/workspace/amidas/test/test
+/Users/oroncal/workspace/amidas/test/src
+/Users/oroncal/workspace/amidas/test/gen
 
 version
 1.0.0
@@ -32,6 +28,6 @@ working.package
 make
 false
 test.module
-true
+false
 encoding
 UTF-8

@@ -8,7 +8,7 @@ def type(graph)
 		protected io.intino.tara.magritte.Graph graph;
 		$node+declaration...[$NL]
 
-		private java.util.Map<String, Indexer> index = fillIndex();
+		private java.util.Map<String, Indexer> _index = _fillIndex();
 
 		public AbstractGraph(io.intino.tara.magritte.Graph graph) {
 			this.graph = graph;
@@ -27,20 +27,20 @@ def type(graph)
 
         @Override
 		public void update() {
-			index.values().forEach(v -> v.clear());
+			this._index.values().forEach(v -> v.clear());
 			graph.rootList().forEach(r -> addNode$$(r));
 		}
 
 		@Override
 		protected void addNode$$(io.intino.tara.magritte.Node node) {
-			for (io.intino.tara.magritte.Concept c : node.conceptList()) if (index.containsKey(c.id())) index.get(c.id()).add(node);
-			if (index.containsKey(node.id())) index.get(node.id()).add(node);
+			for (io.intino.tara.magritte.Concept c : node.conceptList()) if (this._index.containsKey(c.id())) this._index.get(c.id()).add(node);
+			if (this._index.containsKey(node.id())) this._index.get(node.id()).add(node);
 		}
 
 		@Override
 		protected void removeNode$$(io.intino.tara.magritte.Node node) {
-			for (io.intino.tara.magritte.Concept c : node.conceptList()) if (index.containsKey(c.id())) index.get(c.id()).remove(node);
-			if (index.containsKey(node.id())) index.get(node.id()).remove(node);
+			for (io.intino.tara.magritte.Concept c : node.conceptList()) if (this._index.containsKey(c.id())) this._index.get(c.id()).remove(node);
+			if (this._index.containsKey(node.id())) this._index.get(node.id()).remove(node);
 		}
 
 		public java.net.URL resourceAsMessage$$(String language, String key) {
@@ -92,7 +92,7 @@ def type(graph)
 		}
 
 
-		private java.util.HashMap<String, Indexer> fillIndex() {
+		private java.util.HashMap<String, Indexer> _fillIndex() {
 			return new java.util.HashMap<String, Indexer>() {{
 				$node+put...[$NL]
 			}};
@@ -137,7 +137,7 @@ def type(graph)
 end
 
 def type(instance) trigger(put)
-	put("$generatedLanguage#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
+	put("$generatedLanguage+FirstUpperCase#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
 end
 
 def !type(instance) type(single)  trigger(put)

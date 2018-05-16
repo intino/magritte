@@ -96,8 +96,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonetM3() {
-		main(new String[]{home + "sandbox/confFiles/monet/M3.txt"});
+	public void ebarM2() {
+		main(new String[]{home + "sandbox/confFiles/ebar/ebar.txt"});
 	}
 
 	@Test
@@ -108,11 +108,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void exampleM3() {
 		main(new String[]{home + "sandbox/confFiles/example/m3.txt"});
-	}
-
-	@Test
-	public void ebarBrdigeM2() {
-		main(new String[]{home + "sandbox/confFiles/ebar/m2.txt"});
 	}
 
 	@Test

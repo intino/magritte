@@ -1,8 +1,8 @@
 package io.intino.tara.compiler.core.operation.setup;
 
 import io.intino.legio.graph.Artifact;
-import io.intino.legio.graph.Parameter;
 import io.intino.legio.graph.LegioGraph;
+import io.intino.legio.graph.Parameter;
 import io.intino.legio.graph.level.LevelArtifact;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -16,12 +16,11 @@ import io.intino.tara.io.StashDeserializer;
 import io.intino.tara.magritte.Graph;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
-import static java.lang.System.out;
 
 public class SetupConfigurationOperation extends SetupOperation {
 	private static final Logger LOG = Logger.getGlobal();
@@ -83,10 +82,9 @@ public class SetupConfigurationOperation extends SetupOperation {
 		configuration.artifactId(artifact.name$().toLowerCase());
 		configuration.groupId(artifact.groupId());
 		configuration.version(artifact.version());
-		if (legio.artifact().package$() != null) {
-			final Map<String, String> map = legio.artifact().package$().parameterList().stream().collect(Collectors.toMap(Parameter::name, Parameter::value));
-			configuration.packageParameters(map);
-		}
+		Map<String, String> params = new HashMap<>();
+		for (Parameter p : legio.artifact().parameterList()) params.put(p.name(), p.defaultValue());
+		configuration.packageParameters(params);
 		if (configuration.isTest()) {
 			configuration.addLanguage(artifact.name$(), artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);

@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.diagnostic.SubmittedReportInfo;
+import com.intellij.openapi.diagnostic.SubmittedReportInfo.SubmissionStatus;
 import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -50,10 +51,10 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		ProgressManager progressManager = ProgressManager.getInstance();
 		progressManager.runProcessWithProgressSynchronously(runnable, PluginErrorReportSubmitterBundle.message("progress.dialog.title"), false, null);
 		if (processExceptions(parentComponent, ex[0]))
-			consumer.consume(new SubmittedReportInfo(null, null, SubmittedReportInfo.SubmissionStatus.FAILED));
+			consumer.consume(new SubmittedReportInfo(null, null, SubmissionStatus.FAILED));
 		LOG.info("Error submission successful");
 		Messages.showInfoMessage(parentComponent, PluginErrorReportSubmitterBundle.message("successful.dialog.message"), PluginErrorReportSubmitterBundle.message("successful.dialog.title"));
-		consumer.consume(new SubmittedReportInfo(null, null, SubmittedReportInfo.SubmissionStatus.FAILED));
+		consumer.consume(new SubmittedReportInfo(null, null, SubmissionStatus.FAILED));
 		return true;
 	}
 

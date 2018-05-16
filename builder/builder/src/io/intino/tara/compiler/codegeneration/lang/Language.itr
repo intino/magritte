@@ -9,7 +9,10 @@ def type(Model)
 	public class $name+reference+FirstUpperCase extends io.intino.tara.dsl.Tara {
 		public $name+reference+FirstUpperCase() {
 			$node...[$NL]
+			$root+call...[$NL]
 		}
+
+		$root+method...[$NL]
 
 		@Override
 		public String languageName() {
@@ -30,6 +33,17 @@ def type(Model)
 		public String metaLanguage() {
 			return $metaLanguage+quoted;
 		}
+	}
+end
+
+def trigger(call)
+	root$number();
+end
+
+
+def trigger(method)
+	private void root$number() {
+		$node...[$NL]
 	}
 end
 
