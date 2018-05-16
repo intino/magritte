@@ -124,7 +124,7 @@ public class LanguageSerializer {
 		if (conf.packageParameters() == null) return;
 		final Attributes frameworkAttributes = new Attributes();
 		for (Map.Entry<String, String> entry : conf.packageParameters().entrySet())
-			if (!entry.getKey().isEmpty() && !entry.getValue().isEmpty())
+			if (!entry.getKey().isEmpty())
 				frameworkAttributes.put(new Attributes.Name(entry.getKey()), entry.getValue());
 		manifest.getEntries().put("framework", frameworkAttributes);
 	}

@@ -137,7 +137,7 @@ def type(graph)
 end
 
 def type(instance) trigger(put)
-	put("$generatedLanguage#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
+	put("$generatedLanguage+FirstUpperCase#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
 end
 
 def !type(instance) type(single)  trigger(put)

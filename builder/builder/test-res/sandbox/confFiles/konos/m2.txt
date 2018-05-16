@@ -1,16 +1,23 @@
 def.file
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Tasks.tara#true
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Services.tara#true
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Datalake.tara#true
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Interface.tara#true
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/DataTypes.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Clients.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Box.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/DataTypes.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Services.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Tasks.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Dialog.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Display.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Catalog.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Mold.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Panel.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Views.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/UI.tara#false
 
 project
 konos
 module
 model
 semantic.lib
-/Users/oroncal/Library/Application Support/IntelliJIdea2017.2/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Application Support/IntelliJIdea2018.1/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/konos/ide/model/gen
 final_outputpath

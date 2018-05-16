@@ -1,13 +1,13 @@
 def.file
-/Users/oroncal/workspace/ebar/product/src/com/monentia/ebar/Analysis.tara#true
 /Users/oroncal/workspace/ebar/product/src/com/monentia/ebar/Data.tara#true
+/Users/oroncal/workspace/ebar/product/src/com/monentia/ebar/Analysis.tara#true
 
 project
 ebar
 module
 product
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Application Support/IntelliJIdea2018.1/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/ebar/product/gen
 final_outputpath
@@ -24,7 +24,7 @@ src.path
 version
 1.0.0
 working.package
-
+.graph
 make
 false
 test.module
