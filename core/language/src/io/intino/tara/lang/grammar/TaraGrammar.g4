@@ -46,6 +46,7 @@ variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value m
 bodyValue : NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT;
 
 variableType: INT_TYPE
+			| LONG_TYPE
             | DOUBLE_TYPE
             | BOOLEAN_TYPE
             | STRING_TYPE
@@ -88,7 +89,7 @@ annotations: INTO annotation+;
 annotation: COMPONENT | FEATURE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE | DECORABLE;
+flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE | DECORABLE | REQUIRED;
 
 varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 

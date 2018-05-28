@@ -589,7 +589,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-  // 	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | DECORABLE
+  // 	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | REQUIRED | DECORABLE
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
     boolean r;
@@ -604,6 +604,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FINAL);
     if (!r) r = consumeToken(b, CONCEPT);
     if (!r) r = consumeToken(b, VOLATILE);
+    if (!r) r = consumeToken(b, REQUIRED);
     if (!r) r = consumeToken(b, DECORABLE);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -1831,6 +1832,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // FUNCTION_TYPE
   //                 | INT_TYPE
+  //                 | LONG_TYPE
   //                 | DOUBLE_TYPE
   //                 | BOOLEAN_TYPE
   //                 | STRING_TYPE
@@ -1847,6 +1849,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, VARIABLE_TYPE, "<variable type>");
     r = consumeToken(b, FUNCTION_TYPE);
     if (!r) r = consumeToken(b, INT_TYPE);
+    if (!r) r = consumeToken(b, LONG_TYPE);
     if (!r) r = consumeToken(b, DOUBLE_TYPE);
     if (!r) r = consumeToken(b, BOOLEAN_TYPE);
     if (!r) r = consumeToken(b, STRING_TYPE);

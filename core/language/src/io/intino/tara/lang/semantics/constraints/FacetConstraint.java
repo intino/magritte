@@ -20,13 +20,15 @@ import static java.util.Collections.singletonList;
 public class FacetConstraint implements Constraint.Facet {
 	private final String type;
 	private final boolean terminal;
+	private final boolean required;
 	private final String[] with;
 	private final String[] withOut;
 	private final List<Constraint> constraints;
 
-	FacetConstraint(String type, boolean terminal, String[] with, String[] withOut) {
+	FacetConstraint(String type, boolean terminal, boolean required, String[] with, String[] withOut) {
 		this.type = type;
 		this.terminal = terminal;
+		this.required = required;
 		this.with = with.clone();
 		this.withOut = withOut.clone();
 		constraints = new ArrayList<>();
@@ -40,6 +42,11 @@ public class FacetConstraint implements Constraint.Facet {
 	@Override
 	public String[] with() {
 		return with;
+	}
+
+	@Override
+	public boolean isRequired() {
+		return required;
 	}
 
 	@Override
@@ -66,6 +73,8 @@ public class FacetConstraint implements Constraint.Facet {
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
 		io.intino.tara.lang.model.Facet facet = findFacet(node, this.type);
+		if (facet == null && required)
+			throw new SemanticException(new SemanticNotification(ERROR, "reject.node.with.required.facet.not.found", node, singletonList(this.type)));
 		if (facet == null && !ANY.equals(type())) return;
 		final boolean hasType = is(node.types(), with);
 		final boolean hasIncompatibles = isAny(node.types(), withOut);

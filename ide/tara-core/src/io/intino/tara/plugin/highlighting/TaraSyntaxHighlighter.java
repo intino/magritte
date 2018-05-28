@@ -84,6 +84,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(VOLATILE, ANNOTATION);
 		KEYS.put(TERMINAL, ANNOTATION);
 		KEYS.put(DECORABLE, ANNOTATION);
+		KEYS.put(REQUIRED, ANNOTATION);
 
 		KEYS.put(FINAL, ANNOTATION);
 
@@ -106,7 +107,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(RIGHT_SQUARE, OPERATOR);
 		KEYS.put(LEFT_CURLY, OPERATOR);
 		KEYS.put(RIGHT_CURLY, OPERATOR);
-		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 
 		KEYS.put(WORD_TYPE, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
@@ -115,6 +115,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(RESOURCE_TYPE, PRIMITIVE);
 		KEYS.put(OBJECT_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
+		KEYS.put(LONG_TYPE, PRIMITIVE);
 		KEYS.put(DATE_TYPE, PRIMITIVE);
 		KEYS.put(INSTANT_TYPE, PRIMITIVE);
 		KEYS.put(TIME_TYPE, PRIMITIVE);

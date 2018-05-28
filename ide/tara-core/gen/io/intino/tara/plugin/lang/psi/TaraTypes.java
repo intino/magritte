@@ -94,6 +94,7 @@ public interface TaraTypes {
 	IElementType LEFT_CURLY = new TaraTokenType("LEFT_CURLY");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
+	IElementType LONG_TYPE = new TaraTokenType("LONG_TYPE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -107,6 +108,7 @@ public interface TaraTypes {
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType REACTIVE = new TaraTokenType("REACTIVE");
+	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_TYPE = new TaraTokenType("RESOURCE_TYPE");
 	IElementType RIGHT_CURLY = new TaraTokenType("RIGHT_CURLY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");

@@ -126,18 +126,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void Sherlock_M3() {
-		main(new String[]{home + "sandbox/confFiles/sherlock/m2.txt"});
-	}
-
-	@Test
-	public void Sherlock_M2() {
-		main(new String[]{home + "sandbox/confFiles/sherlock/m2.txt"});
+	public void ness_jms() {
+		main(new String[]{home + "sandbox/confFiles/ness/m2.txt"});
 	}
 
 	@Test
 	public void Sherlock_M1() {
-		main(new String[]{home + "sandbox/confFiles/sherlock/m1.txt"});
+		main(new String[]{home + "sandbox/confFiles/ness/m1.txt"});
 	}
 
 	@Test

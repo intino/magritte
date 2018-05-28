@@ -1,4 +1,4 @@
-{
+	{
 	parserClass='io.intino.tara.plugin.lang.parser.TaraParser'
 	parserUtilClass="io.intino.tara.plugin.lang.parser.TaraParserUtil"
 	psiVisitorName="TaraVisitor"
@@ -96,6 +96,7 @@ bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT {
 
 variableType::= FUNCTION_TYPE
                 | INT_TYPE
+                | LONG_TYPE
                 | DOUBLE_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
@@ -157,8 +158,6 @@ integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 metric          ::= identifier | METRIC_VALUE_KEY
 
-
-
 facetTarget ::= ON (identifierReference | ANY) constraint? {
 	pin = 1
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.FacetTargetMixin'
@@ -180,7 +179,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | DECORABLE {
+	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | REQUIRED | DECORABLE {
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.FlagMixin'
 	implements = 'io.intino.tara.plugin.lang.psi.Flag'
 }

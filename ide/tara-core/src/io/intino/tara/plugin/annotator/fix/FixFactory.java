@@ -34,6 +34,7 @@ public class FixFactory {
 		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
 		fixes.put("warning.variable.name.starts.uppercase", new Class[]{LowerCaseVariableFix.class});
 		fixes.put("reject.number.parameter.with.erroneous.metric", new Class[]{AddMetricFix.class});
+		fixes.put("reject.node.with.required.facet.not.found", new Class[]{AddRequiredFacetFix.class});
 
 	}
 
@@ -52,7 +53,7 @@ public class FixFactory {
 					aClass.getConstructor(PsiElement.class).newInstance(element);
 				actions.add(intentionAction);
 			}
-			return actions.toArray(new IntentionAction[actions.size()]);
+			return actions.toArray(new IntentionAction[0]);
 		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			List<String> classNames = new ArrayList<>();
 			for (Class<? extends IntentionAction> aClass : classes) classNames.add(aClass.getSimpleName());

@@ -19,6 +19,14 @@ public enum Primitive {
 			return objects;
 		}
 	},
+	LONG {
+		@Override
+		public List<Long> convert(String... value) {
+			List<Long> objects = new ArrayList<>();
+			for (String o : value) objects.add(Long.valueOf(o));
+			return objects;
+		}
+	},
 	DOUBLE {
 		@Override
 		public List<Double> convert(String... value) {
@@ -115,6 +123,7 @@ public enum Primitive {
 	public static List<Primitive> getPrimitives() {
 		List<Primitive> list = new ArrayList<>();
 		list.add(INTEGER);
+		list.add(LONG);
 		list.add(DOUBLE);
 		list.add(BOOLEAN);
 		list.add(STRING);

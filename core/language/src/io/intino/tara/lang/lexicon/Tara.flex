@@ -105,6 +105,7 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 REACTIVE            = "reactive"
 VOLATILE            = "volatile"
+REQUIRED            = "required"
 DECORABLE           = "decorable"
 
 LEFT_PARENTHESIS    = "("
@@ -141,6 +142,7 @@ DOUBLE_TYPE         = "double"
 FUNCTION_TYPE       = "function"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
+LONG_TYPE        	= "long"
 DATE_TYPE           = "datex"
 INSTANT_TYPE        = "instant"
 TIME_TYPE           = "time"
@@ -207,6 +209,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{FINAL}                         {   return TaraTypes.FINAL; }
 	{VOLATILE}                      {   return TaraTypes.VOLATILE; }
+	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {DECORABLE}                     {   return TaraTypes.DECORABLE; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
@@ -241,6 +244,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {INSTANT_TYPE}                  {   return TaraTypes.INSTANT_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
+    {LONG_TYPE}                     {   return TaraTypes.LONG_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{METRIC_VALUE_KEY}              {   return TaraTypes.METRIC_VALUE_KEY; }
