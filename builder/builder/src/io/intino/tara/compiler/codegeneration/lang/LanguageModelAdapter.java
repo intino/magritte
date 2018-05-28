@@ -218,6 +218,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
 				for (FacetTarget.Constraint constraint : facetTarget.constraints())
 					frame.addSlot(constraint.negated() ? WITHOUT : WITH, constraint.node().name());
+			if (facetTargetNode.flags().contains(Required)) frame.addSlot("required", "true");
 			addParameterConstraints(facetTargetNode.variables(), facet, frame, 0);
 			addComponentsConstraints(frame, facetTargetNode);
 			addTerminalConstrains(facetTargetNode, frame);
@@ -388,8 +389,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private static void addTags(Node node, Frame frame) {
 		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
-		node.flags().stream().filter(f -> !f.equals(Decorable)).forEach(tag -> tags.add(convertTag(tag)));
-		frame.addSlot(TAGS, tags.toArray(new String[tags.size()]));
+		node.flags().stream().filter(f -> !f.equals(Decorable) && !Tag.Required.equals(f)).forEach(tag -> tags.add(convertTag(tag)));
+		frame.addSlot(TAGS, tags.toArray(new String[0]));
 	}
 
 	private static List<Node> collectCandidates(Node node) {

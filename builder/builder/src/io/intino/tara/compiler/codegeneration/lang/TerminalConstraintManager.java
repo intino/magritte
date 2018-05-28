@@ -185,7 +185,7 @@ class TerminalConstraintManager implements TemplateTags {
 		final Size size = component.container().sizeOf(component);
 		if (size.min() == 0 && size.max() == 0) return;
 		constraint.addSlot(SIZE, new FrameBuilder().build(size));
-		constraint.addSlot(TAGS, component.flags().stream().map(Enum::name).toArray(String[]::new));
+		constraint.addSlot(TAGS, component.flags().stream().filter(f -> !Tag.Required.equals(f)).map(Enum::name).toArray(String[]::new));
 		frame.addSlot(CONSTRAINT, constraint);
 	}
 

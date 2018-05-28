@@ -6,12 +6,12 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
-import io.intino.tara.plugin.lang.file.TaraFileType;
-import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Variable;
+import io.intino.tara.plugin.lang.file.TaraFileType;
+import io.intino.tara.plugin.lang.psi.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,14 +30,14 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public TaraNode createNode(String name, String type) {
 		final TaraModelImpl file = createDummyFile(
-			type + " " + name + "\n"
+				type + " " + name + "\n"
 		);
 		return (TaraNode) file.components().iterator().next();
 	}
 
 	public TaraNode createNode(String name) {
 		final TaraModelImpl file = createDummyFile(
-			"Concept" + " " + name + "\n"
+				"Concept" + " " + name + "\n"
 		);
 		return (TaraNode) file.components().iterator().next();
 	}
@@ -49,7 +49,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	private TaraNode createNodeWithType(String type) {
 		final TaraModelImpl file = createDummyFile(
-			type + " " + "Dummy" + "\n"
+				type + " " + "Dummy" + "\n"
 		);
 		return (TaraNode) file.components().iterator().next();
 	}
@@ -69,19 +69,36 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public TaraVariable createVariable(String name, Primitive type) {
 		final TaraModelImpl file = createDummyFile(
-			CONCEPT_DUMMY + "\n" +
-				"\tvar " + type.getName() + " " + name + "\n" +
-				"\t" + CONCEPT_DUMMY + "2\n"
+				CONCEPT_DUMMY + "\n" +
+						"\tvar " + type.getName() + " " + name + "\n" +
+						"\t" + CONCEPT_DUMMY + "2\n"
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? (TaraVariable) body.getFirstChild().getNextSibling() : null;
 	}
 
+	@Override
+	public TaraFacets createFacets(String type) {
+		final TaraModelImpl file = createDummyFile(
+				CONCEPT_DUMMY + " as " + type + "\n" +
+						"\t" + CONCEPT_DUMMY + "2\n"
+		);
+		return PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getFacets();
+	}
+
+	public TaraFacetApply createFacet(String type) {
+		final TaraModelImpl file = createDummyFile(
+				CONCEPT_DUMMY + " as " + type + "\n" +
+						"\t" + CONCEPT_DUMMY + "2\n"
+		);
+		return PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getFacets().getFacetApplyList().get(0);
+	}
+
 	public TaraVariable createResource(String name, String type) {
 		final TaraModelImpl file = createDummyFile(
-			CONCEPT_DUMMY + "\n" +
-				"\tvar resource:" + type + " " + name + "\n" +
-				"\tConcept Ontology\n"
+				CONCEPT_DUMMY + "\n" +
+						"\tvar resource:" + type + " " + name + "\n" +
+						"\tConcept Ontology\n"
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? (TaraVariable) body.getFirstChild().getNextSibling() : null;
@@ -90,7 +107,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public PsiElement createMetaWordIdentifier(String module, String node, String name) {
 		final TaraModelImpl file = createDummyFile(
-			node + "(" + node + "." + name + ")" + " Dummy" + "\n"
+				node + "(" + node + "." + name + ")" + " Dummy" + "\n"
 		);
 		Collection<Parameter> parameters = PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getParameters().getParameters();
 		return ((PsiElement) parameters.iterator().next()).getLastChild().getLastChild();
@@ -99,9 +116,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public TaraVariable createWord(String name, String[] types) {
 		final TaraModelImpl file = createDummyFile(
-			CONCEPT_DUMMY + "\n" +
-				"\tvar word " + name + "\n" +
-				getWordTypesToString(types));
+				CONCEPT_DUMMY + "\n" +
+						"\tvar word " + name + "\n" +
+						getWordTypesToString(types));
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? (TaraVariable) body.getVariableList().get(0) : null;
 	}
@@ -115,17 +132,17 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public TaraImports createImport(String reference) {
 		final TaraModelImpl file = createDummyFile(
-			"dsl Proteo\n\n" +
-				"use " + reference + "\n" +
-				CONCEPT_DUMMY + "\n"
+				"dsl Proteo\n\n" +
+						"use " + reference + "\n" +
+						CONCEPT_DUMMY + "\n"
 		);
 		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];
 	}
 
 	public TaraDslDeclaration createDslDeclaration(String name) {
 		final TaraModelImpl file = createDummyFile(
-			"dsl " + name + "\n\n" +
-				CONCEPT_DUMMY + "\n"
+				"dsl " + name + "\n\n" +
+						CONCEPT_DUMMY + "\n"
 		);
 		return PsiTreeUtil.getChildrenOfType(file, TaraDslDeclaration.class)[0];
 	}
@@ -138,7 +155,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public Parameters createEmptyParameters() {
 		final TaraModelImpl file = createDummyFile(
-			"Form(" + ")" + "DummyInstance\n"
+				"Form(" + ")" + "DummyInstance\n"
 		);
 		final Node next = file.components().iterator().next();
 		return ((TaraNode) next).getSignature().getParameters();
@@ -147,7 +164,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public Parameters createParameters(boolean areStrings) {
 		final TaraModelImpl file = createDummyFile(
-			"Form(" + (areStrings ? "\"\"" : "") + ")" + "DummyInstance\n"
+				"Form(" + (areStrings ? "\"\"" : "") + ")" + "DummyInstance\n"
 		);
 		final Node next = file.components().iterator().next();
 		return ((TaraNode) next).getSignature().getParameters();
@@ -157,7 +174,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Parameters createParameters(String... names) {
 		String parameters = buildParameters(names);
 		final TaraModelImpl file = createDummyFile(
-			"Dummy(" + parameters + ")" + " DummyInstance\n"
+				"Dummy(" + parameters + ")" + " DummyInstance\n"
 		);
 		final Node next = file.components().iterator().next();
 		return ((TaraNode) next).getSignature().getParameters();
@@ -174,16 +191,16 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Parameters createExplicitParameters(Map<String, String> parameters) {
 		String assigns = buildExplicitParameters(parameters);
 		final TaraModelImpl file = createDummyFile(
-			"Concept(" + assigns + ")" + " DummyInstance\n"
+				"Concept(" + assigns + ")" + " DummyInstance\n"
 		);
-		if(file.components().isEmpty()) return null;
+		if (file.components().isEmpty()) return null;
 		return ((TaraNode) file.components().get(0)).getSignature().getParameters();
 	}
 
 	@Override
 	public PsiElement createParameterSeparator() {
 		final TaraModelImpl file = createDummyFile(
-			"Dummy(" + "x = 1, y = 2" + ")" + " DummyInstance\n"
+				"Dummy(" + "x = 1, y = 2" + ")" + " DummyInstance\n"
 		);
 		final TaraNode node = (TaraNode) file.components().iterator().next();
 		return node.getSignature().getParameters().getNode().getChildren(TokenSet.create(TaraTypes.COMMA))[0].getPsi();
@@ -200,7 +217,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public TaraFlag createFlag(String flag) {
 		final TaraModelImpl file = createDummyFile(
-			DUMMY_CONCEPT + " is " + flag + "\n"
+				DUMMY_CONCEPT + " is " + flag + "\n"
 		);
 		Node node = file.components().iterator().next();
 		return (TaraFlag) ((TaraNode) node).getSignature().getFlags().getFlagList().get(0);
@@ -254,8 +271,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public PsiElement createBodyNewLine() {
 		final TaraModelImpl file = createDummyFile(DUMMY_CONCEPT + "\n" +
-			"\t" + DUMMY_CONCEPT + "2\n" +
-			"\t" + DUMMY_CONCEPT + "3");
+				"\t" + DUMMY_CONCEPT + "2\n" +
+				"\t" + DUMMY_CONCEPT + "3");
 		Node node = file.components().iterator().next();
 		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(((TaraNode) node).getBody(), LeafPsiElement.class);
 		return childrenOfType != null ? childrenOfType[1] : null;
@@ -266,8 +283,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		for (int i = 0; i < level; i++)
 			indents.append("\t");
 		final TaraModelImpl file = createDummyFile(DUMMY_CONCEPT + "\n" +
-			indents + DUMMY_CONCEPT + "2\n" +
-			indents + DUMMY_CONCEPT + "3");
+				indents + DUMMY_CONCEPT + "2\n" +
+				indents + DUMMY_CONCEPT + "3");
 		Node node = file.components().iterator().next();
 		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(((TaraNode) node).getBody(), LeafPsiElement.class);
 		return childrenOfType != null ? childrenOfType[1] : null;
@@ -283,8 +300,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public TaraExpression createExpression(String text) {
 		char quote = '\'';
 		final TaraModelImpl file = createDummyFile(
-			CONCEPT_DUMMY + "\n" +
-				"\tvar function:Dummy dummy " + "= " + quote + formatted(text) + quote + "\n");
+				CONCEPT_DUMMY + "\n" +
+						"\tvar function:Dummy dummy " + "= " + quote + formatted(text) + quote + "\n");
 		Node node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;
 		Body body = ((TaraNode) node).getBody();
@@ -295,13 +312,13 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public PsiElement createMultiLineExpression(String text, String oldIndent, String newIndent, String quote) {
 		final TaraModelImpl file = text.trim().startsWith("--") ?
-			createDummyFile(CONCEPT_DUMMY + "\n" +
-				"\tvar function:Dummy dummy " + "\n" +
-				"\t" + formatted(text, oldIndent, newIndent).trim() + "\n") :
-			createDummyFile(
-				CONCEPT_DUMMY + "\n" +
-					"\tvar function:Dummy dummy " + "\n" +
-					"\t\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
+				createDummyFile(CONCEPT_DUMMY + "\n" +
+						"\tvar function:Dummy dummy " + "\n" +
+						"\t" + formatted(text, oldIndent, newIndent).trim() + "\n") :
+				createDummyFile(
+						CONCEPT_DUMMY + "\n" +
+								"\tvar function:Dummy dummy " + "\n" +
+								"\t\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
 		TaraNode node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;
 		Body body = node.getBody();
@@ -313,9 +330,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public Parameter createVarInit(String name, String value) {
 		final TaraModelImpl file = createDummyFile(
-			CONCEPT_DUMMY + "\n" +
-				"\t" + name + " = " + value + "\n" +
-				"\t" + CONCEPT_DUMMY + "2\n"
+				CONCEPT_DUMMY + "\n" +
+						"\t" + name + " = " + value + "\n" +
+						"\t" + CONCEPT_DUMMY + "2\n"
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? (TaraVarInit) body.getFirstChild().getNextSibling() : null;
@@ -324,7 +341,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public TaraMetric createMetric(String value) {
 		final TaraModelImpl file = createDummyFile(
-			"Dummy(value = 12 " + value + ")" + " DummyInstance\n"
+				"Dummy(value = 12 " + value + ")" + " DummyInstance\n"
 		);
 		final Node next = file.components().iterator().next();
 		return ((TaraParameter) ((TaraNode) next).getSignature().getParameters().getParameters().get(0)).getValue().getMetric();
@@ -333,9 +350,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public TaraMethodReference createMethodReference(String reference) {
 		final TaraModelImpl file = createDummyFile(
-			CONCEPT_DUMMY + "\n" +
-				"\tvalue = @" + reference + "\n" +
-				"\t" + CONCEPT_DUMMY + "2\n"
+				CONCEPT_DUMMY + "\n" +
+						"\tvalue = @" + reference + "\n" +
+						"\t" + CONCEPT_DUMMY + "2\n"
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? ((TaraVarInit) body.getFirstChild().getNextSibling()).getValue().getMethodReferenceList().get(0) : null;

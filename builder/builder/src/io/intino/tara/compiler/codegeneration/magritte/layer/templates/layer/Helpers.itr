@@ -6,11 +6,9 @@ def attribute(Instant) trigger(variableType)
 	java.time.Instant
 end
 
-
 def attribute(instant) trigger(variableType)
 	java.time.Instant
 end
-
 
 def attribute(Time) trigger(variableType)
 	java.time.LocalTime
@@ -22,6 +20,10 @@ end
 
 def attribute(Integer) trigger(variableType)
 	int
+end
+
+def attribute(Long) trigger(variableType)
+	long
 end
 
 def attribute(Object) trigger(variableType)
@@ -62,6 +64,14 @@ end
 
 def attribute(integer) trigger(fulltype)
 	java.lang.Integer
+end
+
+def attribute(long) trigger(fulltype)
+	java.lang.Long
+end
+
+def attribute(Long) trigger(fulltype)
+	java.lang.Long
 end
 
 def attribute(Double) trigger(fulltype)

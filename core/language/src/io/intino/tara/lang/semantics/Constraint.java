@@ -1,12 +1,12 @@
 package io.intino.tara.lang.semantics;
 
-import io.intino.tara.lang.model.rules.Size;
-import io.intino.tara.lang.model.rules.variable.VariableRule;
-import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.model.Element;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Rule;
 import io.intino.tara.lang.model.Tag;
+import io.intino.tara.lang.model.rules.Size;
+import io.intino.tara.lang.model.rules.variable.VariableRule;
+import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.List;
 
@@ -42,6 +42,8 @@ public interface Constraint {
 		String type();
 
 		String[] with();
+
+		boolean isRequired();
 
 		String[] withOut();
 

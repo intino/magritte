@@ -3,10 +3,10 @@ package io.intino.tara.plugin.lang.psi;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import io.intino.tara.plugin.lang.psi.impl.TaraModelImpl;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
+import io.intino.tara.plugin.lang.psi.impl.TaraModelImpl;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +30,10 @@ public abstract class TaraElementFactory {
 	public abstract Identifier createNameIdentifier(String name);
 
 	public abstract TaraVariable createVariable(String name, Primitive type);
+
+	public abstract TaraFacetApply createFacet(String type);
+
+	public abstract TaraFacets createFacets(String type);
 
 	public abstract TaraImports createImport(String reference);
 

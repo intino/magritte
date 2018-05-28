@@ -9,18 +9,18 @@ import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.component.Component;
 import io.intino.tara.lang.semantics.constraints.component.OneOf;
-import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.constraints.parameter.PrimitiveParameter;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static io.intino.tara.lang.model.Tag.FacetInstance;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static java.util.Arrays.asList;
 
 
 public class RuleFactory {
@@ -50,7 +50,11 @@ public class RuleFactory {
 	}
 
 	public static Constraint.Facet facet(final String type, boolean terminal, String[] with, String[] without) {
-		return new FacetConstraint(type, terminal, with, without);
+		return facet(type, terminal, false, with, without);
+	}
+
+	public static Constraint.Facet facet(final String type, boolean terminal, boolean required, String[] with, String[] without) {
+		return new FacetConstraint(type, terminal,required, with, without);
 	}
 
 	public static Constraint.MetaFacet metaFacet(final String type, String... with) {
@@ -66,7 +70,7 @@ public class RuleFactory {
 				for (Node component : node.components())
 					if (!areCompatibles(component, types))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type().replace(":", ""))));
-				}
+			}
 		};
 	}
 

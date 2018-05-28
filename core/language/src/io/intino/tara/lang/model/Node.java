@@ -97,6 +97,10 @@ public interface Node extends Parametrized, NodeContainer {
 	default void addFacets(Facet... facets) {
 	}
 
+	default void addFacet(String type) {
+
+	}
+
 	default FacetTarget facetTarget() {
 		return null;
 	}

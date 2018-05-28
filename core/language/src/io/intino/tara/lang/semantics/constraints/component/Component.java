@@ -96,7 +96,7 @@ public class Component implements Constraint.Component {
 	}
 
 	private List<Node> filterByType(NodeContainer node) {
-		return node.components().stream().filter(component -> isCompatibles(component)).collect(Collectors.toList());
+		return node.components().stream().filter(this::isCompatibles).collect(Collectors.toList());
 	}
 
 	private boolean isCompatibles(Node node) {

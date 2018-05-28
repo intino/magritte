@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/sandbox/octana/simulator/src/io/intino/octana/Model.tara#true
+/Users/oroncal/workspace/sandbox/example/m1/src/m1.tara#true
 
 project
-octana
+example
 module
-simulator
+m1
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/octana/simulator/gen
+/Users/oroncal/workspace/sandbox/example/m1/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/octana/production/simulator/
+/Users/oroncal/workspace/sandbox/example/out/production/m1/
 resources
-/Users/oroncal/workspace/sandbox/octana/simulator/res
+/Users/oroncal/workspace/sandbox/example/m1/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/sandbox/octana/.tara
+/Users/oroncal/workspace/sandbox/example/.tara
 src.path
-/Users/oroncal/workspace/sandbox/octana/simulator/src
+/Users/oroncal/workspace/sandbox/example/m1/src
 
 version
 1.0.0

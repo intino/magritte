@@ -97,6 +97,7 @@ ABSTRACT            : 'abstract';
 TERMINAL            : 'terminal';
 COMPONENT           : 'component';
 FEATURE             : 'feature';
+REQUIRED            : 'required';
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
@@ -130,6 +131,7 @@ INT_TYPE            : 'integer';
 FUNCTION_TYPE       : 'function';
 OBJECT_TYPE         : 'object';
 DOUBLE_TYPE         : 'double';
+LONG_TYPE         	: 'long';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';
 DATE_TYPE           : 'datex';
@@ -151,9 +153,9 @@ STRING_MULTILINE    : EQUALS EQUALS+  (~('=' | '\\') | '\\' ('=' | '\\'))* EQUAL
 SINGLE_QUOTE        : '\'' {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_QUOTED);
 EXPRESSION_MULTILINE: DASH DASH+  {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_MULTILINE_MODE);
 CLASS_TYPE   		: IDENTIFIER CLOSE_INLINE ((IDENTIFIER DOT)* IDENTIFIER) (COMMA ((IDENTIFIER DOT)* IDENTIFIER))? INLINE;
-IDENTIFIER          : LETTER (DIGIT | LETTER | DASH)*;
+IDENTIFIER          : (LETTER | UNDERDASH) (DIGIT | LETTER | DASH | UNDERDASH)*;
 
-MEASURE_VALUE       : (LETTER| PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)*;
+MEASURE_VALUE       : (LETTER | PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)*;
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
@@ -182,7 +184,7 @@ mode EXPRESSION_QUOTED;
 QUOTE_BEGIN        : '%QUOTE_BEGIN%';
 QUOTE_END          : '%QUOTE_END%';
 EXPRESSION_BEGIN   : '%EXPRESSION_BEGIN%';
-EXPRESSION_END    :  '%EXPRESSION_END%';
+EXPRESSION_END     :  '%EXPRESSION_END%';
 
 fragment DOLLAR              : '$';
 fragment EURO                : '€';

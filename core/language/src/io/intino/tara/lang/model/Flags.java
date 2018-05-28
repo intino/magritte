@@ -20,7 +20,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Abstract, Final, Enclosed, Feature, Component, Volatile, Decorable);
+		return Arrays.asList(Abstract, Final, Enclosed, Feature, Component, Volatile, Decorable, Required);
 	}
 
 	public static List<Tag> forReference() {

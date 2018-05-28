@@ -465,6 +465,24 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
+	public void addFacet(String type) {
+		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
+		if (facets().isEmpty()) {
+			final PsiElement anchor = anchor();
+			final PsiElement psiElement = getSignature().addAfter(factory.createWhiteSpace(), anchor);
+			getSignature().addAfter(factory.createFacets(type), psiElement);
+		} else
+			getSignature().addAfter(factory.createFacet(type), (PsiElement) getSignature().facets().get(getSignature().facets().size() - 1));
+	}
+
+	@Nullable
+	private PsiElement anchor() {
+		final Signature signature = getSignature();
+		if (signature.getIdentifier() != null) return signature.getIdentifier();
+		if (signature.getParameters() != null) return signature.getParameters();
+		else return signature.getMetaIdentifier();
+	}
+
 	private Parameters parametersAnchor(String facet) {
 		PsiElement metaidentifier = metaidentifier(facet);
 		if (metaidentifier == null) return null;

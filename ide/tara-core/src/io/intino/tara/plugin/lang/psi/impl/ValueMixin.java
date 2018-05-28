@@ -3,15 +3,15 @@ package io.intino.tara.plugin.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import io.intino.tara.plugin.lang.psi.*;
-import org.jetbrains.annotations.NotNull;
 import io.intino.tara.Language;
-import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.lang.model.EmptyNode;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Primitive.Reference;
 import io.intino.tara.lang.semantics.DeclarationContext;
+import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		if (element instanceof TaraStringValue) return value;
 		else if (element instanceof TaraBooleanValue) return Boolean.parseBoolean(value);
 		else if (element instanceof TaraDoubleValue) return Double.parseDouble(value);
-		else if (element instanceof TaraIntegerValue) return Integer.parseInt(value);
+		else if (element instanceof TaraIntegerValue) return toInt(value);
 		else if (element instanceof TaraTupleValue) {
 			final TaraTupleValue tuple = (TaraTupleValue) element;
 			return new AbstractMap.SimpleEntry<>(tuple.getStringValue().getValue(), Double.parseDouble(tuple.getDoubleValue().getText()));
@@ -52,6 +52,18 @@ public class ValueMixin extends ASTWrapperPsiElement {
 			return createMethodReference((TaraMethodReference) element);
 		}
 		return "";
+	}
+
+	private Object toInt(String value) {
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			try {
+				return Long.parseLong(value);
+			} catch (NumberFormatException ex) {
+				return "";
+			}
+		}
 	}
 
 	private Primitive.MethodReference createMethodReference(TaraMethodReference element) {

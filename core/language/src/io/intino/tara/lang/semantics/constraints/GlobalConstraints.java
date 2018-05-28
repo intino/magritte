@@ -17,6 +17,7 @@ import java.util.*;
 
 import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.lang.model.Tag.Reactive;
+import static io.intino.tara.lang.model.Tag.Required;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 import static java.util.Arrays.asList;
@@ -108,8 +109,10 @@ public class GlobalConstraints {
 			if (node.flags().isEmpty()) return;
 			List<Tag> availableTags;
 			if (node.isReference()) return;//TODO check referenceFlags
-			else if (node.container() instanceof NodeRoot) availableTags = Flags.forRoot();
-			else availableTags = Flags.forComponent();
+			else if (node.container() instanceof NodeRoot) {
+				availableTags = new ArrayList<>(Flags.forRoot());
+				if (!node.isFacet()) availableTags.remove(Required);
+			} else availableTags = Flags.forComponent();
 			for (Tag tag : node.flags())
 				if (!isInternalFlag(tag) && !availableTags.contains(tag))
 					error("reject.invalid.flag", node, asList(tag.name(), node.type()));
@@ -197,7 +200,7 @@ public class GlobalConstraints {
 		return constraint != null && (((Constraint.Parameter) constraint).flags().contains(Tag.Terminal));
 	}
 
-	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
+	private boolean hasCorrectReferenceValues(Variable variable) {
 		for (Object value : variable.values())
 			if (!(value instanceof EmptyNode || hasInstanceValue(variable.values()) || hasExpressionValue(variable.values())))
 				return false;

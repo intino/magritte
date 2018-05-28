@@ -21,6 +21,7 @@ public class PrimitiveTypeCompatibility {
 				|| nativeOrEmptyInfersObject(type, inferredType)
 				|| stringInfersString(type, inferredType)
 				|| integerInfersDouble(type, inferredType)
+				|| integerInfersLong(type, inferredType)
 				|| stringFunctionOrEmptyInfersDate(type, inferredType)
 				|| stringFunctionOrEmptyInfersInstant(type, inferredType)
 				|| stringInfersTime(type, inferredType)
@@ -78,6 +79,10 @@ public class PrimitiveTypeCompatibility {
 		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(INTEGER);
 	}
 
+	private static boolean integerInfersLong(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(LONG);
+	}
+
 	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {
 		return type.equals(WORD) && inferredType.equals(REFERENCE);
 	}
@@ -89,6 +94,7 @@ public class PrimitiveTypeCompatibility {
 		if (value instanceof Double) return DOUBLE;
 		if (value instanceof Boolean) return BOOLEAN;
 		if (value instanceof Integer) return INTEGER;
+		if (value instanceof Long) return LONG;
 		if (value instanceof File) return RESOURCE;
 		if (value instanceof Expression) return FUNCTION;
 		if (value instanceof MethodReference) return FUNCTION;

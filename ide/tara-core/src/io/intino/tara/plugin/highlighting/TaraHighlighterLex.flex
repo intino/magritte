@@ -77,6 +77,7 @@ ENCLOSED            = "enclosed"
 PRIVATE             = "private"
 REACTIVE            = "reactive"
 VOLATILE            = "volatile"
+REQUIRED            = "required"
 DECORABLE           = "decorable"
 
 LEFT_PARENTHESIS    = "("
@@ -112,6 +113,7 @@ WORD_TYPE           = "word"
 RESOURCE_TYPE       = "resource"
 INT_TYPE            = "integer"
 FUNCTION_TYPE       = "function"
+LONG_TYPE           = "long"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -187,6 +189,7 @@ NEWLINE             = [\n]+
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
     {FINAL}                         {   return TaraTypes.FINAL; }
     {VOLATILE}                      {   return TaraTypes.VOLATILE; }
+    {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {DECORABLE}                     {   return TaraTypes.DECORABLE; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
@@ -223,6 +226,7 @@ NEWLINE             = [\n]+
 	{OBJECT_TYPE}                   {   return TaraTypes.OBJECT_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {LONG_TYPE}                   	{   return TaraTypes.LONG_TYPE; }
     {INSTANT_TYPE}                  {   return TaraTypes.INSTANT_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }

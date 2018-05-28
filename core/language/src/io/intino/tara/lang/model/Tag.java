@@ -12,6 +12,7 @@ public enum Tag {
 	Concept,
 	Volatile,
 	Decorable,
+	Required,
 
 	Terminal,
 	Instance,
