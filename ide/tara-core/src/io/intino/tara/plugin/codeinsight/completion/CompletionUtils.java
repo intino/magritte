@@ -49,7 +49,7 @@ public class CompletionUtils {
 		final List<Constraint> nodeConstraints = language.constraints(container == null ? "" : container.resolve().type());
 		if (nodeConstraints == null) return;
 		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
-		if (container != null) constraints.addAll(facetConstraints(nodeConstraints, container.facets()));
+		if (container != null) constraints.addAll(constraintsOf(facetConstraints(nodeConstraints, container.facets())));
 		List<Constraint.Component> components = constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(toList());
 		components = components.stream().filter(c -> isSizeAccepted(c, container)).collect(toList());
 		if (components.isEmpty()) return;
@@ -57,6 +57,13 @@ public class CompletionUtils {
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
+
+	private List<Constraint> constraintsOf(List<Constraint> constraints) {
+		List<Constraint> list = new ArrayList<>();
+		constraints.stream().map(constraint -> ((Constraint.Facet) constraint).constraints()).forEach(list::addAll);
+		return list;
+	}
+
 
 	void collectAllowedFacets() {
 		Node node = getContainerNodeOf(parameters.getPosition().getContext());
