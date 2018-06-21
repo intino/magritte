@@ -93,9 +93,9 @@ def type(graph)
 
 
 		private java.util.HashMap<String, Indexer> _fillIndex() {
-			return new java.util.HashMap<String, Indexer>() {{
-				$node+put...[$NL]
-			}};
+			java.util.HashMap<String, Indexer> map = new java.util.HashMap<>();
+			$node+put...[$NL]
+			return map;
 		}
 
 		public static class Indexer {
@@ -137,15 +137,15 @@ def type(graph)
 end
 
 def type(instance) trigger(put)
-	put("$generatedLanguage+FirstUpperCase#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
+	map.put("$generatedLanguage+FirstUpperCase#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
 end
 
 def !type(instance) type(single)  trigger(put)
-	put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($qn+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
+	map.put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($qn+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
 end
 
 def !type(instance) trigger(put)
-	put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase~List.add(node.as($qn+reference.class)), node -> $name+FirstLowerCase~List.remove(node.as($qn+reference.class)), () -> $name+FirstLowerCase~List.clear()));
+	map.put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase~List.add(node.as($qn+reference.class)), node -> $name+FirstLowerCase~List.remove(node.as($qn+reference.class)), () -> $name+FirstLowerCase~List.clear()));
 end
 
 def trigger(add)
