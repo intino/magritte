@@ -1,16 +1,16 @@
 def.file
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Services.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Tasks.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/DataTypes.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Mold.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Catalog.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Dialog.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Panel.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/UI.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Display.tara#true
 /Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Clients.tara#true
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Box.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/DataTypes.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Services.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/Tasks.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Dialog.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Display.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Catalog.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Mold.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Panel.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Views.tara#false
-/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/UI.tara#false
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/displays/Views.tara#true
+/Users/oroncal/workspace/konos/ide/model/src/io/intino/konos/model/graph/ui/Editor.tara#true
 
 project
 konos
