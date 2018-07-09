@@ -4,26 +4,26 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.plugin.project.module.ModuleProvider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.project.TaraModuleType;
 import io.intino.tara.lang.model.Metric;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.NodeRule;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.module.ModuleProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static io.intino.tara.lang.model.Primitive.FUNCTION;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
+import static java.util.Collections.singletonList;
 
 public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private final Module module;
@@ -114,10 +114,10 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	@NotNull
 	private String getPackage(Primitive type) {
-		return type == null ? "" :
-			FUNCTION.equals(type) ?
-				outputDsl.toLowerCase() + ".functions" :
-				outputDsl.toLowerCase() + ".rules";
+		return type == null || outputDsl == null ? "" :
+				FUNCTION.equals(type) ?
+						outputDsl.toLowerCase() + ".functions" :
+						outputDsl.toLowerCase() + ".rules";
 	}
 
 }
