@@ -6,11 +6,11 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.daemon.impl.LineMarkersPass;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.lang.model.Node;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +30,7 @@ public class TaraMethodSeparatorProvider implements LineMarkerProvider {
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element) {
 		if (!(element instanceof TaraNode) || !isRoot((Node) element)) return null;
-		return LineMarkersPass.createMethodSeparatorLineMarker(element, myColorsManager);
+		return LineMarkersPass.createMethodSeparatorLineMarker(leafOf(element), myColorsManager);
 	}
 
 	private boolean isRoot(Node element) {
@@ -42,4 +42,9 @@ public class TaraMethodSeparatorProvider implements LineMarkerProvider {
 
 	}
 
+	private PsiElement leafOf(@NotNull PsiElement element) {
+		PsiElement leaf = element;
+		while (leaf.getFirstChild() != null) leaf = leaf.getFirstChild();
+		return leaf;
+	}
 }
