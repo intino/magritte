@@ -70,8 +70,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private NavigatablePsiElement[] toNavigatable(List<PsiElement> facetClasses) {
-		List<NavigatablePsiElement> navigatables = facetClasses.stream().map(facetClass -> (NavigatablePsiElement) facetClass).collect(Collectors.toList());
-		return navigatables.toArray(new NavigatablePsiElement[navigatables.size()]);
+		return facetClasses.stream().map(facetClass -> (NavigatablePsiElement) facetClass).collect(Collectors.toList()).toArray(new NavigatablePsiElement[0]);
 	}
 
 	private List<PsiElement> getFacetClasses(Node node) {
@@ -96,9 +95,15 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		}
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
-			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
+			return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
 					markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
+	}
+
+	private PsiElement leafOf(@NotNull PsiElement element) {
+		PsiElement leaf = element;
+		while (leaf.getFirstChild() != null) leaf = leaf.getFirstChild();
+		return leaf;
 	}
 
 	private PsiElement resolveExternal(Node node, Facet apply) {

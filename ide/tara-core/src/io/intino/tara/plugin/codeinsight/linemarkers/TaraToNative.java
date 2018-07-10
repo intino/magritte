@@ -60,9 +60,15 @@ public class TaraToNative extends JavaLineMarkerProvider {
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementingMethod;
 			final MarkerType type = markerType;
-			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+			return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
+					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
+	}
+
+	private PsiElement leafOf(@NotNull PsiElement element) {
+		PsiElement leaf = element;
+		while (leaf.getFirstChild() != null) leaf = leaf.getFirstChild();
+		return leaf;
 	}
 
 }

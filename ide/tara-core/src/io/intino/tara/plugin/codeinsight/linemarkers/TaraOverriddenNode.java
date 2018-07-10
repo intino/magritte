@@ -12,10 +12,10 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
+import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.lang.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -58,7 +58,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 		if (isOverridden(node)) {
 			final Icon icon = AllIcons.Gutter.OverridingMethod;
 			final MarkerType type = markerType;
-			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
+			return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
 					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
@@ -82,5 +82,12 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 
 	private boolean isOverridden(Node node, Node parentNode) {
 		return parentNode.type().equals(node.type()) && parentNode.name() != null && parentNode.name().equals(node.name());
+	}
+
+
+	private PsiElement leafOf(@NotNull PsiElement element) {
+		PsiElement leaf = element;
+		while (leaf.getFirstChild() != null) leaf = leaf.getFirstChild();
+		return leaf;
 	}
 }

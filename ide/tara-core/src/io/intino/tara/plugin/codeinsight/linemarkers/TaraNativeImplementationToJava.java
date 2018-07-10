@@ -4,10 +4,10 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.psi.PsiElement;
+import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.plugin.lang.psi.Valued;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.lang.model.Primitive;
 
 import java.util.Collection;
 
@@ -21,16 +21,22 @@ public class TaraNativeImplementationToJava extends RelatedItemLineMarkerProvide
 		Valued valued = (Valued) element;
 		if (!isAvailable(valued)) return;
 		PsiElement destiny = ReferenceManager.resolveTaraNativeImplementationToJava(valued);
-		if (destiny != null) addResult(element, result, destiny);
+		if (destiny != null) addResult(leafOf(element), result, destiny);
+	}
+
+	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
+		NavigationGutterIconBuilder<PsiElement> builder =
+				NavigationGutterIconBuilder.create(ImplementedMethod).setTarget(destiny).setTooltipText("Navigate to the native code");
+		result.add(builder.createLineMarkerInfo(element));
 	}
 
 	private boolean isAvailable(Valued valued) {
 		return Primitive.FUNCTION.equals(valued.getInferredType());
 	}
 
-	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
-		NavigationGutterIconBuilder<PsiElement> builder =
-			NavigationGutterIconBuilder.create(ImplementedMethod).setTarget(destiny).setTooltipText("Navigate to the native code");
-		result.add(builder.createLineMarkerInfo(element));
+	private PsiElement leafOf(@NotNull PsiElement element) {
+		PsiElement leaf = element;
+		while (leaf.getFirstChild() != null) leaf = leaf.getFirstChild();
+		return leaf;
 	}
 }
