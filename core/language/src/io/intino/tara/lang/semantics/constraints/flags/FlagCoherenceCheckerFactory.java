@@ -4,6 +4,7 @@ import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.model.Tag;
+import io.intino.tara.lang.model.rules.NodeRule;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
@@ -25,6 +26,7 @@ public class FlagCoherenceCheckerFactory {
 		checkers.put(Tag.Private.name().toLowerCase(), new PrivateChecker());
 		checkers.put(Feature.name().toLowerCase(), new FeatureChecker());
 		checkers.put(Tag.Component.name().toLowerCase(), new ComponentChecker());
+		checkers.put(Tag.Decorable.name().toLowerCase(), new DecorableChecker());
 	}
 
 	private FlagCoherenceCheckerFactory() {
@@ -49,6 +51,13 @@ public class FlagCoherenceCheckerFactory {
 			if (node.type().equals(ProteoConstants.META_CONCEPT)) throw error("metaconcept.cannot.be", node, singletonList(Feature.name()));
 			if (node.isReference() && !node.destinyOfReference().is(Feature))
 				throw error("declared.node.must.be", node, singletonList(Feature.name()));
+		}
+	}
+
+	private static class DecorableChecker implements FlagChecker {
+		@Override
+		public void check(Node node) throws SemanticException {
+			if (!(node.container() instanceof NodeRoot)) throw error("decorables.only.root", node, singletonList(Feature.name()));
 		}
 	}
 
