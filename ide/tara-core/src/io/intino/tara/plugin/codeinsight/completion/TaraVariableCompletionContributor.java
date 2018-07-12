@@ -77,8 +77,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 				if (parent.getPrevSibling() == null || parent.getPrevSibling().getPrevSibling() == null) return false;
 
 				final ASTNode ctxPreviousNode = parent.getPrevSibling().getPrevSibling().getNode();
-				if (TaraTypes.VAR.equals(ctxPreviousNode.getElementType()))
-					return true;
+				return TaraTypes.VAR.equals(ctxPreviousNode.getElementType());
 			}
 			return false;
 		}
@@ -104,7 +103,5 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
-
 	}
-
 }
