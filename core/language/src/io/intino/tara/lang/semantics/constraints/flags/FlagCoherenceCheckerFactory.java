@@ -57,7 +57,8 @@ public class FlagCoherenceCheckerFactory {
 	private static class DecorableChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (!(node.container() instanceof NodeRoot)) throw error("decorables.only.root", node, singletonList(Feature.name()));
+			if (!node.isReference() && !(node.container() instanceof NodeRoot))
+				throw error("decorables.only.root", node, singletonList(Feature.name()));
 		}
 	}
 
