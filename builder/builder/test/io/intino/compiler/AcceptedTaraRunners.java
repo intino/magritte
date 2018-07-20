@@ -19,8 +19,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void octanaM2() {
-		main(new String[]{home + "sandbox/confFiles/octana/M2.txt"});
+	public void adquiverM2() {
+		main(new String[]{home + "sandbox/confFiles/adquiver/M2.txt"});
 	}
 
 	@Test

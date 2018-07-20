@@ -1,21 +1,24 @@
 package io.intino.tara.plugin.annotator.fix;
 
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
-import io.intino.tara.plugin.lang.psi.TaraModel;
-import io.intino.tara.plugin.lang.psi.TaraRule;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Rule;
 import io.intino.tara.lang.model.Variable;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
+import io.intino.tara.plugin.lang.psi.TaraModel;
+import io.intino.tara.plugin.lang.psi.TaraRule;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +73,12 @@ public class CreateVariableRuleClassIntention extends ClassCreationIntention {
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
 		additionalProperties.put("TYPE", getRuleType());
+		Application application = ApplicationManager.getApplication();
+		if (application.isWriteAccessAllowed()) return createClass(destiny, className, additionalProperties);
+		return application.runWriteAction((Computable<PsiClass>) () -> createClass(destiny, className, additionalProperties));
+	}
+
+	private PsiClass createClass(PsiDirectory destiny, String className, Map<String, String> additionalProperties) {
 		return JavaDirectoryService.getInstance().createClass(destiny, className, variable.type().equals(Primitive.WORD) ? "WordRule" : "Rule", true, additionalProperties);
 	}
 
@@ -87,7 +96,7 @@ public class CreateVariableRuleClassIntention extends ClassCreationIntention {
 	@Override
 	public String toString() {
 		return "CreateRuleClassIntention{" +
-			"rule=" + rule +
-			'}';
+				"rule=" + rule +
+				'}';
 	}
 }

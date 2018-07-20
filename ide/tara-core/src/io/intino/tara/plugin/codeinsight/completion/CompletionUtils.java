@@ -76,9 +76,18 @@ public class CompletionUtils {
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	void collectParameters() {
+	void collectBodyParameters() {
 		if (language == null) return;
 		Node node = getContainerNodeOf((PsiElement) getContainerNodeOf(parameters.getPosition()));
+		if (node == null) return;
+		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(parameterConstraintsOf(node), node.parameters());
+		resultSet.addAllElements(elementBuilders);
+		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
+	}
+
+	void collectSignatureParameters() {
+		if (language == null) return;
+		Node node = getContainerNodeOf(parameters.getPosition());
 		if (node == null) return;
 		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(parameterConstraintsOf(node), node.parameters());
 		resultSet.addAllElements(elementBuilders);

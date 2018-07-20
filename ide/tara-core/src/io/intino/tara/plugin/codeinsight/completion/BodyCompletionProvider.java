@@ -28,7 +28,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 		if (!(parameters.getPosition().getContext() instanceof MetaIdentifier)) return;
 		final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
 		completionUtils.collectAllowedTypes();
-		completionUtils.collectParameters();
+		completionUtils.collectBodyParameters();
 		if (!isDeclaration(getContainerNodeOf(parameters.getPosition().getContext()))) addKeywords(resultSet);
 	}
 

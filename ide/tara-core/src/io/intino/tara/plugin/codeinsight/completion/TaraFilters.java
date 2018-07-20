@@ -20,17 +20,17 @@ import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerNo
 class TaraFilters {
 
 	static final PsiElementPattern.Capture<PsiElement> AfterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterNewLinePrimalFilter()));
+			.and(new FilterPattern(new AfterNewLinePrimalFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
+			.and(new FilterPattern(new AfterNewLineInBodyFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterAs = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterAsFilter()))
-		.and(new FilterPattern(new InFacetFilter()));
+			.and(new FilterPattern(new AfterAsFilter()))
+			.and(new FilterPattern(new InFacetFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterEqualsFilter()));
-	static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterElementTypeFitFilter(IDENTIFIER_KEY)));
+			.and(new FilterPattern(new AfterEqualsFilter()));
+	static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement().withLanguage(TaraLanguage.INSTANCE)
+			.and(new FilterPattern(new AfterElementTypeFitFilter(IDENTIFIER_KEY)));
+	static final PsiElementPattern.Capture<PsiElement> inParameterName = psiElement().withLanguage(TaraLanguage.INSTANCE).and(new FilterPattern(new InParameters()));
 
 	private TaraFilters() {
 	}
@@ -203,11 +203,24 @@ class TaraFilters {
 		}
 	}
 
-	private static boolean acceptableParent(Object element, @Nullable PsiElement context) {
-		return element instanceof PsiElement && context != null && context.getParent() != null;
+	private static class InParameters implements ElementFilter {
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			return acceptableParent(element, context) && (parameter(context) && getContainerNodeOf(context) != null);
+		}
+
+		private boolean parameter(PsiElement context) {
+			return in(context, TaraParameter.class);
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
 	}
 
 	static class AfterIsFitFilter implements ElementFilter {
+
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (context == null) return false;
 			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
@@ -226,9 +239,11 @@ class TaraFilters {
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
+
 	}
 
 	static class AfterIntoFitFilter implements ElementFilter {
+
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (context == null) return false;
 			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
@@ -249,4 +264,7 @@ class TaraFilters {
 		}
 	}
 
+	private static boolean acceptableParent(Object element, @Nullable PsiElement context) {
+		return element instanceof PsiElement && context != null && context.getParent() != null;
+	}
 }

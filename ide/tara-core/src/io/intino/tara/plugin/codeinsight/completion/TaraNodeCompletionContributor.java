@@ -2,6 +2,7 @@ package io.intino.tara.plugin.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.util.ProcessingContext;
+import io.intino.tara.plugin.lang.psi.Identifier;
 import io.intino.tara.plugin.lang.psi.MetaIdentifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,7 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 		newLine();
 		afterAs();
 		afterIdentifier();
+		parameterNames();
 	}
 
 	private void bodyCompletion() {
@@ -59,6 +61,20 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 					resultSet.addElement(create("into "));
 				}
 			}
+		);
+	}
+
+	private void parameterNames() {
+		extend(CompletionType.BASIC, TaraFilters.inParameterName,
+				new CompletionProvider<CompletionParameters>() {
+					public void addCompletions(@NotNull CompletionParameters parameters,
+											   ProcessingContext context,
+											   @NotNull CompletionResultSet resultSet) {
+						if (!(parameters.getPosition().getContext() instanceof Identifier)) return;
+						final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
+						completionUtils.collectSignatureParameters();
+					}
+				}
 		);
 	}
 
