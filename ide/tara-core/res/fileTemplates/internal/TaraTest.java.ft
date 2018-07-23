@@ -3,16 +3,15 @@
 import org.junit.Before;
 import org.junit.Test;
 import io.intino.tara.magritte.Graph;
-import ${WORKING_PACKAGE.toLowerCase()}.${APPLICATION};
+import ${WORKING_PACKAGE.toLowerCase()}.${GRAPH}Graph;
 
 public class ${NAME}Test {
 
-	private ${APPLICATION} application;
+	private ${GRAPH}Graph graph;
 
 	@Before
 	public void setUp() {
-		Graph graph = Graph.use(${APPLICATION}.class).load("${NAME}");
-		this.application = graph.wrapper(${APPLICATION}. class);
+		Graph graph = new Graph().loadStashes("${NAME}").as(${GRAPH}Graph.class);
 	}
 
 	@Test
