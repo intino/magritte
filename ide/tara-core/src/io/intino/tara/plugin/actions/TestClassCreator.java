@@ -35,7 +35,7 @@ class TestClassCreator {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
 		final Language language = LanguageManager.getLanguage(module.getProject(), dsl);
-		map.put("APPLICATION", io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase().format(conf.outDSL()).toString());
+		map.put("GRAPH", io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase().format(conf.outDSL()).toString());
 		map.put("WORKING_PACKAGE", graphPackage(module));
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;

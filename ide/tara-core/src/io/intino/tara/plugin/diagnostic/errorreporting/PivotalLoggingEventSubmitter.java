@@ -23,6 +23,7 @@ public class PivotalLoggingEventSubmitter {
 	private static final String COMMENTS = "/comments";
 	private static final Logger LOG = Logger.getInstance(PivotalLoggingEventSubmitter.class.getName());
 	private static final String PLUGIN_ID = "plugin.id";
+	private static final String USER = "user";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
 	private static final String REPORT_ADDITIONAL_INFO = "report.additionalInfo";
@@ -132,6 +133,7 @@ public class PivotalLoggingEventSubmitter {
 		private String buildDescription(String description) {
 			StringBuilder builder = new StringBuilder();
 			builder.append(PLUGIN_ID).append(": ").append(properties.get(PLUGIN_ID)).append("\n");
+			builder.append(USER).append(": ").append(System.getProperty("user.name")).append("\n");
 			builder.append(PLUGIN_NAME).append(": ").append(properties.get(PLUGIN_NAME)).append("\n");
 			builder.append(PLUGIN_VERSION).append(": ").append(properties.get(PLUGIN_VERSION).toString().trim()).append("\n");
 			return builder.append(description).toString();

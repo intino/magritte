@@ -31,7 +31,7 @@ public class OneOf implements Constraint.OneOf {
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
 		List<String> requireTypes = new ArrayList<>();
-		int accepted = 0;
+		Set<Node> accepted = new HashSet<>();
 		for (Constraint constraint : constraints) {
 			requireTypes.add(Resolver.shortType(((Component) constraint).type()));
 			try {
@@ -40,15 +40,15 @@ public class OneOf implements Constraint.OneOf {
 			}
 			final List<Node> components = filterByType(node, (Component) constraint);
 			final List<Node> acceptedNodes = acceptedComponents(components);
-			accepted += acceptedNodes.size();
+			accepted.addAll(acceptedNodes);
 			final List<Node> notAccepted = notAccepted(components, acceptedNodes);
 			if (!notAccepted.isEmpty()) error(notAccepted.get(0));
 		}
 		Size size = (Size) rules.stream().filter(r -> r instanceof Size).findFirst().orElse(null);
 		if (size != null) {
-			if (accepted == 0 && size.isRequired())
+			if (accepted.isEmpty() && size.isRequired())
 				throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
-			else if (size.max() < accepted)
+			else if (size.max() < accepted.size())
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.much.types.in.context", element, asList(size.max(), String.join(", ", requireTypes))));
 		}
 	}
