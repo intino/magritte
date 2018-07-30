@@ -7,16 +7,16 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
-import io.intino.tara.plugin.lang.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import io.intino.tara.Language;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.rules.variable.ReferenceRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@NotNull
 	@Override
 	public TaraParameter[] getActualParameters(@NotNull Parameters o) {
-		return o.getParameters().toArray(new TaraParameter[o.getParameters().size()]);
+		return o.getParameters().toArray(new TaraParameter[0]);
 	}
 
 	@NotNull
@@ -85,7 +85,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		Parameters parameters = getParameters(context.getFile(), context.getOffset());
 		if (parameters == null) return null;
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
-		if (!parameters.getParameters().isEmpty())
+		if (!parameters.getParameters().isEmpty() && parameters.getParameters().size() > index)
 			context.setHighlightedElement((PsiElement) parameters.getParameters().get(index));
 		return parameters;
 	}
@@ -116,8 +116,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		List<Constraint> scopeAllows = nodeConstraints;
 		if (inFacet != null) scopeAllows = collectFacetParameterConstraints(nodeConstraints, inFacet.type());
 		return scopeAllows.stream().
-			filter(constraint -> constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).size().isRequired()).
-			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
+				filter(constraint -> constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).size().isRequired()).
+				map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 	}
 
 	private List<Constraint> collectFacetParameterConstraints(List<Constraint> nodeAllows, String type) {
@@ -131,8 +131,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		List<String> parameters = new ArrayList<>();
 		for (Constraint.Parameter constraint : constraints) {
 			String parameter = Primitive.REFERENCE.equals(constraint.type()) ?
-				asReferenceParameter(constraint) :
-				asWordParameter(constraint);
+					asReferenceParameter(constraint) :
+					asWordParameter(constraint);
 			parameters.add(parameter);
 		}
 		return parameters.toArray(new String[parameters.size()]);
@@ -198,6 +198,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			builder.append(", ").append(parameter);
 		int highlightEndOffset = builder.length();
 		context.setupUIComponentPresentation(builder.length() == 0 ? "" : builder.toString().substring(2),
-			0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
+				0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}
 }

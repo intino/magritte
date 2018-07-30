@@ -45,12 +45,11 @@ public class OneOf implements Constraint.OneOf {
 			if (!notAccepted.isEmpty()) error(notAccepted.get(0));
 		}
 		Size size = (Size) rules.stream().filter(r -> r instanceof Size).findFirst().orElse(null);
-		if (size != null) {
-			if (accepted.isEmpty() && size.isRequired())
-				throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
-			else if (size.max() < accepted.size())
-				throw new SemanticException(new SemanticNotification(ERROR, "reject.much.types.in.context", element, asList(size.max(), String.join(", ", requireTypes))));
-		}
+		if (size == null) return;
+		if (accepted.isEmpty() && size.isRequired())
+			throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
+		else if (size.max() < accepted.size())
+			throw new SemanticException(new SemanticNotification(ERROR, "reject.much.types.in.context", element, asList(size.max(), String.join(", ", requireTypes))));
 	}
 
 	@Override
@@ -92,7 +91,6 @@ public class OneOf implements Constraint.OneOf {
 		return false;
 	}
 
-
 	private List<Node> acceptedComponents(List<Node> components) {
 		return components.stream().filter(component -> rules.stream().allMatch(r -> accept(r, components, component))).collect(Collectors.toList());
 	}
@@ -121,5 +119,4 @@ public class OneOf implements Constraint.OneOf {
 		List<String> types = constraints.stream().map(Component::type).collect(Collectors.toList());
 		return "OneOf{" + String.join(", ", types) + '}';
 	}
-
 }
