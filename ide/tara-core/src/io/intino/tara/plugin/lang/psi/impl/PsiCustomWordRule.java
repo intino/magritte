@@ -1,5 +1,6 @@
 package io.intino.tara.plugin.lang.psi.impl;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import io.intino.tara.lang.model.rules.CustomRule;
@@ -10,7 +11,6 @@ import io.intino.tara.plugin.project.module.ModuleProvider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PsiCustomWordRule implements VariableRule<Object>, CustomRule {
 
@@ -27,7 +27,9 @@ public class PsiCustomWordRule implements VariableRule<Object>, CustomRule {
 	}
 
 	private PsiClass findClass() {
-		return JavaPsiFacade.getInstance(variable.getProject()).findClass(TaraUtil.graphPackage(variable).toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.moduleOf(variable)));
+		final Module module = ModuleProvider.moduleOf(variable);
+		if (module == null) return null;
+		return JavaPsiFacade.getInstance(variable.getProject()).findClass(TaraUtil.graphPackage(variable).toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(module));
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class PsiCustomWordRule implements VariableRule<Object>, CustomRule {
 
 	@Override
 	public List<Object> errorParameters() {
-		return words.stream().map(v -> v).collect(Collectors.toList());
+		return new ArrayList<>(words);
 	}
 
 	private List<String> collectEnums() {
