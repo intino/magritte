@@ -2,7 +2,6 @@ package io.intino.tara.plugin.project;
 
 import com.intellij.compiler.CompilerConfigurationImpl;
 import com.intellij.compiler.server.CustomBuilderMessageHandler;
-import com.intellij.ide.DataManager;
 import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -25,12 +24,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.messages.MessageBusConnection;
-import io.intino.tara.plugin.lang.LanguageManager;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.compiler.shared.TaraBuildConstants;
+import io.intino.tara.plugin.lang.LanguageManager;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,7 +109,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			if (outDir == null || !outDir.isValid()) return;
 			FileDocumentManager.getInstance().saveAllDocuments();
 			ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
-			final DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
+			final DataContext result = io.intino.tara.plugin.project.DataContext.getContext();
 			Project project = result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null;
 			if (project == null) return;
 			final PsiDirectory[] psiOutDirectory = new PsiDirectory[1];
@@ -131,7 +130,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 						Collections.addAll(psiFiles, directory.getChildren());
 				});
 				for (PsiElement file : psiFiles) {
-					if (file instanceof PsiFile) reformat(project, (PsiFile) file).executeSilently();
+					if (file instanceof PsiFile) reformat(project, (PsiFile) file);
 					else if (file instanceof PsiDirectory) reformatAllFiles(project, (PsiDirectory) file);
 				}
 			} catch (Exception e) {
@@ -150,16 +149,13 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			for (VirtualFile file : FileEditorManager.getInstance(project).getOpenFiles()) file.refresh(true, false);
 		}
 
-		@NotNull
-		private WriteCommandAction.Simple<String> reformat(final Project project, final PsiFile file) {
-			return new WriteCommandAction.Simple<String>(project, file) {
-				@Override
-				protected void run() throws Throwable {
-					assert ensureFilesWritable(project, Collections.singletonList(file));
-					if (file != null) CodeStyleManager.getInstance(project).reformat(file, true);
-				}
-			};
+		private void reformat(final Project project, final PsiFile file) {
+			WriteCommandAction.writeCommandAction(project, file).run(() -> {
+				assert CommonRefactoringUtil.checkReadOnlyStatus(project, file);
+				CodeStyleManager.getInstance(project).reformat(file, true);
+			});
 		}
+
 	}
 }
 

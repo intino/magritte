@@ -136,7 +136,7 @@ public class PivotalLoggingEventSubmitter {
 			builder.append(USER).append(": ").append(System.getProperty("user.name")).append("\n");
 			builder.append(PLUGIN_NAME).append(": ").append(properties.get(PLUGIN_NAME)).append("\n");
 			builder.append(PLUGIN_VERSION).append(": ").append(properties.get(PLUGIN_VERSION).toString().trim()).append("\n");
-			return builder.append(description).toString();
+			return builder.append("````\n").append(description).append("````\n").toString();
 		}
 
 		String getReportType() {

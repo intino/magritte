@@ -350,8 +350,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		final List<Tag> tags = new ArrayList<>();
 		tags.addAll(getFlags().stream().
 				map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(toList()));
-		tags.addAll(inheritedFlags);
+		tags.addAll(inheritedFlags());
 		return tags;
+	}
+
+	private synchronized Set<Tag> inheritedFlags() {
+		return this.inheritedFlags;
 	}
 
 	@Nullable
@@ -370,12 +374,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public void addFlags(List<Tag> flags) {
-		inheritedFlags.clear();
-		inheritedFlags.addAll(flags);
+		inheritedFlags().clear();
+		inheritedFlags().addAll(flags);
 	}
 
 	public void addFlag(Tag flag) {
-		inheritedFlags.add(flag);
+		inheritedFlags().add(flag);
 	}
 
 	public void addAnnotations(Tag... annotations) {

@@ -177,7 +177,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 	private DataContext context() {
 		try {
-			return DataManager.getInstance().getDataContextFromFocus().getResult();
+			return io.intino.tara.plugin.project.DataContext.getContext();
 		} catch (Throwable e) {
 			return null;
 		}

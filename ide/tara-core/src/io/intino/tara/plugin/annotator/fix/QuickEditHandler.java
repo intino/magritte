@@ -2,7 +2,7 @@ package io.intino.tara.plugin.annotator.fix;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.*;
-import com.intellij.openapi.editor.event.DocumentAdapter;
+import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.event.EditorFactoryAdapter;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.ex.DocumentEx;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class QuickEditHandler extends DocumentAdapter implements Disposable {
+public class QuickEditHandler implements Disposable, DocumentListener {
 	private final Project myProject;
 
 	private final Editor myEditor;

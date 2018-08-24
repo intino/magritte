@@ -8,10 +8,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.event.DocumentAdapter;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.EditorMouseEvent;
-import com.intellij.openapi.editor.event.EditorMouseEventArea;
+import com.intellij.openapi.editor.event.*;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.ex.EditorMarkupModel;
 import com.intellij.openapi.editor.highlighter.EditorHighlighter;
@@ -28,10 +25,7 @@ import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileAdapter;
-import com.intellij.openapi.vfs.VirtualFileEvent;
-import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
+import com.intellij.openapi.vfs.*;
 import com.intellij.ui.components.JBLoadingPanel;
 import com.intellij.util.EditorPopupHandler;
 import com.intellij.util.FileContentUtilCore;
@@ -188,7 +182,7 @@ class StashEditorComponent extends JBLoadingPanel implements DataProvider {
 	}
 
 
-	private final class MyDocumentListener extends DocumentAdapter {
+	private final class MyDocumentListener implements DocumentListener {
 		private final Runnable myUpdateRunnable;
 
 		MyDocumentListener() {
@@ -201,7 +195,7 @@ class StashEditorComponent extends JBLoadingPanel implements DataProvider {
 		}
 	}
 
-	private final class MyFileTypeListener extends FileTypeListener.Adapter {
+	private final class MyFileTypeListener implements FileTypeListener {
 		@Override
 		public void fileTypesChanged(@NotNull final FileTypeEvent event) {
 			assertThread();
@@ -210,7 +204,7 @@ class StashEditorComponent extends JBLoadingPanel implements DataProvider {
 		}
 	}
 
-	private final class MyVirtualFileListener extends VirtualFileAdapter {
+	private final class MyVirtualFileListener implements VirtualFileListener {
 		@Override
 		public void propertyChanged(@NotNull final VirtualFilePropertyEvent e) {
 			if (VirtualFile.PROP_NAME.equals(e.getPropertyName())) {

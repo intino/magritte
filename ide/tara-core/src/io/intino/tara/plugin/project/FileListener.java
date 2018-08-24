@@ -86,7 +86,7 @@ public class FileListener implements com.intellij.openapi.components.Application
 			}
 
 			private DataContext dataContext() {
-				return DataManager.getInstance().getDataContextFromFocus().getResult();
+				return io.intino.tara.plugin.project.DataContext.getContext();
 			}
 
 			@Override
