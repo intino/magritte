@@ -57,7 +57,7 @@ public class TaraParserDefinition implements ParserDefinition {
 		return new TaraModelImpl(viewProvider);
 	}
 
-	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+	public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
 		return SpaceRequirements.MAY;
 	}
 

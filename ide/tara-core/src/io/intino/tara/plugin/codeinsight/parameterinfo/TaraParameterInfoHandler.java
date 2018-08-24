@@ -75,12 +75,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Nullable
 	@Override
-	public Object[] getParametersForDocumentation(Object p, ParameterInfoContext context) {
-		return new Object[]{p};
-	}
-
-	@Nullable
-	@Override
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
 		Parameters parameters = getParameters(context.getFile(), context.getOffset());
 		if (parameters == null) return null;
@@ -176,17 +170,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		final Object[] objectsToView = context.getObjectsToView();
 		context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? objectsToView[index] : null);
 
-	}
-
-	@Nullable
-	@Override
-	public String getParameterCloseChars() {
-		return ",)";
-	}
-
-	@Override
-	public boolean tracksParameterIndex() {
-		return true;
 	}
 
 	@Override

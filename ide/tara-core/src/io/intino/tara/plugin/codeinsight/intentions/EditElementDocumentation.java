@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.HashMap;
 import io.intino.tara.plugin.documentation.TaraDocumentationProvider;
 import io.intino.tara.plugin.lang.TaraLanguage;
 import io.intino.tara.plugin.lang.psi.Identifier;
@@ -27,6 +26,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EditElementDocumentation extends PsiElementBaseIntentionAction {

@@ -6,12 +6,11 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.GuiUtils;
-import org.jetbrains.annotations.NonNls;
-import org.markdown4j.Markdown4jProcessor;
+import com.petebevin.markdown.MarkdownProcessor;
 import io.intino.tara.plugin.highlighting.TaraSyntaxHighlighter;
+import org.jetbrains.annotations.NonNls;
 
 import java.awt.*;
-import java.io.IOException;
 
 public class TaraDocumentationFormatter {
 
@@ -41,13 +40,9 @@ public class TaraDocumentationFormatter {
 
 	private static String markdownToHtml(String text) {
 		String html = "";
-		try {
-			if (text == null) return "";
-			String cleanText = text.replaceAll("'", "").replaceAll(" \\s+", " ").trim();
-			html = new Markdown4jProcessor().process(cleanText);
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
+		if (text == null) return "";
+		String cleanText = text.replaceAll("'", "").replaceAll(" \\s+", " ").trim();
+		html = new MarkdownProcessor().markdown(cleanText);
 		return html;
 	}
 }

@@ -21,6 +21,6 @@ public class TaraIcons {
 	}
 
 	private static Icon scale(Icon icon) {
-		return IconUtil.scale(icon, 0.5);
+		return IconUtil.scale(icon,null, 0.5f);
 	}
 }
