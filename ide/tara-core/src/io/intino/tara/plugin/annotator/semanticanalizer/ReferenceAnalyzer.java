@@ -120,13 +120,13 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		List<IntentionAction> actions = fixes.stream().map(fix -> toIntention(element, fix.getName(), fix)).collect(Collectors.toList());
 		actions.addAll(alternativesForReferenceFix(element));
 		actions.addAll(createNewElementFix(element));
-		return actions.toArray(new IntentionAction[actions.size()]);
+		return actions.toArray(new IntentionAction[0]);
 	}
 
 
 	private IntentionAction[] createMethodReferenceFixes(Identifier element) {
 		List<IntentionAction> actions = new ArrayList<>(createMethodFix(element));
-		return actions.toArray(new IntentionAction[actions.size()]);
+		return actions.toArray(new IntentionAction[0]);
 	}
 
 	private List<CreateNodeQuickFix> createNewElementFix(Identifier element) {
