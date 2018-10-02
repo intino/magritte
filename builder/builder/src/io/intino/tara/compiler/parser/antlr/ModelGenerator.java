@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Primitive.RESOURCE;
+import static io.intino.tara.lang.model.Primitive.STRING;
 import static io.intino.tara.lang.model.Primitive.WORD;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -440,7 +441,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private String formatString(String text) {
 		String value = text.replace("\r", "");
 		if (!value.trim().startsWith("==")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
-		return format(value.trim().replaceAll("==(=*)\\n", "").replaceAll("==(=*)", ""));
+		return format(value.trim().replaceAll("==(=*)\\n", "").replaceAll("==(=*)", "")).replace("\\=", "=");
 	}
 
 	private String format(String text) {

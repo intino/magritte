@@ -9,38 +9,31 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Primitive {
 	INTEGER {
 		@Override
 		public List<Integer> convert(String... value) {
-			List<Integer> objects = new ArrayList<>();
-			for (String o : value) objects.add(Integer.valueOf(o));
-			return objects;
+			return Arrays.stream(value).map(Integer::valueOf).collect(Collectors.toList());
 		}
 	},
 	LONG {
 		@Override
 		public List<Long> convert(String... value) {
-			List<Long> objects = new ArrayList<>();
-			for (String o : value) objects.add(Long.valueOf(o));
-			return objects;
+			return Arrays.stream(value).map(Long::valueOf).collect(Collectors.toList());
 		}
 	},
 	DOUBLE {
 		@Override
 		public List<Double> convert(String... value) {
-			List<Double> list = new ArrayList<>();
-			for (String o : value) list.add(Double.valueOf(o));
-			return list;
+			return Arrays.stream(value).map(Double::valueOf).collect(Collectors.toList());
 		}
 	},
 	BOOLEAN {
 		@Override
 		public List<Boolean> convert(String... value) {
-			List<Boolean> list = new ArrayList<>();
-			for (String o : value) list.add(Boolean.valueOf(o));
-			return list;
+			return Arrays.stream(value).map(Boolean::valueOf).collect(Collectors.toList());
 		}
 	},
 	STRING {
@@ -52,9 +45,7 @@ public enum Primitive {
 	RESOURCE {
 		@Override
 		public List<File> convert(String... value) {
-			List<File> list = new ArrayList<>();
-			for (String o : value) list.add(new File(o));
-			return list;
+			return Arrays.stream(value).map(File::new).collect(Collectors.toList());
 		}
 	},
 	REFERENCE,

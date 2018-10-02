@@ -1,5 +1,6 @@
 package io.intino.tara.compiler.core.operation.setup;
 
+import io.intino.legio.Main;
 import io.intino.legio.graph.Artifact;
 import io.intino.legio.graph.LegioGraph;
 import io.intino.legio.graph.Parameter;
@@ -16,9 +17,11 @@ import io.intino.tara.io.StashDeserializer;
 import io.intino.tara.magritte.Graph;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
@@ -76,7 +79,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 		Artifact artifact = legio.artifact();
 		Artifact.Code code = artifact.code();
 		final Level level = Level.valueOf(artifact.core$().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
-		configuration.outDSL(artifact.name$());
+		configuration.outDSL(snakeCaseToCamelCase(artifact.name$()));
 		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name$().toLowerCase();
 		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
 		configuration.artifactId(artifact.name$().toLowerCase());
@@ -93,5 +96,20 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.addLanguage(model.language(), model.effectiveVersion().isEmpty() ? model.version() : model.effectiveVersion());
 			configuration.level(level);
 		}
+	}
+
+	private static String snakeCaseToCamelCase(String value) {
+		return toCamelCase(value.replace("_", "-"));
+	}
+
+	private static String toCamelCase(String value) {
+		if (value.isEmpty()) return "";
+		String[] parts = value.split("-");
+		if (parts.length == 1) return capitalize(value);
+		return Arrays.stream(parts).map(SetupConfigurationOperation::capitalize).collect(Collectors.joining());
+	}
+
+	private static String capitalize(String value) {
+		return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
 	}
 }

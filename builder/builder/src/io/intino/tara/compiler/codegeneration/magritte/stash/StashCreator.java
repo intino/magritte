@@ -183,9 +183,7 @@ public class StashCreator {
 	}
 
 	private List<Variable> variablesOf(io.intino.tara.lang.model.Node node) {
-		List<Variable> variables = new ArrayList<>();
-		variables.addAll(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::transformTaraVariableToStashVariable).collect(toList()));
-		return variables;
+		return new ArrayList<>(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::transformTaraVariableToStashVariable).collect(toList()));
 	}
 
 	private List<Variable> parametersOf(io.intino.tara.lang.model.Node node) {
@@ -237,7 +235,10 @@ public class StashCreator {
 	private List<Object> getValue(io.intino.tara.lang.model.Variable variable) {
 		if (variable.values().get(0) instanceof EmptyNode) return new ArrayList<>();
 		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ?
-				convert(variable) : variable.rule() instanceof NativeRule ? formatNativeReferenceOfVariable(variable.values()) : variable.values());
+				convert(variable) :
+				variable.rule() instanceof NativeRule ?
+						formatNativeReferenceOfVariable(variable.values()) :
+						variable.values());
 	}
 
 	private List<Object> formatNativeReferenceOfVariable(List<Object> values) {
@@ -254,12 +255,12 @@ public class StashCreator {
 		final Primitive type = valued.type();
 		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
 		else if (type.equals(INSTANT))
-			return INSTANT.convert(valued.values().toArray(new String[valued.values().size()]));
+			return INSTANT.convert(valued.values().toArray(new String[0]));
 		if (type.equals(RESOURCE)) {
 			return (valued.values()).stream()
 					.map(o -> relative((File) o))
 					.collect(toList());
-		} else return type.convert(valued.values().toArray(new String[valued.values().size()]));
+		} else return type.convert(valued.values().toArray(new String[0]));
 	}
 
 	private String relative(File file) {

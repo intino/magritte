@@ -1,5 +1,7 @@
 lexer grammar TaraLexer;
-@header{import io.intino.tara.compiler.parser.antlr.BlockManager;}
+@header{
+	import static io.intino.tara.lang.grammar.TaraGrammar.CHARACTER;
+	import io.intino.tara.compiler.parser.antlr.BlockManager;}
 @lexer::members {
     BlockManager blockManager = new BlockManager();
     private static java.util.Queue<Token> queue = new java.util.LinkedList<>();
@@ -196,4 +198,4 @@ fragment DASH                : '-';
 
 fragment UNDERDASH           : '_';
 fragment DIGIT               : [0-9];
-fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ' '\u00F8'..'\u02FF';
+fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ' | 'á'| 'é'| 'í' | 'ó' | 'ú' | 'Á'| 'É' | 'Í' | 'Ó' | 'Ú';
