@@ -8,6 +8,7 @@ import org.siani.itrules.Template;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -149,10 +150,7 @@ public class Format {
 		if (value.isEmpty()) return "";
 		String[] parts = value.split(regex);
 		if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
-		String caseString = "";
-		for (String part : parts)
-			caseString = caseString + capitalize(part);
-		return caseString;
+		return Arrays.stream(parts).map(Format::capitalize).collect(Collectors.joining());
 	}
 
 	public static Formatter nativeParameterWithoutType() {
