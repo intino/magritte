@@ -48,6 +48,12 @@ public class Node extends Predicate {
 		return result;
 	}
 
+	public List<String> facetList() {
+		List<String> facetList = new ArrayList<>(typeNames);
+		Collections.reverse(facetList);
+		return facetList;
+	}
+
 	public Model model() {
 		Node node = this;
 		while (node.owner != null)
