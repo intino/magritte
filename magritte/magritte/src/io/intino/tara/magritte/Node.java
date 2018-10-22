@@ -39,6 +39,16 @@ public class Node extends Predicate {
 		return owner.ownerAs(layerClass);
 	}
 
+	public Node clone(Node parent) {
+		NodeCloner.clone(singletonList(this), parent, graph());
+		return graph().node(parent.id() + "." + this.name());
+	}
+
+	public Node clone(String stash) {
+		NodeCloner.clone(singletonList(this), model(), stash, graph());
+		return graph().node(stash + "#" + this.name());
+	}
+
 	@Override
 	public List<Concept> conceptList() {
 		List<Concept> result = new ArrayList<>();
