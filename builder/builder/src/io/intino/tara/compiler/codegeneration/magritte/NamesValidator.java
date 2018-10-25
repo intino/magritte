@@ -25,6 +25,8 @@ public class NamesValidator {
 		javaKeywords.add("this");
 		javaKeywords.add("break");
 		javaKeywords.add("double");
+		javaKeywords.add("boolean");
+		javaKeywords.add("enum");
 		javaKeywords.add("implements");
 		javaKeywords.add("protected");
 		javaKeywords.add("throw");

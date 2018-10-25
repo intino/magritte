@@ -12,7 +12,7 @@ public interface Language {
 
 	Map<String, Context> catalog();
 
-	Map<String, DeclarationContext> instances();
+	Map<String, InstanceContext> instances();
 
 	List<Constraint> constraints(String qualifiedName);
 
