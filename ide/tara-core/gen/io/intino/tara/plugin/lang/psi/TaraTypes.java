@@ -15,7 +15,6 @@ public interface TaraTypes {
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BODY_VALUE = new TaraElementType("BODY_VALUE");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
-	IElementType CLASS_TYPE_VALUE = new TaraElementType("CLASS_TYPE_VALUE");
 	IElementType CONSTRAINT = new TaraElementType("CONSTRAINT");
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
@@ -139,8 +138,6 @@ public interface TaraTypes {
 				return new TaraBodyValueImpl(node);
 			} else if (type == BOOLEAN_VALUE) {
 				return new TaraBooleanValueImpl(node);
-			} else if (type == CLASS_TYPE_VALUE) {
-				return new TaraClassTypeValueImpl(node);
 			} else if (type == CONSTRAINT) {
 				return new TaraConstraintImpl(node);
 			} else if (type == DOC) {

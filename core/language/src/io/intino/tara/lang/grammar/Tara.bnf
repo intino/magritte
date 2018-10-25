@@ -116,14 +116,12 @@ listRange ::= (NATURAL_VALUE_KEY | STAR) DOT DOT (NATURAL_VALUE_KEY | STAR)
 ruleContainer ::= COLON rule
 {pin=1}
 
-rule ::= (LEFT_CURLY (classTypeValue | identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference {
+rule ::= (LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | (identifierReference CLASS_TYPE?){
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.RuleMixin'
 	implements = 'io.intino.tara.plugin.lang.psi.Rule, io.intino.tara.plugin.lang.psi.TaraPsiElement'
 }
 
 range ::= (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR)
-
-classTypeValue ::= CLASS_TYPE
 
 value ::= stringValue+
         | booleanValue+

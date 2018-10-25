@@ -1,7 +1,7 @@
 package io.intino.tara.compiler.codegeneration;
 
 
-import io.intino.tara.compiler.codegeneration.magritte.NamesValidator;
+import io.intino.tara.compiler.codegeneration.magritte.JavaKeywords;
 import org.siani.itrules.Formatter;
 import org.siani.itrules.Template;
 
@@ -127,7 +127,7 @@ public class Format {
 	public static Formatter javaValidWord() {
 		return s -> {
 			final String value = s.toString();
-			return NamesValidator.isKeyword(value) || NamesValidator.isTaraKeyword(value) ? value + "$" : value;
+			return JavaKeywords.isKeyword(value) ? value + "$" : value;
 		};
 	}
 

@@ -167,12 +167,5 @@ def type(variable & reference & concept & owner) !type(final | inherited | overr
 	}
 end
 
-def type(Node & single & owner) !type(inherited | overriden | final) trigger(setter)
-	public $containerName+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($qn+reference value) {
-		this.$name+FirstLowerCase+javaValidName = value;
-		return ($containerName+FirstUpperCase+javaValidName) this;
-	}
-end
-
 def type(Node) trigger(setter)
 end

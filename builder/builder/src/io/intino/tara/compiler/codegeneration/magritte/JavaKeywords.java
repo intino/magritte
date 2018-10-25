@@ -3,7 +3,7 @@ package io.intino.tara.compiler.codegeneration.magritte;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NamesValidator {
+public class JavaKeywords {
 
 	private static List<String> javaKeywords = new ArrayList<>();
 

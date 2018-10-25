@@ -14,7 +14,7 @@ public class AcceptedTaraRunners {
 	private String home;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		home = new File("test-res").getAbsolutePath() + File.separator;
 	}
 
@@ -44,33 +44,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void humketM2() {
-		main(new String[]{home + "sandbox/confFiles/humket/Humket.txt"});
-	}
-
-	@Test
-	public void humketM1() {
-		main(new String[]{home + "sandbox/confFiles/humket/Humket-bot.txt"});
-	}
-
-	@Test
-	public void mastersimM2() {
-		main(new String[]{home + "sandbox/confFiles/mastersim/M2.txt"});
-	}
-
-	@Test
-	public void mastersimM1Test() {
-		main(new String[]{home + "sandbox/confFiles/mastersim/M1Test.txt"});
-	}
-
-	@Test
 	public void consulM2() {
 		main(new String[]{home + "sandbox/confFiles/cesar/consul.txt"});
-	}
-
-	@Test
-	public void cesarSystem() {
-		main(new String[]{home + "sandbox/confFiles/cesar/system.txt"});
 	}
 
 	@Test
@@ -78,26 +53,6 @@ public class AcceptedTaraRunners {
 		final long l = System.currentTimeMillis();
 		main(new String[]{home + "sandbox/confFiles/sumus/M3.txt"});
 		System.out.println((System.currentTimeMillis() - l) / 1000);
-	}
-
-	@Test
-	public void tafatM3() {
-		main(new String[]{home + "sandbox/confFiles/tafat/M3.txt"});
-	}
-
-	@Test
-	public void tafatTestM2() {
-		main(new String[]{home + "sandbox/confFiles/tafat/tafatTestApplication.txt"});
-	}
-
-	@Test
-	public void tafatTestM1() {
-		main(new String[]{home + "sandbox/confFiles/tafat/tafatTestSystem.txt"});
-	}
-
-	@Test
-	public void dhsM2() {
-		main(new String[]{home + "sandbox/confFiles/tafat/DHS-M2.txt"});
 	}
 
 	@Test
@@ -126,11 +81,6 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SampleM3() {
-		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
-	}
-
-	@Test
 	public void ness_jms() {
 		main(new String[]{home + "sandbox/confFiles/ness/m2.txt"});
 	}
@@ -143,16 +93,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void konos_M2() {
 		main(new String[]{home + "sandbox/confFiles/konos/m2.txt"});
-	}
-
-	@Test
-	public void pandora_cesar() {
-		main(new String[]{home + "sandbox/confFiles/konos/konos-cesar.txt"});
-	}
-
-	@Test
-	public void pandora_channels() {
-		main(new String[]{home + "sandbox/confFiles/konos/konos-channels.txt"});
 	}
 
 	@Test
@@ -183,26 +123,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void AmidasM1() {
 		main(new String[]{home + "sandbox/confFiles/amidas/Comnunity-test.txt"});
-	}
-
-	@Test
-	public void MobilityM2() {
-		main(new String[]{home + "sandbox/confFiles/tafat/MobilityM2.txt"});
-	}
-
-	@Test
-	public void MonopolyM2() {
-		main(new String[]{home + "sandbox/confFiles/tafat/MonopolyM2.txt"});
-	}
-
-	@Test
-	public void TafatDomainM2() {
-		main(new String[]{home + "sandbox/confFiles/tafat/domain.txt"});
-	}
-
-	@Test
-	public void PredatorPreyM1() {
-		main(new String[]{home + "sandbox/confFiles/tafat/PredatorPreyM1.txt"});
 	}
 
 	@Test
@@ -251,26 +171,6 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void TafatTestM2() {
-		main(new String[]{home + "sandbox/confFiles/tafat/testM2.txt"});
-	}
-
-	@Test
-	public void TafatTestM1() {
-		main(new String[]{home + "sandbox/confFiles/tafat/testM1.txt"});
-	}
-
-	@Test
-	public void SampleTest() {
-		main(new String[]{home + "sandbox/confFiles/sample/Test.txt"});
-	}
-
-	@Test
-	public void SamplePlatformM3() {
-		main(new String[]{home + "sandbox/confFiles/sample/SamplePlatform.txt"});
-	}
-
-	@Test
 	public void SumusM1Dwellings() {
 		main(new String[]{home + "sandbox/confFiles/sumus/Comnunity-test.txt"});
 	}
@@ -310,7 +210,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/sumus/ebar_test.txt"});
 	}
 
-
 	@Test
 	public void sumusEbarPre() {
 		main(new String[]{home + "sandbox/confFiles/sumus/ebar-pre.txt"});
@@ -324,11 +223,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void SimulationM0() {
 		main(new String[]{home + "sandbox/confFiles/tafat/TafatM1Simulation.txt"});
-	}
-
-	@Test
-	public void MobilityM0Paris() {
-		main(new String[]{home + "sandbox/confFiles/tafat/MobilityM1Paris.txt"});
 	}
 
 }

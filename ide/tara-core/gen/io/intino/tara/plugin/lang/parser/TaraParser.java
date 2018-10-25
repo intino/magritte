@@ -41,9 +41,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     else if (t == BOOLEAN_VALUE) {
       r = booleanValue(b, 0);
     }
-    else if (t == CLASS_TYPE_VALUE) {
-      r = classTypeValue(b, 0);
-    }
     else if (t == CONSTRAINT) {
       r = constraint(b, 0);
     }
@@ -351,18 +348,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, BOOLEAN_VALUE_KEY);
     exit_section_(b, m, BOOLEAN_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // CLASS_TYPE
-  public static boolean classTypeValue(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classTypeValue")) return false;
-    if (!nextTokenIs(b, CLASS_TYPE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, CLASS_TYPE);
-    exit_section_(b, m, CLASS_TYPE_VALUE, r);
     return r;
   }
 
@@ -1185,19 +1170,19 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (LEFT_CURLY (classTypeValue | identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference
+  // (LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | (identifierReference CLASS_TYPE?)
   public static boolean rule(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule")) return false;
     if (!nextTokenIs(b, "<rule>", IDENTIFIER_KEY, LEFT_CURLY)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, RULE, "<rule>");
     r = rule_0(b, l + 1);
-    if (!r) r = identifierReference(b, l + 1);
+    if (!r) r = rule_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // LEFT_CURLY (classTypeValue | identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY
+  // LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY
   private static boolean rule_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_0")) return false;
     boolean r;
@@ -1209,29 +1194,28 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // classTypeValue | identifier+ | ((range | stringValue) metric?) | metric
+  // identifier+ | ((range | stringValue) metric?) | metric
   private static boolean rule_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = classTypeValue(b, l + 1);
+    r = rule_0_1_0(b, l + 1);
     if (!r) r = rule_0_1_1(b, l + 1);
-    if (!r) r = rule_0_1_2(b, l + 1);
     if (!r) r = metric(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // identifier+
-  private static boolean rule_0_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_0_1_1")) return false;
+  private static boolean rule_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifier(b, l + 1);
     int c = current_position_(b);
     while (r) {
       if (!identifier(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "rule_0_1_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "rule_0_1_0", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);
@@ -1239,19 +1223,19 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   // (range | stringValue) metric?
-  private static boolean rule_0_1_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_0_1_2")) return false;
+  private static boolean rule_0_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_0_1_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = rule_0_1_2_0(b, l + 1);
-    r = r && rule_0_1_2_1(b, l + 1);
+    r = rule_0_1_1_0(b, l + 1);
+    r = r && rule_0_1_1_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // range | stringValue
-  private static boolean rule_0_1_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_0_1_2_0")) return false;
+  private static boolean rule_0_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_0_1_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = range(b, l + 1);
@@ -1261,9 +1245,27 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   // metric?
-  private static boolean rule_0_1_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_0_1_2_1")) return false;
+  private static boolean rule_0_1_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_0_1_1_1")) return false;
     metric(b, l + 1);
+    return true;
+  }
+
+  // identifierReference CLASS_TYPE?
+  private static boolean rule_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = identifierReference(b, l + 1);
+    r = r && rule_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CLASS_TYPE?
+  private static boolean rule_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_1_1")) return false;
+    consumeToken(b, CLASS_TYPE);
     return true;
   }
 
