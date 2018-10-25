@@ -1,9 +1,9 @@
-package io.intino.tara.compiler.codegeneration.magritte;
+package io.intino.tara.lang.semantics.constraints;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NamesValidator {
+public class JavaWords {
 
 	private static List<String> javaKeywords = new ArrayList<>();
 
@@ -65,4 +65,5 @@ public class NamesValidator {
 	public static boolean isKeyword(final String name) {
 		return javaKeywords.contains(name);
 	}
+
 }

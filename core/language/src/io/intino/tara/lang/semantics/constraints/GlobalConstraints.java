@@ -18,6 +18,7 @@ import java.util.*;
 
 import static io.intino.tara.lang.model.Primitive.WORD;
 import static io.intino.tara.lang.model.Tag.*;
+import static io.intino.tara.lang.semantics.constraints.JavaWords.isKeyword;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 import static java.util.Arrays.asList;
@@ -298,6 +299,8 @@ public class GlobalConstraints {
 			else if (node.is(Instance)) return;
 			if (node.container() != null && node.container() != null && !node.isReference() && !node.isAnonymous() && node.name().equals(node.container().name()))
 				error("reject.container.and.component.namesake", node);
+			if (node.facetTarget() != null && isKeyword(node.name().toLowerCase()))
+				error("reject.facet.with.java.keyword", node);
 		};
 	}
 
