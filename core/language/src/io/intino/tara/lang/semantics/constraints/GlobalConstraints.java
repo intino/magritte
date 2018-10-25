@@ -3,6 +3,7 @@ package io.intino.tara.lang.semantics.constraints;
 import io.intino.tara.Language;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
@@ -15,9 +16,8 @@ import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.*;
 
-import static io.intino.tara.lang.model.Tag.Instance;
-import static io.intino.tara.lang.model.Tag.Reactive;
-import static io.intino.tara.lang.model.Tag.Required;
+import static io.intino.tara.lang.model.Primitive.WORD;
+import static io.intino.tara.lang.model.Tag.*;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 import static java.util.Arrays.asList;
@@ -167,14 +167,16 @@ public class GlobalConstraints {
 	private void checkVariable(Variable variable) throws SemanticException {
 		final List<Object> values = variable.values();
 		if (variable.container().is(Instance)) error("reject.variable.in.node", variable);
-		else if (Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable) && variable.rule() != null)
+		else if (WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable) && variable.rule() != null)
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
+		else if (WORD.equals(variable.type()) && variable.name().equals(variable.container().name()))
+			error("reject.invalid.word.name", variable, singletonList((variable.rule()).errorParameters()));
+		else if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
+			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type().javaName()));
 		else if (Primitive.REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
-		else if (!Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
-			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!variable.isReference() && isRedefiningTerminal(variable))
@@ -212,7 +214,7 @@ public class GlobalConstraints {
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		if (variable.flags().contains(Reactive) && variable.type().equals(Primitive.FUNCTION))
 			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
-		if (!Primitive.WORD.equals(variable.type()) && variable.flags().contains(Reactive) && variable.rule() != null && (variable.rule() instanceof VariableCustomRule)) {
+		if (!WORD.equals(variable.type()) && variable.flags().contains(Reactive) && variable.rule() != null && (variable.rule() instanceof VariableCustomRule)) {
 			if (variable.values().isEmpty() || hasExpressionValue(variable))
 				error("reject.reactive.variable.with.rules", variable, asList(Reactive.name(), variable.name()));
 			else if (variable.rule() instanceof VariableCustomRule || !hasExpressionValue(variable))

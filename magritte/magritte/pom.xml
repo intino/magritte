@@ -21,7 +21,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
-            <version>1.0.11</version>
+            <version>1.0.12</version>
         </dependency>
 
         <dependency>
