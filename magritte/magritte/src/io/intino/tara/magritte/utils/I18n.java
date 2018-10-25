@@ -1,6 +1,6 @@
 package io.intino.tara.magritte.utils;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,8 +43,8 @@ public class I18n {
 	private String resolveMessage(String locale, String key, Object[] params) {
 		for (PropertyResourceBundle bundle : bundles.get(locale)) {
 			try {
-				return MessageFormat.format(new String(bundle.getString(key).getBytes(), "UTF-8"), params);
-			} catch (MissingResourceException | UnsupportedEncodingException ignored) {
+				return MessageFormat.format(new String(bundle.getString(key).getBytes(), StandardCharsets.UTF_8), params);
+			} catch (MissingResourceException ignored) {
 			}
 		}
 		getGlobal().warning("Message key not found: " + key);

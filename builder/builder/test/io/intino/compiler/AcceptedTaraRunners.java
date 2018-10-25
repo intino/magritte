@@ -20,7 +20,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void adquiverM2() {
-		main(new String[]{home + "sandbox/confFiles/adquiver/M2.txt"});
+		io.intino.tara.TaracRunner.main(new String[]{home + "sandbox/confFiles/adquiver/M2.txt"});
+	}
+
+	@Test
+	public void sezzetM2() {
+		main(new String[]{home + "sandbox/confFiles/sezzet/M2.txt"});
 	}
 
 	@Test
