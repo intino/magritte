@@ -7,13 +7,13 @@
     <version>1.6.3</version>
     <change-notes>
     </change-notes>
-    <idea-version since-build="145"/>
+    <idea-version since-build="182"/>
 
     <description>
         <![CDATA[
         <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
         Engineering methodology (MDE) make easy the task of creating software product lines.
-        To get started visit <a href="http://www.tara.intino.io/getting-started.html">tara.intino.io/gettingstarted</a>.</p>
+        To get started visit <a href="http://www.intino.io/getting-started.html">intino.io/gettingstarted</a>.</p>
       ]]>
     </description>
     <vendor email="tara@intino.io" url="http://www.tara.intino.io">intino.io</vendor>

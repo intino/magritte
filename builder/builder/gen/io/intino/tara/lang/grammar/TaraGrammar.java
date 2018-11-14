@@ -2103,7 +2103,6 @@ public class TaraGrammar extends Parser {
 		public IdentifierReferenceContext identifierReference() {
 			return getRuleContext(IdentifierReferenceContext.class,0);
 		}
-
 		public ClassTypeContext classType() {
 			return getRuleContext(ClassTypeContext.class, 0);
 		}
@@ -2244,11 +2243,9 @@ public class TaraGrammar extends Parser {
 		public TerminalNode CLOSE_INLINE() {
 			return getToken(TaraGrammar.CLOSE_INLINE, 0);
 		}
-
 		public List<IdentifierReferenceContext> identifierReference() {
 			return getRuleContexts(IdentifierReferenceContext.class);
 		}
-
 		public IdentifierReferenceContext identifierReference(int i) {
 			return getRuleContext(IdentifierReferenceContext.class, i);
 		}
