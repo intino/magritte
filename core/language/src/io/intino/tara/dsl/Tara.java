@@ -1,7 +1,7 @@
 package io.intino.tara.dsl;
 
-import io.intino.tara.lang.semantics.*;
 import io.intino.tara.Language;
+import io.intino.tara.lang.semantics.*;
 import io.intino.tara.lang.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
@@ -12,7 +12,7 @@ import static io.intino.tara.Resolver.shortType;
 public abstract class Tara implements Language {
 	static final String Root = "";
 	private Map<String, Context> rulesCatalog = new HashMap<>();
-	private Map<String, DeclarationContext> declarationsCatalog = new HashMap<>();
+	private Map<String, InstanceContext> declarationsCatalog = new HashMap<>();
 	private List<String> lexicon = new ArrayList<>();
 
 	protected RuleTransaction def(final String qualifiedName) {
@@ -20,7 +20,7 @@ public abstract class Tara implements Language {
 	}
 
 	protected void declare(final String qualifiedName, List<String> types, String path) {
-		declarationsCatalog.put(qualifiedName, new DeclarationContext(types, path));
+		declarationsCatalog.put(qualifiedName, new InstanceContext(types, path));
 	}
 
 	protected Context context(String... types) {
@@ -45,7 +45,7 @@ public abstract class Tara implements Language {
 	}
 
 	@Override
-	public Map<String, DeclarationContext> instances() {
+	public Map<String, InstanceContext> instances() {
 		return Collections.unmodifiableMap(declarationsCatalog);
 	}
 

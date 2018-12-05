@@ -1,6 +1,5 @@
 package io.intino.tara.compiler.core.operation.setup;
 
-import io.intino.legio.Main;
 import io.intino.legio.graph.Artifact;
 import io.intino.legio.graph.LegioGraph;
 import io.intino.legio.graph.Parameter;
@@ -98,18 +97,18 @@ public class SetupConfigurationOperation extends SetupOperation {
 		}
 	}
 
-	private static String snakeCaseToCamelCase(String value) {
-		return toCamelCase(value.replace("_", "-"));
+	private String snakeCaseToCamelCase(String value) {
+		return value.contains("-") ? toCamelCase(value.replace("_", "-")) : value;
 	}
 
-	private static String toCamelCase(String value) {
+	private String toCamelCase(String value) {
 		if (value.isEmpty()) return "";
 		String[] parts = value.split("-");
 		if (parts.length == 1) return capitalize(value);
-		return Arrays.stream(parts).map(SetupConfigurationOperation::capitalize).collect(Collectors.joining());
+		return Arrays.stream(parts).map(this::capitalize).collect(Collectors.joining());
 	}
 
-	private static String capitalize(String value) {
+	private String capitalize(String value) {
 		return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
 	}
 }

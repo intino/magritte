@@ -8,7 +8,7 @@ import io.intino.tara.lang.model.EmptyNode;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Primitive.Reference;
-import io.intino.tara.lang.semantics.DeclarationContext;
+import io.intino.tara.lang.semantics.InstanceContext;
 import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +74,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		final Reference reference = new Reference(element.getText());
 		final Language language = TaraUtil.getLanguage(element);
 		if (language == null) return reference;
-		final DeclarationContext instance = language.instances().get(element.getText());
+		final InstanceContext instance = language.instances().get(element.getText());
 		if (instance == null) return reference;
 		reference.setToInstance(true);
 		reference.instanceTypes(instance.types());

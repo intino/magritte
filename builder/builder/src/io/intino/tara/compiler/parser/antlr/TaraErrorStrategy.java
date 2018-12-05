@@ -56,11 +56,11 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 		if (currentError == token) return;
 		else currentError = token;
 		String[] nameList = recognizer.getTokenNames();
-		LOG.info("Line: " + token.getLine() + "\n" +
-			"Column: " + token.getCharPositionInLine() + "\n" +
-			"Text Length: " + token.getText().length() + "\n" +
-			(token.getType() > 0 ? "Token type: " + nameList[token.getType()] + "\n" : "") +
-			"Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getTokenNames()) +
-			"Text: " + token.getText().replace("\n", "\\n"));
+		System.out.println("Line: " + token.getLine() + "\n" +
+				"Column: " + token.getCharPositionInLine() + "\n" +
+				"Text Length: " + token.getText().length() + "\n" +
+				(token.getType() > 0 ? "Token type: " + nameList[token.getType()] + "\n" : "") +
+				"Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getTokenNames()) + "\n" +
+				"Text: " + token.getText().replace("\n", "\\n"));
 	}
 }

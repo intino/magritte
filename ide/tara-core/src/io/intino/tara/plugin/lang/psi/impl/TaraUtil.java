@@ -319,7 +319,7 @@ public class TaraUtil {
 	public static String methodReference(PsiElement valued) {
 		final PsiDirectory aPackage = valued.getContainingFile().getContainingDirectory();
 		final PsiJavaFile file = (PsiJavaFile) aPackage.findFile(((TaraModel) valued.getContainingFile()).getPresentableName() + ".java");
-		if (file == null) return "";
+		if (file == null || file.getClasses().length == 0) return "";
 		return file.getClasses()[0].getQualifiedName();
 	}
 

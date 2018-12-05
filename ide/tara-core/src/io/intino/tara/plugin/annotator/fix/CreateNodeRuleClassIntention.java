@@ -92,7 +92,7 @@ public class CreateNodeRuleClassIntention extends ClassCreationIntention {
 	}
 
 	public PsiClass createClass(PsiDirectory destiny, String className, Map<String, String> additionalProperties) {
-		return JavaDirectoryService.getInstance().createClass(destiny, className, "NodeRule", true, additionalProperties);
+		return JavaDirectoryService.getInstance().createClass(destiny, className, "NodeRule", false, additionalProperties);
 	}
 
 	@Override

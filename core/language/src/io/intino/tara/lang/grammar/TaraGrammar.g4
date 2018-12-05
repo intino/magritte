@@ -61,9 +61,9 @@ variableType: INT_TYPE
 
 ruleContainer : COLON ruleValue;
 
-ruleValue    : (LEFT_CURLY (classType | IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference;
+ruleValue    : (LEFT_CURLY (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | (identifierReference classType?);
 
-classType    : CLASS_TYPE;
+classType	 : CLOSE_INLINE identifierReference (COMMA identifierReference)? INLINE;
 range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
 
 size		 : LEFT_SQUARE sizeRange? RIGHT_SQUARE;

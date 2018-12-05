@@ -1,10 +1,11 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class SettersTemplate extends Template {
 
@@ -38,7 +39,6 @@ public class SettersTemplate extends Template {
 			rule().add((condition("type", "Variable")), not(condition("type", "inherited | concept | overriden | function | reactive | multiple | final")), (condition("trigger", "setter"))).add(literal("public ")).add(mark("container", "FirstUpperCase", "javaValidName")).add(literal(" ")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal("(")).add(mark("type", "variableType")).add(literal(" value) {\n\tthis.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" = value;\n\treturn (")).add(mark("container", "FirstUpperCase", "javaValidName")).add(literal(") this;\n}")),
 			rule().add((condition("type", "variable & reference & concept & multiple & owner")), not(condition("type", "final | inherited | overriden | reactive")), (condition("trigger", "setter"))).add(literal("public ")).add(mark("container", "FirstUpperCase", "javaValidName")).add(literal(" ")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal("(java.util.List<io.intino.tara.magritte.Concept> value) {\n\tthis.")).add(mark("name", "FirstLowerCase", "javaValidName", "FirstLowerCase")).add(literal(" = value;\n\treturn (")).add(mark("container", "FirstUpperCase", "javaValidName")).add(literal(") this;\n}")),
 			rule().add((condition("type", "variable & reference & concept & owner")), not(condition("type", "final | inherited | overriden | multiple | reactive")), (condition("trigger", "setter"))).add(literal("public ")).add(mark("container", "FirstUpperCase", "javaValidName")).add(literal(" ")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal("(io.intino.tara.magritte.Concept value) {\n\tthis.")).add(mark("name", "FirstLowerCase", "javaValidName", "FirstLowerCase")).add(literal(" = value;\n\treturn (")).add(mark("container", "FirstUpperCase", "javaValidName")).add(literal(") this;\n}")),
-			rule().add((condition("type", "Node & single & owner")), not(condition("type", "inherited | overriden | final")), (condition("trigger", "setter"))).add(literal("public ")).add(mark("containerName", "FirstUpperCase", "javaValidName")).add(literal(" ")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal("(")).add(mark("qn", "reference")).add(literal(" value) {\n\tthis.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" = value;\n\treturn (")).add(mark("containerName", "FirstUpperCase", "javaValidName")).add(literal(") this;\n}")),
 			rule().add((condition("type", "Node")), (condition("trigger", "setter")))
 		);
 		return this;
