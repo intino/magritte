@@ -228,16 +228,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitRuleValue(TaraGrammar.RuleValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#classType}.
-	 * @param ctx the parse tree
-	 */
-	void enterClassType(TaraGrammar.ClassTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#classType}.
-	 * @param ctx the parse tree
-	 */
-	void exitClassType(TaraGrammar.ClassTypeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#range}.
 	 * @param ctx the parse tree
 	 */
