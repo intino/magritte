@@ -18,10 +18,10 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Primitive.RESOURCE;
 import static io.intino.tara.lang.model.Primitive.STRING;
 import static io.intino.tara.lang.model.Primitive.WORD;
+import static io.intino.tara.lang.model.Primitive.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -29,11 +29,11 @@ import static java.util.stream.Collectors.toList;
 public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
-	private List<CompilerConfiguration.DSL> languages;
 	private final String outDsl;
 	private final Deque<Node> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
+	private List<CompilerConfiguration.DSL> languages;
 	private List<SyntaxException> errors = new ArrayList<>();
 
 	public ModelGenerator(String file, List<CompilerConfiguration.DSL> languages, String outDsl) {
@@ -305,8 +305,12 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (RESOURCE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());
 		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
-		else if (OBJECT.equals(var.type())) return new NativeObjectRule(params.get(0).getText());
+		else if (OBJECT.equals(var.type())) return new NativeObjectRule(classFrom(params.get(0).getText()));
 		return null;
+	}
+
+	private String classFrom(String text) {
+		return text.startsWith("\"") ? text.substring(1, text.length() - 1) : text;
 	}
 
 	private Rule processLambdaRule(RuleValueContext isRule) {
