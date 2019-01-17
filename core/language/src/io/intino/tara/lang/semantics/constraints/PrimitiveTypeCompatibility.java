@@ -40,7 +40,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean booleanOrFunctionInfersBoolean(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(BOOLEAN) || inferredType.equals(FUNCTION)) && type.equals(BOOLEAN);
+		return (inferredType.equals(BOOLEAN) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(BOOLEAN);
 	}
 
 	private static boolean nativeOrEmptyInfersObject(Primitive type, Primitive inferredType) {
@@ -72,15 +72,15 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean integerInfersDouble(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(DOUBLE);
+		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(DOUBLE);
 	}
 
 	private static boolean integerInfersInteger(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(INTEGER);
+		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(INTEGER);
 	}
 
 	private static boolean integerInfersLong(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(LONG);
+		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(LONG);
 	}
 
 	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {
