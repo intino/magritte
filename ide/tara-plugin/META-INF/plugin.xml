@@ -4,8 +4,11 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.6.3</version>
+    <version>1.7.0</version>
     <change-notes>
+        <![CDATA[
+        Added support to empty values for primitives. Minor fixes and updates to new Intellij version.
+      ]]>
     </change-notes>
     <idea-version since-build="182"/>
 
