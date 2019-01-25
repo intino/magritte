@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.intino.tara.magritte.loaders.ListProcessor.process;
+import static java.util.logging.Logger.getGlobal;
 
 @SuppressWarnings("unused")
 public class NodeLoader {
@@ -16,6 +17,8 @@ public class NodeLoader {
         for (Object value : list) {
             Node node = loadNode((String) value, layer);
             result.add(node != null ? node.as(aClass) : null);
+            if(node == null)
+                getGlobal().warning("A reference to the node " + value + " has not been found. Dependant node is " + layer.core$().id());
         }
         return result;
     }
@@ -25,7 +28,7 @@ public class NodeLoader {
             Object object = process(item.substring(2), layer);
             return object != null ? ((Layer)object).core$() : null;
         }
-        return layer.core$().graph().load(item);
+        return layer.core$().graph().load(item, false);
     }
 
 }
