@@ -1,10 +1,11 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class LanguageTemplate extends Template {
 
@@ -18,11 +19,12 @@ public class LanguageTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "Model"))).add(literal("package tara.dsl;\n\nimport io.intino.tara.lang.model.Tag;\n\nimport java.util.Locale;\nimport static io.intino.tara.lang.semantics.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name", "reference", "FirstUpperCase")).add(literal(" extends io.intino.tara.dsl.Tara {\n\tpublic ")).add(mark("name", "reference", "FirstUpperCase")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t\t")).add(mark("root", "call").multiple("\n")).add(literal("\n\t}\n\n\t")).add(mark("root", "method").multiple("\n")).add(literal("\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name", "FirstUpperCase")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n\n\t@Override\n\tpublic String metaLanguage() {\n\t\treturn ")).add(mark("metaLanguage", "quoted")).add(literal(";\n\t}\n}")),
-			rule().add((condition("trigger", "call"))).add(literal("root")).add(mark("number")).add(literal("();")),
-			rule().add((condition("trigger", "method"))).add(literal("private void root")).add(mark("number")).add(literal("() {\n\t")).add(mark("node").multiple("\n")).add(literal("\n}")),
+				rule().add((condition("type", "Model"))).add(literal("package tara.dsl;\n\nimport io.intino.tara.lang.model.Tag;\n\nimport java.util.Locale;\nimport static io.intino.tara.lang.semantics.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name", "reference", "FirstUpperCase")).add(literal(" extends io.intino.tara.dsl.Tara {\n\tpublic ")).add(mark("name", "reference", "FirstUpperCase")).add(literal("() {\n\t\t")).add(mark("node", "nodeCall").multiple("\n")).add(literal("\n\t\t")).add(mark("root", "call").multiple("\n")).add(literal("\n\t}\n\n\tprivate static class Root {\n\t\tprivate static void load(")).add(mark("name", "reference", "firstUpperCase")).add(literal(" self) {\n\t\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t\t}\n\t}\n\n\t")).add(mark("root", "method").multiple("\n")).add(literal("\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name", "FirstUpperCase")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n\n\t@Override\n\tpublic String metaLanguage() {\n\t\treturn ")).add(mark("metaLanguage", "quoted")).add(literal(";\n\t}\n}")),
+				rule().add((condition("trigger", "nodecall"))).add(literal("Root.load(this);")),
+				rule().add((condition("trigger", "call"))).add(literal("Root")).add(mark("number")).add(literal(".load(this);")),
+				rule().add((condition("trigger", "method"))).add(expression().add(literal("private static class Root")).add(mark("number")).add(literal(" {")).add(literal("\n")).add(literal("\tprivate static void load(")).add(mark("language", "firstUpperCase")).add(literal(" self) {")).add(literal("\n")).add(literal("\t\t")).add(mark("node").multiple("\n")).add(literal("\n")).add(literal("\t}")).add(literal("\n")).add(literal("}"))),
 			rule().add((condition("type", "instance")), (condition("trigger", "node"))).add(literal("declare(")).add(mark("qn", "quoted")).add(literal(", java.util.Arrays.asList(")).add(mark("nodeType", "quoted").multiple(", ")).add(literal("), ")).add(mark("path", "quoted")).add(literal(");")),
-			rule().add((condition("type", "node")), (condition("trigger", "node"))).add(literal("def(\"")).add(mark("name")).add(literal("\").with(context(")).add(expression().add(mark("nodeType"))).add(literal(")")).add(expression().add(literal(".")).add(mark("constraints"))).add(expression().add(literal(".")).add(mark("assumptions"))).add(expression().add(literal(".")).add(mark("doc"))).add(literal(");")),
+				rule().add((condition("type", "node")), (condition("trigger", "node"))).add(literal("self.def(\"")).add(mark("name")).add(literal("\").with(self.context(")).add(expression().add(mark("nodeType"))).add(literal(")")).add(expression().add(literal(".")).add(mark("constraints"))).add(expression().add(literal(".")).add(mark("assumptions"))).add(expression().add(literal(".")).add(mark("doc"))).add(literal(");")),
 			rule().add((condition("type", "nodeType")), (condition("trigger", "nodeType"))).add(mark("type", "quoted").multiple(", ")),
 			rule().add((condition("trigger", "constraints"))).add(literal("has(")).add(expression().add(mark("constraint").multiple(", "))).add(literal(")")),
 			rule().add((condition("type", "constraint")), (condition("type", "component")), (condition("trigger", "constraint"))).add(literal("component(")).add(mark("type", "quoted")).add(literal(", java.util.Arrays.asList(")).add(mark("size").multiple(", ")).add(literal(")")).add(expression().add(literal(", ")).add(mark("tags").multiple(", "))).add(literal(")")),

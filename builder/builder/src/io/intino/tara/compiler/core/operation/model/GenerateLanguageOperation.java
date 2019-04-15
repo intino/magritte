@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static java.util.logging.Level.SEVERE;
 
 public class GenerateLanguageOperation extends ModelCollectionOperation {
 	private static final Logger LOG = Logger.getGlobal();
@@ -30,8 +31,8 @@ public class GenerateLanguageOperation extends ModelCollectionOperation {
 			new LanguageSerializer(unit.configuration(), models).write();
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
-			LOG.log(java.util.logging.Level.SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);
-			throw new CompilationFailedException(Phases.LANGUAGE_GENERATION, unit);
+			LOG.log(SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);
+			throw new CompilationFailedException(Phases.LANGUAGE_GENERATION, unit, e);
 		}
 	}
 }

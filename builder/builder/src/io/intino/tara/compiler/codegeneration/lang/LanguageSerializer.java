@@ -62,7 +62,6 @@ public class LanguageSerializer {
 		for (Context context : model.language().catalog().values())
 			classes.addAll(getRulesOfNode(context));
 		return classes;
-
 	}
 
 	private List<Class<?>> getRulesOfNode(Context context) {
@@ -141,7 +140,7 @@ public class LanguageSerializer {
 		return taraAttributes;
 	}
 
-	private void addInheritedRules(JarOutputStream target) throws IOException {
+	private void addInheritedRules(JarOutputStream target) {
 		for (Model model : models) {
 			if (model.language() instanceof Proteo || model.language() instanceof Verso) return;
 			final File tempDirectory = conf.getTempDirectory();
