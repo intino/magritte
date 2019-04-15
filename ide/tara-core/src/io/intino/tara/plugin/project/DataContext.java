@@ -3,8 +3,6 @@ package io.intino.tara.plugin.project;
 import com.intellij.ide.DataManager;
 import org.jetbrains.concurrency.AsyncPromise;
 
-import java.util.concurrent.ExecutionException;
-
 public class DataContext {
 
 	public static com.intellij.openapi.actionSystem.DataContext getContext() {
@@ -14,7 +12,7 @@ public class DataContext {
 					.onSuccess(result::setResult)
 					.onError(it -> result.setError(it.getMessage()));
 			return result.get();
-		} catch (ExecutionException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

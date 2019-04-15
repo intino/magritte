@@ -340,4 +340,14 @@ public class GraphTest {
 		handler.flush();
 		assertThat(outputStream.toString(), containsString("component named a"));
 	}
+
+	@Test
+	public void should_show_severe_log_when_loading_a_node_that_refers_to_a_non_existent_node() {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		StreamHandler handler = new StreamHandler(outputStream, new SimpleFormatter());
+		getGlobal().addHandler(handler);
+		new Graph(mockStore()).loadStashes(missingReference).as(MockApplication.class);
+		handler.flush();
+		assertThat(outputStream.toString(), containsString("Dependant node is missingReference#x"));
+	}
 }

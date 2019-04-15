@@ -30,6 +30,7 @@ public class TestHelper {
 	public static final String m2 = "m2";
 	public static final String m3 = "m3";
 	public static final String highHierarchy = "highHierarchy";
+	public static final String missingReference = "missingReference";
 	public static final String Extension = ".stash";
 
 	public static Store mockStore() {
@@ -48,6 +49,7 @@ public class TestHelper {
 				put(m2 + Extension, m2());
 				put(m3 + Extension, m3());
 				put(highHierarchy + Extension, highHierarchy());
+				put(missingReference + Extension, missingReference());
 			}};
 
 			@Override
@@ -172,6 +174,13 @@ public class TestHelper {
 						newConcept("Super5Mock", false, false, true, "io.intino.tara.magritte.layers.Super5MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())
 				),
 				singletonList(newNode(m1 + "#y", list("Mock"), emptyList(), emptyList())));
+	}
+
+
+	public static Stash missingReference() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(missingReference + "#x", list("Mock"), list(newReference("mockLayer", "nonExistingStash" + "#x")), emptyList()));
+		return stash;
 	}
 
 	static Stash emptyStash() {

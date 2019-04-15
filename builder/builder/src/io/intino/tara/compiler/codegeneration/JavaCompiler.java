@@ -31,7 +31,7 @@ public class JavaCompiler {
 		if (!task.call()) {
 			StringBuilder message = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
-				message.append(diagnostic.getMessage(Locale.ENGLISH)).append("\n");
+				message.append(diagnostic.getMessage(Locale.ENGLISH) + " in " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber()).append("\n");
 			throw new TaraException(message.substring(0, message.indexOf("\n")));
 		}
 		try {

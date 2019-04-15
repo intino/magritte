@@ -8,8 +8,14 @@ def type(Model)
 
 	public class $name+reference+FirstUpperCase extends io.intino.tara.dsl.Tara {
 		public $name+reference+FirstUpperCase() {
-			$node...[$NL]
+			$node+nodeCall...[$NL]
 			$root+call...[$NL]
+		}
+
+		private static class Root {
+			private static void load($name+reference+firstUpperCase self) {
+				$node...[$NL]
+			}
 		}
 
 		$root+method...[$NL]
@@ -36,15 +42,19 @@ def type(Model)
 	}
 end
 
+def trigger(nodecall)
+	Root.load(this);
+end
 def trigger(call)
-	root$number();
+	Root$number.load(this);
 end
 
-
 def trigger(method)
-	private void root$number() {
-		$node...[$NL]
-	}
+	[private static class Root$number {
+		private static void load($language+firstUpperCase self) {
+			$node...[$NL]
+		}
+	}]
 end
 
 def type(instance) trigger(node)
@@ -52,7 +62,7 @@ def type(instance) trigger(node)
 end
 
 def type(node) trigger(node)
-	def("$name").with(context([$nodeType])[.$constraints][.$assumptions][.$doc]);
+	self.def("$name").with(self.context([$nodeType])[.$constraints][.$assumptions][.$doc]);
 end
 
 def type(nodeType) trigger(nodeType)
