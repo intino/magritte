@@ -1,14 +1,14 @@
 package io.intino.tara.compiler.codegeneration.magritte.natives;
 
+import io.intino.itrules.Template;
+import io.intino.itrules.engine.FrameBuilder;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.lang.model.*;
-import org.siani.itrules.Template;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 
 import java.io.File;
 import java.io.IOException;

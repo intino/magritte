@@ -2,6 +2,7 @@ package io.intino.tara.compiler.codegeneration.magritte.natives;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
@@ -13,7 +14,6 @@ import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.semantics.Constraint;
-import org.siani.itrules.model.Frame;
 
 import java.io.File;
 import java.io.FileNotFoundException;

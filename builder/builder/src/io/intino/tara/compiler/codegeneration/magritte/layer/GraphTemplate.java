@@ -1,14 +1,14 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
+import io.intino.itrules.LineSeparator;
+import io.intino.itrules.Template;
 import io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer.AbstractGraphTemplate;
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
 import io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer.HelpersTemplate;
 import io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer.NewElementTemplate;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static io.intino.itrules.LineSeparator.LF;
 
 public class GraphTemplate extends Template {
 

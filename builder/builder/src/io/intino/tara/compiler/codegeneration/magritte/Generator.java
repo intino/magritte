@@ -1,5 +1,9 @@
 package io.intino.tara.compiler.codegeneration.magritte;
 
+import io.intino.itrules.engine.Context;
+import io.intino.itrules.engine.ExcludeAdapter;
+import io.intino.itrules.engine.FrameBuilder;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
@@ -13,10 +17,6 @@ import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.model.rules.variable.WordRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
-import org.siani.itrules.engine.Context;
-import org.siani.itrules.engine.ExcludeAdapter;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 
 import java.util.*;
 import java.util.function.Predicate;

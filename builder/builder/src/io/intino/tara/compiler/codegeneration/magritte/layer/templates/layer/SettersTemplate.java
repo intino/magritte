@@ -1,11 +1,11 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import io.intino.itrules.LineSeparator;
+import io.intino.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static io.intino.itrules.LineSeparator.LF;
 
 public class SettersTemplate extends Template {
 

@@ -1,5 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
+import io.intino.itrules.Adapter;
+import io.intino.itrules.engine.Context;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
@@ -16,9 +19,6 @@ import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Constraint.Component;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.engine.Context;
-import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
