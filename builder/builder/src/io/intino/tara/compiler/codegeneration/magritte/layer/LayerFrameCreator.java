@@ -1,5 +1,7 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
+import io.intino.itrules.engine.FrameBuilder;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -9,8 +11,6 @@ import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
 import io.intino.tara.lang.model.Variable;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;

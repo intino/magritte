@@ -1,5 +1,7 @@
 package io.intino.tara.compiler.core.operation;
 
+import io.intino.itrules.Template;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -18,8 +20,6 @@ import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
-import org.siani.itrules.Template;
-import org.siani.itrules.model.Frame;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,7 +34,6 @@ import static io.intino.tara.compiler.codegeneration.Format.javaValidName;
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static java.io.File.separator;
-import static java.lang.System.out;
 import static java.util.Objects.requireNonNull;
 
 public class LayerGenerationOperation extends ModelOperation implements TemplateTags {

@@ -1,5 +1,8 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.itrules.engine.FrameBuilder;
+import io.intino.itrules.model.AbstractFrame;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -15,9 +18,6 @@ import io.intino.tara.lang.model.rules.composition.NodeCustomRule;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.AbstractFrame;
-import org.siani.itrules.model.Frame;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
 
-class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
+class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, TemplateTags {
 	private static final String FacetSeparator = ":";
 	private final Level level;
 	private final String workingPackage;
@@ -94,7 +94,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	@Override
-	public void adapt(Model model, org.siani.itrules.engine.Context context) {
+	public void adapt(Model model, io.intino.itrules.engine.Context context) {
 		Frame root = context.frame();
 		this.model = model;
 		initRoot(root);

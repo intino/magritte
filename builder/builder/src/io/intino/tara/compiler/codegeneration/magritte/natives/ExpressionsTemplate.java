@@ -1,10 +1,11 @@
 package io.intino.tara.compiler.codegeneration.magritte.natives;
 
-import org.siani.itrules.*;
+import io.intino.itrules.LineSeparator;
+import io.intino.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static io.intino.itrules.LineSeparator.LF;
 
 public class ExpressionsTemplate extends Template {
 

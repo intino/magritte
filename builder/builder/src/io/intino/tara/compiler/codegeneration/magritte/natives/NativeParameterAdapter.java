@@ -1,5 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.natives;
 
+import io.intino.itrules.Adapter;
+import io.intino.itrules.engine.Context;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -7,9 +10,6 @@ import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.engine.Context;
-import org.siani.itrules.model.Frame;
 
 import java.io.File;
 

@@ -1,5 +1,7 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.itrules.engine.FrameBuilder;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -11,8 +13,6 @@ import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
 import java.util.Collection;
