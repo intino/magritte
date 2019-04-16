@@ -1,12 +1,12 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
-import org.siani.itrules.model.Frame;
 
 import java.util.List;
 

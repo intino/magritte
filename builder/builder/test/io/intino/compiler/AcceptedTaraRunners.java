@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.time.Instant;
 
 import static io.intino.tara.TaracRunner.main;
 
@@ -91,8 +92,10 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void konos_M2() {
+	public void konos_M2() throws InterruptedException {
+		System.out.println(Instant.now().toString());
 		main(new String[]{home + "sandbox/confFiles/konos/m2.txt"});
+		System.out.println(Instant.now().toString());
 	}
 
 	@Test

@@ -1,9 +1,9 @@
 package io.intino.tara.compiler.codegeneration;
 
 
+import io.intino.itrules.Formatter;
+import io.intino.itrules.Template;
 import io.intino.tara.compiler.codegeneration.magritte.JavaKeywords;
-import org.siani.itrules.Formatter;
-import org.siani.itrules.Template;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +61,7 @@ public class Format {
 	}
 
 	private static String firstLowerCase(String val) {
-		return org.siani.itrules.engine.formatters.StringFormatter.firstLowerCase().format(val).toString();
+		return io.intino.itrules.engine.formatters.StringFormatter.firstLowerCase().format(val).toString();
 	}
 
 	private static String referenceFormat(String val) {
@@ -196,7 +196,7 @@ public class Format {
 
 	public static String capitalize(String value) {
 		if (value.isEmpty()) return "";
-		return org.siani.itrules.engine.formatters.StringFormatter.capitalize().format(value).toString();
+		return io.intino.itrules.engine.formatters.StringFormatter.capitalize().format(value).toString();
 	}
 
 	private static Formatter key() {
@@ -211,7 +211,7 @@ public class Format {
 	}
 
 	public static Formatter firstUpperCase() {
-		return org.siani.itrules.engine.formatters.StringFormatter.firstUpperCase();
+		return io.intino.itrules.engine.formatters.StringFormatter.firstUpperCase();
 	}
 
 	private static class StringFormatter implements Formatter {

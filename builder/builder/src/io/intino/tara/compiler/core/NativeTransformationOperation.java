@@ -1,5 +1,7 @@
 package io.intino.tara.compiler.core;
 
+import io.intino.itrules.Template;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.FileSystemUtils;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativeExtractor;
@@ -9,8 +11,6 @@ import io.intino.tara.compiler.model.Model;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.Primitive.MethodReference;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
-import org.siani.itrules.Template;
-import org.siani.itrules.model.Frame;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,11 +1,11 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.itrules.Template;
+import io.intino.itrules.engine.FrameBuilder;
+import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
-import org.siani.itrules.Template;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.model.Frame;
 
 import java.util.Collection;
 
