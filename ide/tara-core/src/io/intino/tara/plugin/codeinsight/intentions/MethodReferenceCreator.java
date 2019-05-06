@@ -2,6 +2,7 @@ package io.intino.tara.plugin.codeinsight.intentions;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
+import io.intino.itrules.FrameBuilder;
 import io.intino.tara.Checker;
 import io.intino.tara.Language;
 import io.intino.tara.lang.model.*;
@@ -24,10 +25,8 @@ import io.intino.tara.plugin.lang.psi.impl.TaraVariableImpl;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.plugin.project.TaraModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
-import org.siani.itrules.model.Frame;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static com.intellij.pom.java.LanguageLevel.JDK_1_8;
@@ -75,22 +74,22 @@ public class MethodReferenceCreator {
 	}
 
 	private String buildMethodWith(String methodBody) {
-		Frame frame = new Frame().addTypes("method");
+		FrameBuilder builder = new FrameBuilder("method");
 		Size size = valued instanceof Parameter ? parameterSize() : ((Variable) valued).size();
 		final String type = type();
-		if (size != null && !size.isSingle() && !"void".equals(type)) frame.addTypes("multiple");
-		frame.addSlot("name", reference);
-		frame.addSlot("type", type);
+		if (size != null && !size.isSingle() && !"void".equals(type)) builder.type("multiple");
+		builder.add("name", reference);
+		builder.add("type", type);
 		final String[] parameters = findParameters();
-		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addSlot("parameter", parameters);
+		if (parameters.length != 0 && !parameters[0].isEmpty()) builder.add("parameter", parameters);
 		if (valued.getValue() != null) {
 			if (!type.equalsIgnoreCase("void") && !methodBody.startsWith("return "))
 				methodBody = "return " + (methodBody.isEmpty() ? "null" : methodBody);
 			if (!methodBody.endsWith(";")) methodBody += ";";
 		}
-		frame.addSlot("body", methodBody);
-		frame.addSlot("scope", cleanQn(buildContainerPath(valued.scope(), TaraPsiImplUtil.getContainerNodeOf(valued), workingPackage)));
-		return MethodTemplate.create().format(frame);
+		builder.add("body", methodBody);
+		builder.add("scope", cleanQn(buildContainerPath(valued.scope(), TaraPsiImplUtil.getContainerNodeOf(valued), workingPackage)));
+		return new MethodTemplate().render(builder.toFrame());
 	}
 
 	private String[] findParameters() {
@@ -108,8 +107,7 @@ public class MethodReferenceCreator {
 		final PsiElement reference = ReferenceManager.resolveRule(rule);
 		if (!(reference instanceof PsiClass)) return new String[0];
 		final PsiParameterList parameterList = ((PsiClass) reference).getAllMethods()[0].getParameterList();
-		final List<String> collect = Arrays.stream(parameterList.getParameters()).map(PsiParameter::getText).collect(Collectors.toList());
-		return collect.toArray(new String[collect.size()]);
+		return Arrays.stream(parameterList.getParameters()).map(PsiParameter::getText).toArray(String[]::new);
 	}
 
 	private Size parameterSize() {
@@ -184,7 +182,7 @@ public class MethodReferenceCreator {
 		if (aClass == null || !aClass.isInterface()) return Collections.emptyList();
 		List<String> imports = new ArrayList<>();
 		if (((PsiJavaFile) aClass.getContainingFile()).getImportList() == null) return Collections.emptyList();
-		for (PsiImportStatementBase psiImportStatementBase : ((PsiJavaFile) aClass.getContainingFile()).getImportList().getAllImportStatements())
+		for (PsiImportStatementBase psiImportStatementBase : Objects.requireNonNull(((PsiJavaFile) aClass.getContainingFile()).getImportList()).getAllImportStatements())
 			imports.add(psiImportStatementBase.getText());
 		return imports;
 	}

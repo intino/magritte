@@ -1,8 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.itrules.Adapter;
-import io.intino.itrules.engine.Context;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
@@ -16,7 +16,6 @@ import io.intino.tara.dsl.Verso;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
-import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Constraint.Component;
 
@@ -34,9 +33,9 @@ import static io.intino.tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
-	private Node initNode;
-	private Context context;
 	private final Level level;
+	private Node initNode;
+	private FrameBuilderContext context;
 
 	LayerNodeAdapter(String outDsl, Level level, Language language, Node initNode, String workingPackage, String languageWorkingPackage) {
 		super(language, outDsl, workingPackage, languageWorkingPackage);
@@ -45,16 +44,16 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	@Override
-	public void adapt(Node node, Context context) {
+	public void adapt(Node node, FrameBuilderContext context) {
 		this.context = context;
-		Frame frame = context.frame();
-		frame.addTypes(getTypes(node, language));
-		frame.addSlot(MODEL_TYPE, level == Level.Platform ? PLATFORM : PRODUCT);
-		addNodeInfo(frame, node);
-		addComponents(frame, node, context);
-		addNonAbstractCreates(frame, node);
-		addAllowedFacets(frame, node);
-		addParent(frame, node);
+		getTypes(node, language).forEach(context::type);
+		context.add(MODEL_TYPE, level == Level.Platform ? PLATFORM : PRODUCT);
+		addNodeInfo(node, context);
+		addVariables(node, context);
+		addComponents(node, context);
+		addNonAbstractCreates(node, context);
+		addAllowedFacets(node, context);
+		addParent(node, context);
 	}
 
 	private Model findModel(Node node) {
@@ -64,41 +63,40 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return (Model) result;
 	}
 
-	private void addNodeInfo(Frame frame, Node node) {
-		frame.addSlot(OUT_LANGUAGE, outDsl).addSlot(WORKING_PACKAGE, workingPackage);
-		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addSlot(INNER, true);
-		if (node.doc() != null) frame.addSlot(DOC, node.doc());
-		if (node.container() != null) frame.addSlot(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
-		addType(frame, node);
-		addName(frame, node);
-		if (node.isAbstract() || node.is(Decorable)) frame.addSlot(ABSTRACT, true);
-		if (node.is(Decorable)) frame.addSlot(DECORABLE, true);
-		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addSlot(FLAG, tag));
-		if (node.parent() != null) frame.addTypes(CHILD);
+	private void addNodeInfo(Node node, FrameBuilderContext context) {
+		context.add(OUT_LANGUAGE, outDsl).add(WORKING_PACKAGE, workingPackage);
+		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) context.add(INNER, true);
+		if (node.doc() != null) context.add(DOC, node.doc());
+		if (node.container() != null) context.add(CONTAINER_NAME, node.container().name() + facetName(node.container().facetTarget()));
+		addType(context, node);
+		addName(this.context, node);
+		if (node.isAbstract() || node.is(Decorable)) context.add(ABSTRACT, true);
+		if (node.is(Decorable)) context.add(DECORABLE, true);
+		node.flags().stream().filter(isLayerInterface()).forEach(tag -> context.add(FLAG, tag));
+		if (node.parent() != null) context.type(CHILD);
 		if (node.components().stream().anyMatch(c -> c.is(Instance)))
-			frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(node));
-		addVariables(frame, node);
+			context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 	}
 
-	private void addNonAbstractCreates(Frame frame, Node node) {
+	private void addNonAbstractCreates(Node node, FrameBuilderContext context) {
 		if (node instanceof NodeReference) return;
 		final List<Node> components = node.components();
 		components.stream().
 				filter(c -> !c.isAnonymous()).
 				forEach(c -> {
-					List<Frame> children = new ArrayList<>();
+					List<FrameBuilder> children = new ArrayList<>();
 					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
 							forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
-					for (Frame child : children) frame.addSlot(CREATE, child.addTypes(NODE, OWNER));
+					for (FrameBuilder child : children) context.add(CREATE, child.type(NODE).type(OWNER).toFrame());
 				});
 	}
 
-	private Frame createFrame(Node node) {
-		final Frame frame = new Frame().addTypes(REFERENCE, CREATE);
-		frame.addTypes(getTypes(node, language));
-		addName(frame, node);
-		addVariables(frame, node);
-		return frame;
+	private FrameBuilder createFrame(Node node) {
+		final FrameBuilder builder = new FrameBuilder(REFERENCE, CREATE);
+		getTypes(node, language).forEach(builder::type);
+		addName(builder, node);
+		addVariables(node, builder);
+		return builder;
 	}
 
 	private List<Node> collectChildren(Node parent) {
@@ -110,10 +108,10 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return new ArrayList<>(set);
 	}
 
-	private void addType(Frame frame, Node node) {
+	private void addType(FrameBuilderContext frame, Node node) {
 		if (!(language instanceof Proteo || language instanceof Verso)) {
-			frame.addSlot(CONCEPT_LAYER, language.doc(node.type()).layer());
-			frame.addSlot(TYPE, nodeType(node, sizeConstraint(node)));
+			frame.add(CONCEPT_LAYER, language.doc(node.type()).layer());
+			frame.add(TYPE, nodeType(node, sizeConstraint(node)));
 		}
 	}
 
@@ -129,31 +127,27 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return Resolver.shortType(node.type()) + (!size.isSingle() ? "List" : "");
 	}
 
-	private void addAllowedFacets(Frame frame, Node node) {
+	private void addAllowedFacets(Node node, FrameBuilderContext context) {
 		for (String facet : node.allowedFacets()) {
-			Frame available = new Frame().addTypes(AVAILABLE_FACET);
-			available.addSlot(NAME, facet);
+			FrameBuilder builder = new FrameBuilder(AVAILABLE_FACET);
+			builder.add(NAME, facet);
 			FacetTarget facetTarget = findFacetTarget(findModel(node), node, facet);
 			if (facetTarget == null) {
 				LOG.severe("error finding facet: " + facet + " in node " + node.name());
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
-			if (facetTarget.owner().isAbstract()) available.addSlot(ABSTRACT, "null");
-			available.addSlot(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
-			available.addSlot(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
-			facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> {
-				Frame varFrame = (Frame) context.build(variable);
-				varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
-				available.addSlot(VARIABLE, varFrame.addTypes(REQUIRED));
-			});
-			frame.addSlot(AVAILABLE_FACET, available);
+			if (facetTarget.owner().isAbstract()) builder.add(ABSTRACT, "null");
+			builder.add(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
+			builder.add(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
+			facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> builder.add(VARIABLE,
+					FrameBuilder.from(context).append(variable).type(REQUIRED).add(CONTAINER, node.name() + facetName(node.facetTarget())).toFrame()));
+			context.add(AVAILABLE_FACET, builder.toFrame());
 		}
 	}
 
-	private void addName(Frame frame, Node node) {
-		if (node.name() != null) frame.addSlot(NAME, node.name() + facetName(node.facetTarget()));
-		frame.addSlot(QN, cleanQn(buildQN(node)));
-		frame.addSlot(STASH_QN, stashQN(node));
+	private void addName(FrameBuilderContext context, Node node) {
+		context.add(QN, cleanQn(buildQN(node))).add(STASH_QN, stashQN(node));
+		if (node.name() != null) context.add(NAME, node.name() + facetName(node.facetTarget()));
 	}
 
 	private String stashQN(Node node) {
@@ -164,16 +158,15 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
-	private void addVariables(final Frame frame, Node node) {
-		node.variables().forEach(v -> addVariable(frame, node, v));
-		addTerminalVariables(node, frame);
-	}
-
-	private void addVariable(Frame frame, Node node, Variable variable) {
-		final Frame varFrame = (Frame) context.build(variable);
-		varFrame.addTypes(OWNER);
-		varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
-		frame.addSlot(VARIABLE, varFrame);
+	private void addVariables(Node node, FrameBuilderContext context) {
+		node.variables().forEach(v -> {
+			final FrameBuilder builder = FrameBuilder.from(this.context)
+					.type(OWNER)
+					.append(v)
+					.add(CONTAINER, node.name() + facetName(node.facetTarget()));
+			context.add(VARIABLE, builder.toFrame());
+		});
+		addTerminalVariables(node, context);
 	}
 
 	void setInitNode(Node initNode) {

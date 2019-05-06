@@ -75,7 +75,7 @@ public interface TemplateTags {
 	String SINGLE = "single";
 	String TYPE = "type";
 	String CONCEPT = "concept";
-	String VALUE = "value";
+	String VALUE = "this";
 	String VALUES = "values";
 	String WORD_VALUES = "wordValues";
 	String REFERENCE = "reference";

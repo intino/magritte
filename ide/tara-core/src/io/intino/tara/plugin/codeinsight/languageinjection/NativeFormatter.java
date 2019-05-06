@@ -3,6 +3,9 @@ package io.intino.tara.plugin.codeinsight.languageinjection;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.Proteo;
@@ -22,7 +25,6 @@ import io.intino.tara.plugin.lang.psi.TaraVariable;
 import io.intino.tara.plugin.lang.psi.Valued;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.siani.itrules.model.Frame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,11 +43,11 @@ import static java.util.Collections.emptySet;
 @SuppressWarnings("Duplicates")
 public class NativeFormatter implements TemplateTags {
 
-	private Set<String> imports = new HashSet<>();
 	private final Imports allImports;
 	private final String workingPackage;
 	private final Language language;
 	private final boolean m0;
+	private Set<String> imports = new HashSet<>();
 
 	NativeFormatter(Module module, String workingPackage, Language language) {
 		this.workingPackage = workingPackage;
@@ -55,138 +57,9 @@ public class NativeFormatter implements TemplateTags {
 		this.m0 = facetConfiguration != null && Solution.equals(facetConfiguration.level());
 	}
 
-	void fillFrameForNativeVariable(Frame frame, Variable variable, boolean isMultiline) {
-		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
-		if (ruleContainer == null || ruleContainer.getRule() == null) return;
-		PsiElement nativeInterface = resolveRule(ruleContainer.getRule());
-		if (nativeInterface == null) return;
-		imports.addAll(collectImports((io.intino.tara.plugin.lang.psi.Valued) variable));
-		imports.addAll(collectImports((PsiClass) nativeInterface));
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addSlot(NAME, variable.name());
-		frame.addSlot(SIGNATURE, getSignature((PsiClass) nativeInterface));
-		frame.addSlot(GENERATED_LANGUAGE, workingPackage.toLowerCase());
-		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
-		if (!(language instanceof Proteo) && !(language instanceof Verso))
-			frame.addSlot(LANGUAGE, language.languageName());
-		if (ruleContainer.getRule() != null) frame.addSlot(RULE, ruleContainer.getRule().getText());
-		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
-		if (!aReturn.isEmpty() && !isMultiline) frame.addSlot(RETURN, aReturn);
-	}
-
-	void fillFrameForFunctionParameter(Frame frame, Parameter parameter, String body, boolean isMultiLine) {
-		if (parameter.rule() == null) return;
-		final String signature = getSignature(parameter);
-		final List<String> imports = ((NativeRule) parameter.rule()).imports();
-		imports.addAll(collectImports((Valued) parameter));
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addSlot(NAME, parameter.name());
-		frame.addSlot(GENERATED_LANGUAGE, workingPackage.toLowerCase());
-		frame.addSlot(SCOPE, parameter.scope());
-		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
-		if (!(language instanceof Proteo) && !(language instanceof Verso))
-			frame.addSlot(LANGUAGE, getLanguageScope(parameter, language));
-		if (signature != null) frame.addSlot(SIGNATURE, signature);
-		final String anInterface = getInterface(parameter);
-		if (anInterface != null) frame.addSlot(RULE, cleanQn(anInterface));
-		if (signature != null) {
-			final String aReturn = NativeFormatter.getReturn(body, signature);
-			if (!aReturn.isEmpty() && !isMultiLine) frame.addSlot(RETURN, aReturn);
-		}
-	}
-
-	void fillFrameExpressionVariable(Frame frame, Variable variable, String body, boolean isMultiline) {
-		final List<String> imports = new ArrayList<>(collectImports((Valued) variable));
-		frame.addSlot(NAME, variable.name());
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addSlot(GENERATED_LANGUAGE, workingPackage);
-		frame.addSlot(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, workingPackage, m0));
-		frame.addSlot(TYPE, typeFrame(type(variable), variable.isMultiple()));
-		if (!isMultiline) frame.addSlot(RETURN, NativeFormatter.getReturn(body));
-	}
-
-	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, boolean isMultiline) {
-		final List<String> imports = new ArrayList<>(collectImports((Valued) parameter));
-		frame.addTypes(NATIVE);
-		frame.addSlot(NAME, parameter.name());
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addSlot(GENERATED_LANGUAGE, workingPackage);
-		frame.addSlot(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, workingPackage));
-		frame.addSlot(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
-		if (!isMultiline) frame.addSlot(RETURN, NativeFormatter.getReturn(body));
-	}
-
-	private boolean isMultiple(Parameter parameter) {
-		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(parameter);
-		return constraint != null && !constraint.size().isSingle();
-	}
-
-	private Frame typeFrame(String type, boolean multiple) {
-		return multiple ? new Frame().addTypes("type", "list").addSlot("value", type) : new Frame().addTypes("type").addSlot("value", type);
-	}
-
-	private String type(Variable variable) {
-		if (variable.isReference())
-			return QualifiedNameFormatter.getQn(variable.destinyOfReference(), workingPackage, false);
-		if (variable.type().equals(WORD)) return wordType(variable);
-		else if (OBJECT.equals(variable.type()))
-			return variable.rule() == null ? "" : ((NativeObjectRule) variable.rule()).type();
-		else return variable.type().javaName();
-	}
-
-	private String type(Parameter parameter) {
-		if (parameter.type().equals(REFERENCE)) return referenceType(parameter);
-		if (parameter.type().equals(WORD)) return wordType(parameter);
-		else if (OBJECT.equals(parameter.type())) return ((NativeObjectRule) parameter.rule()).type();
-		else return parameter.type().javaName();
-	}
-
-	private Set<String> collectImports(Valued valued) {
-		final Node containerOf = TaraPsiImplUtil.getContainerNodeOf(valued);
-		if (containerOf == null || allImports.get(TaraUtil.importsFile(valued)) == null ||
-				!allImports.get(TaraUtil.importsFile(valued)).containsKey(composeQn(valued, containerOf)))
-			return emptySet();
-		else {
-			if (allImports.get(TaraUtil.importsFile(valued)) == null) return emptySet();
-			final Set<String> set = allImports.get(TaraUtil.importsFile(valued)).get(composeQn(valued, containerOf));
-			return set == null ? emptySet() : set;
-		}
-	}
-
-	private Set<String> collectImports(PsiClass nativeInterface) {
-		if (nativeInterface.getDocComment() == null) return emptySet();
-		final String[] lines = nativeInterface.getDocComment().getText().split("\n");
-		Set<String> set = new HashSet<>();
-		for (String line : lines)
-			if (line.contains("import "))
-				set.add(line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim());
-		return set;
-	}
-
-	private String composeQn(Valued valued, Node containerOf) {
-		return containerOf.qualifiedName() + "." + valued.name();
-	}
-
-
 	private static String getLanguageScope(Parameter parameter, Language language) {
 		if (!parameter.scope().isEmpty()) return parameter.scope();
 		else return language.languageName();
-	}
-
-	private String referenceType(Parameter parameter) {
-		if (parameter.rule() instanceof NativeReferenceRule)
-			return workingPackage.toLowerCase() + DOT + ((NativeReferenceRule) parameter.rule()).allowedTypes().get(0);
-		return "";
-	}
-
-	private String wordType(Variable variable) {
-		return workingPackage.toLowerCase() + DOT + variable.container().qualifiedName() + "." + Format.firstUpperCase().format(variable.name());
-	}
-
-	private String wordType(Parameter parameter) {
-		if (parameter.rule() instanceof NativeWordRule)
-			return workingPackage.toLowerCase() + DOT + ((NativeWordRule) parameter.rule()).words().get(0);
-		return "";
 	}
 
 	private static String buildContainerPathOfExpression(Variable variable, String outDsl, boolean m0) {
@@ -202,7 +75,6 @@ public class NativeFormatter implements TemplateTags {
 		final NativeRule rule = (NativeRule) parameter.rule();
 		return rule != null ? rule.signature() : null;
 	}
-
 
 	private static String getInterface(Parameter parameter) {
 		final NativeRule rule = (NativeRule) parameter.rule();
@@ -296,6 +168,136 @@ public class NativeFormatter implements TemplateTags {
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!body.contains("\n") && !body.startsWith(returnText))
 			return returnText;
+		return "";
+	}
+
+	void fillFrameForNativeVariable(FrameBuilderContext context, Variable variable, boolean isMultiline) {
+		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
+		if (ruleContainer == null || ruleContainer.getRule() == null) return;
+		PsiElement nativeInterface = resolveRule(ruleContainer.getRule());
+		if (nativeInterface == null) return;
+		imports.addAll(collectImports((io.intino.tara.plugin.lang.psi.Valued) variable));
+		imports.addAll(collectImports((PsiClass) nativeInterface));
+		context.add(IMPORTS, imports.toArray(new String[0]));
+		context.add(NAME, variable.name());
+		context.add(SIGNATURE, getSignature((PsiClass) nativeInterface));
+		context.add(GENERATED_LANGUAGE, workingPackage.toLowerCase());
+		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
+		if (!(language instanceof Proteo) && !(language instanceof Verso))
+			context.add(LANGUAGE, language.languageName());
+		if (ruleContainer.getRule() != null) context.add(RULE, ruleContainer.getRule().getText());
+		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
+		if (!aReturn.isEmpty() && !isMultiline) context.add(RETURN, aReturn);
+	}
+
+	void fillFrameForFunctionParameter(FrameBuilderContext context, Parameter parameter, String body, boolean isMultiLine) {
+		if (parameter.rule() == null) return;
+		final String signature = getSignature(parameter);
+		final List<String> imports = ((NativeRule) parameter.rule()).imports();
+		imports.addAll(collectImports((Valued) parameter));
+		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		context.add(NAME, parameter.name());
+		context.add(GENERATED_LANGUAGE, workingPackage.toLowerCase());
+		context.add(SCOPE, parameter.scope());
+		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
+		if (!(language instanceof Proteo) && !(language instanceof Verso)) context.add(LANGUAGE, getLanguageScope(parameter, language));
+		if (signature != null) context.add(SIGNATURE, signature);
+		final String anInterface = getInterface(parameter);
+		if (anInterface != null) context.add(RULE, cleanQn(anInterface));
+		if (signature != null) {
+			final String aReturn = NativeFormatter.getReturn(body, signature);
+			if (!aReturn.isEmpty() && !isMultiLine) context.add(RETURN, aReturn);
+		}
+	}
+
+	void fillFrameExpressionVariable(FrameBuilderContext context, Variable variable, String body, boolean isMultiline) {
+		final List<String> imports = new ArrayList<>(collectImports((Valued) variable));
+		context.add(NAME, variable.name());
+		context.add(IMPORTS, imports.toArray(new String[0]));
+		context.add(GENERATED_LANGUAGE, workingPackage);
+		context.add(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, workingPackage, m0));
+		context.add(TYPE, typeFrame(type(variable), variable.isMultiple()));
+		if (!isMultiline) context.add(RETURN, NativeFormatter.getReturn(body));
+	}
+
+	void fillFrameExpressionParameter(FrameBuilderContext context, Parameter parameter, String body, boolean isMultiline) {
+		final List<String> imports = new ArrayList<>(collectImports((Valued) parameter));
+		context.type(NATIVE);
+		context.add(NAME, parameter.name());
+		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		context.add(GENERATED_LANGUAGE, workingPackage);
+		context.add(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, workingPackage));
+		context.add(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
+		if (!isMultiline) context.add(RETURN, NativeFormatter.getReturn(body));
+	}
+
+	private boolean isMultiple(Parameter parameter) {
+		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(parameter);
+		return constraint != null && !constraint.size().isSingle();
+	}
+
+	private Frame typeFrame(String type, boolean multiple) {
+		return (multiple ?
+				new FrameBuilder("list").add("value", type) :
+				new FrameBuilder("type").add("value", type))
+				.toFrame();
+	}
+
+	private String type(Variable variable) {
+		if (variable.isReference())
+			return QualifiedNameFormatter.getQn(variable.destinyOfReference(), workingPackage, false);
+		if (variable.type().equals(WORD)) return wordType(variable);
+		else if (OBJECT.equals(variable.type()))
+			return variable.rule() == null ? "" : ((NativeObjectRule) variable.rule()).type();
+		else return variable.type().javaName();
+	}
+
+	private String type(Parameter parameter) {
+		if (parameter.type().equals(REFERENCE)) return referenceType(parameter);
+		if (parameter.type().equals(WORD)) return wordType(parameter);
+		else if (OBJECT.equals(parameter.type())) return ((NativeObjectRule) parameter.rule()).type();
+		else return parameter.type().javaName();
+	}
+
+	private Set<String> collectImports(Valued valued) {
+		final Node containerOf = TaraPsiImplUtil.getContainerNodeOf(valued);
+		if (containerOf == null || allImports.get(TaraUtil.importsFile(valued)) == null ||
+				!allImports.get(TaraUtil.importsFile(valued)).containsKey(composeQn(valued, containerOf)))
+			return emptySet();
+		else {
+			if (allImports.get(TaraUtil.importsFile(valued)) == null) return emptySet();
+			final Set<String> set = allImports.get(TaraUtil.importsFile(valued)).get(composeQn(valued, containerOf));
+			return set == null ? emptySet() : set;
+		}
+	}
+
+	private Set<String> collectImports(PsiClass nativeInterface) {
+		if (nativeInterface.getDocComment() == null) return emptySet();
+		final String[] lines = nativeInterface.getDocComment().getText().split("\n");
+		Set<String> set = new HashSet<>();
+		for (String line : lines)
+			if (line.contains("import "))
+				set.add(line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim());
+		return set;
+	}
+
+	private String composeQn(Valued valued, Node containerOf) {
+		return containerOf.qualifiedName() + "." + valued.name();
+	}
+
+	private String referenceType(Parameter parameter) {
+		if (parameter.rule() instanceof NativeReferenceRule)
+			return workingPackage.toLowerCase() + DOT + ((NativeReferenceRule) parameter.rule()).allowedTypes().get(0);
+		return "";
+	}
+
+	private String wordType(Variable variable) {
+		return workingPackage.toLowerCase() + DOT + variable.container().qualifiedName() + "." + Format.firstUpperCase().format(variable.name());
+	}
+
+	private String wordType(Parameter parameter) {
+		if (parameter.rule() instanceof NativeWordRule)
+			return workingPackage.toLowerCase() + DOT + ((NativeWordRule) parameter.rule()).words().get(0);
 		return "";
 	}
 

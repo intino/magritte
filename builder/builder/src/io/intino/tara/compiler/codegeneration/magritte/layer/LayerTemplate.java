@@ -1,38 +1,36 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.Rule;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
 import io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer.*;
 
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LayerTemplate extends Template {
 
-	protected LayerTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
+	@Override
+	protected RuleSet ruleSet() {
+		return new RuleSet()
+				.add(getAll(new io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer.LayerTemplate().ruleSet()))
+				.add(getAll(new HelpersTemplate().ruleSet()))
+				.add(getAll(new DeclarationTemplate().ruleSet()))
+				.add(getAll(new ConstructorTemplate().ruleSet()))
+				.add(getAll(new GettersTemplate().ruleSet()))
+				.add(getAll(new SettersTemplate().ruleSet()))
+				.add(getAll(new NewElementTemplate().ruleSet()))
+				.add(getAll(new Init_referenceTemplate().ruleSet()))
+				.add(getAll(new InitTemplate().ruleSet()))
+				.add(getAll(new Set_referenceTemplate().ruleSet()))
+				.add(getAll(new SetTemplate().ruleSet()))
+				.add(getAll(new ListTemplate().ruleSet()))
+				;
 	}
 
-	public static Template create() {
-		return new LayerTemplate(Locale.ENGLISH, LF).define();
+	private Rule[] getAll(Iterable<Rule> ruleSet) {
+		List<Rule> rules = new ArrayList<>();
+		ruleSet.forEach(rules::add);
+		return rules.toArray(new Rule[0]);
 	}
-
-	public Template define() {
-		add(io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer.LayerTemplate.create().rules());
-		add(DeclarationTemplate.create().rules());
-		add(ConstructorTemplate.create().rules());
-		add(GettersTemplate.create().rules());
-		add(SettersTemplate.create().rules());
-		add(NewElementTemplate.create().rules());
-		add(InitTemplate.create().rules());
-		add(Init_referenceTemplate.create().rules());
-		add(SetTemplate.create().rules());
-		add(Set_referenceTemplate.create().rules());
-		add(ListTemplate.create().rules());
-		add(HelpersTemplate.create().rules());
-		return this;
-	}
-
-
 }

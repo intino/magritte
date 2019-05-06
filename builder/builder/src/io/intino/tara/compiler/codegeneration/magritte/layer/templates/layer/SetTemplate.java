@@ -1,35 +1,22 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
 
 public class SetTemplate extends Template {
 
-	protected SetTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
-	}
-
-	public static Template create() {
-		return new SetTemplate(Locale.ENGLISH, LF).define();
-	}
-
-	public Template define() {
-		add(
-			rule().add((condition("type", "facetTarget & overriden")), (condition("trigger", "set"))).add(literal("_")).add(mark("name", "FirstLowerCase")).add(literal(".core$().set(_")).add(mark("name", "FirstLowerCase")).add(literal(", name, values);")),
-			rule().add((condition("type", "variable & word & outDefined & owner & multiple")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase")).add(literal(" = new java.util.ArrayList<>((java.util.List<")).add(mark("workingPackage", "LowerCase")).add(literal(".rules.")).add(mark("rule", "externalWordClass")).add(literal(">) values);")),
-			rule().add((condition("type", "variable & word & multiple & owner")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase")).add(literal(" = new java.util.ArrayList<>((java.util.List<")).add(mark("type")).add(literal(">) values);")),
-			rule().add((condition("type", "variable & word")), (condition("type", "outDefined")), not(condition("type", "inherited | overriden | reactive")), (condition("type", "owner")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = (")).add(mark("workingPackage", "LowerCase")).add(literal(".rules.")).add(mark("rule", "externalWordClass")).add(literal(") values.get(0);")),
-			rule().add((condition("type", "variable & word & owner")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = (")).add(mark("type")).add(literal(") values.get(0);")),
-			rule().add((condition("type", "variable & reactive & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, io.intino.tara.magritte.Expression.class);")),
-			rule().add((condition("type", "variable & function & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, ")).add(mark("workingPackage")).add(literal(".functions.")).add(mark("rule", "interfaceClass")).add(literal(".class);")),
-			rule().add((condition("type", "variable & time & multiple & owner")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = new java.util.ArrayList<>((List<java.time.LocalTime>) values);")),
-			rule().add((condition("type", "variable & multiple & owner")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = new java.util.ArrayList<>((java.util.List<")).add(mark("type", "fullType")).add(literal(">) values);")),
-			rule().add((condition("type", "variable & owner")), not(condition("type", "multiple | concept | inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = (")).add(mark("type", "fullType")).add(literal(") values.get(0);"))
+	public RuleSet ruleSet() {
+		return new RuleSet().add(
+				rule().condition((allTypes("facettarget", "overriden")), (trigger("set"))).output(literal("_")).output(mark("name", "FirstLowerCase")).output(literal(".core$().set(_")).output(mark("name", "FirstLowerCase")).output(literal(", name, values);")),
+				rule().condition((allTypes("owner", "outdefined", "variable", "multiple", "word")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase")).output(literal(" = new java.util.ArrayList<>((java.util.List<")).output(mark("workingPackage", "LowerCase")).output(literal(".rules.")).output(mark("rule", "externalWordClass")).output(literal(">) values);")),
+				rule().condition((allTypes("owner", "variable", "multiple", "word")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase")).output(literal(" = new java.util.ArrayList<>((java.util.List<")).output(mark("type")).output(literal(">) values);")),
+				rule().condition((allTypes("variable", "word")), (type("outdefined")), not(anyTypes("reactive", "inherited", "overriden")), (type("owner")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = (")).output(mark("workingPackage", "LowerCase")).output(literal(".rules.")).output(mark("rule", "externalWordClass")).output(literal(") values.get(0);")),
+				rule().condition((allTypes("owner", "variable", "word")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = (")).output(mark("type")).output(literal(") values.get(0);")),
+				rule().condition((allTypes("owner", "reactive", "variable")), not(anyTypes("inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, io.intino.tara.magritte.Expression.class);")),
+				rule().condition((allTypes("owner", "function", "variable")), not(anyTypes("inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, ")).output(mark("workingPackage")).output(literal(".functions.")).output(mark("rule", "interfaceClass")).output(literal(".class);")),
+				rule().condition((allTypes("owner", "variable", "multiple", "time")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = new java.util.ArrayList<>((List<java.time.LocalTime>) values);")),
+				rule().condition((allTypes("owner", "variable", "multiple")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = new java.util.ArrayList<>((java.util.List<")).output(mark("type", "fullType")).output(literal(">) values);")),
+				rule().condition((allTypes("owner", "variable")), not(anyTypes("reactive", "inherited", "concept", "multiple", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = (")).output(mark("type", "fullType")).output(literal(") values.get(0);"))
 		);
-		return this;
 	}
 }

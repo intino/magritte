@@ -2,10 +2,10 @@ package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.tara.lang.model.*;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.VariableReference;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
@@ -25,13 +25,13 @@ public final class TypesProvider implements TemplateTags {
 	private TypesProvider() {
 	}
 
-	static String[] getTypes(Node node, Language language) {
+	static List<String> getTypes(Node node, Language language) {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
 		final Size size = node.container().sizeOf(node);
 		if (size != null && size.isSingle()) types.add(SINGLE);
 		if (isOverriding(node)) types.add(OVERRIDEN);
 		types.addAll(nodeAnnotations(node, language));
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	private static boolean isOverriding(Node node) {
@@ -77,7 +77,7 @@ public final class TypesProvider implements TemplateTags {
 		return annotations;
 	}
 
-	public static String[] getTypes(Variable variable, CompilerConfiguration.Level type) {
+	public static Set<String> getTypes(Variable variable, CompilerConfiguration.Level type) {
 		Set<String> types = new HashSet<>();
 		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
@@ -96,7 +96,7 @@ public final class TypesProvider implements TemplateTags {
 		if (variable.isOverriden()) types.add(OVERRIDEN);
 		if (variable.isMultiple()) types.add(MULTIPLE);
 		types.addAll(variable.flags().stream().map((tag) -> tag.name().toLowerCase()).collect(Collectors.toList()));
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	public static String[] getTypes(Constraint.Parameter parameter, boolean isRequired) {
@@ -109,7 +109,7 @@ public final class TypesProvider implements TemplateTags {
 			types.add(REQUIRED);
 		if (parameter.size().max() > 1) types.add(MULTIPLE);
 		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));
-		return types.toArray(new String[types.size()]);
+		return types.toArray(new String[0]);
 	}
 
 	public static String[] getTypes(Parameter parameter) {
@@ -120,7 +120,7 @@ public final class TypesProvider implements TemplateTags {
 		types.add(parameter.type().getName());
 		if (parameter.values().size() > 1) types.add(MULTIPLE);
 		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));
-		return types.toArray(new String[types.size()]);
+		return types.toArray(new String[0]);
 	}
 
 }

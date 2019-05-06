@@ -1,7 +1,7 @@
 package io.intino.tara.plugin.codeinsight.languageinjection.helpers;
 
 
-import org.siani.itrules.Formatter;
+import io.intino.itrules.Formatter;
 
 public class Format {
 

@@ -1,33 +1,20 @@
 package io.intino.tara.compiler.core;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
 
 public class ToNativeTransformerTemplate extends Template {
 
-	protected ToNativeTransformerTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
-	}
-
-	public static Template create() {
-		return new ToNativeTransformerTemplate(Locale.ENGLISH, LF).define();
-	}
-
-	public Template define() {
-		add(
-			rule().add((condition("type", "native")), (condition("type", "resouce"))).add(literal("try {\n\treturn new java.net.URL(")).add(mark("value", "url", "quoted")).add(literal(");\n} catch (java.net.MalformedURLException e) {\n\treturn null;\n};\n")),
-			rule().add((condition("type", "native")), (condition("type", "date"))).add(literal("DateLoader.load(java.util.Collections.singletonList(\"")).add(mark("value")).add(literal("\"), self).get(0)")),
-			rule().add((condition("type", "native")), (condition("type", "instant"))).add(literal("InstantLoader.load(java.util.Collections.singletonList(\"")).add(mark("value")).add(literal("\"), self).get(0)")),
-			rule().add((condition("type", "native")), (condition("type", "emptyNode")), (condition("type", "reference"))).add(literal("null")),
-			rule().add((condition("type", "native")), (condition("type", "reference"))).add(literal("self.graph().core$().loadInstance(\"")).add(mark("value")).add(literal("\");")),
-			rule().add((condition("type", "native")), (condition("type", "resource"))).add(literal("self.graph().core$().loadResource(\"")).add(mark("value", "url")).add(literal("\");")),
-			rule().add((condition("type", "native")), (condition("type", "string"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
-			rule().add((condition("type", "native")), not(condition("type", "string"))).add(mark("value"))
+	public RuleSet ruleSet() {
+		return new RuleSet().add(
+				rule().condition((type("native")), (type("resouce"))).output(literal("try {\n\treturn new java.net.URL(")).output(mark("value", "url", "quoted")).output(literal(");\n} catch (java.net.MalformedURLException e) {\n\treturn null;\n};\n")),
+				rule().condition((type("native")), (type("date"))).output(literal("DateLoader.load(java.util.Collections.singletonList(\"")).output(mark("value")).output(literal("\"), self).get(0)")),
+				rule().condition((type("native")), (type("instant"))).output(literal("InstantLoader.load(java.util.Collections.singletonList(\"")).output(mark("value")).output(literal("\"), self).get(0)")),
+				rule().condition((type("native")), (type("emptynode")), (type("reference"))).output(literal("null")),
+				rule().condition((type("native")), (type("reference"))).output(literal("self.graph().core$().loadInstance(\"")).output(mark("value")).output(literal("\");")),
+				rule().condition((type("native")), (type("resource"))).output(literal("self.graph().core$().loadResource(\"")).output(mark("value", "url")).output(literal("\");")),
+				rule().condition((type("native")), (type("string"))).output(literal("\"")).output(mark("value")).output(literal("\"")),
+				rule().condition((type("native")), not(type("string"))).output(mark("value"))
 		);
-		return this;
 	}
 }

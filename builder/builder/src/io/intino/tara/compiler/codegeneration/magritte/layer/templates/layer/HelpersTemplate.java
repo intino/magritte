@@ -1,65 +1,38 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
 
 public class HelpersTemplate extends Template {
 
-	protected HelpersTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
-	}
-
-	public static Template create() {
-		return new HelpersTemplate(Locale.ENGLISH, LF).define();
-	}
-
-	public Template define() {
-		add(
-			rule().add((condition("attribute", "datex")), (condition("trigger", "variableType"))).add(literal("io.intino.tara.magritte.type.DateX")),
-			rule().add((condition("attribute", "Instant")), (condition("trigger", "variableType"))).add(literal("java.time.Instant")),
-			rule().add((condition("attribute", "instant")), (condition("trigger", "variableType"))).add(literal("java.time.Instant")),
-			rule().add((condition("attribute", "Time")), (condition("trigger", "variableType"))).add(literal("java.time.LocalTime")),
-			rule().add((condition("attribute", "Double")), (condition("trigger", "variableType"))).add(literal("double")),
-			rule().add((condition("attribute", "Integer")), (condition("trigger", "variableType"))).add(literal("int")),
-			rule().add((condition("attribute", "Long")), (condition("trigger", "variableType"))).add(literal("long")),
-			rule().add((condition("attribute", "Object")), (condition("trigger", "variableType"))).add(literal("java.lang.Object")),
-			rule().add((condition("attribute", "type")), (condition("trigger", "variableType"))).add(literal("Concept")),
-			rule().add((condition("attribute", "String")), (condition("trigger", "variableType"))).add(literal("java.lang.String")),
-			rule().add((condition("attribute", "string")), (condition("trigger", "variableType"))).add(literal("java.lang.String")),
-			rule().add((condition("attribute", "Boolean")), (condition("trigger", "variableType"))).add(literal("boolean")),
-			rule().add((condition("attribute", "boolean")), (condition("trigger", "variableType"))).add(literal("boolean")),
-			rule().add((condition("attribute", "Resource")), (condition("trigger", "variableType"))).add(literal("java.net.URL")),
-			rule().add((condition("attribute", "resource")), (condition("trigger", "variableType"))).add(literal("java.net.URL")),
-			rule().add((condition("attribute", "Integer")), (condition("trigger", "fulltype"))).add(literal("java.lang.Integer")),
-			rule().add((condition("attribute", "integer")), (condition("trigger", "fulltype"))).add(literal("java.lang.Integer")),
-			rule().add((condition("attribute", "long")), (condition("trigger", "fulltype"))).add(literal("java.lang.Long")),
-			rule().add((condition("attribute", "Long")), (condition("trigger", "fulltype"))).add(literal("java.lang.Long")),
-			rule().add((condition("attribute", "Double")), (condition("trigger", "fulltype"))).add(literal("java.lang.Double")),
-			rule().add((condition("attribute", "double")), (condition("trigger", "fulltype"))).add(literal("java.lang.Double")),
-			rule().add((condition("attribute", "Resource")), (condition("trigger", "fulltype"))).add(literal("java.net.URL")),
-			rule().add((condition("attribute", "resource")), (condition("trigger", "fulltype"))).add(literal("java.net.URL")),
-			rule().add((condition("attribute", "boolean")), (condition("trigger", "fulltype"))).add(literal("java.lang.Boolean")),
-			rule().add((condition("attribute", "Boolean")), (condition("trigger", "fulltype"))).add(literal("java.lang.Boolean")),
-			rule().add((condition("attribute", "string")), (condition("trigger", "fulltype"))).add(literal("java.lang.String")),
-			rule().add((condition("attribute", "String")), (condition("trigger", "fulltype"))).add(literal("java.lang.String")),
-			rule().add((condition("attribute", "Date")), (condition("trigger", "fullType"))).add(literal("io.intino.tara.magritte.types.Date")),
-			rule().add((condition("attribute", "date")), (condition("trigger", "fullType"))).add(literal("io.intino.tara.magritte.types.Date")),
-			rule().add((condition("attribute", "Instant")), (condition("trigger", "fullType"))).add(literal("java.time.Instant")),
-			rule().add((condition("attribute", "instant")), (condition("trigger", "fullType"))).add(literal("java.time.Instant")),
-			rule().add((condition("attribute", "Time")), (condition("trigger", "fullType"))).add(literal("java.time.LocalTime")),
-			rule().add((condition("attribute", "time")), (condition("trigger", "fullType"))).add(literal("java.time.LocalTime")),
-			rule().add((condition("attribute", "type")), (condition("trigger", "fullType"))).add(literal("Concept")),
-			rule().add((condition("trigger", "quoted"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
-			rule().add((condition("type", "nativerule")), (condition("trigger", "interfaceClass"))).add(mark("interfaceClass", "javaValidName")),
-			rule().add((condition("type", "wordrule")), (condition("trigger", "externalWordClass"))).add(mark("externalWordClass", "javaValidName")),
-			rule().add((condition("type", "nativeCustomWordRule")), (condition("trigger", "externalWordClass"))).add(mark("source", "javaValidName")),
-			rule().add((condition("type", "variablecustomrule")), (condition("trigger", "externalWordClass"))).add(mark("aClass", "javaValidName")),
-			rule().add((condition("type", "customrule")), (condition("trigger", "name"))).add(mark("aClass", "javaValidName"))
+	public RuleSet ruleSet() {
+		return new RuleSet().add(
+				rule().condition((attribute("this", "datex")), (trigger("variabletype"))).output(literal("io.intino.tara.magritte.type.DateX")),
+				rule().condition((attribute("this", "instant")), (trigger("variabletype"))).output(literal("java.time.Instant")),
+				rule().condition((attribute("this", "double")), (trigger("variabletype"))).output(literal("double")),
+				rule().condition((attribute("this", "integer")), (trigger("variabletype"))).output(literal("int")),
+				rule().condition((attribute("this", "long")), (trigger("variabletype"))).output(literal("long")),
+				rule().condition((attribute("this", "object")), (trigger("variabletype"))).output(literal("java.lang.Object")),
+				rule().condition((attribute("this", "type")), (trigger("variabletype"))).output(literal("Concept")),
+				rule().condition((attribute("this", "string")), (trigger("variabletype"))).output(literal("java.lang.String")),
+				rule().condition((attribute("this", "boolean")), (trigger("variabletype"))).output(literal("boolean")),
+				rule().condition((attribute("this", "resource")), (trigger("variabletype"))).output(literal("java.net.URL")),
+				rule().condition((attribute("this", "integer")), (trigger("fulltype"))).output(literal("java.lang.Integer")),
+				rule().condition((attribute("this", "long")), (trigger("fulltype"))).output(literal("java.lang.Long")),
+				rule().condition((attribute("this", "double")), (trigger("fulltype"))).output(literal("java.lang.Double")),
+				rule().condition((attribute("this", "resource")), (trigger("fulltype"))).output(literal("java.net.URL")),
+				rule().condition((attribute("this", "boolean")), (trigger("fulltype"))).output(literal("java.lang.Boolean")),
+				rule().condition((attribute("this", "string")), (trigger("fulltype"))).output(literal("java.lang.String")),
+				rule().condition((attribute("this", "date")), (trigger("fulltype"))).output(literal("io.intino.tara.magritte.types.Date")),
+				rule().condition((attribute("this", "instant")), (trigger("fulltype"))).output(literal("java.time.Instant")),
+				rule().condition((attribute("this", "time")), (trigger("fulltype"))).output(literal("java.time.LocalTime")),
+				rule().condition((attribute("this", "type")), (trigger("fulltype"))).output(literal("Concept")),
+				rule().condition((trigger("quoted"))).output(literal("\"")).output(mark("")).output(literal("\"")),
+				rule().condition((type("nativerule")), (trigger("interfaceclass"))).output(mark("interfaceClass", "javaValidName")),
+				rule().condition((type("wordrule")), (trigger("externalwordclass"))).output(mark("externalWordClass", "javaValidName")),
+				rule().condition((type("nativecustomwordrule")), (trigger("externalwordclass"))).output(mark("source", "javaValidName")),
+				rule().condition((type("variablecustomrule")), (trigger("externalwordclass"))).output(mark("aClass", "javaValidName")),
+				rule().condition((type("customrule")), (trigger("name"))).output(mark("aClass", "javaValidName"))
 		);
-		return this;
 	}
 }

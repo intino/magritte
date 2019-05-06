@@ -1,8 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.itrules.Adapter;
-import io.intino.itrules.engine.Context;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
@@ -21,7 +21,6 @@ import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.model.rules.variable.WordRule;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.lang.model.Tag.Reactive;
 
@@ -37,35 +36,34 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	@Override
-	public void adapt(Variable variable, Context context) {
-		Frame frame = context.frame();
-		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
-		frame.addSlot(NAME, variable.name());
-		frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
-		frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
-		frame.addSlot(LANGUAGE, language.languageName().toLowerCase());
+	public void adapt(Variable variable, FrameBuilderContext context) {
+		TypesProvider.getTypes(variable, modelLevel).forEach(context::type);
+		context.add(NAME, variable.name());
+		context.add(OUT_LANGUAGE, outDsl.toLowerCase());
+		context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
+		context.add(LANGUAGE, language.languageName().toLowerCase());
 		Node container = variable.container();
-		frame.addSlot(CONTAINER_NAME, container.name());
-		frame.addSlot(QN, buildQN(container));
-		if (variable.values().stream().filter(Objects::nonNull).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
-			addValues(frame, variable);
+		context.add(CONTAINER_NAME, container.name());
+		context.add(QN, buildQN(container));
+		if (variable.values().stream().anyMatch(Objects::nonNull) && !(variable.values().get(0) instanceof EmptyNode))
+			addValues(variable, context);
 		if (variable.rule() != null) {
-			final Frame ruleFrame = ruleToFrame(variable.rule());
-			if (ruleFrame != null) frame.addSlot(RULE, (Frame) ruleFrame);
+			final FrameBuilder ruleBuilder = ruleToFrame(variable.rule());
+			if (ruleBuilder != null) context.add(RULE, ruleBuilder.toFrame());
 		}
-		frame.addSlot(TYPE, getType(variable));
-		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
+		context.add(TYPE, getType(variable));
+		if (Primitive.WORD.equals(variable.type())) fillWordVariable(variable, context);
 		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Reactive))
-			fillNativeVariable(frame, variable);
+			fillNativeVariable(context, variable);
 	}
 
-	private void fillWordVariable(Frame frame, Variable variable) {
+	private void fillWordVariable(Variable variable, FrameBuilderContext context) {
 		if (variable.rule() instanceof VariableCustomRule || variable.rule() instanceof NativeCustomWordRule ||
 				variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
-			frame.addTypes(OUTDEFINED);
+			context.type(OUTDEFINED);
 		else {
 			final List<String> allowedWords = (variable.rule() instanceof NativeRule) ? ((NativeWordRule) variable.rule()).words() : ((WordRule) variable.rule()).words();
-			frame.addSlot(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
+			context.add(WORDS, (Object[]) allowedWords.toArray(new Object[0]));
 		}
 	}
 
@@ -73,30 +71,28 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
-	private void addValues(Frame frame, Variable variable) {
-		if (Primitive.WORD.equals(variable.type())) frame.addSlot(WORD_VALUES, getWordValues(variable));
-		else if (Primitive.STRING.equals(variable.type())) frame.addSlot(VALUES, asString(variable.values()));
-		else frame.addSlot(VALUES, variable.values().toArray());
+	private void addValues(Variable variable, FrameBuilderContext context) {
+		if (Primitive.WORD.equals(variable.type())) context.add(WORD_VALUES, (Object[]) getWordValues(variable));
+		else if (Primitive.STRING.equals(variable.type())) context.add(VALUES, (Object[]) asString(variable.values()));
+		else context.add(VALUES, variable.values().toArray());
 	}
 
 	private String[] getWordValues(Variable variable) {
-		List<String> wordValues = variable.values().stream().map(Object::toString).collect(Collectors.toList());
-		return wordValues.toArray(new String[wordValues.size()]);
+		return variable.values().stream().map(Object::toString).toArray(String[]::new);
 	}
 
 	private String[] asString(List<Object> objects) {
-		List<String> values = objects.stream().map(object -> '"' + object.toString() + '"').collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
+		return objects.stream().map(object -> '"' + object.toString() + '"').toArray(String[]::new);
 	}
 
-	private void fillNativeVariable(Frame frame, Variable variable) {
+	private void fillNativeVariable(FrameBuilderContext context, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 				null : variable.values().get(0);
 		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, languageWorkingPackage, modelLevel.equals(Level.Solution), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
-			adapter.fillFrameForFunctionVariable(frame, variable, next);
+			adapter.fillFrameForFunctionVariable(variable, next, context);
 			imports.addAll(new ArrayList<>(((NativeRule) variable.rule()).imports()));
-		} else adapter.fillFrameNativeVariable(frame, variable, next);
+		} else adapter.fillFrameNativeVariable(context, variable, next);
 	}
 
 	public Set<String> getImports() {

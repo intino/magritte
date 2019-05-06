@@ -1,8 +1,8 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
-import io.intino.itrules.engine.FrameBuilder;
-import io.intino.itrules.model.AbstractFrame;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -49,104 +49,59 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
-	private static boolean isInTerminal(Node component) {
-		return component.container().isTerminal();
-	}
-
-	private static Frame transformSizeRuleOfTerminalNode(Node component) {
-		final Size rule = component.container().sizeOf(component);
-		final Size size = new Size(0, rule.max(), rule);
-		return (Frame) new FrameBuilder().build(size);
-	}
-
-	private static void addTags(Node node, Frame frame) {
-		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
-		node.flags().stream().filter(f -> !f.equals(Decorable) && !Tag.Required.equals(f)).forEach(tag -> tags.add(convertTag(tag)));
-		frame.addSlot(TAGS, tags.toArray(new String[0]));
-	}
-
-	private static List<Node> collectCandidates(Node node) {
-		Set<Node> nodes = new LinkedHashSet<>();
-		if (node.isAnonymous() || node.is(Tag.Instance)) return new ArrayList<>(nodes);
-		if (!node.isAbstract()) nodes.add(node);
-		getNonAbstractChildren(node, nodes);
-		return new ArrayList<>(nodes);
-	}
-
-	private static void getNonAbstractChildren(Node node, Set<Node> nodes) {
-		for (Node child : node.children())
-			if (child.isAbstract())
-				getNonAbstractChildren(child, nodes);
-			else if (child.container().equals(node.container()) || node.isReference()) nodes.add(child);
-	}
-
-	private static String convertTag(Tag tag) {
-		if (tag.equals(Tag.Terminal)) return Tag.Instance.name();
-		return tag.name();
-	}
-
-	private static List<Tag> annotations(Constraint constraint) {
-		return ((Constraint.Component) constraint).annotations();
-	}
-
-	private static boolean is(List<Tag> annotations, Tag tag) {
-		return annotations.contains(tag);
-	}
-
 	@Override
-	public void adapt(Model model, io.intino.itrules.engine.Context context) {
-		Frame root = context.frame();
+	public void adapt(Model model, FrameBuilderContext context) {
 		this.model = model;
-		initRoot(root);
-		buildRootNodes(model, root);
-		addInheritedRules(model, root);
+		initRoot(context);
+		buildRootNodes(model, context);
+		addInheritedRules(model, context);
 	}
 
-	private void initRoot(Frame root) {
-		root.addSlot(NAME, outDSL);
-		root.addSlot(TERMINAL, level.equals(Product));
-		root.addSlot(META_LANGUAGE, language.languageName());
-		root.addSlot(LOCALE, locale.getLanguage());
+	private void initRoot(FrameBuilderContext root) {
+		root.add(NAME, outDSL);
+		root.add(TERMINAL, level.equals(Product));
+		root.add(META_LANGUAGE, language.languageName());
+		root.add(LOCALE, locale.getLanguage());
 	}
 
-	private void buildRootNodes(Model model, Frame root) {
-		Frame frame = new Frame().addTypes(NODE);
-		createRuleFrame(model, frame, root);
+	private void buildRootNodes(Model model, FrameBuilderContext root) {
+		FrameBuilder builder = new FrameBuilder(NODE);
+		createRuleFrame(model, builder, root);
 		model.components().forEach(n -> {
-			final Frame rootNodeFrame = new Frame(ROOT);
-			rootNodeFrame.addSlot("number", rootNumber = ++rootNumber);
-			rootNodeFrame.addSlot("language", outDSL);
-			root.addSlot("root", rootNodeFrame);
+			final FrameBuilder rootNodeFrame = new FrameBuilder(ROOT);
+			rootNodeFrame.add("number", rootNumber = ++rootNumber);
+			rootNodeFrame.add("language", outDSL);
+			root.add("root", rootNodeFrame.toFrame());
 			buildNode(n, rootNodeFrame);
 		});
 	}
 
-	private void buildNode(Node node, Frame root) {
+	private void buildNode(Node node, FrameBuilder root) {
 		if (alreadyProcessed(node)) return;
-		Frame frame = new Frame().addTypes(NODE);
+		FrameBuilder frame = new FrameBuilder(NODE);
 		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRuleFrame(node, frame, root);
-		else if (node.is(Instance) && !node.isAnonymous()) root.addSlot(NODE, createInstanceFrame(node));
+		else if (node.is(Instance) && !node.isAnonymous()) root.add(NODE, createInstanceFrame(node));
 		if (!node.isAnonymous())
 			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(n -> buildNode(n, root));
 	}
 
-	private void createRuleFrame(Node node, Frame frame, Frame root) {
-		frame.addSlot(NAME, name(node));
-		addTypes(node, frame);
-		addConstraints(node, frame);
-		addAssumptions(node, frame);
-		addDoc(node, frame);
-		root.addSlot(NODE, frame);
+	private void createRuleFrame(Node node, FrameBuilder builder, FrameBuilderContext root) {
+		builder.add(NAME, name(node));
+		addTypes(node, builder);
+		addConstraints(node, builder);
+		addAssumptions(node, builder);
+		addDoc(node, builder);
+		root.add(NODE, builder.toFrame());
 	}
 
 	private Frame createInstanceFrame(Node node) {
-		final Frame frame = new Frame().addTypes(INSTANCE).addSlot(QN, name(node));
-		addTypes(node, frame);
-		frame.addSlot("path", outDSL);
-		return frame;
+		final FrameBuilder builder = new FrameBuilder(INSTANCE).add(QN, name(node));
+		addTypes(node, builder);
+		builder.add("path", outDSL);
+		return builder.toFrame();
 	}
 
-	private void addInheritedRules(Model model, Frame root) {
+	private void addInheritedRules(Model model, FrameBuilderContext root) {
 		new LanguageInheritanceManager(root, instanceConstraints(), language, model).fill();
 	}
 
@@ -160,10 +115,13 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return context.assumptions().stream().anyMatch(a -> a instanceof Assumption.Instance);
 	}
 
-	private void addDoc(Node node, Frame frame) {
-		final Frame docFrame = new Frame();
-		docFrame.addTypes(DOC).addSlot(LAYER, findLayer(node)).addSlot(FILE, node.file().replace("\\", "\\\\")).addSlot(LINE, node.line()).addSlot(DOC, node.doc() != null ? format(node) : "");
-		frame.addSlot(DOC, docFrame);
+	private void addDoc(Node node, FrameBuilder frame) {
+		frame.add(DOC, new FrameBuilder(DOC).
+				add(LAYER, findLayer(node)).
+				add(FILE, node.file().replace("\\", "\\\\")).
+				add(LINE, node.line()).
+				add(DOC, node.doc() != null ? format(node) : "").
+				toFrame());
 	}
 
 	private String findLayer(Node node) {
@@ -175,15 +133,15 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return node.doc().replace("\"", "\\\"").replace("\n", "\\n");
 	}
 
-	private void addTypes(Node node, Frame frame) {
+	private void addTypes(Node node, FrameBuilder builder) {
 		if (node.type() == null) return;
-		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
+		FrameBuilder typesFrameBuilder = new FrameBuilder(NODE_TYPE);
 		Set<String> typeSet = new LinkedHashSet<>();
 		typeSet.add(node.type());
 		Collection<String> languageTypes = getLanguageTypes(node);
 		if (languageTypes != null) typeSet.addAll(languageTypes);
-		for (String type : typeSet) typesFrame.addSlot(TYPE, type);
-		if (typesFrame.slots().length > 0) frame.addSlot(NODE_TYPE, typesFrame);
+		for (String type : typeSet) typesFrameBuilder.add(TYPE, type);
+		if (typesFrameBuilder.slots() > 0) builder.add(NODE_TYPE, typesFrameBuilder.toFrame());
 	}
 
 	private Collection<String> getLanguageTypes(Node node) {
@@ -194,18 +152,18 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return !processed.add(node);
 	}
 
-	private void addConstraints(Node node, Frame frame) {
-		Frame constraints = buildComponentConstraints(node);
+	private void addConstraints(Node node, FrameBuilder builder) {
+		FrameBuilder constraints = buildComponentConstraints(node);
 		addTerminalConstrains(node, constraints);
 		addContextConstraints(node, constraints);
-		frame.addSlot(CONSTRAINTS, constraints);
+		builder.add(CONSTRAINTS, constraints.toFrame());
 	}
 
-	private void addContextConstraints(Node node, Frame constraints) {
+	private void addContextConstraints(Node node, FrameBuilder constraints) {
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
-					LanguageParameterAdapter.terminalParameters(language, node) + terminalParameterIndex(constraints));
+					LanguageParameterAdapter.terminalParameters(language, node) + terminalParameterIndex(constraints.toFrame()));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
 			addMetaFacetConstraints(node, constraints);
@@ -213,13 +171,13 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	}
 
 	private int terminalParameterIndex(Frame constraints) {
-		final Iterator<AbstractFrame> iterator = constraints.frames(CONSTRAINT);
+		final Iterator<Frame> iterator = constraints.frames(CONSTRAINT);
 		int index = 0;
 		while (iterator.hasNext()) if (iterator.next().is(PARAMETER)) index++;
 		return index;
 	}
 
-	private void addParameterConstraints(List<Variable> variables, String facet, Frame constrainsFrame, int parentIndex) {
+	private void addParameterConstraints(List<Variable> variables, String facet, FrameBuilder constrainsFrame, int parentIndex) {
 		int privateVariables = 0;
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
@@ -233,7 +191,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return variable.isFinal() && !variable.values().isEmpty();
 	}
 
-	private void addMetaFacetConstraints(Node node, Frame constraints) {
+	private void addMetaFacetConstraints(Node node, FrameBuilder constraints) {
 		final FacetTarget facetTarget = node.facetTarget();
 		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract())
 			return;
@@ -244,39 +202,38 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		else createMetaFacetConstraint(target, facetTarget.constraints(), constraints);
 	}
 
-	private void createMetaFacetConstraint(Node node, List<FacetTarget.Constraint> with, Frame constraints) {
-		Frame frame = new Frame().addTypes(CONSTRAINT, METAFACET).addSlot(VALUE, node.qualifiedName());
+	private void createMetaFacetConstraint(Node node, List<FacetTarget.Constraint> with, FrameBuilder constraints) {
+		FrameBuilder builder = new FrameBuilder(CONSTRAINT, METAFACET).add(VALUE, node.qualifiedName());
 		if (with != null && !with.isEmpty())
-			frame.addSlot(WITH, with.stream().map(c -> c.node().qualifiedName()).collect(Collectors.toList()).toArray(new String[with.size()]));
-		constraints.addSlot(CONSTRAINT, frame);
+			builder.add(WITH, (Object[]) with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
+		constraints.add(CONSTRAINT, builder.toFrame());
 	}
 
-	private void addFacetConstraints(Node node, Frame constraints) {
+	private void addFacetConstraints(Node node, FrameBuilder constraintsBuilder) {
 		for (String facet : node.allowedFacets()) {
 			Node facetTargetNode = findFacetTargetNode(model, node, facet);
-			if (facetTargetNode == null || facetTargetNode.facetTarget() == null || facetTargetNode.isAbstract())
-				continue;
-			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addSlot(VALUE, facet);//TODO FULL FACET REFERENCE
-			constraints.addSlot(CONSTRAINT, frame);
+			if (facetTargetNode == null || facetTargetNode.facetTarget() == null || facetTargetNode.isAbstract()) continue;
+			FrameBuilder builder = new FrameBuilder(CONSTRAINT, FACET).add(VALUE, facet);//TODO FULL FACET REFERENCE
 			final FacetTarget facetTarget = facetTargetNode.facetTarget();
-			frame.addSlot(TERMINAL, facetTargetNode.isTerminal() + "");
+			builder.add(TERMINAL, facetTargetNode.isTerminal() + "");
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
 				for (FacetTarget.Constraint constraint : facetTarget.constraints())
-					frame.addSlot(constraint.negated() ? WITHOUT : WITH, constraint.node().name());
-			if (facetTargetNode.flags().contains(Required)) frame.addSlot("required", "true");
-			addParameterConstraints(facetTargetNode.variables(), facet, frame, 0);
-			addComponentsConstraints(frame, facetTargetNode);
-			addTerminalConstrains(facetTargetNode, frame);
+					builder.add(constraint.negated() ? WITHOUT : WITH, constraint.node().name());
+			if (facetTargetNode.flags().contains(Required)) builder.add("required", "true");
+			addParameterConstraints(facetTargetNode.variables(), facet, builder, 0);
+			addComponentsConstraints(builder, facetTargetNode);
+			addTerminalConstrains(facetTargetNode, builder);
+			constraintsBuilder.add(CONSTRAINT, builder.toFrame());
 		}
-		addTerminalFacets(node, constraints);
+		addTerminalFacets(node, constraintsBuilder);
 	}
 
-	private void addTerminalFacets(Node node, Frame frame) {
+	private void addTerminalFacets(Node node, FrameBuilder context) {
 		final List<Constraint> facetAllows = language.constraints(node.type()).stream().filter(allow -> allow instanceof Constraint.Facet && ((Constraint.Facet) allow).terminal()).collect(toList());
-		new TerminalConstraintManager(language, node).addConstraints(facetAllows, frame);
+		new TerminalConstraintManager(language, node).addConstraints(facetAllows, context);
 	}
 
-	private void addTerminalConstrains(Node container, Frame frame) {
+	private void addTerminalConstrains(Node container, FrameBuilder frame) {
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
 				filter(c -> validComponent(container, c) || validParameter(container, c)).
@@ -308,46 +265,45 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return !components.isEmpty() && container.sizeOf(components.get(0)).max() == components.size();
 	}
 
-	private void addRequiredVariableRedefines(Frame constraints, Node node) {
+	private void addRequiredVariableRedefines(FrameBuilder constraints, Node node) {
 		node.variables().stream().
 				filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
-				forEach(variable -> constraints.addSlot(CONSTRAINT, new Frame().addTypes("redefine", CONSTRAINT).
-						addSlot(NAME, variable.name()).addSlot("supertype", variable.type())));
+				forEach(variable -> constraints.add(CONSTRAINT, new FrameBuilder("redefine", CONSTRAINT).add(NAME, variable.name()).add("supertype", variable.type()).toFrame()));
 	}
 
-	private void addAssumptions(Node node, Frame frame) {
-		Frame assumptions = buildAssumptions(node);
-		if (assumptions.slots().length != 0) frame.addSlot(ASSUMPTIONS, assumptions);
+	private void addAssumptions(Node node, FrameBuilder frame) {
+		FrameBuilder assumptions = buildAssumptions(node);
+		if (assumptions.slots() != 0) frame.add(ASSUMPTIONS, assumptions.toFrame());
 	}
 
-	private Frame buildAssumptions(Node node) {
-		Frame assumptions = new Frame().addTypes(ASSUMPTIONS);
+	private FrameBuilder buildAssumptions(Node node) {
+		FrameBuilder assumptions = new FrameBuilder(ASSUMPTIONS);
 		addAnnotationAssumptions(node, assumptions);
 		return assumptions;
 	}
 
-	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		node.annotations().forEach(tag -> assumptions.addSlot(ASSUMPTION, tag.name().toLowerCase()));
+	private void addAnnotationAssumptions(Node node, FrameBuilder assumptions) {
+		node.annotations().forEach(tag -> assumptions.add(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
-			if (tag.equals(Tag.Terminal)) assumptions.addSlot(ASSUMPTION, Instance);
-			else if (tag.equals(Tag.Feature)) assumptions.addSlot(ASSUMPTION, Feature);
-			else if (tag.equals(Tag.Component)) assumptions.addSlot(ASSUMPTION, capitalize(Tag.Component.name()));
-			else if (tag.equals(Tag.Volatile)) assumptions.addSlot(ASSUMPTION, capitalize(Tag.Volatile.name()));
+			if (tag.equals(Tag.Terminal)) assumptions.add(ASSUMPTION, Instance);
+			else if (tag.equals(Tag.Feature)) assumptions.add(ASSUMPTION, Feature);
+			else if (tag.equals(Tag.Component)) assumptions.add(ASSUMPTION, capitalize(Tag.Component.name()));
+			else if (tag.equals(Tag.Volatile)) assumptions.add(ASSUMPTION, capitalize(Tag.Volatile.name()));
 		}
-		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) assumptions.addSlot(ASSUMPTION, Facet);
-		if (node.isFacet()) assumptions.addSlot(ASSUMPTION, Terminal);
+		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) assumptions.add(ASSUMPTION, Facet);
+		if (node.isFacet()) assumptions.add(ASSUMPTION, Terminal);
 	}
 
-	private Frame buildComponentConstraints(Node container) {
-		Frame constraints = new Frame().addTypes(CONSTRAINTS);
+	private FrameBuilder buildComponentConstraints(Node container) {
+		FrameBuilder constraints = new FrameBuilder(CONSTRAINTS);
 		addComponentsConstraints(constraints, container);
 		return constraints;
 	}
 
-	private void addComponentsConstraints(Frame constraints, Node container) {
+	private void addComponentsConstraints(FrameBuilder constraints, Node container) {
 		List<Frame> frames = new ArrayList<>();
 		createComponentsConstraints(container, frames);
-		if (!frames.isEmpty()) constraints.addSlot(CONSTRAINT, frames.toArray(new Frame[frames.size()]));
+		frames.forEach(frame -> constraints.add(CONSTRAINT, frame));
 	}
 
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
@@ -389,10 +345,10 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		final Node target = facetTarget.targetNode();
 		if (target.isAbstract())
 			for (Node child : target.children()) {
-				Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addSlot(TYPE, node.name() + FacetSeparator + child.qualifiedName());
-				frame.addSlot(SIZE, node.isTerminal() && Product.compareLevelWith(level) > 0 ? transformSizeRuleOfTerminalNode(node) : createRulesFrames(node.container().rulesOf(node)));
-				addTags(node, frame);
-				frames.add(frame);
+				FrameBuilder builder = new FrameBuilder(CONSTRAINT, COMPONENT).add(TYPE, node.name() + FacetSeparator + child.qualifiedName());
+				builder.add(SIZE, node.isTerminal() && Product.compareLevelWith(level) > 0 ? transformSizeRuleOfTerminalNode(node) : createRulesFrames(node.container().rulesOf(node)));
+				addTags(node, builder);
+				frames.add(builder.toFrame());
 			}
 		else createComponentConstraint(frames, node);
 
@@ -403,19 +359,19 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		final Size size = component.container().sizeOf(component);
 		final List<Rule> allRules = component.container().rulesOf(component).stream().distinct().collect(toList());
 		if ((size.isSingle() || size.isRequired() || component.isReference()) && candidates.size() > 1) {
-			final Frame oneOf = createOneOf(candidates, allRules);
-			if (!component.isAbstract()) oneOf.addSlot(CONSTRAINT, createComponentConstraint(component, allRules));
-			if (!component.isSub()) frames.add(oneOf);
+			final FrameBuilder oneOfBuilder = createOneOf(candidates, allRules);
+			if (!component.isAbstract()) oneOfBuilder.add(CONSTRAINT, createComponentConstraint(component, allRules));
+			if (!component.isSub()) frames.add(oneOfBuilder.toFrame());
 		} else frames.addAll(candidates.stream().filter(c -> componentCompliant(c.container(), c)).
 				map(c -> createComponentConstraint(c, allRules)).collect(toList()));
 	}
 
 	private Frame createComponentConstraint(Node component, List<Rule> rules) {
-		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addSlot(TYPE, name(component));
-		if (isTerminal(component)) frame.addSlot(SIZE, transformSizeRuleOfTerminalNode(component));
-		else frame.addSlot(SIZE, (AbstractFrame[]) createRulesFrames(rules));
-		addTags(component, frame);
-		return frame;
+		FrameBuilder builder = new FrameBuilder(CONSTRAINT, COMPONENT).add(TYPE, name(component));
+		if (isTerminal(component)) builder.add(SIZE, transformSizeRuleOfTerminalNode(component));
+		else builder.add(SIZE, createRulesFrames(rules));
+		addTags(component, builder);
+		return builder.toFrame();
 	}
 
 	private boolean isTerminal(Node component) {
@@ -426,19 +382,63 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().qualifiedName() : node.qualifiedName();
 	}
 
-	private Frame createOneOf(Collection<Node> candidates, List<Rule> rules) {
-		Frame frame = new Frame().addTypes(ONE_OF, CONSTRAINT);
-		frame.addSlot(RULE, (AbstractFrame[]) createRulesFrames(rules));
+	private FrameBuilder createOneOf(Collection<Node> candidates, List<Rule> rules) {
+		FrameBuilder builder = new FrameBuilder(ONE_OF, CONSTRAINT);
+		builder.add(RULE, createRulesFrames(rules));
 		for (Node candidate : candidates)
-			frame.addSlot(CONSTRAINT, createComponentConstraint(candidate, rules));
-		return frame;
+			builder.add(CONSTRAINT, createComponentConstraint(candidate, rules));
+		return builder;
 	}
 
-	private AbstractFrame[] createRulesFrames(List<Rule> rules) {
-		return rules.stream().map(rule -> rule instanceof NodeCustomRule ? buildCustomRuleFrame((NodeCustomRule) rule) : (Frame) new FrameBuilder().build(rule)).toArray(AbstractFrame[]::new);
+	private Frame[] createRulesFrames(List<Rule> rules) {
+		return rules.stream().map(rule -> rule instanceof NodeCustomRule ? buildCustomRuleFrame((NodeCustomRule) rule) : new FrameBuilder().append(rule).toFrame()).toArray(Frame[]::new);
 	}
 
 	private Frame buildCustomRuleFrame(NodeCustomRule rule) {
-		return new Frame().addTypes("rule", "customRule").addSlot("qn", rule.loadedClass().getName());
+		return new FrameBuilder("rule", "customRule").add("qn", rule.loadedClass().getName()).toFrame();
+	}
+
+	private boolean isInTerminal(Node component) {
+		return component.container().isTerminal();
+	}
+
+	private Frame transformSizeRuleOfTerminalNode(Node component) {
+		final Size rule = component.container().sizeOf(component);
+		final Size size = new Size(0, rule.max(), rule);
+		return new FrameBuilder().append(size).toFrame();
+	}
+
+	private void addTags(Node node, FrameBuilder frame) {
+		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
+		node.flags().stream().filter(f -> !f.equals(Decorable) && !Tag.Required.equals(f)).forEach(tag -> tags.add(convertTag(tag)));
+		frame.add(TAGS, tags.toArray(new Object[0]));
+	}
+
+	private List<Node> collectCandidates(Node node) {
+		Set<Node> nodes = new LinkedHashSet<>();
+		if (node.isAnonymous() || node.is(Tag.Instance)) return new ArrayList<>(nodes);
+		if (!node.isAbstract()) nodes.add(node);
+		getNonAbstractChildren(node, nodes);
+		return new ArrayList<>(nodes);
+	}
+
+	private void getNonAbstractChildren(Node node, Set<Node> nodes) {
+		for (Node child : node.children())
+			if (child.isAbstract())
+				getNonAbstractChildren(child, nodes);
+			else if (child.container().equals(node.container()) || node.isReference()) nodes.add(child);
+	}
+
+	private String convertTag(Tag tag) {
+		if (tag.equals(Tag.Terminal)) return Tag.Instance.name();
+		return tag.name();
+	}
+
+	private List<Tag> annotations(Constraint constraint) {
+		return ((Constraint.Component) constraint).annotations();
+	}
+
+	private boolean is(List<Tag> annotations, Tag tag) {
+		return annotations.contains(tag);
 	}
 }

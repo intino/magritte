@@ -1,8 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.itrules.Adapter;
-import io.intino.itrules.engine.Context;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -13,9 +13,7 @@ import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Variable;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
@@ -27,7 +25,7 @@ import static io.intino.tara.lang.model.Tag.Instance;
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String outDSL;
 	private final Level level;
-	private Context context;
+	private FrameBuilderContext context;
 	private Set<String> imports = new HashSet<>();
 
 	LayerFacetTargetAdapter(Language language, String outDSL, Level level, String workingPackage, String languageWorkingPackage) {
@@ -36,101 +34,91 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		this.level = level;
 	}
 
-	@Override
-	public void adapt(FacetTarget target, Context context) {
+	static String name(FacetTarget target) {
+		return target.owner().name() + target.targetNode().name();
+	}
+
+
+	public void adapt(FacetTarget target, FrameBuilderContext context) {
 		this.context = context;
-		Frame frame = context.frame();
-		frame.addTypes("nodeimpl");
-		frame.addSlot(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : PRODUCT);
-		frame.addSlot(OUT_LANGUAGE, outDSL).addSlot(WORKING_PACKAGE, workingPackage);
-		if (target.owner().isAbstract() || target.owner().is(Decorable)) frame.addSlot(ABSTRACT, true);
-		if (target.owner().is(Decorable)) frame.addSlot(DECORABLE, true);
-		addFacetTargetInfo(target, frame);
-		addComponents(frame, target.owner(), context);
-		addTargetComponents(target, frame, context);
-		addParent(frame, target);
-		if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()) && target.owner().components().stream().anyMatch(c -> c.is(Instance)))
-			frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(target.owner()));
+		context.type("nodeimpl");
+		context.add(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : PRODUCT);
+		context.add(OUT_LANGUAGE, outDSL).add(WORKING_PACKAGE, workingPackage);
+		if (target.owner().isAbstract() || target.owner().is(Decorable)) context.add(ABSTRACT, true);
+		if (target.owner().is(Decorable)) context.add(DECORABLE, true);
+		addFacetTargetInfo(target);
+		addComponents(target.owner(), this.context);
+		addTargetComponents(target);
+		addParent(target);
+		if (!context.contains(META_TYPE) && target.owner().components().stream().anyMatch(c -> c.is(Instance)))
+			context.add(META_TYPE, languageWorkingPackage + DOT + metaType(target.owner()));
 	}
 
-	private void addFacetTargetInfo(FacetTarget target, Frame frame) {
-		addName(target, frame);
-		addConstrains(target, frame);
-		addTags(target, frame);
-		addFacetTarget(target, frame);
-		addVariables(target, frame);
+	private void addFacetTargetInfo(FacetTarget target) {
+		addName(target);
+		addConstrains(target);
+		addTags(target);
+		addFacetTarget(target);
+		addVariables(target);
 	}
 
-	private void addTags(FacetTarget target, Frame frame) {
-		target.owner().flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addSlot(FLAG, tag));
+	private void addTags(FacetTarget target) {
+		target.owner().flags().stream().filter(isLayerInterface()).forEach(tag -> context.add(FLAG, tag));
 	}
 
-	private void addName(FacetTarget facetTarget, Frame frame) {
-		frame.addSlot(NAME, name(facetTarget));
-		frame.addSlot(QN, cleanQn(buildQN(facetTarget.targetNode())));
+	private void addName(FacetTarget facetTarget) {
+		context.add(NAME, name(facetTarget));
+		context.add(QN, cleanQn(buildQN(facetTarget.targetNode())));
 	}
 
-	private void addConstrains(FacetTarget target, Frame frame) {
-		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
-					final Frame constraint = new Frame().addTypes(CONSTRAINT);
-					constraint.addSlot(NAME, c.node().name());
-					constraint.addSlot(QN, cleanQn(buildQN(c.node())));
-					frame.addSlot(CONSTRAINT, constraint);
-				}
-		);
+	private void addConstrains(FacetTarget target) {
+		target.constraints().stream()
+				.filter(c -> !c.negated())
+				.forEach(c -> context.add(CONSTRAINT, new FrameBuilder().add(CONSTRAINT).add(NAME, c.node().name()).add(QN, cleanQn(buildQN(c.node()))).toFrame()));
 	}
 
-	private void addParent(Frame frame, FacetTarget target) {
+	private void addParent(FacetTarget target) {
 		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
-		if (parent != null) frame.addSlot(PARENT, cleanQn(getQn(parent, workingPackage)));
-		final List<String> slots = Arrays.asList(frame.slots());
-		if ((slots.contains(CREATE) || slots.contains(NODE)) || !target.owner().children().isEmpty()) {
-			frame.addSlot(PARENT_SUPER, parent != null);
-			if (parent != null) frame.addSlot("parentName", cleanQn(getQn(parent, workingPackage)));
+		if (parent != null) context.add(PARENT, cleanQn(getQn(parent, workingPackage)));
+		if ((context.contains(CREATE) || context.contains(NODE)) || !target.owner().children().isEmpty()) {
+			context.add(PARENT_SUPER, parent != null);
+			if (parent != null) context.add("parentName", cleanQn(getQn(parent, workingPackage)));
 		}
-		if ((slots.contains(NODE)) && parent != null &&
+		if ((context.contains(NODE)) && parent != null &&
 				(!parent.components().isEmpty() ||
 						(parent.facetTarget() != null && !parent.facetTarget().targetNode().components().isEmpty() && hasLists(parent.facetTarget().targetNode()))))
-			frame.addSlot("parentClearName", cleanQn(getQn(parent, workingPackage)));
+			context.add("parentClearName", cleanQn(getQn(parent, workingPackage)));
 	}
 
 	private boolean hasLists(Node node) {
 		return node.components().stream().anyMatch(c -> !node.sizeOf(c).isSingle());
 	}
 
-	private void addFacetTarget(FacetTarget target, Frame frame) {
-		final Frame facetTargetFrame = new Frame();
-		if (target.owner().isSub() && target.owner().parent() != null) facetTargetFrame.addTypes(OVERRIDEN);
-		facetTargetFrame.addTypes(FACET_TARGET);
-		facetTargetFrame.addSlot(NAME, target.targetNode().name());
-		facetTargetFrame.addSlot(QN, buildQN(target.targetNode()));
-		facetTargetFrame.addSlot(OUT_LANGUAGE, outDSL);
-		frame.addSlot(FACET_TARGET, facetTargetFrame);
+	private void addFacetTarget(FacetTarget target) {
+		final FrameBuilder builder = new FrameBuilder().type(FACET_TARGET).add(NAME, target.targetNode().name()).add(QN, buildQN(target.targetNode())).add(OUT_LANGUAGE, outDSL);
+		if (target.owner().isSub() && target.owner().parent() != null) builder.type(OVERRIDEN);
+		context.add(FACET_TARGET, builder.toFrame());
 	}
 
 	private String buildQN(Node node) {
 		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
-	private void addVariables(FacetTarget target, final Frame frame) {
+	private void addVariables(FacetTarget target) {
 		target.owner().variables().stream().
 				filter(variable -> !variable.isInherited()).
-				forEach(variable -> frame.addSlot(VARIABLE, ((Frame) context.build(variable)).addTypes(OWNER).addSlot(CONTAINER, name(target))));
+				forEach(variable -> context.add(VARIABLE, new FrameBuilder(OWNER).add(CONTAINER, name(target)).toFrame()));
 		target.targetNode().variables().stream().
 				filter(variable -> !variable.isInherited() && !isOverriden(target.owner(), variable)).
-				forEach(variable -> frame.addSlot(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET).addSlot(CONTAINER, name(target))));
+				forEach(variable -> context.add(VARIABLE, new FrameBuilder(TARGET).add(CONTAINER, name(target)).toFrame()));
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
 			FacetTarget targetOf = findTargetOf(c.node(), target.targetNode());
-			if (targetOf != null && !targetOf.equals(target.targetNode()))
+			if (targetOf != null && !targetOf.targetNode().equals(target.targetNode()))
 				targetOf.owner().variables()
 						.forEach(variable ->
-								frame.addSlot(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET).addSlot(CONTAINER, name(target))));
+								context.add(VARIABLE, new FrameBuilder(TARGET).add(CONTAINER, name(target)).toFrame()));
 		});
-		addTerminalVariables(target.owner(), frame);
-	}
-
-	static String name(FacetTarget target) {
-		return target.owner().name() + target.targetNode().name();
+		addTerminalVariables(target.owner(), context);
 	}
 
 	private FacetTarget findTargetOf(Node node, Node target) {
@@ -138,16 +126,15 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		return facetTarget != null && target.equals(facetTarget.targetNode()) ? facetTarget : null;
 	}
 
-	private void addTargetComponents(FacetTarget target, Frame frame, Context context) {
+	private void addTargetComponents(FacetTarget target) {
 		target.targetNode().components().forEach((Node component) -> {
 					if (!isOverriden(component, target)) { //TODO
-						final Frame nodeFrame = (Frame) context.build(component);
-						nodeFrame.addTypes(TARGET);
+						final FrameBuilder nodeFrame = new FrameBuilder(TARGET);
 						if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (component.destinyOfReference().parent() != null))
-							nodeFrame.addTypes(INHERITED).addSlot(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
-						nodeFrame.addSlot(TARGET_CONTAINER, target.targetNode().name());
-						if (target.targetNode().sizeOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
-						frame.addSlot(NODE, nodeFrame);
+							nodeFrame.type(INHERITED).add(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
+						nodeFrame.add(TARGET_CONTAINER, target.targetNode().name());
+						if (target.targetNode().sizeOf(component).isSingle()) nodeFrame.type(SINGLE);
+						context.add(NODE, nodeFrame);
 					}
 				}
 		);
@@ -169,4 +156,5 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	public Set<String> getImports() {
 		return imports;
 	}
+
 }

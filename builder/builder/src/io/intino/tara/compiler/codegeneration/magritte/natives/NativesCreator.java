@@ -1,8 +1,7 @@
 package io.intino.tara.compiler.codegeneration.magritte.natives;
 
+import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
-import io.intino.itrules.engine.FrameBuilder;
-import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
@@ -21,11 +20,9 @@ import static java.io.File.separator;
 import static java.util.stream.Collectors.toList;
 
 public class NativesCreator {
-
 	private static final Logger LOG = Logger.getLogger(NativesCreator.class.getName());
-
-	private static String nativeExtension;
 	private static final String NATIVES = "natives";
+	private static String nativeExtension;
 	private final String nativesPackage;
 	private final Model model;
 	private final CompilerConfiguration conf;
@@ -65,11 +62,11 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.level(), conf.workingPackage(), conf.language(l -> l.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
+			builder.put(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.level(), conf.workingPackage(), conf.language(l -> l.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
-			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
-			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
-			nativeCodes.put(destiny, expressionsTemplate.format(frame));
+			final FrameBuilder frameBuilder = builder.append(p).type(conf.nativeLanguage());
+			if (FUNCTION.equals(p.type())) frameBuilder.type(p.type().name());
+			nativeCodes.put(destiny, expressionsTemplate.render(frameBuilder.toFrame()));
 			if (!originToDestiny.containsKey(p.file())) originToDestiny.put(destiny.getAbsolutePath(), p.file());
 		});
 		return nativeCodes;
@@ -80,18 +77,18 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.put(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
-			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
-			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());
-			nativeCodes.put(destiny, expressionsTemplate.format(frame));
+			final FrameBuilder frameBuilder = builder.append(variable).type(conf.nativeLanguage());
+			if (FUNCTION.equals(variable.type())) frameBuilder.type(variable.type().name());
+			nativeCodes.put(destiny, expressionsTemplate.render(frameBuilder.toFrame()));
 			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
 		});
 		return nativeCodes;
 	}
 
 	private Template expressionsTemplate() {
-		return Format.customize(ExpressionsTemplate.create());
+		return Format.customize(new ExpressionsTemplate());
 	}
 
 	private File calculateDestiny(Parameter parameter) {
@@ -110,7 +107,7 @@ public class NativesCreator {
 		return Format.javaValidName().format(Format.firstUpperCase().format(parameter.name())).toString() + "_" + parameter.getUID() + nativeExtension;
 	}
 
-	private File writeJavaCode(File file, String nativeText) {
+	private void writeJavaCode(File file, String nativeText) {
 		try {
 			file.getParentFile().mkdirs();
 			file.createNewFile();
@@ -118,7 +115,6 @@ public class NativesCreator {
 		} catch (IOException e) {
 			LOG.severe(e.getMessage());
 		}
-		return file;
 	}
 
 	private void extractNativeParameters(Node node, List<Parameter> natives) {

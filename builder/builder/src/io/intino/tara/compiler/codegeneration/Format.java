@@ -8,12 +8,16 @@ import io.intino.tara.compiler.codegeneration.magritte.JavaKeywords;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 public class Format {
+	protected static final String DOT = ".";
 
+	private Format() {
+	}
 
 	public static Template customize(Template template) {
 		template.add("string", string());
@@ -23,17 +27,12 @@ public class Format {
 		template.add("withDollar", withDollar());
 		template.add("noPackage", noPackage());
 		template.add("key", key());
-		template.add("returnType", (trigger, type) -> trigger.frame().frames("returnType").next().value().equals(type));
+//		template.add("returnType", (trigger, type) -> trigger.frame().frames("returnType").next().value().equals(type));
 		template.add("WithoutType", nativeParameterWithoutType());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
 		template.add("withoutGeneric", withoutGeneric());
 		return template;
-	}
-
-	protected static final String DOT = ".";
-
-	private Format() {
 	}
 
 	public static Formatter string() {
@@ -61,7 +60,7 @@ public class Format {
 	}
 
 	private static String firstLowerCase(String val) {
-		return io.intino.itrules.engine.formatters.StringFormatter.firstLowerCase().format(val).toString();
+		return io.intino.itrules.formatters.StringFormatters.get(Locale.getDefault()).get("firstlowercase").format(val).toString();
 	}
 
 	private static String referenceFormat(String val) {
@@ -196,7 +195,7 @@ public class Format {
 
 	public static String capitalize(String value) {
 		if (value.isEmpty()) return "";
-		return io.intino.itrules.engine.formatters.StringFormatter.capitalize().format(value).toString();
+		return io.intino.itrules.formatters.StringFormatters.get(Locale.getDefault()).get("capitalize").format(value).toString();
 	}
 
 	private static Formatter key() {
@@ -211,7 +210,7 @@ public class Format {
 	}
 
 	public static Formatter firstUpperCase() {
-		return io.intino.itrules.engine.formatters.StringFormatter.firstUpperCase();
+		return io.intino.itrules.formatters.StringFormatters.get(Locale.getDefault()).get("firstuppercase");
 	}
 
 	private static class StringFormatter implements Formatter {

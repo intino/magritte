@@ -1,9 +1,8 @@
 package io.intino.tara.compiler.codegeneration.magritte;
 
-import io.intino.itrules.engine.Context;
-import io.intino.itrules.engine.ExcludeAdapter;
-import io.intino.itrules.engine.FrameBuilder;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
+import io.intino.itrules.adapters.ExcludeAdapter;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
@@ -26,7 +25,6 @@ import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.clea
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
 import static io.intino.tara.lang.model.Tag.Terminal;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -45,94 +43,11 @@ public abstract class Generator implements TemplateTags {
 		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
-	protected void addComponents(Frame frame, Node node, Context context) {
-		if (node instanceof NodeReference) return;
-		node.components().stream().
-				filter(component -> !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
-				forEach(component -> {
-					final Frame nodeFrame = (Frame) context.build(component);
-					nodeFrame.addTypes(OWNER);
-					frame.addSlot(NODE, nodeFrame);
-				});
-	}
-
-	protected String getType(Variable variable) {
-		if (variable instanceof VariableReference)
-			return cleanQn(getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
-		else if (Primitive.WORD.equals(variable.type()))
-			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getExternalWordClass()) :
-					Format.firstUpperCase().format(variable.name()).toString();
-		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
-		else return variable.type().javaName();
-	}
-
 	protected static FacetTarget isInFacet(Node node) {
-		NodeContainer container = node.container();
-		while (container != null && ((Node) container).facetTarget() == null)
+		Node container = node.container();
+		while (container != null && container.facetTarget() == null)
 			container = container.container();
-		return container != null ? ((Node) container).facetTarget() : null;
-	}
-
-	protected Frame ruleToFrame(Rule rule) {
-		if (rule == null) return null;
-		final FrameBuilder frameBuilder = new FrameBuilder();
-		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
-		final Frame frame = (Frame) frameBuilder.build(rule);
-		if (rule instanceof VariableCustomRule) {
-			frame.addSlot(QN, ((VariableCustomRule) rule).qualifiedName());
-			if (((VariableCustomRule) rule).isMetric()) {
-				frame.addTypes(METRIC);
-				frame.addSlot(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
-			}
-		}
-		return frame;
-	}
-
-	protected Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
-				|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile);
-	}
-
-	protected void addTerminalVariables(Node node, final Frame frame) {
-		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
-		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
-			if (!asList(frame.slots()).contains(META_TYPE.toLowerCase()))
-				frame.addSlot(META_TYPE, languageWorkingPackage + DOT + metaType(node));
-		}
-		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
-		addFacetVariables(node, frame);
-		if (!asList(frame.slots()).contains(CONTAINER))
-			frame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
-	}
-
-	private boolean isRequired(Node node, Constraint.Parameter allow) {
-		Node n = node.isReference() ? node.destinyOfReference() : node;
-		while (n != null) {
-			for (Parameter parameter : n.parameters())
-				if (parameter.name().equals(allow.name())) return false;
-			n = n.parent();
-		}
-		return true;
-	}
-
-	private void addFacetVariables(Node node, Frame frame) {
-		for (Facet facet : node.facets())
-			frame.addSlot(META_FACET, new Frame().addTypes(META_FACET).addSlot(NAME, facet.type()).addSlot(TYPE, metaType(facet)));
-		collectTerminalFacetVariables(node).forEach((key, value) -> value.forEach(c ->
-				addTerminalVariable(node, languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), key, languageWorkingPackage)));
-	}
-
-	private List<Constraint> collectTerminalCoreVariables(Node node) {
-		final Collection<Constraint> allows = language.constraints(node.type());
-		if (allows == null) return emptyList();
-		return allows.stream().filter(allow -> allow instanceof Constraint.Parameter &&
-				((Constraint.Parameter) allow).flags().contains(Terminal) &&
-				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
-	}
-
-	private Map<String, List<Constraint>> collectTerminalFacetVariables(Node node) {
-		return collectFacetConstrains(language.constraints(node.type()), node);
+		return container != null ? container.facetTarget() : null;
 	}
 
 	private static Map<String, List<Constraint>> collectFacetConstrains(List<Constraint> constraints, Node node) {
@@ -155,6 +70,89 @@ public abstract class Generator implements TemplateTags {
 				!isRedefined((Constraint.Parameter) o, node.variables());
 	}
 
+	private static boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
+		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
+		return false;
+	}
+
+	protected void addComponents(Node node, FrameBuilderContext context) {
+		if (node instanceof NodeReference) return;
+		node.components().stream().
+				filter(component -> !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
+				forEach(component -> context.add(NODE, FrameBuilder.from(context).append(component).type(OWNER).toFrame()));
+	}
+
+	protected String getType(Variable variable) {
+		if (variable instanceof VariableReference)
+			return cleanQn(getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
+		else if (Primitive.WORD.equals(variable.type()))
+			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
+					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getExternalWordClass()) :
+					Format.firstUpperCase().format(variable.name()).toString();
+		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
+		else return variable.type().javaName();
+	}
+
+	protected FrameBuilder ruleToFrame(Rule rule) {
+		if (rule == null) return null;
+		final FrameBuilder frameBuilder = new FrameBuilder();
+		frameBuilder.put(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		final FrameBuilder builder = frameBuilder.append(rule);
+		if (rule instanceof VariableCustomRule) {
+			builder.add(QN, ((VariableCustomRule) rule).qualifiedName());
+			if (((VariableCustomRule) rule).isMetric()) {
+				builder.type(METRIC);
+				builder.add(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
+			}
+		}
+		return builder;
+	}
+
+	protected Predicate<Tag> isLayerInterface() {
+		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
+				|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile);
+	}
+
+	protected void addTerminalVariables(Node node, final FrameBuilderContext context) {
+		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
+		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
+			if (!context.contains(META_TYPE))
+				context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
+		}
+		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), context, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
+		addFacetVariables(node, context);
+		if (!context.contains(CONTAINER)) context.add(CONTAINER, node.name() + facetName(node.facetTarget()));
+	}
+
+	private boolean isRequired(Node node, Constraint.Parameter allow) {
+		Node n = node.isReference() ? node.destinyOfReference() : node;
+		while (n != null) {
+			for (Parameter parameter : n.parameters())
+				if (parameter.name().equals(allow.name())) return false;
+			n = n.parent();
+		}
+		return true;
+	}
+
+	private void addFacetVariables(Node node, FrameBuilderContext context) {
+		for (Facet facet : node.facets())
+			context.add(META_FACET, new FrameBuilder(META_FACET).add(NAME, facet.type()).add(TYPE, metaType(facet)).toFrame());
+		collectTerminalFacetVariables(node).forEach((key, value) -> value.forEach(c ->
+				addTerminalVariable(node, languageWorkingPackage + "." + node.type(), context, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), key, languageWorkingPackage)));
+	}
+
+	private List<Constraint> collectTerminalCoreVariables(Node node) {
+		final Collection<Constraint> allows = language.constraints(node.type());
+		if (allows == null) return emptyList();
+		return allows.stream().filter(allow -> allow instanceof Constraint.Parameter &&
+				((Constraint.Parameter) allow).flags().contains(Terminal) &&
+				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
+	}
+
+	private Map<String, List<Constraint>> collectTerminalFacetVariables(Node node) {
+		return collectFacetConstrains(language.constraints(node.type()), node);
+	}
+
 	private String metaType(Facet facet) {
 		for (String key : language.catalog().keySet())
 			if (key.startsWith(facet.type() + ":"))
@@ -167,57 +165,49 @@ public abstract class Generator implements TemplateTags {
 		return type.contains(":") ? type.split(":")[0].toLowerCase() + "." + node.type().replace(":", "") : node.type();
 	}
 
-	private static boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
-		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
-		return false;
-	}
-
-	private void addTerminalVariable(Node node, String type, Frame frame, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
-		Frame varFrame = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
-		if (!asList(varFrame.slots()).contains(CONTAINER))
-			varFrame.addSlot(CONTAINER, node.name() + facetName(node.facetTarget()));
-		frame.addSlot(VARIABLE, varFrame);
+	private void addTerminalVariable(Node node, String type, FrameBuilderContext context, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
+		FrameBuilder varBuilder = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
+		if (!varBuilder.contains(CONTAINER))
+			varBuilder.add(CONTAINER, node.name() + facetName(node.facetTarget()));
+		context.add(VARIABLE, varBuilder.toFrame());
 	}
 
 	protected String facetName(FacetTarget facetTarget) {
 		return facetTarget != null ? facetTarget.targetNode().name().replace(".", "") : "";
 	}
 
-	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {
-		final Frame frame = new Frame();
-		frame.addTypes(TypesProvider.getTypes(parameter, isRequired));
-		if (inherited) frame.addTypes(INHERITED);
-		frame.addTypes(META_TYPE);
-		frame.addTypes(TARGET);
-		frame.addSlot(NAME, parameter.name());
-		frame.addSlot(CONTAINER_NAME, containerName);
-		frame.addSlot(QN, type);
-		frame.addSlot(LANGUAGE, language.languageName().toLowerCase());
-		frame.addSlot(WORKING_PACKAGE, workingPackage);
-		frame.addSlot(TYPE, type(parameter));
+	private FrameBuilder createFrame(final Constraint.Parameter parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {
+		final FrameBuilder builder = new FrameBuilder(TypesProvider.getTypes(parameter, isRequired)).type(META_TYPE).type(TARGET);
+		if (inherited) builder.type(INHERITED);
+		builder.add(NAME, parameter.name());
+		builder.add(CONTAINER_NAME, containerName);
+		builder.add(QN, type);
+		builder.add(LANGUAGE, language.languageName().toLowerCase());
+		builder.add(WORKING_PACKAGE, workingPackage);
+		builder.add(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
 			final WordRule rule = (WordRule) parameter.rule();
 			final List<String> words = rule.words();
 			if (rule.isCustom()) {
-				frame.addTypes(OUTDEFINED);
-				frame.addSlot(EXTERNAL_CLASS, rule.externalWordClass());
+				builder.type(OUTDEFINED);
+				builder.add(EXTERNAL_CLASS, rule.externalWordClass());
 			}
-			frame.addSlot(WORD_VALUES, words.toArray(new String[words.size()]));
+			builder.add(WORD_VALUES, (Object[]) words.toArray(new Object[0]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION)) {
 			final NativeRule rule = (NativeRule) parameter.rule();
 			final String signature = rule.signature();
 			NativeExtractor extractor = new NativeExtractor(signature);
-			frame.addSlot("methodName", extractor.methodName());
-			frame.addSlot("parameters", extractor.parameters());
-			frame.addSlot("returnType", extractor.returnType());
-			frame.addSlot(RULE, rule.interfaceClass());
-			frame.addSlot(OUT_LANGUAGE, parameter.scope());
+			builder.add("methodName", extractor.methodName());
+			builder.add("parameters", extractor.parameters());
+			builder.add("returnType", extractor.returnType());
+			builder.add(RULE, rule.interfaceClass());
+			builder.add(OUT_LANGUAGE, parameter.scope());
 			imports.addAll(new ArrayList<>(rule.imports()));
 		}
-		if (!asList(frame.slots()).contains(OUT_LANGUAGE.toLowerCase()))
-			frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
-		return frame;
+		if (!builder.contains(OUT_LANGUAGE))
+			builder.add(OUT_LANGUAGE, outDsl.toLowerCase());
+		return builder;
 	}
 
 	private String type(Constraint.Parameter parameter) {
@@ -230,16 +220,18 @@ public abstract class Generator implements TemplateTags {
 		return imports;
 	}
 
-	protected void addParent(Frame frame, Node node) {
+	protected void addParent(Node node, FrameBuilderContext context) {
 		final Node parent = node.parent();
-		if (parent != null) frame.addSlot(PARENT, cleanQn(getQn(parent, workingPackage)));
-		final List<String> slots = asList(frame.slots());
-		if ((slots.contains(CREATE) || slots.contains(NODE)) || !node.children().isEmpty()) {
-			frame.addSlot(PARENT_SUPER, node.parent() != null);
-			if (node.parent() != null) frame.addSlot("parentName", cleanQn(getQn(parent, workingPackage)));
+		if (parent == null) {
+			if (!node.children().isEmpty() || context.contains(CREATE) || context.contains(NODE)) context.add(PARENT_SUPER, false);
+			return;
 		}
-		if ((slots.contains(NODE)) && node.parent() != null && !node.parent().components().isEmpty()) {
-			frame.addSlot("parentClearName", cleanQn(getQn(parent, workingPackage)));
+		String parentQN = cleanQn(getQn(parent, workingPackage));
+		context.add(PARENT, parentQN);
+		if (context.contains(CREATE) || context.contains(NODE)) {
+			context.add(PARENT_SUPER, true).add("parentName", parentQN);
 		}
+		if ((context.contains(NODE)) && !node.parent().components().isEmpty())
+			context.add("parentClearName", parentQN);
 	}
 }
