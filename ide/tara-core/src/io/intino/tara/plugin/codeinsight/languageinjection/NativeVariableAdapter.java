@@ -20,8 +20,8 @@ class NativeVariableAdapter implements Adapter<Variable> {
 	@Override
 	public void adapt(Variable source, FrameBuilderContext context) {
 		if (source.type() == null) return;
-		context.type(source.type().getName());
-		for (Tag tag : source.flags()) context.type(tag.name().toLowerCase());
+		context.add(source.type().getName());
+		for (Tag tag : source.flags()) context.add(tag.name().toLowerCase());
 		createFrame(context, source);
 	}
 

@@ -195,7 +195,7 @@ public class NativeFormatter implements TemplateTags {
 		final String signature = getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
 		imports.addAll(collectImports((Valued) parameter));
-		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		context.add(IMPORTS, imports.toArray(new String[0]));
 		context.add(NAME, parameter.name());
 		context.add(GENERATED_LANGUAGE, workingPackage.toLowerCase());
 		context.add(SCOPE, parameter.scope());
@@ -222,9 +222,9 @@ public class NativeFormatter implements TemplateTags {
 
 	void fillFrameExpressionParameter(FrameBuilderContext context, Parameter parameter, String body, boolean isMultiline) {
 		final List<String> imports = new ArrayList<>(collectImports((Valued) parameter));
-		context.type(NATIVE);
+		context.add(NATIVE);
 		context.add(NAME, parameter.name());
-		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		context.add(IMPORTS, imports.toArray(new String[0]));
 		context.add(GENERATED_LANGUAGE, workingPackage);
 		context.add(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, workingPackage));
 		context.add(TYPE, typeFrame(type(parameter), isMultiple(parameter)));

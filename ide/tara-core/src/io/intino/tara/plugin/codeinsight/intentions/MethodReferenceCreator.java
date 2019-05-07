@@ -77,7 +77,7 @@ public class MethodReferenceCreator {
 		FrameBuilder builder = new FrameBuilder("method");
 		Size size = valued instanceof Parameter ? parameterSize() : ((Variable) valued).size();
 		final String type = type();
-		if (size != null && !size.isSingle() && !"void".equals(type)) builder.type("multiple");
+		if (size != null && !size.isSingle() && !"void".equals(type)) builder.add("multiple");
 		builder.add("name", reference);
 		builder.add("type", type);
 		final String[] parameters = findParameters();

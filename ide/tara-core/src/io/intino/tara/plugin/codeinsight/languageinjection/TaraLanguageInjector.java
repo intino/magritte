@@ -49,13 +49,13 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	@Override
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
-		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
+		if (!(host instanceof Expression) || !host.isValidHost()) return;
 		final Language language = injectionLanguage(host);
 		if (language == null) return;
 		resolve(host);
 		injectionPlacesRegistrar.addPlace(language,
 				getRangeInsideHost((Expression) host),
-				createPrefix((Expression) host, language),
+				createPrefix((Expression) host),
 				(isWithSemicolon((Expression) host) ? ";" : "") + suffix());
 	}
 
@@ -89,7 +89,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return new TextRange(i, i + value.length());
 	}
 
-	private String createPrefix(Expression expression, Language injectionLanguage) {
+	private String createPrefix(Expression expression) {
 		resolve(expression);
 		final io.intino.tara.Language language = TaraUtil.getLanguage(expression.getOriginalElement().getContainingFile());
 		final Module module = moduleOf(expression);
@@ -107,7 +107,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 				.put(Parameter.class, new NativeParameterAdapter(module, workingPackage, language))
 				.put(Variable.class, new NativeVariableAdapter(module, workingPackage, language))
 				.append(valued);
-		return builder.type(isFunction(valued) ? valued.type().getName() : Tag.Reactive.name()).toFrame();
+		return builder.add(isFunction(valued) ? valued.type().getName() : Tag.Reactive.name()).toFrame();
 	}
 
 	private boolean isFunction(Valued valued) {

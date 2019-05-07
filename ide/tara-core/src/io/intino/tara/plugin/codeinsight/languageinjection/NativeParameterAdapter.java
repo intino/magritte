@@ -25,11 +25,11 @@ class NativeParameterAdapter implements Adapter<Parameter> {
 	@Override
 	public void adapt(Parameter source, FrameBuilderContext context) {
 		if (source.type() == null) return;
-		context.type(source.type().getName());
-		source.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(context::type);
+		context.add(source.type().getName());
+		source.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(context::add);
 		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(source);
 		if (constraint != null)
-			constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(context::type);
+			constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(context::add);
 		createFrame(context, source);
 	}
 
