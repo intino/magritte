@@ -30,7 +30,7 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 
 	@Override
 	public void adapt(Parameter parameter, FrameBuilderContext context) {
-		Arrays.stream(TypesProvider.getTypes(parameter)).forEach(context::type);
+		Arrays.stream(TypesProvider.getTypes(parameter)).forEach(context::add);
 		createFrame(context, parameter);
 	}
 

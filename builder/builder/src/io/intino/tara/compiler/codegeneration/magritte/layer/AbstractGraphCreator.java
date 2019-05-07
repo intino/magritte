@@ -42,10 +42,10 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 
 	private Frame createRootNodeFrame(Node node, Size size) {
 		FrameBuilder builder = new FrameBuilder(NODE);
-		if (size.isSingle()) builder.type(SINGLE);
-		if (node.isTerminal()) builder.type(CONCEPT);
-		if (node.is(Instance)) builder.type(INSTANCE);
-		if (node.isAbstract()) builder.type(ABSTRACT);
+		if (size.isSingle()) builder.add(SINGLE);
+		if (node.isTerminal()) builder.add(CONCEPT);
+		if (node.is(Instance)) builder.add(INSTANCE);
+		if (node.isAbstract()) builder.add(ABSTRACT);
 		builder.add(QN, getQn(node));
 		builder.add(OUT_LANGUAGE, outDsl);
 		builder.add(STASH_QN, NameFormatter.stashQn(node, workingPackage.toLowerCase()).replace(":", ""));

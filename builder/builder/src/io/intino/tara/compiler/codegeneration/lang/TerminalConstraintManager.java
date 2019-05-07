@@ -78,7 +78,7 @@ class TerminalConstraintManager implements TemplateTags {
 		final FrameBuilder primitiveFrameBuilder = new FrameBuilder();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences(constraint);
-			primitiveFrameBuilder.type(REFERENCE);
+			primitiveFrameBuilder.add(REFERENCE);
 		}
 		renderPrimitive(primitiveFrameBuilder, parameters, TemplateTags.CONSTRAINT);
 		constraints.add(CONSTRAINT, primitiveFrameBuilder.toFrame());
@@ -94,19 +94,19 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void renderPrimitive(FrameBuilder builder, Object[] parameters, String relation) {
-		builder.type(relation).type(PARAMETER);
+		builder.add(relation).add(PARAMETER);
 		fillParameterFrame(parameters, builder);
 	}
 
 	private void fillParameterFrame(Object[] parameters, FrameBuilder builder) {
 		builder.add(NAME, parameters[0]).
 				add(TYPE, parameters[1]).
-				add(SIZE, (Frame) parameters[2]).
+				add(SIZE, parameters[2]).
 				add(FACET, parameters[3]).
 				add(POSITION, parameters[4]).
 				add(SCOPE, parameters[5]);
-		if (parameters[6] != null) builder.add(RULE, (Frame) parameters[6]);
-		builder.add(TAGS, (Object[]) parameters[7]);
+		if (parameters[6] != null) builder.add(RULE, parameters[6]);
+		builder.add(TAGS, parameters[7]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
@@ -152,7 +152,7 @@ class TerminalConstraintManager implements TemplateTags {
 	private void fillCustomRule(VariableCustomRule rule, FrameBuilder builder) {
 		builder.add(QN, rule.loadedClass().getName());
 		if (rule.isMetric()) {
-			builder.type(METRIC);
+			builder.add(METRIC);
 			builder.add(DEFAULT, rule.getDefaultUnit());
 		}
 	}
@@ -160,7 +160,7 @@ class TerminalConstraintManager implements TemplateTags {
 	private void fillInheritedCustomRule(Rule rule, FrameBuilder builder) {
 		builder.add(QN, rule.getClass().getName());
 		if (rule instanceof Metric) {
-			builder.type(METRIC);
+			builder.add(METRIC);
 			builder.add(DEFAULT, ((Enum) rule).name());
 		}
 	}
@@ -171,7 +171,7 @@ class TerminalConstraintManager implements TemplateTags {
 		final Frame sizeOfTerminal = sizeOfTerminal(component);
 		if (sizeOfTerminal == null) return;
 		constraintBuilder.add(SIZE, sizeOfTerminal);
-		constraintBuilder.add(TAGS, (Object[]) component.annotations().stream().map(Enum::name).toArray(Object[]::new));
+		constraintBuilder.add(TAGS, component.annotations().stream().map(Enum::name).toArray(Object[]::new));
 		if (component instanceof Constraint.OneOf)
 			((Constraint.OneOf) component).components().forEach(c -> addComponent(constraintBuilder, c));
 		builderContext.add(CONSTRAINT, constraintBuilder.toFrame());
@@ -184,7 +184,7 @@ class TerminalConstraintManager implements TemplateTags {
 		final Size size = component.container().sizeOf(component);
 		if (size.min() == 0 && size.max() == 0) return;
 		builder.add(SIZE, new FrameBuilder().append(size).toFrame());
-		builder.add(TAGS, (Object[]) component.flags().stream().filter(f -> !Tag.Required.equals(f)).map(Enum::name).toArray(Object[]::new));
+		builder.add(TAGS, component.flags().stream().filter(f -> !Tag.Required.equals(f)).map(Enum::name).toArray(Object[]::new));
 		frame.add(CONSTRAINT, builder.toFrame());
 	}
 

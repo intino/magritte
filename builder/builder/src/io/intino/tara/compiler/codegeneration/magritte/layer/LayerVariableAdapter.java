@@ -37,7 +37,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 
 	@Override
 	public void adapt(Variable variable, FrameBuilderContext context) {
-		TypesProvider.getTypes(variable, modelLevel).forEach(context::type);
+		TypesProvider.getTypes(variable, modelLevel).forEach(context::add);
 		context.add(NAME, variable.name());
 		context.add(OUT_LANGUAGE, outDsl.toLowerCase());
 		context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
@@ -60,10 +60,10 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private void fillWordVariable(Variable variable, FrameBuilderContext context) {
 		if (variable.rule() instanceof VariableCustomRule || variable.rule() instanceof NativeCustomWordRule ||
 				variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
-			context.type(OUTDEFINED);
+			context.add(OUTDEFINED);
 		else {
 			final List<String> allowedWords = (variable.rule() instanceof NativeRule) ? ((NativeWordRule) variable.rule()).words() : ((WordRule) variable.rule()).words();
-			context.add(WORDS, (Object[]) allowedWords.toArray(new Object[0]));
+			context.add(WORDS, allowedWords.toArray(new Object[0]));
 		}
 	}
 
@@ -72,8 +72,8 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private void addValues(Variable variable, FrameBuilderContext context) {
-		if (Primitive.WORD.equals(variable.type())) context.add(WORD_VALUES, (Object[]) getWordValues(variable));
-		else if (Primitive.STRING.equals(variable.type())) context.add(VALUES, (Object[]) asString(variable.values()));
+		if (Primitive.WORD.equals(variable.type())) context.add(WORD_VALUES, getWordValues(variable));
+		else if (Primitive.STRING.equals(variable.type())) context.add(VALUES, asString(variable.values()));
 		else context.add(VALUES, variable.values().toArray());
 	}
 

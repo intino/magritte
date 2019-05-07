@@ -79,7 +79,7 @@ public abstract class Generator implements TemplateTags {
 		if (node instanceof NodeReference) return;
 		node.components().stream().
 				filter(component -> !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
-				forEach(component -> context.add(NODE, FrameBuilder.from(context).append(component).type(OWNER).toFrame()));
+				forEach(component -> context.add(NODE, FrameBuilder.from(context).append(component).add(OWNER).toFrame()));
 	}
 
 	protected String getType(Variable variable) {
@@ -101,7 +101,7 @@ public abstract class Generator implements TemplateTags {
 		if (rule instanceof VariableCustomRule) {
 			builder.add(QN, ((VariableCustomRule) rule).qualifiedName());
 			if (((VariableCustomRule) rule).isMetric()) {
-				builder.type(METRIC);
+				builder.add(METRIC);
 				builder.add(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
 			}
 		}
@@ -177,8 +177,8 @@ public abstract class Generator implements TemplateTags {
 	}
 
 	private FrameBuilder createFrame(final Constraint.Parameter parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {
-		final FrameBuilder builder = new FrameBuilder(TypesProvider.getTypes(parameter, isRequired)).type(META_TYPE).type(TARGET);
-		if (inherited) builder.type(INHERITED);
+		final FrameBuilder builder = new FrameBuilder(TypesProvider.getTypes(parameter, isRequired)).add(META_TYPE).add(TARGET);
+		if (inherited) builder.add(INHERITED);
 		builder.add(NAME, parameter.name());
 		builder.add(CONTAINER_NAME, containerName);
 		builder.add(QN, type);
@@ -189,7 +189,7 @@ public abstract class Generator implements TemplateTags {
 			final WordRule rule = (WordRule) parameter.rule();
 			final List<String> words = rule.words();
 			if (rule.isCustom()) {
-				builder.type(OUTDEFINED);
+				builder.add(OUTDEFINED);
 				builder.add(EXTERNAL_CLASS, rule.externalWordClass());
 			}
 			builder.add(WORD_VALUES, (Object[]) words.toArray(new Object[0]));

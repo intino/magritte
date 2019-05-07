@@ -64,8 +64,8 @@ public class NativesCreator {
 			FrameBuilder builder = new FrameBuilder();
 			builder.put(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.level(), conf.workingPackage(), conf.language(l -> l.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
-			final FrameBuilder frameBuilder = builder.append(p).type(conf.nativeLanguage());
-			if (FUNCTION.equals(p.type())) frameBuilder.type(p.type().name());
+			final FrameBuilder frameBuilder = builder.append(p).add(conf.nativeLanguage());
+			if (FUNCTION.equals(p.type())) frameBuilder.add(p.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.render(frameBuilder.toFrame()));
 			if (!originToDestiny.containsKey(p.file())) originToDestiny.put(destiny.getAbsolutePath(), p.file());
 		});
@@ -79,8 +79,8 @@ public class NativesCreator {
 			FrameBuilder builder = new FrameBuilder();
 			builder.put(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
-			final FrameBuilder frameBuilder = builder.append(variable).type(conf.nativeLanguage());
-			if (FUNCTION.equals(variable.type())) frameBuilder.type(variable.type().name());
+			final FrameBuilder frameBuilder = builder.append(variable).add(conf.nativeLanguage());
+			if (FUNCTION.equals(variable.type())) frameBuilder.add(variable.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.render(frameBuilder.toFrame()));
 			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
 		});

@@ -167,7 +167,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		final Rule rule = parameter.rule();
 		if (rule == null) return null;
 		final FrameBuilder builder = ruleToFrame(rule);
-		return builder.type(parameter.type().getName()).toFrame();
+		return builder.add(parameter.type().getName()).toFrame();
 	}
 
 	private String[] getFlags(Variable variable) {

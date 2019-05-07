@@ -46,7 +46,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	@Override
 	public void adapt(Node node, FrameBuilderContext context) {
 		this.context = context;
-		getTypes(node, language).forEach(context::type);
+		getTypes(node, language).forEach(context::add);
 		context.add(MODEL_TYPE, level == Level.Platform ? PLATFORM : PRODUCT);
 		addNodeInfo(node, context);
 		addVariables(node, context);
@@ -73,7 +73,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if (node.isAbstract() || node.is(Decorable)) context.add(ABSTRACT, true);
 		if (node.is(Decorable)) context.add(DECORABLE, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> context.add(FLAG, tag));
-		if (node.parent() != null) context.type(CHILD);
+		if (node.parent() != null) context.add(CHILD);
 		if (node.components().stream().anyMatch(c -> c.is(Instance)))
 			context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 	}
@@ -87,13 +87,13 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 					List<FrameBuilder> children = new ArrayList<>();
 					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
 							forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
-					for (FrameBuilder child : children) context.add(CREATE, child.type(NODE).type(OWNER).toFrame());
+					for (FrameBuilder child : children) context.add(CREATE, child.add(NODE).add(OWNER).toFrame());
 				});
 	}
 
 	private FrameBuilder createFrame(Node node) {
 		final FrameBuilder builder = new FrameBuilder(REFERENCE, CREATE);
-		getTypes(node, language).forEach(builder::type);
+		getTypes(node, language).forEach(builder::add);
 		addName(builder, node);
 		addVariables(node, builder);
 		return builder;
@@ -140,7 +140,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			builder.add(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
 			builder.add(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
 			facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> builder.add(VARIABLE,
-					FrameBuilder.from(context).append(variable).type(REQUIRED).add(CONTAINER, node.name() + facetName(node.facetTarget())).toFrame()));
+					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, node.name() + facetName(node.facetTarget())).toFrame()));
 			context.add(AVAILABLE_FACET, builder.toFrame());
 		}
 	}
@@ -161,7 +161,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private void addVariables(Node node, FrameBuilderContext context) {
 		node.variables().forEach(v -> {
 			final FrameBuilder builder = FrameBuilder.from(this.context)
-					.type(OWNER)
+					.add(OWNER)
 					.append(v)
 					.add(CONTAINER, node.name() + facetName(node.facetTarget()));
 			context.add(VARIABLE, builder.toFrame());

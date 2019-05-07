@@ -41,7 +41,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 
 	public void adapt(FacetTarget target, FrameBuilderContext context) {
 		this.context = context;
-		context.type("nodeimpl");
+		context.add("nodeimpl");
 		context.add(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : PRODUCT);
 		context.add(OUT_LANGUAGE, outDSL).add(WORKING_PACKAGE, workingPackage);
 		if (target.owner().isAbstract() || target.owner().is(Decorable)) context.add(ABSTRACT, true);
@@ -96,8 +96,8 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addFacetTarget(FacetTarget target) {
-		final FrameBuilder builder = new FrameBuilder().type(FACET_TARGET).add(NAME, target.targetNode().name()).add(QN, buildQN(target.targetNode())).add(OUT_LANGUAGE, outDSL);
-		if (target.owner().isSub() && target.owner().parent() != null) builder.type(OVERRIDEN);
+		final FrameBuilder builder = new FrameBuilder().add(FACET_TARGET).add(NAME, target.targetNode().name()).add(QN, buildQN(target.targetNode())).add(OUT_LANGUAGE, outDSL);
+		if (target.owner().isSub() && target.owner().parent() != null) builder.add(OVERRIDEN);
 		context.add(FACET_TARGET, builder.toFrame());
 	}
 
@@ -108,16 +108,16 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	private void addVariables(FacetTarget target) {
 		target.owner().variables().stream().
 				filter(variable -> !variable.isInherited()).
-				forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).type(OWNER).add(CONTAINER, name(target)).toFrame()));
+				forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(OWNER).add(CONTAINER, name(target)).toFrame()));
 		target.targetNode().variables().stream().
 				filter(variable -> !variable.isInherited() && !isOverriden(target.owner(), variable)).
-				forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).type(TARGET).add(CONTAINER, name(target)).toFrame()));
+				forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(TARGET).add(CONTAINER, name(target)).toFrame()));
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
 			FacetTarget targetOf = findTargetOf(c.node(), target.targetNode());
 			if (targetOf != null && !targetOf.targetNode().equals(target.targetNode()))
 				targetOf.owner().variables()
 						.forEach(variable ->
-								context.add(VARIABLE, FrameBuilder.from(context).append(variable).type(TARGET).add(CONTAINER, name(target)).toFrame()));
+								context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(TARGET).add(CONTAINER, name(target)).toFrame()));
 		});
 		addTerminalVariables(target.owner(), context);
 	}
@@ -132,9 +132,9 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 					if (!isOverriden(component, target)) { //TODO
 						final FrameBuilder builder = new FrameBuilder(TARGET);
 						if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (component.destinyOfReference().parent() != null))
-							builder.type(INHERITED).add(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
+							builder.add(INHERITED).add(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
 						builder.add(TARGET_CONTAINER, target.targetNode().name());
-						if (target.targetNode().sizeOf(component).isSingle()) builder.type(SINGLE);
+						if (target.targetNode().sizeOf(component).isSingle()) builder.add(SINGLE);
 						context.add(NODE, builder.toFrame());
 					}
 				}

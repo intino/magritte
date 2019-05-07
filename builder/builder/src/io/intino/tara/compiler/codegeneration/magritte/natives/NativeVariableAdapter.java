@@ -26,7 +26,7 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 
 	@Override
 	public void adapt(Variable variable, FrameBuilderContext context) {
-		TypesProvider.getTypes(variable, Platform).forEach(context::type);
+		TypesProvider.getTypes(variable, Platform).forEach(context::add);
 		createFrame(variable, context);
 	}
 

@@ -329,7 +329,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public void fillFrameNativeVariable(FrameBuilderContext context, Variable variable, Object body) {
-		context.type(NATIVE);
+		context.add(NATIVE);
 		context.add(FILE, variable.file());
 		context.add(LINE, variable.line());
 		context.add(COLUMN, variable.column());
@@ -349,7 +349,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public void fillFrameNativeParameter(FrameBuilderContext context, Parameter parameter, String body) {
-		context.type(NATIVE);
+		context.add(NATIVE);
 		context.add(FILE, parameter.file());
 		context.add(LINE, parameter.line());
 		context.add(COLUMN, parameter.column());
