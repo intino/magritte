@@ -71,6 +71,7 @@ class StashReader {
         List<Node> result = new ArrayList<>();
         for (io.intino.tara.io.Node rawNode : rawNodes) {
             Node node = graph.node$(rawNode.name);
+            node.birthMark(rawNode.hashCode());
             node.owner(parent);
             loadNode(node, rawNode);
             parent.add(node);
