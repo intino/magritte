@@ -205,7 +205,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private void createMetaFacetConstraint(Node node, List<FacetTarget.Constraint> with, FrameBuilder constraints) {
 		FrameBuilder builder = new FrameBuilder(CONSTRAINT, METAFACET).add(VALUE, node.qualifiedName());
 		if (with != null && !with.isEmpty())
-			builder.add(WITH, (Object[]) with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
+			builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
 		constraints.add(CONSTRAINT, builder.toFrame());
 	}
 

@@ -181,5 +181,4 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 			else flags.add(tag);
 		return flags.stream().map(Enum::name).toArray(String[]::new);
 	}
-
 }

@@ -85,11 +85,11 @@ def type(constraint) type(parameter) trigger(constraint)
 end
 
 def type(constraint) type(metafacet) trigger(constraint)
-	metaFacet("$this"[, $with+quoted...[, ]])
+	metaFacet("$value"[, $with+quoted...[, ]])
 end
 
 def type(constraint) type(facet) trigger(constraint)
-	facet("$this"[, $terminal?, false][, $required?, false], new String$[]{$with+quoted...[, ]}, new String$[]{$without+quoted...[, ]})[.has($constraint...[, ])]
+	facet("$value"[, $terminal?, false][, $required?, false], new String$[]{$with+quoted...[, ]}, new String$[]{$without+quoted...[, ]})[.has($constraint...[, ])]
 end
 
 def type(constraint) type(oneOf) trigger(constraint)

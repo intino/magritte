@@ -128,7 +128,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
-			renderDecorable(map, node, layerFrame);
+			renderFrame(map, node, layerFrame);
 		}
 	}
 
@@ -136,10 +136,10 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
-		renderDecorable(map, node, layerFrame);
+		renderFrame(map, node, layerFrame);
 	}
 
-	private void renderDecorable(Map<String, Map<String, String>> map, Node node, Map.Entry<String, Frame> layerFrame) {
+	private void renderFrame(Map<String, Map<String, String>> map, Node node, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
 			layerFrame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
 			map.get(node.file()).put(srcDestiny(layerFrame), render(layerFrame));

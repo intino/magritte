@@ -130,7 +130,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	private void addTargetComponents(FacetTarget target) {
 		target.targetNode().components().forEach((Node component) -> {
 					if (!isOverriden(component, target)) { //TODO
-						final FrameBuilder builder = new FrameBuilder(TARGET);
+						final FrameBuilder builder = FrameBuilder.from(context).append(component).add(TARGET);
 						if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (component.destinyOfReference().parent() != null))
 							builder.add(INHERITED).add(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
 						builder.add(TARGET_CONTAINER, target.targetNode().name());
