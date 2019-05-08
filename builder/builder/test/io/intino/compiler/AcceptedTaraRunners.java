@@ -92,7 +92,14 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void konos_M2() throws InterruptedException {
+	public void konos_M1() {
+		System.out.println(Instant.now().toString());
+		main(new String[]{home + "sandbox/confFiles/konos/m1.txt"});
+		System.out.println(Instant.now().toString());
+	}
+
+	@Test
+	public void konos_M2() {
 		System.out.println(Instant.now().toString());
 		main(new String[]{home + "sandbox/confFiles/konos/m2.txt"});
 		System.out.println(Instant.now().toString());

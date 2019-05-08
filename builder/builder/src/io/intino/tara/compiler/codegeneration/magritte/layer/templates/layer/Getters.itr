@@ -41,21 +41,21 @@ def type(Variable & Word) type(target | metaType) !type(owner | concept) attribu
 end
 
 def type(Variable & multiple & final) type(target | metaType) !type(owner | concept) attribute(name) trigger(getter)
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName());
 	}
 
-	public $type+fullType $name+FirstLowerCase+javaValidName(int index) {
+	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
 		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
 	}
 end
 
 def type(Variable) !type(owner | concept) type(target | metaType) attribute(name) type(multiple) trigger(getter)
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
 	}
 
-	public $type+fullType $name+FirstLowerCase+javaValidName(int index) {
+	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
 		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
 	}
 end
@@ -64,6 +64,9 @@ def type(Variable & function) type(target | metaType) !type(owner) attribute(nam
 	public $returnType $name+FirstLowerCase+javaValidName($parameters)[ throws $exception...[, ]] {
 		$returnType+isReturn _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName($parameters+WithOutType);
 	}
+end
+
+def condition(t -> t.frame().frames("returnType").next().value().equals("ddldld"))
 end
 
 def type(Variable & concept & multiple & target & final) attribute(name) !type(inherited & owner) trigger(getter)
@@ -93,7 +96,7 @@ def type(Variable) type(concept) !type(owner) type(target) attribute(name) !type
 end
 
 def type(Variable & target) !type(owner | concept) attribute(name) trigger(getter)
-	public $type+variableType $name+FirstLowerCase+javaValidName() {
+	public $type+lowerCase+variableType $name+FirstLowerCase+javaValidName() {
 		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
 	}
 end
@@ -212,13 +215,13 @@ def type(variable & word) !type(outDefined | inherited | overriden | reactive) t
 end
 
 def type(variable & reactive & multiple) !type(inherited | overriden) trigger(getter)
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName.value();
 	}
 end
 
 def type(variable & reactive) !type(inherited | overriden) trigger(getter)
-	public $type+variableType $name+FirstLowerCase+javaValidName() {
+	public $type+lowerCase+variableType $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName.value();
 	}
 end
@@ -229,57 +232,57 @@ def type(variable & function) !type(inherited | overriden) trigger(getter)
 	}
 end
 
-def !attribute(void) trigger(isReturn)
+def !attribute(this:void) trigger(isReturn)
 	return
 end
 
-def attribute(void) trigger(isReturn)
+def attribute(this:void) trigger(isReturn)
 end
 
 def type(Variable & multiple & owner) !type(inherited | overriden | outdefined) trigger(getter)
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName;
 	}
 
-	public $type+fullType $name+FirstLowerCase+javaValidName(int index) {
+	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
 		return $name+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+fullType> predicate) {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
 		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Variable & multiple & owner & final) !type(inherited | overriden) trigger(getter)
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return java.util.Collections.unmodifiableList($name+FirstLowerCase+javaValidName);
 	}
 
-	public $type+fullType $name+FirstLowerCase+javaValidName(int index) {
+	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
 		return $name+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+fullType> predicate) {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
 		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Variable & multiple & owner) !type(inherited | overriden | reactive) trigger(getter)
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName;
 	}
 
-	public $type+fullType $name+FirstLowerCase+javaValidName(int index) {
+	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
 		return $name+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+fullType> predicate) {
+	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
 		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Variable & owner) !type(inherited | overriden | reactive) trigger(getter)
-	public $type+variableType $name+FirstLowerCase+javaValidName() {
+	public $type+lowerCase+variableType $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName;
 	}
 end

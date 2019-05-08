@@ -1,7 +1,8 @@
 package io.intino.tara.compiler.core.operation;
 
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
-import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -13,7 +14,6 @@ import io.intino.tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
-import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
@@ -54,7 +54,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		this.conf = compilationUnit.configuration();
 		this.outFolder = conf.getOutDirectory();
 		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
-		this.template = Format.customize(LayerTemplate.create());
+		this.template = Format.customize(new LayerTemplate());
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			if (!model.level().equals(Solution)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
-		} catch (TaraException e) {
+		} catch (Throwable e) {
 			LOG.log(java.util.logging.Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
@@ -76,7 +76,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return new NativesCreator(model, conf).create();
 	}
 
-	private void createLayers(Model model) throws TaraException {
+	private void createLayers(Model model) {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
 		registerOutputs(layers, writeAbstractGraph(new AbstractGraphCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
@@ -106,14 +106,14 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String createGraph() {
-		Frame frame = new Frame().addTypes("wrapper");
-		frame.addSlot(OUT_LANGUAGE, conf.outDSL());
-		frame.addSlot(WORKING_PACKAGE, conf.workingPackage());
-		return Format.customize(GraphTemplate.create()).format(frame);
+		FrameBuilder builder = new FrameBuilder("wrapper");
+		builder.add(OUT_LANGUAGE, conf.outDSL());
+		builder.add(WORKING_PACKAGE, conf.workingPackage());
+		return Format.customize(new GraphTemplate()).render(builder.toFrame());
 	}
 
 
-	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
+	private Map<String, Map<String, String>> createLayerClasses(Model model) {
 		Map<String, Map<String, String>> map = new HashMap();
 		for (Node node : model.components()) {
 			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) continue;
@@ -127,22 +127,22 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		if (node.facetTarget() != null) {
 			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
-			renderDecorable(map, node, layerFrame);
+			map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
+			renderFrame(map, node, layerFrame);
 		}
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
 		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-		map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
-		renderDecorable(map, node, layerFrame);
+		map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
+		renderFrame(map, node, layerFrame);
 	}
 
-	private void renderDecorable(Map<String, Map<String, String>> map, Node node, Map.Entry<String, Frame> layerFrame) {
+	private void renderFrame(Map<String, Map<String, String>> map, Node node, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
 			layerFrame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
-			map.get(node.file()).put(srcDestiny(layerFrame), format(layerFrame));
+			map.get(node.file()).put(srcDestiny(layerFrame), render(layerFrame));
 		} else removeDecorable(layerFrame.getKey(), node.name());
 	}
 
@@ -235,8 +235,8 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return false;
 	}
 
-	private String format(Map.Entry<String, Frame> layerFrame) {
-		return template.format(layerFrame.getValue());
+	private String render(Map.Entry<String, Frame> layerFrame) {
+		return template.render(layerFrame.getValue());
 	}
 
 	private String prefix() {

@@ -2,7 +2,6 @@ package io.intino.tara.io;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Node {
 	public String name;
@@ -14,7 +13,6 @@ public class Node {
     public String toString() {
 		return "Node{" + name + '}';
 	}
-
 
 	@Override
 	public int hashCode() {

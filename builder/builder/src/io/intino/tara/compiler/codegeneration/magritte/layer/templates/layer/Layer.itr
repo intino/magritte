@@ -13,8 +13,7 @@ def type(Layer)
 	package $package+javaValidName+lowercase;
 
 	import $workingPackage+javaValidName+lowercase.*;
-	[$imports...[$NL]
-	]
+	[$imports...[$NL]]
 
 	$node
 end
@@ -125,31 +124,31 @@ end
 
 def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 	public[ $inner][ $abstract] class $decorable$name+javaValidName+FirstUpperCase[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
-		$variable+declaration...[$NL][
-		$node+declaration...[$NL]][
-		$facetTarget+declaration...[$NL]][
-		$constraint+declaration...[$NL]][
-		$metaType][
-		$metaFacet...[$NL]]
+		$variable+declaration...[$NL]
+		[$node+declaration...[$NL]]
+		[$facetTarget+declaration...[$NL]]
+		[$constraint+declaration...[$NL]]
+		[$metaType]
+		[$metaFacet...[$NL]]
 
 		public $decorable$name+javaValidName+FirstUpperCase(io.intino.tara.magritte.Node node) {
-			super(node);[
-			_metaType = a$$($metaType+typeInit.class);][
-			_$metaFacet+name = a$$($metaFacet+typeInit.class);]
-		}[
+			super(node);
+			[_metaType = a$$($metaType+typeInit.class);]
+			[_$metaFacet+name = a$$($metaFacet+typeInit.class);]
+		}
 
-		$variable+getter...[$NL$NL]][
+		[$variable+getter...[$NL$NL]]
 
-		$variable+setter...[$NL$NL]][
+		[$variable+setter...[$NL$NL]]
 
-		$node+getter...[$NL$NL]][
+		[$node+getter...[$NL$NL]]
 
-		$node+setter...[$NL$NL]][
+		[$node+setter...[$NL$NL]]
 
-		$availableFacet...[$NL$NL]][
-		$asCore][
+		[$availableFacet...[$NL$NL]]
+		[$asCore]
 
-		protected java.util.List<io.intino.tara.magritte.Node> componentList$$() {
+		[protected java.util.List<io.intino.tara.magritte.Node> componentList$$() {
 			java.util.Set<io.intino.tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList$$());
 			$node+componentList...[$NL]
 			return new java.util.ArrayList<>(components);
@@ -160,15 +159,15 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
 			$variable+list...[$NL]
 			return map;
-		}[
+		}
 
-		@Override
+		[@Override
 		protected void addNode$$(io.intino.tara.magritte.Node node) {
 			super.addNode$$(node);
 			$node+add...[$NL]
-		}][
+		}]
 
-		@Override
+		[@Override
         protected void removeNode$$(io.intino.tara.magritte.Node node) {
             super.removeNode$$(node);
             $node+remove...[$NL]
@@ -176,30 +175,30 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 		@Override
 		protected void load$$(java.lang.String name, java.util.List<?> values) {
-			super.load$$(name, values);[
-			$facetTarget+init][
-			$metaType+metaTypeLoad][
-			$metaFacet+metaFacetLoad][
-			$variable+init...[$NL~else ]]
+			super.load$$(name, values);
+			[$facetTarget+init]
+			[$metaType+metaTypeLoad]
+			[$metaFacet+metaFacetLoad]
+			[$variable+init...[$NL~else ]]
 		}
 
 		@Override
 		protected void set$$(java.lang.String name, java.util.List<?> values) {
-			super.set$$(name, values);[
-			$facetTarget+set][
-			$metaType+metaTypeSet][
-			$metaFacet+metaFacetSet][
-			$variable+set...[$NL~else ]]
-		}[
+			super.set$$(name, values);
+			[$facetTarget+set]
+			[$metaType+metaTypeSet]
+			[$metaFacet+metaFacetSet]
+			[$variable+set...[$NL~else ]]
+		}
 
-		@Override
+		[@Override
 		protected void sync$$(io.intino.tara.magritte.Layer layer) {
 			super.sync$$(layer);
 		    $facetTarget+facet...[$NL~else ]
 		    $constraint+facet...[$NL~else ]
 		}]
-		[
-		public Create create() {
+
+		[public Create create() {
 			return new Create(null);
 		}
 
@@ -225,9 +224,9 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		public class Clear $parentClearName+parentClear {
 			$node+clear...[$NL$NL]
 		}
-		][
-		$node...[$NL]
 		]
+		[$node...[$NL]]
+
 		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph graph() {
 			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph) core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
@@ -236,11 +235,11 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 end
 
 def trigger(parentCreate)
-	extends $value.Create
+	extends $this.Create
 end
 
 def trigger(parentClear)
-	extends $value.Clear
+	extends $this.Clear
 end
 
 def type(metaFacet) trigger(name)
@@ -252,21 +251,21 @@ def type(metaFacet) trigger(typeInit)
 end
 
 def trigger(typeInit)
-	$value
+	$this
 end
 
-def attribute(true) trigger(parentinit)
+def attribute(this:true) trigger(parentinit)
 	super(name);
 end
 
-def attribute(false) trigger(parentinit)
+def attribute(this:false) trigger(parentinit)
 	this.name = name;
 end
 
-def attribute(true) trigger(parentvariable)
+def attribute(this:true) trigger(parentvariable)
 end
 
-def attribute(false) trigger(parentvariable)
+def attribute(this:false) trigger(parentvariable)
 	protected final java.lang.String name;
 end
 
@@ -287,7 +286,7 @@ def trigger(metaFacetSet)
 end
 
 def trigger(metaType)
-	protected $value _metaType;
+	protected $this _metaType;
 end
 
 def trigger(metaFacet)
@@ -295,7 +294,7 @@ def trigger(metaFacet)
 end
 
 def trigger(tag)
-	io.intino.tara.magritte.tags.$value+lowerCase+FirstUpperCase
+	io.intino.tara.magritte.tags.$this+lowerCase+FirstUpperCase
 end
 
 def attribute(Layer) trigger(var)
@@ -305,10 +304,10 @@ end
 def trigger(var)
 	super.variables$$()
 end
-def attribute(true) trigger(inner)
+def attribute(this:true) trigger(inner)
 	static
 end
 
-def attribute(true) trigger(abstract)
+def attribute(this:true) trigger(abstract)
 	abstract
 end

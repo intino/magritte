@@ -1,13 +1,14 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
-import io.intino.itrules.engine.FrameBuilder;
-import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 class LanguageCreator {
 	private final CompilerConfiguration conf;
@@ -19,25 +20,25 @@ class LanguageCreator {
 	}
 
 	public String create() {
-		final Template template = LanguageTemplate.create();
+		final Template template = new LanguageTemplate();
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
-		Frame frame = null;
-		for (Model model : models)
-			if (frame == null) frame = createFrame(model);
-			else merge(frame, createFrame(model));
-		return template.format(frame).replace("$", "");
+		Iterator<Model> iterator = models.iterator();
+		FrameBuilder builder = createFrame(iterator.next());
+		iterator.forEachRemaining(m -> merge(builder, createFrame(m)));
+		Frame frame = builder.toFrame();
+		return template.render(frame).replace("$", "");
 	}
 
-	private void merge(Frame main, Frame newFrame) {
-		newFrame.frames("node").forEachRemaining(n -> main.addSlot("node", n));
+	private void merge(FrameBuilder main, FrameBuilder newBuilder) {
+		newBuilder.toFrame().frames("node").forEachRemaining(n -> main.add("node", n));
 	}
 
-	private Frame createFrame(final Model model) {
+	private FrameBuilder createFrame(final Model model) {
 		final FrameBuilder builder = new FrameBuilder();
 		final CompilerConfiguration.DSL dsl = conf.languages().stream().filter(d -> d.name().equals(model.languageName())).findFirst().orElse(null);
-		builder.register(Model.class, new LanguageModelAdapter(conf.outDSL(), conf.getLocale(), model.language(), conf.level(), conf.workingPackage(), dsl.generationPackage()));
-		return (Frame) builder.build(model);
+		builder.put(Model.class, new LanguageModelAdapter(conf.outDSL(), conf.getLocale(), model.language(), conf.level(), conf.workingPackage(), dsl.generationPackage()));
+		return builder.append(model);
 	}
 }

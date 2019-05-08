@@ -1,6 +1,7 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
@@ -11,12 +12,12 @@ import io.intino.tara.lang.semantics.Context;
 import java.util.List;
 
 class LanguageInheritanceManager implements TemplateTags {
-	private final Frame root;
+	private final FrameBuilderContext root;
 	private final List<String> instanceConstraints;
 	private final Language language;
 	private TerminalConstraintManager manager;
 
-	LanguageInheritanceManager(Frame root, List<String> instanceConstraints, Language language, Model model) {
+	LanguageInheritanceManager(FrameBuilderContext root, List<String> instanceConstraints, Language language, Model model) {
 		this.root = root;
 		this.instanceConstraints = instanceConstraints;
 		this.language = language;
@@ -26,43 +27,42 @@ class LanguageInheritanceManager implements TemplateTags {
 	void fill() {
 		if (instanceConstraints == null || root == null) return;
 		for (String instance : instanceConstraints) {
-			Frame nodeFrame = new Frame().addTypes(NODE);
+			FrameBuilder nodeFrame = new FrameBuilder(NODE);
 			fillRuleInfo(nodeFrame, instance);
 			addConstraints(nodeFrame, language.constraints(instance));
 			addAssumptions(nodeFrame, language.assumptions(instance));
-			root.addSlot(NODE, nodeFrame);
+			root.add(NODE, nodeFrame.toFrame());
 		}
 	}
 
-	private void addConstraints(Frame frame, List<Constraint> constraints) {
-		Frame constraintsFrame = new Frame().addTypes(CONSTRAINTS);
-		manager.addConstraints(constraints, constraintsFrame);
-		frame.addSlot(CONSTRAINTS, constraintsFrame);
+	private void addConstraints(FrameBuilder builder, List<Constraint> constraints) {
+		FrameBuilder constraintsBuilder = new FrameBuilder(CONSTRAINTS);
+		manager.addConstraints(constraints, constraintsBuilder);
+		builder.add(CONSTRAINTS, constraintsBuilder.toFrame());
 	}
 
-	private void fillRuleInfo(Frame frame, String instance) {
+	private void fillRuleInfo(FrameBuilder frame, String instance) {
 		Context rules = language.catalog().get(instance);
-		frame.addSlot(NAME, instance);
+		frame.add(NAME, instance);
 		addTypes(rules.types(), frame);
 	}
 
-	private void addTypes(String[] types, Frame frame) {
+	private void addTypes(String[] types, FrameBuilder frame) {
 		if (types == null) return;
-		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
-		for (String type : types) typesFrame.addSlot(TemplateTags.TYPE, type);
-		if (typesFrame.slots().length > 0) frame.addSlot(NODE_TYPE, typesFrame);
+		FrameBuilder typesBuilder = new FrameBuilder(NODE_TYPE);
+		for (String type : types) typesBuilder.add(TemplateTags.TYPE, type);
+		if (typesBuilder.slots() != 0) frame.add(NODE_TYPE, typesBuilder.toFrame());
 	}
 
-	private void addAssumptions(Frame frame, List<Assumption> assumptions) {
-		Frame assumptionsFrame = new Frame().addTypes(ASSUMPTIONS);
+	private void addAssumptions(FrameBuilder frame, List<Assumption> assumptions) {
+		FrameBuilder builder = new FrameBuilder(ASSUMPTIONS);
 		for (Assumption assumption : assumptions)
-			assumptionsFrame.addSlot(ASSUMPTION, getAssumptionValue(assumption));
-		if (assumptionsFrame.slots().length != 0)
-			frame.addSlot(ASSUMPTIONS, assumptionsFrame);
+			builder.add(ASSUMPTION, getAssumptionValue(assumption));
+		if (builder.slots() != 0) frame.add(ASSUMPTIONS, builder.toFrame());
 	}
 
 	private Object getAssumptionValue(Assumption assumption) {
 		return assumption.getClass().getInterfaces()[0].getName().
-			substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
+				substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
 	}
 }

@@ -1,6 +1,8 @@
 package io.intino.tara.plugin.codeinsight.languageinjection;
 
 import com.intellij.openapi.module.Module;
+import io.intino.itrules.Adapter;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
@@ -9,9 +11,6 @@ import io.intino.tara.plugin.lang.psi.Expression;
 import io.intino.tara.plugin.lang.psi.TaraVarInit;
 import io.intino.tara.plugin.lang.psi.Valued;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.engine.Context;
-import org.siani.itrules.model.Frame;
 
 import static io.intino.tara.lang.model.Primitive.FUNCTION;
 
@@ -24,30 +23,29 @@ class NativeParameterAdapter implements Adapter<Parameter> {
 	}
 
 	@Override
-	public void adapt(Parameter source, Context context) {
-		final Frame frame = context.frame();
+	public void adapt(Parameter source, FrameBuilderContext context) {
 		if (source.type() == null) return;
-		frame.addTypes(source.type().getName());
-		frame.addTypes(source.flags().stream().map(tag -> tag.name().toLowerCase()).toArray(String[]::new));
+		context.add(source.type().getName());
+		source.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(context::add);
 		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(source);
 		if (constraint != null)
-			constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(frame::addTypes);
-		createFrame(frame, source);
+			constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(context::add);
+		createFrame(context, source);
 	}
 
-	private void createFrame(Frame frame, final Parameter parameter) {
-		createNativeFrame(frame, parameter);
+	private void createFrame(FrameBuilderContext context, final Parameter parameter) {
+		createNativeFrame(context, parameter);
 	}
 
-	private void createNativeFrame(Frame frame, Parameter parameter) {
+	private void createNativeFrame(FrameBuilderContext context, Parameter parameter) {
 		if (parameter.values() == null || parameter.values().isEmpty() || !(parameter.values().get(0) instanceof Primitive.Expression))
 			return;
 		final Expression expression = ((Valued) parameter).getBodyValue() != null ? ((Valued) parameter).getBodyValue().getExpression() : ((Valued) parameter).getValue().getExpressionList().get(0);
 		if (expression == null) return;
 		String value = expression.getValue();
 		if (FUNCTION.equals(parameter.type()))
-			formatter.fillFrameForFunctionParameter(frame, parameter, value, parameter instanceof TaraVarInit && ((TaraVarInit) parameter).getBodyValue() != null);
+			formatter.fillFrameForFunctionParameter(context, parameter, value, parameter instanceof TaraVarInit && ((TaraVarInit) parameter).getBodyValue() != null);
 		else
-			formatter.fillFrameExpressionParameter(frame, parameter, value, parameter instanceof TaraVarInit && ((TaraVarInit) parameter).getBodyValue() != null);
+			formatter.fillFrameExpressionParameter(context, parameter, value, parameter instanceof TaraVarInit && ((TaraVarInit) parameter).getBodyValue() != null);
 	}
 }

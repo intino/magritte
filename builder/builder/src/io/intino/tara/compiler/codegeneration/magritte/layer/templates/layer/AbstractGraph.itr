@@ -82,19 +82,19 @@ def type(graph)
 			public Create(String stash, String name) {
 				this.stash = stash;
 				this.name = name;
-			}[
+			}
 
-			$node+new...[$NL$NL]]
+			[$node+new...[$NL$NL]]
 		}
 
-		public class Clear {[
-		    $node+clear...[$NL$NL]]
+		public class Clear {
+		    [$node+clear...[$NL$NL]]
 		}
 
 
 		private java.util.HashMap<String, Indexer> _fillIndex() {
-			java.util.HashMap<String, Indexer> map = new java.util.HashMap<>();[
-			$node+put...[$NL]]
+			java.util.HashMap<String, Indexer> map = new java.util.HashMap<>();
+			[$node+put...[$NL]]
 			return map;
 		}
 
@@ -214,8 +214,8 @@ end
 
 def type(node & concept) !type(final | abstract | component | instance) trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidWord([$variable+parameters...[, ]]) {
-		$qn+reference newElement = AbstractGraph.this.graph.createRoot($qn+reference.class, stash, this.name).a$$($qn+reference.class);[
-		$variable+assign...[$NL]]
+		$qn+reference newElement = AbstractGraph.this.graph.createRoot($qn+reference.class, stash, this.name).a$$($qn+reference.class);
+		[$variable+assign...[$NL]]
 		return newElement;
 	}
 end

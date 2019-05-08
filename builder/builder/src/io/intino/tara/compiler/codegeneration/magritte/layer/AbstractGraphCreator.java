@@ -1,9 +1,7 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
-import io.intino.itrules.Adapter;
-import io.intino.itrules.engine.Context;
-import io.intino.itrules.model.AbstractFrame;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.compiler.codegeneration.Format;
@@ -34,47 +32,45 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 	}
 
 	public String create(Model model) {
-		Frame frame = new Frame().addTypes("graph");
-		frame.addSlot(WORKING_PACKAGE, workingPackage);
-		frame.addSlot(NAME, outDsl);
+		FrameBuilder builder = new FrameBuilder("graph");
+		builder.add(WORKING_PACKAGE, workingPackage);
+		builder.add(NAME, outDsl);
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
-				forEach(node -> frame.addSlot(NODE, createRootNodeFrame(node, model.sizeOf(node))));
-		return Format.customize(GraphTemplate.create()).format(frame);
+				forEach(node -> builder.add(NODE, createRootNodeFrame(node, model.sizeOf(node))));
+		return Format.customize(new GraphTemplate()).render(builder.toFrame());
 	}
 
 	private Frame createRootNodeFrame(Node node, Size size) {
-		Frame frame = new Frame();
-		frame.addTypes(NODE);
-		if (size.isSingle()) frame.addTypes(SINGLE);
-		if (node.isTerminal()) frame.addTypes(CONCEPT);
-		if (node.is(Instance)) frame.addTypes(INSTANCE);
-		if (node.isAbstract()) frame.addTypes(ABSTRACT);
-		frame.addSlot(QN, getQn(node));
-		frame.addSlot(OUT_LANGUAGE, outDsl);
-		frame.addSlot(STASH_QN, NameFormatter.stashQn(node, workingPackage.toLowerCase()).replace(":", ""));
-		addType(node, size, frame);
-		frame.addSlot(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
-		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> createVariable(frame, variable));
-		addTerminalVariables(node, frame);
-		return frame;
+		FrameBuilder builder = new FrameBuilder(NODE);
+		if (size.isSingle()) builder.add(SINGLE);
+		if (node.isTerminal()) builder.add(CONCEPT);
+		if (node.is(Instance)) builder.add(INSTANCE);
+		if (node.isAbstract()) builder.add(ABSTRACT);
+		builder.add(QN, getQn(node));
+		builder.add(OUT_LANGUAGE, outDsl);
+		builder.add(STASH_QN, NameFormatter.stashQn(node, workingPackage.toLowerCase()).replace(":", ""));
+		addType(node, size, builder);
+		builder.add(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
+		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> builder.add(VARIABLE, frameOf(variable)));
+		addTerminalVariables(node, builder);
+		return builder.toFrame();
 	}
 
-	private void addType(Node node, Size rule, Frame frame) {
+	private void addType(Node node, Size rule, FrameBuilder builder) {
 		if (!(language instanceof Proteo) && !(language instanceof Verso))
-			frame.addSlot(CONCEPT_LAYER, language.doc(node.type()).layer());
-		frame.addSlot(TYPE, nodeType(node, rule));
+			builder.add(CONCEPT_LAYER, language.doc(node.type()).layer());
+		builder.add(TYPE, nodeType(node, rule));
 	}
 
 	private String nodeType(Node node, Size rule) {
 		return Resolver.shortType(node.type()) + (!rule.isSingle() ? "List" : "");
 	}
 
-	private void createVariable(Frame frame, Variable variable) {
-		Frame variableFrame = new Frame();
-		variableFrame.addTypes(VARIABLE, variable.type().getName());
-		LayerVariableAdapter adapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage);
-		adapter.adapt(variable, contextOf(variableFrame));
-		frame.addSlot(VARIABLE, variableFrame);
+	private Frame frameOf(Variable variable) {
+		return new FrameBuilder(VARIABLE, variable.type().getName())
+				.put(Variable.class, new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage))
+				.append(variable)
+				.toFrame();
 	}
 
 	private String getQn(Node node) {
@@ -85,20 +81,5 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 
 	private Collection<Node> collectMainNodes(Model model) {
 		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component) && !n.is(Feature) && !n.into(Feature) && !((NodeImpl) n).isVirtual()).collect(Collectors.toList());
-	}
-
-	private Context contextOf(Frame variableFrame) {
-		return new Context() {
-			public Frame frame() {
-				return variableFrame;
-			}
-			public AbstractFrame build(Object o) {
-				return null;
-			}
-
-			public <S> void register(Class<S> aClass, Adapter<S> adapter) {
-
-			}
-		};
 	}
 }

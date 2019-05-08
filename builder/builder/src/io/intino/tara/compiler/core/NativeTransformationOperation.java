@@ -1,7 +1,7 @@
 package io.intino.tara.compiler.core;
 
+import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
-import io.intino.itrules.model.Frame;
 import io.intino.tara.compiler.codegeneration.FileSystemUtils;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativeExtractor;
@@ -62,12 +62,12 @@ class NativeTransformationOperation extends ModelOperation {
 	}
 
 	private String wrapValue(Valued v, Object value) {
-		final Template template = ToNativeTransformerTemplate.create().add("url", url -> url.toString().substring(resources.getAbsolutePath().length() + 1));
-		final Frame frame = new Frame().addTypes(v.type().name(), "native");
+		final Template template = new ToNativeTransformerTemplate().add("url", url -> url.toString().substring(resources.getAbsolutePath().length() + 1));
+		final FrameBuilder builder = new FrameBuilder(v.type().name(), "native");
 		String toAdd = value.toString();
 		if (value instanceof File) toAdd = ((File) value).getAbsolutePath().replace("\\", "/");
-		frame.addSlot("value", toAdd);
-		return template.format(frame);
+		builder.add("value", toAdd);
+		return template.render(builder.toFrame());
 	}
 
 	private String transformMethodReference(String file, NativeRule rule, MethodReference value, String fileName) {

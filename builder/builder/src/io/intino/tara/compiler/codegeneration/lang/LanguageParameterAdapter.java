@@ -1,7 +1,7 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
-import io.intino.itrules.engine.FrameBuilder;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
@@ -17,7 +17,6 @@ import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 import static io.intino.tara.lang.model.Tag.Instance;
@@ -34,34 +33,12 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		this.level = level;
 	}
 
-	void addParameterConstraint(Frame frame, String facet, int position, Variable variable, String relation) {
-		if (variable instanceof VariableReference)
-			frame.addSlot(relation, referenceParameter(position, facet, variable, relation));
-		else frame.addSlot(relation, primitiveParameter(position, facet, variable, relation));
-	}
-
-	int addTerminalParameterConstraints(Node node, Frame constraintsFrame) {
-		int index = 0;
-		Collection<Constraint> constraints = language.constraints(node.type());
-		if (constraints == null) return 0;
-		for (Constraint c : constraints) {
-			if (isSuitableParameter(node, c)) {
-				addTerminalParameter(constraintsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
-				index++;
-			}
-		}
-		return index;
-	}
-
 	static int terminalParameters(Language language, Node node) {
 		int index = 0;
 		Collection<Constraint> constraints = language.constraints(node.type());
 		if (constraints == null) return 0;
-		for (Constraint c : constraints) {
-			if (isSuitableParameter(node, c)) {
-				index++;
-			}
-		}
+		for (Constraint c : constraints)
+			if (isSuitableParameter(node, c)) index++;
 		return index;
 	}
 
@@ -71,12 +48,6 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 				!isRedefined((Constraint.Parameter) c, node.variables()) &&
 				!isRequired((Constraint.Parameter) c) &&
 				!isFilled(node, (Constraint.Parameter) c);
-	}
-
-	private void addTerminalParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
-		if (parameter instanceof ReferenceParameter)
-			frame.addSlot(type, referenceParameter((ReferenceParameter) parameter, position, type));
-		else frame.addSlot(type, primitiveParameter(parameter, position, type));
 	}
 
 	private static boolean isTerminal(Constraint.Parameter constraint) {
@@ -101,16 +72,41 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		return false;
 	}
 
-	private void addDefaultInfo(int position, Variable variable, Frame frame) {
-		frame.addSlot(POSITION, position);
-		frame.addSlot(TAGS, getFlags(variable));
-		frame.addSlot(SCOPE, workingPackage);
-		frame.addSlot(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
-		final Frame rule = (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null) ? null : ruleToFrame(variable.rule());
-		if (rule != null) frame.addSlot(RULE, rule);
+	void addParameterConstraint(FrameBuilder frame, String facet, int position, Variable variable, String relation) {
+		if (variable instanceof VariableReference)
+			frame.add(relation, referenceParameter(position, facet, variable, relation));
+		else frame.add(relation, primitiveParameter(position, facet, variable, relation));
+	}
+
+	int addTerminalParameterConstraints(Node node, FrameBuilder constraintsFrame) {
+		int index = 0;
+		Collection<Constraint> constraints = language.constraints(node.type());
+		if (constraints == null) return 0;
+		for (Constraint c : constraints) {
+			if (isSuitableParameter(node, c)) {
+				addTerminalParameter(constraintsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
+				index++;
+			}
+		}
+		return index;
+	}
+
+	private void addTerminalParameter(FrameBuilder builder, Constraint.Parameter parameter, int position, String type) {
+		if (parameter instanceof ReferenceParameter)
+			builder.add(type, referenceParameter((ReferenceParameter) parameter, position, type));
+		else builder.add(type, primitiveParameter(parameter, position, type));
+	}
+
+	private void addDefaultInfo(int position, Variable variable, FrameBuilder frame) {
+		frame.add(POSITION, position);
+		frame.add(TAGS, getFlags(variable));
+		frame.add(SCOPE, workingPackage);
+		frame.add(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().append(variable.size()).toFrame());
+		final Frame rule = (variable.rule() == null || (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null)) ? null : ruleToFrame(variable.rule()).toFrame();
+		if (rule != null) frame.add(RULE, rule);
 		else if (variable.flags().contains(Reactive)) {
-			final Frame ruleFrame = ruleToFrame(new NativeRule("", "", emptyList()));
-			if (ruleFrame != null) frame.addSlot(RULE, ruleFrame);
+			final FrameBuilder ruleFrame = ruleToFrame(new NativeRule("", "", emptyList()));
+			if (ruleFrame != null) frame.add(RULE, ruleFrame.toFrame());
 		}
 	}
 
@@ -121,62 +117,61 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private Frame transformSizeRuleOfTerminalNode(Variable variable) {
 		final Size rule = variable.size();
 		final Size size = new Size(0, rule.max(), rule);
-		return (Frame) new FrameBuilder().build(size);
+		return new FrameBuilder().append(size).toFrame();
 	}
 
 	private Frame referenceParameter(int i, String facet, Variable variable, String relation) {
-		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
-				addSlot(NAME, variable.name()).
-				addSlot(FACET, facet).
-				addSlot(TYPE, variable.destinyOfReference().qualifiedName());
-		addDefaultInfo(i, variable, frame);
-		return frame;
+		FrameBuilder builder = new FrameBuilder(relation, PARAMETER, REFERENCE).
+				add(NAME, variable.name()).
+				add(FACET, facet).
+				add(TYPE, variable.destinyOfReference().qualifiedName());
+		addDefaultInfo(i, variable, builder);
+		return builder.toFrame();
 	}
 
 	private Frame primitiveParameter(int i, String facet, Variable variable, String relation) {
-		Frame frame = new Frame().addTypes(relation, PARAMETER).
-				addSlot(NAME, variable.name()).
-				addSlot(FACET, facet).
-				addSlot(TYPE, variable.type());
-		addDefaultInfo(i, variable, frame);
-		return frame;
+		FrameBuilder builder = new FrameBuilder(relation, PARAMETER).
+				add(NAME, variable.name()).
+				add(FACET, facet).
+				add(TYPE, variable.type());
+		addDefaultInfo(i, variable, builder);
+		return builder.toFrame();
 	}
 
 	private Frame referenceParameter(ReferenceParameter parameter, int position, String type) {
-		Frame frame = new Frame().addTypes(type, PARAMETER, REFERENCE).
-				addSlot(NAME, parameter.name()).
-				addSlot(FACET, parameter.facet());
-		addDefaultInfo(parameter, frame, position);
-		return frame;
+		FrameBuilder builder = new FrameBuilder(type, PARAMETER, REFERENCE).
+				add(NAME, parameter.name()).
+				add(FACET, parameter.facet());
+		addDefaultInfo(parameter, builder, position);
+		return builder.toFrame();
 	}
 
 	private Frame primitiveParameter(Constraint.Parameter parameter, int position, String type) {
-		Frame frame = new Frame().addTypes(type, PARAMETER).
-				addSlot(FACET, parameter.facet()).
-				addSlot(NAME, parameter.name()).
-				addSlot(TYPE, parameter.type());
-		addDefaultInfo(parameter, frame, position);
-		return frame;
+		FrameBuilder builder = new FrameBuilder(type, PARAMETER).
+				add(FACET, parameter.facet()).
+				add(NAME, parameter.name()).
+				add(TYPE, parameter.type());
+		addDefaultInfo(parameter, builder, position);
+		return builder.toFrame();
 	}
 
-	private void addDefaultInfo(Constraint.Parameter parameter, Frame frame, int position) {
-		frame.addSlot(SIZE, new FrameBuilder().build(new Size(1, parameter.size().max())));
-		frame.addSlot(POSITION, position);
-		frame.addSlot(TAGS, getFlags(parameter));
+	private void addDefaultInfo(Constraint.Parameter parameter, FrameBuilder frame, int position) {
+		frame.add(SIZE, new FrameBuilder().append(new Size(1, parameter.size().max())).toFrame());
+		frame.add(POSITION, position);
+		frame.add(TAGS, getFlags(parameter));
 		final Frame rule = calculateRule(parameter);
-		if (rule != null) frame.addSlot(RULE, rule);
+		if (rule != null) frame.add(RULE, rule);
 	}
 
 	private Frame calculateRule(Constraint.Parameter parameter) {
 		final Rule rule = parameter.rule();
 		if (rule == null) return null;
-		final Frame frame = ruleToFrame(rule);
-		return frame.addTypes(parameter.type().getName());
+		final FrameBuilder builder = ruleToFrame(rule);
+		return builder.add(parameter.type().getName()).toFrame();
 	}
 
 	private String[] getFlags(Variable variable) {
-		List<String> flags = variable.flags().stream().map(Tag::name).collect(Collectors.toList());
-		return flags.toArray(new String[flags.size()]);
+		return variable.flags().stream().map(Tag::name).toArray(String[]::new);
 	}
 
 	private String[] getFlags(Constraint.Parameter variable) {
@@ -186,5 +181,4 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 			else flags.add(tag);
 		return flags.stream().map(Enum::name).toArray(String[]::new);
 	}
-
 }
