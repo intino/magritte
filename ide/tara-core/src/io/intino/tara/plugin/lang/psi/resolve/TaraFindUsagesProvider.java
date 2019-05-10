@@ -6,19 +6,19 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Parameter;
+import io.intino.tara.lang.model.Variable;
 import io.intino.tara.plugin.lang.lexer.TaraLexerAdapter;
 import io.intino.tara.plugin.lang.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.Parameter;
-import io.intino.tara.lang.model.Variable;
 
 import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
-	public static final String ANONYMOUS = "Anonymous";
-	private static final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
+	private static final String ANONYMOUS = "Anonymous";
+	private final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
 			TokenSet.create(TaraTypes.IDENTIFIER),
 			TokenSet.create(TaraTypes.DOC, TaraTypes.DOC_LINE), TokenSet.EMPTY);
 
