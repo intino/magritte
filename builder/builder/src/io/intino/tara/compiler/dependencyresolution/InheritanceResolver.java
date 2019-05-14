@@ -26,8 +26,7 @@ public class InheritanceResolver {
 
 
 	public void resolve() throws DependencyException {
-		List<Node> nodes = new ArrayList<>();
-		nodes.addAll(collectNodes(model));
+		List<Node> nodes = new ArrayList<>(collectNodes(model));
 		sort(nodes);
 		model.components().forEach(this::resolveAsMetaFacet);
 		for (Node node : nodes) resolve(node);
@@ -117,10 +116,15 @@ public class InheritanceResolver {
 		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
 		for (Node node : model.components()) {
 			if (node.isAnonymous()) continue;
-			if (!toMerge.containsKey(node.name())) toMerge.put(node.name(), new ArrayList<>());
-			toMerge.get(node.name()).add(node);
+			if (!toMerge.containsKey(node.name()))
+				toMerge.put(name(node), new ArrayList<>());
+			toMerge.get(name(node)).add(node);
 		}
 		return toMerge;
+	}
+
+	private String name(Node node) {
+		return node.name() + (node.facetTarget() != null ? ":" + node.facetTarget().target() : "");
 	}
 
 	private void resolveAsFacetTargetFragment(Node node) {
