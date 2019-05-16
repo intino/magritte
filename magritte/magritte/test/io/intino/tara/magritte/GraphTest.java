@@ -350,4 +350,11 @@ public class GraphTest {
 		handler.flush();
 		assertThat(outputStream.toString(), containsString("Dependant node is missingReference#x"));
 	}
+
+	@Test
+	public void should_keep_same_birth_mark() {
+		MockApplication application = new Graph(mockStore()).loadStashes(missingReference).as(MockApplication.class);
+		assertThat(application.mockLayerList().get(0).core$().birthMark(), is(-1070894403));
+	}
+
 }

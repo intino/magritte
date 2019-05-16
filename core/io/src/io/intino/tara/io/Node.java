@@ -21,6 +21,7 @@ public class Node {
 	}
 
 	private static boolean isUUID(String str) {
+		str = str.length() >= 36 ? str.substring(str.length() - 36) : str;
 		return str.length() == 36 && str.charAt(8) == '-' && str.charAt(13) == '-' && str.charAt(18) == '-' && str.charAt(23) == '-';
 	}
 }
