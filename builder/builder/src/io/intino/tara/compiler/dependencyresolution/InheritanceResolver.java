@@ -116,7 +116,7 @@ public class InheritanceResolver {
 		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
 		for (Node node : model.components()) {
 			if (node.isAnonymous()) continue;
-			if (!toMerge.containsKey(node.name()))
+			if (!toMerge.containsKey(name(node)))
 				toMerge.put(name(node), new ArrayList<>());
 			toMerge.get(name(node)).add(node);
 		}
