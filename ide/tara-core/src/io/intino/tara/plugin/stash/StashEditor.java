@@ -28,15 +28,17 @@ import java.nio.file.Path;
 class StashEditor implements TextEditor {
 	private final VirtualFile stash;
 	private StashEditorComponent myComponent;
+	private Path path;
+	private VirtualFile taraVFile;
 
 
 	StashEditor(Project project, VirtualFile stash) {
 		this.stash = stash;
 		try {
-			final Path path = StashToTara.createTara(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".tara"));
-			final VirtualFile fileByURL = VfsUtil.findFileByIoFile(path.toFile(), true);
+			path = StashToTara.createTara(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".tara"));
+			taraVFile = VfsUtil.findFileByIoFile(path.toFile(), true);
 			refreshFiles();
-			if (fileByURL != null) myComponent = createEditorComponent(project, fileByURL);
+			if (taraVFile != null) myComponent = createEditorComponent(project, taraVFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -108,7 +110,7 @@ class StashEditor implements TextEditor {
 
 	@Override
 	public boolean isValid() {
-		return FileDocumentManager.getInstance().getDocument(stash) != null && stash.getFileType() == StashFileType.INSTANCE;
+		return taraVFile != null && FileDocumentManager.getInstance().getDocument(taraVFile) != null && stash.getFileType() == StashFileType.INSTANCE;
 	}
 
 	@Override
