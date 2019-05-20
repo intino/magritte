@@ -1,9 +1,10 @@
 package io.intino.tara.io;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Variable {
+public abstract class Variable implements Serializable {
 
 	public java.lang.String name;
 	public List<?> values = new ArrayList<>();
