@@ -1,7 +1,8 @@
-package io.intino.tara.magritte.stores;
+package io.intino.tara.magritte.utils;
 
 import io.intino.tara.io.Stash;
 import io.intino.tara.io.StashSerializer;
+import io.intino.tara.magritte.stores.FileSystemStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ import static io.intino.tara.io.Helper.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class DiffStoreTest {
+public class StoreAuditorTest {
 
 	private File tempDirectory;
 
@@ -25,13 +26,14 @@ public class DiffStoreTest {
 	@Test
 	public void should_provide_correct_changes() throws Exception {
 		Files.write(new File(tempDirectory, "xxx.stash").toPath(), StashSerializer.serialize(stashOld()));
-		DiffStore store = new DiffStore(tempDirectory);
-		store.stashFrom("xxx.stash");
-		assertThat(store.changeList().size(), is(6));
+		StoreAuditor auditor = new StoreAuditor(new FileSystemStore(tempDirectory));
+		auditor.trace("xxx.stash");
+		assertThat(auditor.changeList().size(), is(6));
+		auditor.commit();
 		Files.write(new File(tempDirectory, "xxx.stash").toPath(), StashSerializer.serialize(stashNew()));
-		store = new DiffStore(tempDirectory);
-		store.stashFrom("xxx.stash");
-		assertThat(store.changeList().size(), is(7));
+		auditor = new StoreAuditor(new FileSystemStore(tempDirectory));
+		auditor.trace("xxx.stash");
+		assertThat(auditor.changeList().size(), is(7));
 	}
 
 	private Stash stashOld() {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Variable implements Serializable {
+public abstract class Variable {
 
 	public java.lang.String name;
 	public List<?> values = new ArrayList<>();

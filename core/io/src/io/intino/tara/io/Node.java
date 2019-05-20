@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Node implements Serializable {
+public class Node {
 	public String name;
 	public List<String> facets = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
