@@ -14,7 +14,6 @@ public class Node extends Predicate {
 
 	final List<Layer> layers = new ArrayList<>();
 	private Node owner;
-	private int birthMark;
 
 	public Node() {
 		this("");
@@ -282,11 +281,4 @@ public class Node extends Predicate {
 		layers.forEach(l -> layers.forEach(l::sync$));
 	}
 
-	public void birthMark(int hashCode) {
-		this.birthMark = hashCode;
-	}
-
-	public int birthMark() {
-		return birthMark;
-	}
 }

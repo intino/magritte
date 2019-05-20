@@ -1,5 +1,6 @@
 package io.intino.tara.magritte;
 
+import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.layers.MockLayer;
 import io.intino.tara.magritte.layers.SubMockLayer;
 import io.intino.tara.magritte.modelviews.MockApplication;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import static io.intino.tara.io.Helper.*;
 import static io.intino.tara.magritte.TestHelper.*;
 import static java.util.logging.Logger.getGlobal;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -352,9 +354,11 @@ public class GraphTest {
 	}
 
 	@Test
-	public void should_keep_same_birth_mark() {
-		MockApplication application = new Graph(mockStore()).loadStashes(missingReference).as(MockApplication.class);
-		assertThat(application.mockLayerList().get(0).core$().birthMark(), is(-1070894403));
+	public void should_provide_the_same_hash_code() {
+		Stash stash = newStash("xxx", list(
+				newNode("xxx#yyy", list("person"), list(newInteger("value", list(1))), list(
+						newNode("xxx#yyy$zzz", list("name"), list(newString("value", list("pedro"))), list())
+				))));
+		assertThat(stash.nodes.get(0).hashCode(), is(285863301));
 	}
-
 }

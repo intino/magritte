@@ -14,14 +14,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 public class DiffStore extends FileSystemStore {
 
+	private static MessageDigest md;
 	private Map<String, String> oldChecksums;
 	private Map<String, String> newChecksums = new HashMap<>();
-	private static MessageDigest md;
+	private Map<String, Action> changeMap;
 
 	public DiffStore(File file) {
 		super(file);
@@ -69,6 +69,7 @@ public class DiffStore extends FileSystemStore {
 		Stash stash = super.stashFrom(path);
 		Stash clone = super.stashFrom(path);
 		calculateChecksums(stash, clone);
+		changeMap = null;
 		return stash;
 	}
 
@@ -98,16 +99,50 @@ public class DiffStore extends FileSystemStore {
 	}
 
 	public List<Change> changeList() {
+		return calculateMap().entrySet().stream().map(e -> new Change(e.getKey(), e.getValue())).collect(toList());
+	}
+
+	private Map<String, Action> calculateMap() {
+		if (changeMap != null) return changeMap;
 		writeNewChecksums();
-		List<Change> result = new ArrayList<>();
+		changeMap = new HashMap<>();
 		Set<String> checksums = new HashSet<>(oldChecksums.keySet());
 		checksums.addAll(newChecksums.keySet());
 		for (String checksum : checksums) {
 			if (oldChecksums.containsKey(checksum) && newChecksums.containsKey(checksum)) continue;
-			if (oldChecksums.containsKey(checksum)) result.add(new Change(oldChecksums.get(checksum), Action.Removed));
-			if (newChecksums.containsKey(checksum)) result.add(new Change(newChecksums.get(checksum), Action.Created));
+			if (oldChecksums.containsKey(checksum)) put(changeMap, oldChecksums.get(checksum), Action.Removed);
+			if (newChecksums.containsKey(checksum)) put(changeMap, newChecksums.get(checksum), Action.Created);
 		}
-		return result;
+		return changeMap;
+	}
+
+	public boolean isModified(io.intino.tara.magritte.Node node) {
+		return isModified(node.id());
+	}
+
+	public boolean isModified(String nodeId) {
+		return calculateMap().containsKey(nodeId) && calculateMap().get(nodeId) == Action.Modified;
+	}
+
+	public boolean isCreated(io.intino.tara.magritte.Node node) {
+		return isCreated(node.id());
+	}
+
+	public boolean isCreated(String nodeId) {
+		return calculateMap().containsKey(nodeId) && calculateMap().get(nodeId) == Action.Created;
+	}
+
+	public boolean isRemoved(io.intino.tara.magritte.Node node) {
+		return isRemoved(node.id());
+	}
+
+	public boolean isRemoved(String nodeId) {
+		return calculateMap().containsKey(nodeId) && calculateMap().get(nodeId) == Action.Removed;
+	}
+
+	private void put(Map<String, Action> result, String nodeId, Action action) {
+		if (result.containsKey(nodeId)) result.put(nodeId, Action.Modified);
+		else result.put(nodeId, action);
 	}
 
 	private void writeNewChecksums() {
@@ -122,7 +157,7 @@ public class DiffStore extends FileSystemStore {
 		}
 	}
 
-	enum Action {Created, Removed}
+	public enum Action {Created, Modified, Removed}
 
 	public static class Change {
 		String nodeId;
@@ -131,6 +166,14 @@ public class DiffStore extends FileSystemStore {
 		public Change(String nodeId, Action action) {
 			this.nodeId = nodeId;
 			this.action = action;
+		}
+
+		public String nodeId() {
+			return nodeId;
+		}
+
+		public Action action() {
+			return action;
 		}
 	}
 
