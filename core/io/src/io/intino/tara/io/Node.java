@@ -1,6 +1,5 @@
 package io.intino.tara.io;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,8 +10,8 @@ public class Node {
 	public List<Variable> variables = new ArrayList<>();
 	public List<Node> nodes = new ArrayList<>();
 
-    @Override
-    public String toString() {
+	@Override
+	public String toString() {
 		return "Node{" + name + '}';
 	}
 
