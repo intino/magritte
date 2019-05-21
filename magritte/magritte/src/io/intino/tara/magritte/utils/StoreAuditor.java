@@ -16,8 +16,8 @@ public class StoreAuditor {
 
 	private static final String CHECKSUM_FILE = ".checksum";
 	private final FileSystemStore store;
-	private String checksumName;
 	private final Map<String, String> oldChecksums;
+	private String checksumName;
 	private Map<String, String> newChecksums = new HashMap<>();
 	private Map<String, Action> changeMap;
 
@@ -48,12 +48,14 @@ public class StoreAuditor {
 		}
 	}
 
-	public void commit(){
+	public void commit() {
 		writeNewChecksums();
 	}
 
 	public void trace(String path) {
-		calculateChecksums(store.stashFrom(path));
+		Stash stash = store.stashFrom(path);
+		if (stash == null) return;
+		calculateChecksums(stash);
 		changeMap = null;
 	}
 
