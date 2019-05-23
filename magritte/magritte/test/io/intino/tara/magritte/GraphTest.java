@@ -354,11 +354,8 @@ public class GraphTest {
 	}
 
 	@Test
-	public void should_provide_the_same_hash_code() {
-		Stash stash = newStash("xxx", list(
-				newNode("xxx#yyy", list("person"), list(newInteger("value", list(1))), list(
-						newNode("xxx#yyy$zzz", list("name"), list(newString("value", list("pedro"))), list())
-				))));
-		assertThat(stash.nodes.get(0).hashCode(), is(285863301));
+	public void should_provide_correct_root_node_id() {
+		Node child = new Node("xxx#yyy$zzz");
+		assertThat(child.rootNodeId(), is("xxx#yyy"));
 	}
 }
