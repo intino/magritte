@@ -37,7 +37,7 @@ def type(Model)
 end
 
 def type(instance) trigger(super)
-	declare($qn+quoted, java.util.Arrays.asList($nodeType+quoted...[, ]), $path+quoted);
+	declare($qn+quoted, java.util.Arrays.asList($nodeType...[, ]), $path+quoted);
 end
 
 def type(node) trigger(super)
@@ -57,7 +57,7 @@ def trigger(method)
 end
 
 def type(instance) trigger(node)
-	self.declare($qn+quoted, java.util.Arrays.asList($nodeType+quoted...[, ]), $path+quoted);
+	self.declare($qn+quoted, java.util.Arrays.asList($nodeType...[, ]), $path+quoted);
 end
 
 def type(node) trigger(node)
