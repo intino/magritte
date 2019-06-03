@@ -1,36 +1,23 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
 
 public class ConstructorTemplate extends Template {
 
-	protected ConstructorTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
-	}
-
-	public static Template create() {
-		return new ConstructorTemplate(Locale.ENGLISH, LF).define();
-	}
-
-	public Template define() {
-		add(
-			rule().add((condition("type", "Variable & word & multiple")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("attribute", "words")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("wordValues", "quoted").multiple(", ")).add(literal(")));")),
-			rule().add((condition("type", "Variable & word")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("wordValues", "quoted").multiple(", ")).add(literal(")));")),
-			rule().add((condition("type", "Variable & reactive")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList(")).add(mark("workingPackage")).add(literal(".natives.")).add(mark("package")).add(literal(".")).add(mark("name", "javaValidName")).add(literal("_")).add(mark("uid")).add(literal(".class.getName())));")),
-			rule().add((condition("type", "Variable & function")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "body")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList(")).add(mark("workingPackage")).add(literal(".natives.")).add(mark("package")).add(literal(".")).add(mark("name", "javaValidName")).add(literal("_")).add(mark("uid")).add(literal(".class.getName())));")),
-			rule().add((condition("type", "Variable & date")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("values", "quoted").multiple(", ")).add(literal(")));")),
-			rule().add((condition("type", "Variable & time")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), not(condition("type", "multiple")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\",  new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("values", "quoted").multiple(", ")).add(literal(")));")),
-			rule().add((condition("type", "Variable & double & multiple")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(new Double[] {")).add(mark("values").multiple(", ")).add(literal("})));")),
-			rule().add((condition("type", "Variable & double")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList((double) ")).add(mark("values")).add(literal(")));")),
-			rule().add((condition("type", "Variable & reference")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("type", "multiple")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(graph().concept(\"")).add(mark("type")).add(literal("\"))));")),
-			rule().add((condition("type", "Variable & resource")), (condition("type", "owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", io.intino.tara.magritte.loaders.StringLoader.load(Arrays.asList(")).add(mark("values", "quoted").multiple(", ")).add(literal(")));")),
-			rule().add((condition("type", "Variable & owner")), not(condition("type", "inherited | empty")), (condition("attribute", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("values").multiple(", ")).add(literal(")));"))
+	public RuleSet ruleSet() {
+		return new RuleSet().add(
+				rule().condition((allTypes("variable", "multiple", "word")), (type("owner")), not(type("inherited")), (attribute("words")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).output(mark("wordValues", "quoted").multiple(", ")).output(literal(")));")),
+				rule().condition((allTypes("variable", "word")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).output(mark("wordValues", "quoted").multiple(", ")).output(literal(")));")),
+				rule().condition((allTypes("reactive", "variable")), (type("owner")), not(anyTypes("inherited", "empty")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList(")).output(mark("workingPackage")).output(literal(".natives.")).output(mark("package")).output(literal(".")).output(mark("name", "javaValidName")).output(literal("_")).output(mark("uid")).output(literal(".class.getName())));")),
+				rule().condition((allTypes("function", "variable")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("body")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList(")).output(mark("workingPackage")).output(literal(".natives.")).output(mark("package")).output(literal(".")).output(mark("name", "javaValidName")).output(literal("_")).output(mark("uid")).output(literal(".class.getName())));")),
+				rule().condition((allTypes("date", "variable")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).output(mark("values", "quoted").multiple(", ")).output(literal(")));")),
+				rule().condition((allTypes("variable", "time")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), not(type("multiple")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\",  new java.util.ArrayList<>(java.util.Arrays.asList(")).output(mark("values", "quoted").multiple(", ")).output(literal(")));")),
+				rule().condition((allTypes("double", "variable", "multiple")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(new Double[] {")).output(mark("values").multiple(", ")).output(literal("})));")),
+				rule().condition((allTypes("double", "variable")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList((double) ")).output(mark("values")).output(literal(")));")),
+				rule().condition((allTypes("reference", "variable")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), (type("multiple")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(graph().concept(\"")).output(mark("type")).output(literal("\"))));")),
+				rule().condition((allTypes("resource", "variable")), (type("owner")), not(anyTypes("inherited", "empty")), (attribute("values")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", io.intino.tara.magritte.loaders.StringLoader.load(Arrays.asList(")).output(mark("values", "quoted").multiple(", ")).output(literal(")));")),
+				rule().condition((allTypes("owner", "variable")), not(anyTypes("inherited", "empty")), (attribute("values")), (trigger("constructor"))).output(literal("_load(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).output(mark("values").multiple(", ")).output(literal(")));"))
 		);
-		return this;
 	}
 }

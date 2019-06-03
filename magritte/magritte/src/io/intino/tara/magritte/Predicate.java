@@ -22,6 +22,11 @@ public abstract class Predicate {
 		return shortName;
 	}
 
+	public String rootNodeId() {
+		int pos = id.indexOf("$");
+		return pos != -1 ? id.substring(0, pos) : id;
+	}
+
 	public String id() {
 		return id;
 	}

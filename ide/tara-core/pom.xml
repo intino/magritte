@@ -28,19 +28,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.siani.itrules</groupId>
-            <artifactId>itrules</artifactId>
-            <version>1.9.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.rjeschke</groupId>
-            <artifactId>txtmark</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.19</version>
+            <groupId>io.intino.itrules</groupId>
+            <artifactId>engine</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -48,14 +38,9 @@
             <version>2.8.0</version>
         </dependency>
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>io</artifactId>
-            <version>1.0</version>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>io.intino.tara</groupId>
@@ -65,7 +50,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
-            <version>[1.0.10, 2.0.0)</version>
+            <version>[1.1.0, 2.0.0)</version>
         </dependency>
     </dependencies>
 </project>

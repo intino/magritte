@@ -1,39 +1,26 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
 
 public class ListTemplate extends Template {
 
-	protected ListTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
-	}
-
-	public static Template create() {
-		return new ListTemplate(Locale.ENGLISH, LF).define();
-	}
-
-	public Template define() {
-		add(
-			rule().add((condition("type", "Variable & multiple & owner")), not(condition("type", "reactive | inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(");")),
-			rule().add((condition("type", "Variable & multiple & owner")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(")) : java.util.Collections.emptyList());")),
-			rule().add((condition("type", "Variable & reference & owner")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(")) : java.util.Collections.emptyList());")),
-			rule().add((condition("type", "Variable & function & owner")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(")) : java.util.Collections.emptyList());")),
-			rule().add((condition("type", "Variable & owner")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList(java.util.Collections.singletonList(this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(")));")),
-			rule().add((condition("type", "Variable & metaType & multiple")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", _")).add(mark("containerName", "FirstLowerCase")).add(literal(".")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal("());")),
-			rule().add((condition("type", "Variable & metaType")), (condition("type", "function | reactive")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList(java.util.Collections.singletonList(io.intino.tara.magritte.utils.NativeExtractor.extract(\"")).add(mark("name")).add(literal("\", _")).add(mark("containerName", "FirstLowerCase")).add(literal("))));")),
-			rule().add((condition("type", "Variable & metaType")), not(condition("type", "inherited | overriden | volatile")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", new java.util.ArrayList(java.util.Collections.singletonList(this._")).add(mark("containerName", "FirstLowerCase")).add(literal(".")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal("())));")),
-			rule().add((condition("type", "Node & single & owner")), not(condition("type", "inherited | overriden | instance")), (condition("trigger", "list"))).add(literal("if (")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" != null) nodes.add(this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(".core$());")),
-			rule().add((condition("type", "Node & owner")), not(condition("type", "inherited | overriden | instance")), (condition("trigger", "list"))).add(mark("name", "toCamelCase", "FirstLowerCase")).add(literal("List.stream().forEach(c -> nodes.add(c.core$()));")),
-			rule().add((condition("type", "Node & single & owner")), not(condition("type", "inherited | overriden | instance")), (condition("trigger", "componentList"))).add(literal("if (")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(" != null) components.add(this.")).add(mark("name", "FirstLowerCase", "javaValidName")).add(literal(".core$());")),
-			rule().add((condition("type", "Node & owner")), not(condition("type", "inherited | overriden | instance")), (condition("trigger", "componentList"))).add(literal("new java.util.ArrayList<>(")).add(mark("name", "toCamelCase", "toCamelCase", "FirstLowerCase")).add(literal("List).forEach(c -> components.add(c.core$()));")),
-			rule().add((condition("type", "Node")), (condition("trigger", "list"))),
-			rule().add((condition("type", "Node")), (condition("trigger", "componentlist")))
+	public RuleSet ruleSet() {
+		return new RuleSet().add(
+				rule().condition((allTypes("owner", "variable", "multiple")), not(anyTypes("reactive", "inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(");")),
+				rule().condition((allTypes("owner", "variable", "multiple")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(" != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(")) : java.util.Collections.emptyList());")),
+				rule().condition((allTypes("reference", "owner", "variable")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(" != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(")) : java.util.Collections.emptyList());")),
+				rule().condition((allTypes("owner", "function", "variable")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(" != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(")) : java.util.Collections.emptyList());")),
+				rule().condition((allTypes("owner", "variable")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList(java.util.Collections.singletonList(this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(")));")),
+				rule().condition((allTypes("variable", "multiple", "metatype")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", _")).output(mark("containerName", "FirstLowerCase")).output(literal(".")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal("());")),
+				rule().condition((allTypes("variable", "metatype")), (anyTypes("reactive", "function")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList(java.util.Collections.singletonList(io.intino.tara.magritte.utils.NativeExtractor.extract(\"")).output(mark("name")).output(literal("\", _")).output(mark("containerName", "FirstLowerCase")).output(literal("))));")),
+				rule().condition((allTypes("variable", "metatype")), not(anyTypes("inherited", "volatile", "overriden")), (trigger("list"))).output(literal("map.put(\"")).output(mark("name", "FirstLowerCase")).output(literal("\", new java.util.ArrayList(java.util.Collections.singletonList(this._")).output(mark("containerName", "FirstLowerCase")).output(literal(".")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal("())));")),
+				rule().condition((allTypes("single", "owner", "node")), not(anyTypes("instance", "inherited", "overriden")), (trigger("list"))).output(literal("if (")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(" != null) nodes.add(this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(".core$());")),
+				rule().condition((allTypes("owner", "node")), not(anyTypes("instance", "inherited", "overriden")), (trigger("list"))).output(mark("name", "toCamelCase", "FirstLowerCase")).output(literal("List.stream().forEach(c -> nodes.add(c.core$()));")),
+				rule().condition((allTypes("single", "owner", "node")), not(anyTypes("instance", "inherited", "overriden")), (trigger("componentlist"))).output(literal("if (")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(" != null) components.add(this.")).output(mark("name", "FirstLowerCase", "javaValidName")).output(literal(".core$());")),
+				rule().condition((allTypes("owner", "node")), not(anyTypes("instance", "inherited", "overriden")), (trigger("componentlist"))).output(literal("new java.util.ArrayList<>(")).output(mark("name", "toCamelCase", "toCamelCase", "FirstLowerCase")).output(literal("List).forEach(c -> components.add(c.core$()));")),
+				rule().condition((type("node")), (trigger("list"))),
+				rule().condition((type("node")), (trigger("componentlist")))
 		);
-		return this;
 	}
 }

@@ -1,5 +1,7 @@
 package io.intino.tara.magritte;
 
+import io.intino.tara.dsl.Meta;
+import io.intino.tara.dsl.Proteo;
 import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.stores.ResourcesStore;
 import io.intino.tara.magritte.utils.I18n;
@@ -358,7 +360,7 @@ public class Graph {
 	}
 
 	private boolean isMetaLanguage(String language) {
-		return "Verso".equals(language) || "Proteo".equals(language);
+		return Meta.class.getSimpleName().equals(language) || Proteo.class.getSimpleName().equals(language);
 	}
 
 	private void doInit(String language) {

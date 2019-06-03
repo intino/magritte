@@ -37,7 +37,7 @@ def type(Model)
 end
 
 def type(instance) trigger(super)
-	declare($qn+quoted, java.util.Arrays.asList($nodeType+quoted...[, ]), $path+quoted);
+	declare($qn+quoted, java.util.Arrays.asList($nodeType...[, ]), $path+quoted);
 end
 
 def type(node) trigger(super)
@@ -57,7 +57,7 @@ def trigger(method)
 end
 
 def type(instance) trigger(node)
-	self.declare($qn+quoted, java.util.Arrays.asList($nodeType+quoted...[, ]), $path+quoted);
+	self.declare($qn+quoted, java.util.Arrays.asList($nodeType...[, ]), $path+quoted);
 end
 
 def type(node) trigger(node)
@@ -101,11 +101,11 @@ def type(constraint) type(redefine) trigger(constraint)
 end
 
 def trigger(constraint)
-	$value()
+	$this()
 end
 
 def trigger(tags)
-	io.intino.tara.lang.model.Tag.$value
+	io.intino.tara.lang.model.Tag.$this
 end
 
 def type(customRule & metric) trigger(rule)
@@ -176,14 +176,14 @@ def type(stringRule) trigger(rule)
 	new io.intino.tara.lang.model.rules.variable.StringRule($regex+quoted)
 end
 
-def attribute(Infinity) trigger(cast)
+def attribute(this:Infinity) trigger(cast)
 	Double.POSITIVE_INFINITY
 end
-def attribute(-Infinity) trigger(cast)
+def attribute(this:-Infinity) trigger(cast)
 	Double.NEGATIVE_INFINITY
 end
-def !attribute(-Infinity) !attribute(Infinity) trigger(cast)
-	$value
+def !attribute(this:-Infinity) !attribute(this:Infinity) trigger(cast)
+	$this
 end
 
 def type(assumptions) trigger(assumptions)
@@ -195,21 +195,21 @@ def type(doc) trigger(doc)
 end
 
 def trigger(assumption)
-	is$value+toCamelCase()
+	is$this+toCamelCase()
 end
 
 def trigger(quoted)
-	"$value"
+	"$this"
 end
 
 def trigger(primitive)
-	io.intino.tara.lang.model.Primitive.$value+UpperCase
+	io.intino.tara.lang.model.Primitive.$this+UpperCase
 end
 
-def trigger(locale) attribute(es)
+def trigger(locale) attribute(this:es)
 	new Locale("es", "Spain", "es_ES")
 end
 
-def trigger(locale) attribute(en)
+def trigger(locale) attribute(this:en)
 	Locale.ENGLISH
 end

@@ -1,5 +1,4 @@
 def.file
-/Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Sumus.tara#true
 /Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Ontology.tara#true
 
 project

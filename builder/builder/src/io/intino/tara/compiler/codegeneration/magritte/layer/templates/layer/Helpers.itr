@@ -1,141 +1,85 @@
-def attribute(datex) trigger(variableType)
+def attribute(this:datex) trigger(variableType)
 	io.intino.tara.magritte.type.DateX
 end
 
-def attribute(Instant) trigger(variableType)
+def attribute(this:instant) trigger(variableType)
 	java.time.Instant
 end
 
-def attribute(instant) trigger(variableType)
-	java.time.Instant
-end
-
-def attribute(Time) trigger(variableType)
-	java.time.LocalTime
-end
-
-def attribute(Double) trigger(variableType)
+def attribute(this:double) trigger(variableType)
 	double
 end
 
-def attribute(Integer) trigger(variableType)
+def attribute(this:integer) trigger(variableType)
 	int
 end
 
-def attribute(Long) trigger(variableType)
+def attribute(this:long) trigger(variableType)
 	long
 end
 
-def attribute(Object) trigger(variableType)
+def attribute(this:object) trigger(variableType)
 	java.lang.Object
 end
 
-def attribute(type) trigger(variableType)
+def attribute(this:type) trigger(variableType)
 	Concept
 end
 
-def attribute(String) trigger(variableType)
+def attribute(this:string) trigger(variableType)
 	java.lang.String
 end
 
-def attribute(string) trigger(variableType)
-	java.lang.String
-end
-
-def attribute(Boolean) trigger(variableType)
+def attribute(this:boolean) trigger(variableType)
 	boolean
 end
 
-def attribute(boolean) trigger(variableType)
-	boolean
-end
-
-def attribute(Resource) trigger(variableType)
+def attribute(this:resource) trigger(variableType)
 	java.net.URL
 end
 
-def attribute(resource) trigger(variableType)
-	java.net.URL
-end
-
-def attribute(Integer) trigger(fulltype)
+def attribute(this:integer) trigger(fulltype)
 	java.lang.Integer
 end
 
-def attribute(integer) trigger(fulltype)
-	java.lang.Integer
-end
-
-def attribute(long) trigger(fulltype)
+def attribute(this:long) trigger(fulltype)
 	java.lang.Long
 end
 
-def attribute(Long) trigger(fulltype)
-	java.lang.Long
-end
-
-def attribute(Double) trigger(fulltype)
+def attribute(this:double) trigger(fulltype)
 	java.lang.Double
 end
 
-def attribute(double) trigger(fulltype)
-	java.lang.Double
-end
-
-def attribute(Resource) trigger(fulltype)
+def attribute(this:resource) trigger(fulltype)
 	java.net.URL
 end
 
-def attribute(resource) trigger(fulltype)
-	java.net.URL
-end
-
-def attribute(boolean) trigger(fulltype)
+def attribute(this:boolean) trigger(fulltype)
 	java.lang.Boolean
 end
 
-def attribute(Boolean) trigger(fulltype)
-	java.lang.Boolean
-end
-
-def attribute(string) trigger(fulltype)
+def attribute(this:string) trigger(fulltype)
 	java.lang.String
 end
 
-def attribute(String) trigger(fulltype)
-	java.lang.String
-end
-
-def attribute(Date) trigger(fullType)
+def attribute(this:date) trigger(fullType)
 	io.intino.tara.magritte.types.Date
 end
 
-def attribute(date) trigger(fullType)
-	io.intino.tara.magritte.types.Date
-end
-
-def attribute(Instant) trigger(fullType)
+def attribute(this:instant) trigger(fullType)
 	java.time.Instant
 end
 
-def attribute(instant) trigger(fullType)
-	java.time.Instant
-end
-
-def attribute(Time) trigger(fullType)
+def attribute(this:time) trigger(fullType)
 	java.time.LocalTime
 end
 
-def attribute(time) trigger(fullType)
-	java.time.LocalTime
-end
-
-def attribute(type) trigger(fullType)
+def attribute(this:type) trigger(fullType)
 	Concept
 end
 
 def trigger(quoted)
-	"$value"
+	"$this"
 end
 
 def type(nativerule) trigger(interfaceClass)

@@ -8,9 +8,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import org.siani.itrules.model.Frame;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -44,7 +45,7 @@ public class ModuleMavenCreator {
 				PsiDirectory root = getModuleRoot(module);
 				files[0] = root.findFile(POM_XML);
 				if (files[0] == null)
-					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
+					writePom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), new ModulePomTemplate().render(createModuleFrame(module)));
 			}
 		});
 		return files[0] == null ? null : files[0].getVirtualFile();
@@ -55,8 +56,8 @@ public class ModuleMavenCreator {
 		VirtualFile moduleFile = module.getModuleFile();
 		final PsiManager manager = PsiManager.getInstance(module.getProject());
 		PsiDirectory directory = moduleFile != null ?
-			manager.findDirectory(moduleFile.getParent()) :
-			manager.findDirectory(module.getProject().getBaseDir()).findSubdirectory(module.getName());
+				manager.findDirectory(moduleFile.getParent()) :
+				manager.findDirectory(module.getProject().getBaseDir()).findSubdirectory(module.getName());
 		if (directory == null) directory = create(manager, new File(module.getModuleFilePath()).getParentFile());
 		return directory;
 	}
@@ -69,26 +70,24 @@ public class ModuleMavenCreator {
 		return null;
 	}
 
-	private File createPom(String path, String text) {
+	private void writePom(String path, String text) {
 		try {
 			File file = new File(path);
 			FileWriter writer = new FileWriter(file);
 			writer.write(text);
 			writer.close();
-			return file;
 		} catch (IOException ignored) {
 		}
-		return null;
 	}
 
 	private Frame createModuleFrame(Module module) {
-		Frame frame = new Frame().addTypes("pom");
-		frame.addSlot("project", module.getProject().getName());
-		frame.addSlot("name", module.getName());
-		frame.addSlot("version", "1.0");
+		FrameBuilder builder = new FrameBuilder("pom")
+				.add("project", module.getProject().getName())
+				.add("name", module.getName())
+				.add("version", "1.0");
 		if (new File(module.getModuleFilePath()).getParent().equals(new File(module.getProject().getBasePath()).getAbsolutePath()))
-			frame.addSlot("default", "");
-		return frame;
+			builder.add("default", "");
+		return builder.toFrame();
 	}
 
 }

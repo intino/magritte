@@ -2,7 +2,9 @@ package io.intino.tara.compiler.codegeneration.magritte.natives;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import io.intino.itrules.model.Frame;
+import io.intino.itrules.Frame;
+import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
@@ -34,9 +36,9 @@ public class NativeFormatter implements TemplateTags {
 	private final Language language;
 	private final String aPackage;
 	private final String workingPackage;
-	private String languageWorkingPackage;
 	private final boolean system;
 	private final Map<String, Set<String>> imports;
+	private String languageWorkingPackage;
 
 	public NativeFormatter(Language language, String outDsl, String aPackage, String workingPackage, String languageWorkingPackage, boolean system, File importsFile) {
 		this.outDsl = outDsl;
@@ -46,147 +48,6 @@ public class NativeFormatter implements TemplateTags {
 		this.languageWorkingPackage = languageWorkingPackage;
 		this.system = system;
 		this.imports = load(importsFile);
-	}
-
-
-	private Map<String, Set<String>> load(File importsFile) {
-		if (importsFile == null) return new HashMap<>();
-		try {
-			return new Gson().fromJson(new FileReader(importsFile), new TypeToken<Map<String, Set<String>>>() {
-			}.getType());
-		} catch (FileNotFoundException e) {
-			return new HashMap<>();
-		}
-	}
-
-	public void fillFrameForFunctionVariable(Frame frame, Variable variable, Object body) {
-		final List<String> slots = Arrays.asList(frame.slots());
-		final String signature = getSignature(variable);
-		frame.addSlot(PACKAGE, this.aPackage);
-		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
-		imports.addAll(collectImports(variable));
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!slots.contains(SCOPE.toLowerCase())) frame.addSlot(SCOPE, workingPackage);
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!slots.contains(RULE.toLowerCase())) frame.addSlot(RULE, cleanQn(getInterface(variable)));
-		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, variable.name());
-		if (!slots.contains(QN.toLowerCase())) frame.addSlot(QN, variable.container().qualifiedName());
-		frame.addSlot(FILE, variable.file());
-		frame.addSlot(LINE, variable.line());
-		frame.addSlot(COLUMN, variable.column());
-		if (body != null) frame.addSlot(BODY, formatBody(body.toString(), signature));
-		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
-		frame.addSlot(SIGNATURE, signature);
-		frame.addSlot(UID, variable.getUID());
-		NativeExtractor extractor = new NativeExtractor(signature);
-		frame.addSlot("methodName", extractor.methodName());
-		frame.addSlot("parameters", extractor.parameters());
-		frame.addSlot("returnType", extractor.returnType());
-		frame.addSlot("exception", extractor.exceptions());
-	}
-
-	public void fillFrameForFunctionParameter(Frame frame, Parameter parameter, Object body) {
-		final List<String> slots = Arrays.asList(frame.slots());
-		final String signature = getSignature(parameter);
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, this.outDsl);
-		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, parameter.name());
-		if (!this.aPackage.isEmpty()) frame.addSlot(PACKAGE, this.aPackage.toLowerCase());
-		if (!slots.contains(QN.toLowerCase())) frame.addSlot(QN, parameter.container().qualifiedName());
-		if (!slots.contains(SCOPE.toLowerCase())) frame.addSlot(SCOPE, workingPackageScope(parameter, workingPackage));
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!slots.contains(RULE.toLowerCase())) frame.addSlot(RULE, cleanQn(getInterface(parameter)));
-		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
-		imports.addAll(collectImports(parameter));
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addSlot(SIGNATURE, signature);
-		frame.addSlot(FILE, parameter.file());
-		frame.addSlot(LINE, parameter.line());
-		frame.addSlot(COLUMN, parameter.column());
-		frame.addSlot(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
-		frame.addSlot(UID, parameter.getUID());
-		NativeExtractor extractor = new NativeExtractor(signature);
-		frame.addSlot("methodName", extractor.methodName());
-		frame.addSlot("parameters", extractor.parameters());
-		if (body != null) frame.addSlot(BODY, formatBody(body.toString(), signature));
-		frame.addSlot("returnType", extractor.returnType());
-		frame.addSlot("exception", extractor.exceptions());
-	}
-
-	public void fillFrameNativeVariable(Frame frame, Variable variable, Object body) {
-		final List<String> slots = Arrays.asList(frame.slots());
-		frame.addTypes(NATIVE);
-		frame.addSlot(FILE, variable.file());
-		frame.addSlot(LINE, variable.line());
-		frame.addSlot(COLUMN, variable.column());
-		final Set<String> imports = new HashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new HashSet<>());
-		imports.addAll(collectImports(variable));
-		if (!slots.contains(RULE.toLowerCase())) frame.addSlot(RULE, cleanQn(getInterface(variable)));
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!aPackage.isEmpty()) frame.addSlot(PACKAGE, aPackage.toLowerCase());
-		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, variable.name());
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, outDsl);
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
-		frame.addSlot(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable));
-		if (!slots.contains(TYPE.toLowerCase())) frame.addSlot(TYPE, typeFrame(type(variable), variable.isMultiple()));
-		frame.addSlot(UID, variable.getUID());
-		if (body != null) frame.addSlot(BODY, formatBody(body.toString(), variable.type().getName()));
-	}
-
-	public void fillFrameNativeParameter(Frame frame, Parameter parameter, String body) {
-		final List<String> slots = Arrays.asList(frame.slots());
-		frame.addTypes(NATIVE);
-		frame.addSlot(FILE, parameter.file());
-		frame.addSlot(LINE, parameter.line());
-		frame.addSlot(COLUMN, parameter.column());
-		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
-		imports.addAll(collectImports(parameter));
-		frame.addSlot(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addSlot(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter));
-		frame.addSlot(UID, parameter.getUID());
-		if (!aPackage.isEmpty()) frame.addSlot(PACKAGE, aPackage.toLowerCase());
-		if (!slots.contains(NAME.toLowerCase())) frame.addSlot(NAME, parameter.name());
-		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addSlot(OUT_LANGUAGE, outDsl.toLowerCase());
-		if (!slots.contains(WORKING_PACKAGE.toLowerCase()))
-			frame.addSlot(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!slots.contains(TYPE.toLowerCase()))
-			frame.addSlot(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
-		if (body != null) frame.addSlot(BODY, formatBody(body, parameter.type().getName()));
-	}
-
-	public String type(Variable variable) {
-		final boolean multiple = variable.isMultiple();
-		if (variable.flags().contains(Concept)) return "io.intino.tara.magritte.Concept";
-		if (variable.isReference()) {
-			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), ((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage);
-		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
-		else if (Primitive.WORD.equals(variable.type()))
-			return NameFormatter.getQn(variable.container(), workingPackage) + "." + Format.firstUpperCase().format(variable.name());
-		else return variable.type().javaName();
-	}
-
-	private boolean isMultiple(Parameter parameter) {
-		final Constraint.Parameter constraint = parameterConstraintOf(parameter);
-		return constraint != null && !constraint.size().isSingle();
-	}
-
-	public String type(Parameter parameter) {
-		final boolean multiple = parameter.isMultiple();
-		return parameter.type().equals(OBJECT) ?
-				((NativeObjectRule) parameter.rule()).type() :
-				parameter.type().javaName();
-	}
-
-	private Frame typeFrame(String type, boolean multiple) {
-		return multiple ? new Frame().addTypes(TYPE, "list").addSlot("value", type) : new Frame().addTypes(TYPE).addSlot("value", type);
-	}
-
-	private List<String> collectImports(Valued parameter) {
-		final String qn = (parameter.container().qualifiedName() + "." + parameter.name()).replace(":", "");
-		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}
 
 	public static String workingPackageScope(Valued valued, String workingPackage) {
@@ -239,10 +100,6 @@ public class NativeFormatter implements TemplateTags {
 		return rule.interfaceClass();
 	}
 
-	public String buildContainerPathOfExpression(Valued valued) {
-		return buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, system ? languageWorkingPackage : workingPackage);
-	}
-
 	public static String formatBody(String body, String signature) {
 		final String returnText = RETURN + " ";
 		String formattedBody = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
@@ -257,7 +114,6 @@ public class NativeFormatter implements TemplateTags {
 		if (!body.contains("\n") && !body.startsWith(returnText)) return returnText;
 		return "";
 	}
-
 
 	public static String getSignature(Variable variable) {
 		return ((NativeRule) variable.rule()).signature();
@@ -402,6 +258,154 @@ public class NativeFormatter implements TemplateTags {
 		return containers;
 	}
 
+	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
+		for (Constraint.Parameter variable : parameters)
+			if (variable.name().equals(name))
+				return variable;
+		return null;
+	}
+
+	private Map<String, Set<String>> load(File importsFile) {
+		if (importsFile == null) return new HashMap<>();
+		try {
+			return new Gson().fromJson(new FileReader(importsFile), new TypeToken<Map<String, Set<String>>>() {
+			}.getType());
+		} catch (FileNotFoundException e) {
+			return new HashMap<>();
+		}
+	}
+
+	public void fillFrameForFunctionVariable(Variable variable, Object body, FrameBuilderContext context) {
+		final String signature = getSignature(variable);
+		context.add(PACKAGE, this.aPackage);
+		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
+		imports.addAll(collectImports(variable));
+		if (!imports.isEmpty()) context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackage);
+		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, outDsl.toLowerCase());
+		if (!context.contains(WORKING_PACKAGE))
+			context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!context.contains(RULE)) context.add(RULE, cleanQn(getInterface(variable)));
+		if (!context.contains(NAME)) context.add(NAME, variable.name());
+		if (!context.contains(QN)) context.add(QN, variable.container().qualifiedName());
+		context.add(FILE, variable.file());
+		context.add(LINE, variable.line());
+		context.add(COLUMN, variable.column());
+		if (body != null) context.add(BODY, formatBody(body.toString(), signature));
+		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
+		context.add(SIGNATURE, signature);
+		context.add(UID, variable.getUID());
+		NativeExtractor extractor = new NativeExtractor(signature);
+		context.add("methodName", extractor.methodName());
+		context.add("parameters", extractor.parameters());
+		context.add("returnType", extractor.returnType());
+		context.add("exception", extractor.exceptions());
+	}
+
+	public void fillFrameForFunctionParameter(Parameter parameter, Object body, FrameBuilderContext context) {
+		final String signature = getSignature(parameter);
+		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, this.outDsl);
+		if (!context.contains(NAME)) context.add(NAME, parameter.name());
+		if (!this.aPackage.isEmpty()) context.add(PACKAGE, this.aPackage.toLowerCase());
+		if (!context.contains(QN)) context.add(QN, parameter.container().qualifiedName());
+		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackageScope(parameter, workingPackage));
+		if (!context.contains(WORKING_PACKAGE)) context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(parameter)));
+		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
+		imports.addAll(collectImports(parameter));
+		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		context.add(SIGNATURE, signature);
+		context.add(FILE, parameter.file());
+		context.add(LINE, parameter.line());
+		context.add(COLUMN, parameter.column());
+		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
+		context.add(UID, parameter.getUID());
+		NativeExtractor extractor = new NativeExtractor(signature);
+		context.add("methodName", extractor.methodName());
+		context.add("parameters", extractor.parameters());
+		if (body != null) context.add(BODY, formatBody(body.toString(), signature));
+		context.add("returnType", extractor.returnType());
+		context.add("exception", extractor.exceptions());
+	}
+
+	public void fillFrameNativeVariable(FrameBuilderContext context, Variable variable, Object body) {
+		context.add(NATIVE);
+		context.add(FILE, variable.file());
+		context.add(LINE, variable.line());
+		context.add(COLUMN, variable.column());
+		final Set<String> imports = new HashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new HashSet<>());
+		imports.addAll(collectImports(variable));
+		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(variable)));
+		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		if (!aPackage.isEmpty()) context.add(PACKAGE, aPackage.toLowerCase());
+		if (!context.contains(NAME)) context.add(NAME, variable.name());
+		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, outDsl);
+		if (!context.contains(WORKING_PACKAGE))
+			context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
+		context.add(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable));
+		if (!context.contains(TYPE)) context.add(TYPE, typeFrame(type(variable), variable.isMultiple()));
+		context.add(UID, variable.getUID());
+		if (body != null) context.add(BODY, formatBody(body.toString(), variable.type().getName()));
+	}
+
+	public void fillFrameNativeParameter(FrameBuilderContext context, Parameter parameter, String body) {
+		context.add(NATIVE);
+		context.add(FILE, parameter.file());
+		context.add(LINE, parameter.line());
+		context.add(COLUMN, parameter.column());
+		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
+		imports.addAll(collectImports(parameter));
+		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
+		context.add(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter));
+		context.add(UID, parameter.getUID());
+		if (!aPackage.isEmpty()) context.add(PACKAGE, aPackage.toLowerCase());
+		if (!context.contains(NAME.toLowerCase())) context.add(NAME, parameter.name());
+		if (!context.contains(OUT_LANGUAGE.toLowerCase())) context.add(OUT_LANGUAGE, outDsl.toLowerCase());
+		if (!context.contains(WORKING_PACKAGE.toLowerCase()))
+			context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
+		if (!context.contains(TYPE.toLowerCase()))
+			context.add(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
+		if (body != null) context.add(BODY, formatBody(body, parameter.type().getName()));
+	}
+
+	public String type(Variable variable) {
+		final boolean multiple = variable.isMultiple();
+		if (variable.flags().contains(Concept)) return "io.intino.tara.magritte.Concept";
+		if (variable.isReference()) {
+			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), ((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage);
+		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
+		else if (Primitive.WORD.equals(variable.type()))
+			return NameFormatter.getQn(variable.container(), workingPackage) + "." + Format.firstUpperCase().format(variable.name());
+		else return variable.type().javaName();
+	}
+
+	private boolean isMultiple(Parameter parameter) {
+		final Constraint.Parameter constraint = parameterConstraintOf(parameter);
+		return constraint != null && !constraint.size().isSingle();
+	}
+
+	public String type(Parameter parameter) {
+		final boolean multiple = parameter.isMultiple();
+		return parameter.type().equals(OBJECT) ?
+				((NativeObjectRule) parameter.rule()).type() :
+				parameter.type().javaName();
+	}
+
+	private Frame typeFrame(String type, boolean multiple) {
+		return (multiple ?
+				new FrameBuilder("list").add("value", type) :
+				new FrameBuilder().add("value", type)).toFrame();
+	}
+
+	private List<String> collectImports(Valued parameter) {
+		final String qn = (parameter.container().qualifiedName() + "." + parameter.name()).replace(":", "");
+		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
+	}
+
+	public String buildContainerPathOfExpression(Valued valued) {
+		return buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, system ? languageWorkingPackage : workingPackage);
+	}
+
 	public Constraint.Parameter parameterConstraintOf(Parameter parameter) {
 		List<Constraint.Parameter> parameters = parameterConstraintsOf(parameter.container());
 		if (parameters.isEmpty() || parameters.size() <= parameter.position()) return null;
@@ -419,12 +423,5 @@ public class NativeFormatter implements TemplateTags {
 			else if (constraint instanceof Constraint.Facet)
 				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
-	}
-
-	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
-		for (Constraint.Parameter variable : parameters)
-			if (variable.name().equals(name))
-				return variable;
-		return null;
 	}
 }

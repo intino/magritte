@@ -30,7 +30,7 @@ public class StashDeserializer extends Deserializer {
 		return stashFrom(bytesFrom(inputStream));
 	}
 
-	private static Stash stashFrom(byte[] bytes) {
+	public static Stash stashFrom(byte[] bytes) {
 		Stash result = null;
 		try (Input input = new Input(bytes)) {
 			final Kryo kryo = new Kryo();

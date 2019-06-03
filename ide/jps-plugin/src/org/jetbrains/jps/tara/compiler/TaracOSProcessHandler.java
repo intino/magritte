@@ -95,7 +95,6 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			lineInt = Integer.parseInt(lineNum);
 			columnInt = Integer.parseInt(columnNum);
 		} catch (NumberFormatException e) {
-			LOG.error(e);
 			lineInt = 0;
 			columnInt = 0;
 		}

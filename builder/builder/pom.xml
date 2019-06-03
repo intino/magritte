@@ -6,7 +6,7 @@
 
     <groupId>io.intino.tara</groupId>
     <artifactId>builder</artifactId>
-    <version>2.3.10</version>
+    <version>2.5.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -87,8 +87,13 @@
     <dependencies>
         <dependency>
             <groupId>io.intino.tara</groupId>
+            <artifactId>language</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.intino.tara</groupId>
             <artifactId>magritte</artifactId>
-            <version>2.1.12</version>
+            <version>2.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>io.intino.tara</groupId>
@@ -100,11 +105,6 @@
             <groupId>io.intino.tara</groupId>
             <artifactId>builder-constants</artifactId>
             <version>[1.2.0, 2.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>io.intino.tara</groupId>
-            <artifactId>language</artifactId>
-            <version>1.0.13</version>
         </dependency>
 
         <dependency>

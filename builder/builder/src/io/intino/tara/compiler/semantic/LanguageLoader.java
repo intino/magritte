@@ -1,11 +1,11 @@
 package io.intino.tara.compiler.semantic;
 
 import io.intino.tara.Language;
-import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.codegeneration.Format;
+import io.intino.tara.compiler.core.errorcollection.TaraException;
+import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.dsl.Verso;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -24,7 +24,7 @@ public class LanguageLoader {
 
 	public static Language load(String name, String version, String languagesDirectory) throws TaraException {
 		if (ProteoConstants.PROTEO.equalsIgnoreCase(name)) return new Proteo();
-		if (ProteoConstants.VERSO.equalsIgnoreCase(name)) return new Verso();
+		if (ProteoConstants.META.equalsIgnoreCase(name)) return new Meta();
 		final String[] errorMessage = {"Impossible to create a language instance based in " + name};
 		final Language language = AccessController.doPrivileged((PrivilegedAction<Language>) () -> {
 			try {

@@ -19,8 +19,8 @@ public class Node extends Predicate {
 		this("");
 	}
 
-	public Node(String name) {
-		super(name);
+	public Node(String id) {
+		super(id);
 	}
 
 	private static <T> List<T> reverseListOf(List<T> list) {
@@ -80,10 +80,7 @@ public class Node extends Predicate {
 	}
 
 	public Node root() {
-		Node node = this;
-		while (!(node.owner instanceof Model))
-			node = node.owner;
-		return node;
+		return graph().load(rootNodeId());
 	}
 
 	public void createNode(String name, Concept concept) {
@@ -280,4 +277,5 @@ public class Node extends Predicate {
 	void syncLayers() {
 		layers.forEach(l -> layers.forEach(l::sync$));
 	}
+
 }

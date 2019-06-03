@@ -1,16 +1,5 @@
-def type(java) !type(function)
-	package $generatedLanguage+LowerCase.natives;
-
-	$imports...[$NL]
-
-	class $name+FirstUpperCase implements io.intino.tara.magritte.Expression<$type> {
-		$nativeContainer self;
-
-		public $type value() {$NL[\t\t$return]
-end
-
-def type(function & java)
-	package $generatedLanguage+LowerCase.natives;
+def type(function)
+	package $generatedLanguage+lowerCase.natives;
 
 	$imports...[$NL]
 
@@ -18,81 +7,59 @@ def type(function & java)
 		$nativeContainer self;
 
 		@Override
-		$signature {$NL[\t\t$return]
+		$signature {
+			$return
 end
 
-
-def type(groovy) !type(function)
-	package $generatedLanguage+LowerCase.natives;
+def type(reactive)
+	package $generatedLanguage+lowerCase.natives;
 
 	$imports...[$NL]
 
-	@SuppressWarnings("UnnecessaryQualifiedReference")
-	class $name+FirstUpperCase implements io.intino.tara.magritte.Expression<$type> {
+	class $name+FirstUpperCase implements io.intino.tara.magritte.Expression<$type+format> {
 		$nativeContainer self;
 
-		public $type value() {$NL[\n\n$return]
-end
-
-
-def type(function & groovy)
-	package $generatedLanguage+LowerCase.natives;
-
-	$imports...[$NL]
-
-	@SuppressWarnings("UnnecessaryQualifiedReference")
-	class $name+FirstUpperCase implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
-		$nativeContainer self;
-
-		$signature {$NL$TAB$TAB$return
-end
-
-def type(kotlin) !type(function)
-	package $generatedLanguage+LowerCase.natives;
-
-	$imports...[$NL]
-
-	class $name+FirstUpperCase : io.intino.tara.magritte.Expression<$type> {
-		internal var self: $nativeContainer+reference
-
-		override fun value():$type {$NL$TAB$TAB$return
+		public $type+format value() {
+			$return
 
 end
 
-
-def type(function & kotlin)
-	package $generatedLanguage+LowerCase.natives;
-
-	$imports...[$NL]
-
-	class $name+FirstUpperCase implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
-		internal var self: $nativeContainer+reference
-
-		$signature {$NL$TAB$TAB$return
-end
-
-
-
-def !type(list) trigger(type)
-	$value+javaType
-end
-
-def type(list) trigger(type)
+def type(list) trigger(format)
 	java.util.List<$value+javaType>
 end
 
-def attribute(instant) trigger(javaType)
+def trigger(format)
+	$value+javaType
+end
+
+def attribute(this:instant) trigger(javaType)
 	java.time.Instant
 end
 
-def attribute(date) trigger(javaType)
+def attribute(this:Instant) trigger(javaType)
+	java.time.Instant
+end
+
+def attribute(this:Date) trigger(javaType)
 	Date
 end
 
-def attribute(time) trigger(javaType)
+def attribute(this:date) trigger(javaType)
+	Date
+end
+
+def attribute(this:time) trigger(javaType)
 	java.time.LocalTime
 end
 
-def attribute(resource) trigger(javaType)
+def attribute(this:Time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def attribute(this:Resource) trigger(javaType)
+	java.net.URL
+end
+
+def attribute(this:resource) trigger(javaType)
 	java.net.URL
 end

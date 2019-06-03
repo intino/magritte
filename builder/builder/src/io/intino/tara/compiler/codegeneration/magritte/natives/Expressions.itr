@@ -1,4 +1,4 @@
-def type(function & java)
+def type(function)
 	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
 
 	[$imports...[$NL]]
@@ -24,18 +24,18 @@ def type(function & java)
 	}
 end
 
-def type(java) !type(function)
+def type(native)
 	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+FirstUpperCase+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
+	public class $name+FirstUpperCase+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type+format> {
 		private $nativeContainer+reference self;
 
 		@Override
-		public $type value() {
-			[$return ]$body
+		public $type+format value() {
+			$body
 		}
 
 		@Override
@@ -50,139 +50,43 @@ def type(java) !type(function)
 	}
 end
 
-def type(function & groovy)
-	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName]
-
-	[$imports...[$NL]]
-
-	/**$qn#$file#$line#$column**/
-	class $name+FirstUpperCase+javaValidName_$uid implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
-		private $nativeContainer+reference self
-
-		$signature {
-			$body
-		}
-
-		public void self(io.intino.tara.magritte.Layer context) {
-			self = ($nativeContainer+reference) context
-		}
-
-		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
-			return $nativeContainer+reference.class
-		}
-	}
-end
-
-def type(groovy) !type(function)
-	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
-
-	[$imports...[$NL]]
-
-	/**$qn#$file#$line#$column**/
-	class $name+FirstUpperCase+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
-		private $nativeContainer+reference self;
-
-		public $type value() {
-			[$return ]$body
-		}
-
-		public void self(io.intino.tara.magritte.Layer context) {
-			self = ($nativeContainer+reference) context;
-		}
-
-		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
-			return $nativeContainer+reference.class;
-		}
-	}
-end
-
-
-def type(function & kotlin)
-	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName]
-
-	[$imports+removeStatic...[$NL]]
-
-	/**$qn#$file#$line#$column**/
-	class $name+FirstUpperCase+javaValidName_$uid : [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
-		internal var self: $nativeContainer+reference? = null
-
-		$signature {
-			$body
-		}
-
-		override fun self(context: io.intino.tara.magritte.Layer) {
-			self = context as $nativeContainer+reference
-		}
-
-		override fun selfClass(): Class<out io.intino.tara.magritte.Layer> {
-			return $nativeContainer+reference::class.java
-		}
-	}
-end
-
-def type(kotlin)
-	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
-
-	[$imports+removeStatic...[$NL]]
-
-	/**$qn#$file#$line#$column**/
-	class $name+FirstUpperCase+javaValidName_$uid : io.intino.tara.magritte.Expression<$type> {
-		internal var self: $nativeContainer+reference? = null
-
-		override fun value():$type {
-			$body
-		}
-
-		override fun self(context: io.intino.tara.magritte.Layer) {
-			self = context as $nativeContainer+reference
-		}
-
-		override fun selfClass(): Class<out io.intino.tara.magritte.Layer> {
-			return $nativeContainer+reference::class.java
-		}
-	}
-end
-
-
-def !type(list) trigger(type)
-	$value+javaType
-end
-
-def type(list) trigger(type)
+def type(list) trigger(format)
 	java.util.List<$value+javaType>
 end
 
-def attribute(instant) trigger(javaType)
+def trigger(format)
+	$value+javaType
+end
+
+def attribute(this:instant) trigger(javaType)
 	java.time.Instant
 end
 
-
-def attribute(Instant) trigger(javaType)
+def attribute(this:Instant) trigger(javaType)
 	java.time.Instant
 end
 
-def attribute(Date) trigger(javaType)
+def attribute(this:Date) trigger(javaType)
 	Date
 end
 
-def attribute(date) trigger(javaType)
+def attribute(this:date) trigger(javaType)
 	Date
 end
 
-def attribute(time) trigger(javaType)
+def attribute(this:time) trigger(javaType)
 	java.time.LocalTime
 end
 
-
-def attribute(Time) trigger(javaType)
+def attribute(this:Time) trigger(javaType)
 	java.time.LocalTime
 end
 
-def attribute(Resource) trigger(javaType)
+def attribute(this:Resource) trigger(javaType)
 	java.net.URL
 end
 
 
-def attribute(resource) trigger(javaType)
+def attribute(this:resource) trigger(javaType)
 	java.net.URL
 end

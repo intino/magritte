@@ -1,15 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Compiler" type="Remote" factoryName="Remote" singleton="true" show_console_on_std_out="true">
-    <log_file path="$PROJECT_DIR$/../sandbox/plugins-sandbox/system/log/build-log/build.log" checked="true" skipped="false" show_all="false" alias="Build log" />
+  <configuration default="false" name="Compiler" type="Remote" singleton="true" show_console_on_std_out="true">
+    <log_file alias="Build log" path="$PROJECT_DIR$/../sandbox/plugins-sandbox/system/log/build-log/build.log" skipped="false" />
     <option name="USE_SOCKET_TRANSPORT" value="true" />
     <option name="SERVER_MODE" value="false" />
-    <option name="SHMEM_ADDRESS" value="javadebug" />
+    <option name="SHMEM_ADDRESS" />
     <option name="HOST" value="localhost" />
-    <option name="PORT" value="4001" />
+    <option name="PORT" value="53938" />
+    <option name="AUTO_RESTART" value="false" />
     <RunnerSettings RunnerId="Debug">
-      <option name="DEBUG_PORT" value="4001" />
+      <option name="DEBUG_PORT" value="53938" />
       <option name="LOCAL" value="false" />
     </RunnerSettings>
-    <method />
+    <method v="2" />
   </configuration>
 </component>

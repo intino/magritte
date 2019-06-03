@@ -1,29 +1,16 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import io.intino.itrules.LineSeparator;
+import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-
-import java.util.Locale;
-
-import static io.intino.itrules.LineSeparator.LF;
 
 public class Set_referenceTemplate extends Template {
 
-	protected Set_referenceTemplate(Locale locale, LineSeparator separator) {
-		super(locale, separator);
-	}
-
-	public static Template create() {
-		return new Set_referenceTemplate(Locale.ENGLISH, LF).define();
-	}
-
-	public Template define() {
-		add(
-			rule().add((condition("type", "variable & reference & concept & multiple & owner")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = new java.util.ArrayList<>((java.util.List<io.intino.tara.magritte.Concept>) values);")),
-			rule().add((condition("type", "variable & reference & concept & owner")), not(condition("type", "inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = (io.intino.tara.magritte.Concept) values.get(0);")),
-			rule().add((condition("type", "variable & reference & multiple & owner")), not(condition("type", "concept | inherited | overriden | reactive")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "FirstLowerCase")).add(literal(" = ((java.util.List<java.lang.Object>) values).stream().\n\tmap(s -> graph().core$().load(((io.intino.tara.magritte.Layer) s).core$().id()).as(")).add(mark("type", "reference")).add(literal(".class)).collect(java.util.stream.Collectors.toList());")),
-			rule().add((condition("type", "variable & reference & owner")), not(condition("type", "concept | inherited | reactive | overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "FirstLowerCase")).add(literal("\")) this.")).add(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).add(literal(" = values.get(0)!= null ? core$().graph().load(((io.intino.tara.magritte.Layer) values.get(0)).core$().id()).as(")).add(mark("type", "reference")).add(literal(".class) : null;"))
+	public RuleSet ruleSet() {
+		return new RuleSet().add(
+				rule().condition((allTypes("reference", "owner", "concept", "variable", "multiple")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = new java.util.ArrayList<>((java.util.List<io.intino.tara.magritte.Concept>) values);")),
+				rule().condition((allTypes("reference", "owner", "concept", "variable")), not(anyTypes("reactive", "inherited", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = (io.intino.tara.magritte.Concept) values.get(0);")),
+				rule().condition((allTypes("reference", "owner", "variable", "multiple")), not(anyTypes("reactive", "inherited", "concept", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "FirstLowerCase")).output(literal(" = ((java.util.List<java.lang.Object>) values).stream().\n\tmap(s -> graph().core$().load(((io.intino.tara.magritte.Layer) s).core$().id()).as(")).output(mark("type", "reference")).output(literal(".class)).collect(java.util.stream.Collectors.toList());")),
+				rule().condition((allTypes("reference", "owner", "variable")), not(anyTypes("reactive", "inherited", "concept", "overriden")), (trigger("set"))).output(literal("if (name.equalsIgnoreCase(\"")).output(mark("name", "FirstLowerCase")).output(literal("\")) this.")).output(mark("name", "javaValidName", "FirstLowerCase", "javaValidWord")).output(literal(" = values.get(0)!= null ? core$().graph().load(((io.intino.tara.magritte.Layer) values.get(0)).core$().id()).as(")).output(mark("type", "reference")).output(literal(".class) : null;"))
 		);
-		return this;
 	}
 }

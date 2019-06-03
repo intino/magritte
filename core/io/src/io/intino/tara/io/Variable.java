@@ -1,7 +1,9 @@
 package io.intino.tara.io;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Variable {
 
@@ -45,5 +47,10 @@ public abstract class Variable {
 	}
 
 	public static class Object extends Variable {
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, values);
 	}
 }

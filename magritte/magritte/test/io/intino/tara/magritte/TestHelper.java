@@ -20,6 +20,7 @@ public class TestHelper {
 
 	public static final String emptyStash = "Empty";
 	public static final String oneMockStash = "OneMock";
+	public static final String uuidStash = "uuidStash";
 	public static final String firstStash = "firstStash";
 	public static final String secondStash = "secondStash";
 	public static final String thirdStash = "thirdStash";
@@ -39,6 +40,7 @@ public class TestHelper {
 			Map<String, Stash> store = new HashMap<String, Stash>() {{
 				put(emptyStash + Extension, emptyStash());
 				put(oneMockStash + Extension, oneMockStash());
+				put(uuidStash + Extension, uuidStash());
 				put(firstStash + Extension, firstStash());
 				put(secondStash + Extension, secondStash());
 				put(thirdStash + Extension, thirdStash());
@@ -99,6 +101,12 @@ public class TestHelper {
 			}
 
 		};
+	}
+
+	public static Stash uuidStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(uuidStash + "#46012fc8-968a-4b0b-b329-9f2e7c48986a", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
+		return stash;
 	}
 
 	public static Stash firstStash() {

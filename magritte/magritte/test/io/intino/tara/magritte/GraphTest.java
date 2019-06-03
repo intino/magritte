@@ -1,5 +1,6 @@
 package io.intino.tara.magritte;
 
+import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.layers.MockLayer;
 import io.intino.tara.magritte.layers.SubMockLayer;
 import io.intino.tara.magritte.modelviews.MockApplication;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import static io.intino.tara.io.Helper.*;
 import static io.intino.tara.magritte.TestHelper.*;
 import static java.util.logging.Logger.getGlobal;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -349,5 +351,11 @@ public class GraphTest {
 		new Graph(mockStore()).loadStashes(missingReference).as(MockApplication.class);
 		handler.flush();
 		assertThat(outputStream.toString(), containsString("Dependant node is missingReference#x"));
+	}
+
+	@Test
+	public void should_provide_correct_root_node_id() {
+		Node child = new Node("xxx#yyy$zzz");
+		assertThat(child.rootNodeId(), is("xxx#yyy"));
 	}
 }

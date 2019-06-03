@@ -78,7 +78,10 @@ public class SetupConfigurationOperation extends SetupOperation {
 		Artifact artifact = legio.artifact();
 		Artifact.Code code = artifact.code();
 		final Level level = Level.valueOf(artifact.core$().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
-		configuration.outDSL(snakeCaseToCamelCase(artifact.name$()));
+		if (artifact.isLevel()) {
+			String outDSL = artifact.asLevel().model().outLanguage();
+			configuration.outDSL(outDSL == null ? snakeCaseToCamelCase(artifact.name$()) : outDSL);
+		}
 		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name$().toLowerCase();
 		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
 		configuration.artifactId(artifact.name$().toLowerCase());
