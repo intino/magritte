@@ -9,6 +9,7 @@ import com.intellij.codeInspection.ex.ProblemDescriptorImpl;
 import com.intellij.codeInspection.ex.QuickFixWrapper;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.ExternallyAnnotated;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
@@ -154,7 +155,13 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private IntentionAction toIntention(PsiElement node, String message, LocalQuickFix fix) {
-		return toIntention(node, node.getTextRange(), message, fix);
+		return toIntention(node, getAnnotationRange(node), message, fix);
+	}
+
+	private static TextRange getAnnotationRange(@NotNull PsiElement startElement) {
+		return startElement instanceof ExternallyAnnotated
+				? ((ExternallyAnnotated) startElement).getAnnotationRegion()
+				: startElement.getTextRange();
 	}
 
 	private IntentionAction toIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
