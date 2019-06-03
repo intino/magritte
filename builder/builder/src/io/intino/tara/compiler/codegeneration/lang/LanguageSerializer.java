@@ -6,8 +6,8 @@ import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.shared.TaraBuildConstants;
+import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.Verso;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
 
@@ -96,7 +96,7 @@ public class LanguageSerializer {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
 		for (Model model : models)
-			if (!(model.language() instanceof Proteo) && !(model.language() instanceof Verso)) try {
+			if (!(model.language() instanceof Proteo) && !(model.language() instanceof Meta)) try {
 				dependencies.add(Paths.get(model.language().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " "));
 			} catch (URISyntaxException ignored) {
 			}
@@ -142,7 +142,7 @@ public class LanguageSerializer {
 
 	private void addInheritedRules(JarOutputStream target) {
 		for (Model model : models) {
-			if (model.language() instanceof Proteo || model.language() instanceof Verso) return;
+			if (model.language() instanceof Proteo || model.language() instanceof Meta) return;
 			final File tempDirectory = conf.getTempDirectory();
 			conf.cleanTemp();
 			FileSystemUtils.extractJar(model.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), tempDirectory);

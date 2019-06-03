@@ -11,8 +11,8 @@ import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.Verso;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
@@ -109,7 +109,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addType(FrameBuilderContext frame, Node node) {
-		if (!(language instanceof Proteo || language instanceof Verso)) {
+		if (!(language instanceof Proteo || language instanceof Meta)) {
 			frame.add(CONCEPT_LAYER, language.doc(node.type()).layer());
 			frame.add(TYPE, nodeType(node, sizeConstraint(node)));
 		}

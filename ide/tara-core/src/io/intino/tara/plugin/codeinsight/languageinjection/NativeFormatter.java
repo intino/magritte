@@ -8,8 +8,8 @@ import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
+import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.Verso;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.NativeWordRule;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
@@ -183,7 +183,7 @@ public class NativeFormatter implements TemplateTags {
 		context.add(SIGNATURE, getSignature((PsiClass) nativeInterface));
 		context.add(GENERATED_LANGUAGE, workingPackage.toLowerCase());
 		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
-		if (!(language instanceof Proteo) && !(language instanceof Verso))
+		if (!(language instanceof Proteo) && !(language instanceof Meta))
 			context.add(LANGUAGE, language.languageName());
 		if (ruleContainer.getRule() != null) context.add(RULE, ruleContainer.getRule().getText());
 		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
@@ -200,7 +200,7 @@ public class NativeFormatter implements TemplateTags {
 		context.add(GENERATED_LANGUAGE, workingPackage.toLowerCase());
 		context.add(SCOPE, parameter.scope());
 		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
-		if (!(language instanceof Proteo) && !(language instanceof Verso)) context.add(LANGUAGE, getLanguageScope(parameter, language));
+		if (!(language instanceof Proteo) && !(language instanceof Meta)) context.add(LANGUAGE, getLanguageScope(parameter, language));
 		if (signature != null) context.add(SIGNATURE, signature);
 		final String anInterface = getInterface(parameter);
 		if (anInterface != null) context.add(RULE, cleanQn(anInterface));

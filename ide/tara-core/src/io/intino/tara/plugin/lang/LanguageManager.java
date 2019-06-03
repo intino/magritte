@@ -12,8 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
+import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.Verso;
 import io.intino.tara.plugin.lang.file.TaraFileType;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.intino.tara.dsl.ProteoConstants.META;
 import static io.intino.tara.dsl.ProteoConstants.PROTEO;
-import static io.intino.tara.dsl.ProteoConstants.VERSO;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
@@ -47,7 +47,7 @@ public class LanguageManager {
 
 	static {
 		core.put(PROTEO, new Proteo());
-		core.put(VERSO, new Verso());
+		core.put(META, new Meta());
 	}
 
 	@Nullable
@@ -71,7 +71,7 @@ public class LanguageManager {
 		if (dsl == null) return null;
 		if (core.containsKey(dsl)) return core.get(dsl);
 		if (auxiliarLanguages.containsKey(dsl)) return auxiliarLanguages.get(dsl).get(project);
-		if (dsl.isEmpty()) return core.get(VERSO);
+		if (dsl.isEmpty()) return core.get(META);
 		if (project == null) return null;
 		return loadLanguage(project, dsl, version);
 	}

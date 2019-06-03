@@ -7,13 +7,13 @@ import java.util.Locale;
 
 import static io.intino.tara.lang.semantics.constraints.RuleFactory.*;
 
-public class Verso extends Tara {
+public class Meta extends Tara {
 
 	private static final char FACET_SEPARATOR = ':';
 	private static Size MULTIPLE = new Size(0, Integer.MAX_VALUE);
 
 
-	public Verso() {
+	public Meta() {
 		def(Root).with(context(Root).has(
 				component(ProteoConstants.CONCEPT, Collections.singletonList(MULTIPLE)),
 				component(ProteoConstants.FACET, Collections.singletonList(MULTIPLE)),
@@ -62,7 +62,7 @@ public class Verso extends Tara {
 
 	@Override
 	public String languageName() {
-		return "Verso";
+		return "Meta";
 	}
 
 	@Override

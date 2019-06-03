@@ -9,18 +9,18 @@ import com.intellij.notification.Notifications;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.PsiPlainTextFileImpl;
+import io.intino.tara.Language;
+import io.intino.tara.dsl.Meta;
+import io.intino.tara.dsl.Proteo;
+import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.semantics.Documentation;
+import io.intino.tara.plugin.codeinsight.completion.CompletionUtils.FakeElement;
 import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
-import io.intino.tara.Language;
-import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.Verso;
-import io.intino.tara.plugin.codeinsight.completion.CompletionUtils.FakeElement;
-import io.intino.tara.lang.model.Facet;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.semantics.Documentation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -95,7 +95,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private String findDoc(String type, PsiElement anElement) {
 		final Language language = TaraUtil.getLanguage(anElement);
-		if (language == null || language instanceof Proteo || language instanceof Verso)
+		if (language == null || language instanceof Proteo || language instanceof Meta)
 			return "**No documentation found for " + type + "**";
 		final Documentation doc = language.doc(type);
 		return doc != null && !doc.description().isEmpty() ? doc.description() : "**No documentation found for " + type + "**";

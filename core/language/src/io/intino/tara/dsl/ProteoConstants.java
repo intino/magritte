@@ -8,6 +8,6 @@ public class ProteoConstants {
 	public static final String METAFACET = "MetaFacet";
 	public static final String FACET_SEPARATOR = "+";
 
-	public static final String PROTEO = "Proteo";
-	public static final String VERSO = "Verso";
+	public static final String PROTEO = Proteo.class.getSimpleName();
+	public static final String META = Meta.class.getSimpleName();
 }

@@ -11,8 +11,8 @@ import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.Verso;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
@@ -57,7 +57,7 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 	}
 
 	private void addType(Node node, Size rule, FrameBuilder builder) {
-		if (!(language instanceof Proteo) && !(language instanceof Verso))
+		if (!(language instanceof Proteo) && !(language instanceof Meta))
 			builder.add(CONCEPT_LAYER, language.doc(node.type()).layer());
 		builder.add(TYPE, nodeType(node, rule));
 	}

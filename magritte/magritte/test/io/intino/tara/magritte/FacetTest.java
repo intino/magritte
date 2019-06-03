@@ -55,7 +55,7 @@ public class FacetTest {
 		return new Store() {
 			@Override
 			public Stash stashFrom(String path) {
-				return newStash("Verso", list(), list(),
+				return newStash("Meta", list(), list(),
 						list(
 								newConcept("Entity", false, true, true, "io.intino.tara.magritte.FacetTest$Entity", null, list("Concept"), list(), list(), list(), list()),
 								newConcept("Car", false, false, true, "io.intino.tara.magritte.FacetTest$Car", null, list("Entity"), list(), list(), list(), list()),
