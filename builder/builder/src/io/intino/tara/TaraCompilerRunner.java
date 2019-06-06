@@ -85,9 +85,14 @@ class TaraCompilerRunner {
 		testConf.workingPackage(testConf.workingPackage() + ".test");
 		if (config.outDSL() != null) testConf.addLanguage(config.outDSL(), config.version());
 		if (config.level() != null) testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
-		final CompilationUnit unit = new CompilationUnit(config);
-		addSources(testFiles, unit);
-		return new TaraCompiler(compilerMessages).compile(unit);
+		List<TaraCompiler.OutputItem> outputs = new ArrayList<>();
+		for (File file : testFiles.keySet()) {
+			testConf.outDSL(file.getName());
+			final CompilationUnit unit = new CompilationUnit(testConf);
+			addSources(Collections.singletonMap(file, true), unit);
+			outputs.addAll(new TaraCompiler(compilerMessages).compile(unit));
+		}
+		return outputs;
 	}
 
 	private void processErrors(List<CompilerMessage> compilerMessages) {
