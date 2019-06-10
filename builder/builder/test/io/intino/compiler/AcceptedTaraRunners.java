@@ -82,8 +82,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void ness_jms() {
+	public void ness_m2() {
 		main(new String[]{home + "sandbox/confFiles/ness/m2.txt"});
+	}
+
+	@Test
+	public void ness_m1() {
+		main(new String[]{home + "sandbox/confFiles/ness/m1.txt"});
 	}
 
 	@Test

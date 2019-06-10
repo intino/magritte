@@ -91,7 +91,10 @@ public class SetupConfigurationOperation extends SetupOperation {
 		for (Parameter p : legio.artifact().parameterList()) params.put(p.name(), p.defaultValue());
 		configuration.packageParameters(params);
 		if (configuration.isTest()) {
-			configuration.addLanguage(artifact.name$(), artifact.version());
+			String language = null;
+			if (artifact.isLevel())
+				language = artifact.asLevel().model().outLanguage() != null ? artifact.asLevel().model().outLanguage() : artifact.name$();
+			configuration.addLanguage(language, artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else if (artifact.isLevel()) {
 			final LevelArtifact.Model model = artifact.asLevel().model();
