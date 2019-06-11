@@ -174,7 +174,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	}
 
 	public String workingPackage() {
-		return workingPackage == null || workingPackage.isEmpty() ? outDSL() : workingPackage;
+		return workingPackage == null || workingPackage.isEmpty() ? outLanguage() : workingPackage;
 	}
 
 	public String dslGroupId() {
@@ -231,8 +231,13 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		}
 	}
 
-	public String outDSL() {
+	public String outLanguage() {
 		return outDSL;
+	}
+
+	@Override
+	public String outLanguageVersion() {
+		return version;
 	}
 
 	public String outDSL(String outDSL) {

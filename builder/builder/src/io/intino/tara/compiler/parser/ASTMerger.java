@@ -3,7 +3,6 @@ package io.intino.tara.compiler.parser;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.SourceUnit;
-import io.intino.tara.compiler.core.errorcollection.MergeException;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.lang.model.Node;
@@ -60,7 +59,7 @@ public class ASTMerger {
 	}
 
 	private String getName() {
-		return conf.getProject() != null ? conf.getProject() + "." + conf.outDSL() :
+		return conf.getProject() != null ? conf.getProject() + "." + conf.outLanguage() :
 				getPresentableName();
 	}
 

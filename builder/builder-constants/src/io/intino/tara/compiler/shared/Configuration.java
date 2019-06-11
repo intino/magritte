@@ -38,7 +38,9 @@ public interface Configuration {
 		return languages().stream().filter(predicate).findFirst().orElse(null);
 	}
 
-	String outDSL();
+	String outLanguage();
+
+	String outLanguageVersion();
 
 	String boxVersion();
 

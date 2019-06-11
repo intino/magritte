@@ -74,9 +74,9 @@ public class LanguageSerializer {
 
 	private File getDslDestiny() {
 		final File file = new File(conf.getTaraDirectory(), REPOSITORY + separator + conf.dslGroupId().replace(".", separator) + separator +
-				conf.outDSL().toLowerCase() + separator + conf.version());
+				conf.outLanguage().toLowerCase() + separator + conf.version());
 		file.mkdirs();
-		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
+		return new File(file, reference().format(firstUpperCase().format(conf.outLanguage())) + JAVA);
 	}
 
 	private void write(String content, File javaFile, List<Class<?>> rules) throws TaraException {
@@ -110,7 +110,7 @@ public class LanguageSerializer {
 		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
 		frameworkParameters(manifest);
 		manifest.getEntries().put("tara", createTaraProperties());
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.outDSL() + "-" + conf.version() + JAR)), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.outLanguage() + "-" + conf.version() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
@@ -133,7 +133,7 @@ public class LanguageSerializer {
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outDSL());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outLanguage());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.level().name());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.version());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.WORKING_PACKAGE.replace(".", "-")), conf.workingPackage());

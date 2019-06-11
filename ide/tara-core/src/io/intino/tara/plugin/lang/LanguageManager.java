@@ -83,12 +83,6 @@ public class LanguageManager {
 		return languages.get(project) == null ? null : languages.get(project).get(dsl);
 	}
 
-	public static void reloadLanguageForProjects(Project myProject, String dsl) {
-		languages.keySet().stream().filter(project -> myProject.equals(project) || languageFrom(dsl, languages.get(project)) != null).forEach(project -> {
-			final Language language = languageFrom(dsl, languages.get(project));
-			reloadLanguage(project, language != null ? language.languageName() : dsl);
-		});
-	}
 
 	private static Language languageFrom(String dsl, Map<String, Language> languages) {
 		for (String currentDSL : languages.keySet())

@@ -83,7 +83,7 @@ class TaraCompilerRunner {
 		CompilerConfiguration testConf = config.clone();
 		testConf.setTest(true);
 		testConf.workingPackage(testConf.workingPackage() + ".test");
-		if (config.outDSL() != null) testConf.addLanguage(config.outDSL(), config.version());
+		if (config.outLanguage() != null) testConf.addLanguage(config.outLanguage(), config.version());
 		if (config.level() != null) testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
 		List<TaraCompiler.OutputItem> outputs = new ArrayList<>();
 		for (File file : testFiles.keySet()) {
