@@ -38,6 +38,11 @@ public interface Configuration {
 		return languages().stream().filter(predicate).findFirst().orElse(null);
 	}
 
+	@Deprecated
+	default String outDSL() {
+		return outLanguage();
+	}
+
 	String outLanguage();
 
 	String outLanguageVersion();
