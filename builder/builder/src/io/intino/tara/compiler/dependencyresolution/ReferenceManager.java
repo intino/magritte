@@ -90,6 +90,7 @@ public class ReferenceManager {
 		if (!roots.isEmpty()) return roots;
 		for (Node root : model.components())
 			if (getNameWithoutExtension(new File(root.file()).getName()).equals(path[0])) {
+				if (path.length == 1) continue;
 				roots = searchPossibleRoots(root, path[1], false);
 				break;
 			}
