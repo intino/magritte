@@ -18,8 +18,8 @@ import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.Rule;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.plugin.documentation.TaraDocumentationFormatter;
 import io.intino.tara.plugin.lang.TaraIcons;
 import io.intino.tara.plugin.lang.psi.*;
@@ -325,9 +325,11 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public Signature getSignature() {
-		return findNotNullChildByClass(TaraSignature.class);
+	public TaraSignature getSignature() {
+		TaraSignature notNullChildByClass = findNotNullChildByClass(TaraSignature.class);
+		return notNullChildByClass == null ? new TaraSignatureImpl(null) : notNullChildByClass;
 	}
+
 
 	@NotNull
 	private List<Annotation> getAnnotations() {
