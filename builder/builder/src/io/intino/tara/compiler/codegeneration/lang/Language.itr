@@ -50,7 +50,7 @@ end
 
 def trigger(method)
 	private static class Root$number {
-		private static void load($language+firstUpperCase self) {
+		private static void load($language+reference+firstUpperCase self) {
 			$node...[$NL]
 		}
 	}

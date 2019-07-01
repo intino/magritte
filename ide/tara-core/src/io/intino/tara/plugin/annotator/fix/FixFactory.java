@@ -12,9 +12,6 @@ import java.util.Map;
 
 public class FixFactory {
 
-	private FixFactory() {
-	}
-
 	private static Map<String, Class<? extends IntentionAction>[]> fixes = new HashMap<>();
 
 	static {
@@ -35,7 +32,9 @@ public class FixFactory {
 		fixes.put("warning.variable.name.starts.uppercase", new Class[]{LowerCaseVariableFix.class});
 		fixes.put("reject.number.parameter.with.erroneous.metric", new Class[]{AddMetricFix.class});
 		fixes.put("reject.node.with.required.facet.not.found", new Class[]{AddRequiredFacetFix.class});
+	}
 
+	private FixFactory() {
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {
@@ -49,8 +48,8 @@ public class FixFactory {
 			List<IntentionAction> actions = new ArrayList<>();
 			for (Class<? extends IntentionAction> aClass : classes) {
 				IntentionAction intentionAction = aClass.getDeclaredConstructors()[0].getParameters().length == 2 ?
-					aClass.getConstructor(PsiElement.class, String[].class).newInstance(element, parameters) :
-					aClass.getConstructor(PsiElement.class).newInstance(element);
+						aClass.getConstructor(PsiElement.class, String[].class).newInstance(element, parameters) :
+						aClass.getConstructor(PsiElement.class).newInstance(element);
 				actions.add(intentionAction);
 			}
 			return actions.toArray(new IntentionAction[0]);

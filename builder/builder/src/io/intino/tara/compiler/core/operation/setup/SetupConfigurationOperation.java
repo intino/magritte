@@ -4,6 +4,7 @@ import io.intino.legio.graph.Artifact;
 import io.intino.legio.graph.LegioGraph;
 import io.intino.legio.graph.Parameter;
 import io.intino.legio.graph.level.LevelArtifact;
+import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -82,7 +83,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			String outDSL = artifact.asLevel().model().outLanguage();
 			configuration.outDSL(outDSL == null ? snakeCaseToCamelCase(artifact.name$()) : outDSL);
 		}
-		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name$().toLowerCase();
+		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + Format.reference().format(artifact.name$()).toString().toLowerCase();
 		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
 		configuration.artifactId(artifact.name$().toLowerCase());
 		configuration.groupId(artifact.groupId());

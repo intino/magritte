@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/sandbox/example/m2/src/M2.tara#true
+/Users/oroncal/workspace/sandbox/tara-test/src/org/example/taratest/box/model.tara#true
 
 project
-example
+tara-test
 module
-m2
+tara-test
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Application Support/IntelliJIdea2019.1/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/example/m2/gen
+/Users/oroncal/workspace/sandbox/tara-test/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/example/out/production/m2/
+/Users/oroncal/workspace/sandbox/tara-test/out/production/tara-test/
 resources
-/Users/oroncal/workspace/sandbox/example/m2/res
+/Users/oroncal/workspace/sandbox/tara-test/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/sandbox/example/.tara
+/Users/oroncal/workspace/sandbox/tara-test/.tara
 src.path
-/Users/oroncal/workspace/sandbox/example/m2/src
+/Users/oroncal/workspace/sandbox/tara-test/src
 
 version
 1.0.0
