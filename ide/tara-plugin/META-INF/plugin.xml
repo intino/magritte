@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.8.2</version>
+    <version>1.8.3</version>
     <change-notes>
         <![CDATA[
         Improved language reloading. Fixed minor errors.
