@@ -37,17 +37,21 @@ class StashToTara {
 	private String execute(Stash stash) {
 		writeDsl(stash);
 		writeContentRules(stash.contentRules, -1, stash.concepts);
-		writeComponentConceptsDefinedAsMain(stash, -1);
-		writeComponents(stash.nodes, -1);
+		writeConcepts(stash, -1);
+		writeNodes(stash.nodes, -1);
 		return builder.toString();
 	}
 
-	private void writeComponentConceptsDefinedAsMain(Stash stash, int level) {
-		List<String> mainTypes = stash.contentRules.stream().map(r -> r.type).collect(toList());
+	private void writeConcepts(Stash stash, int level) {
+		List<String> types = stash.contentRules.stream().map(r -> r.type).collect(toList());
 		writeContentRules(stash.concepts.stream()
-				.filter(c -> !c.name.contains("$"))
-				.filter(c -> !mainTypes.contains(c.name))
+				.filter(c -> !isComponent(c))
+				.filter(c -> !types.contains(c.name))
 				.map(c -> new Concept.Content(c.name, 0, 0)).collect(toList()), level, stash.concepts);
+	}
+
+	private boolean isComponent(Concept c) {
+		return !c.name.contains("#") && c.name.contains("$");
 	}
 
 	private void writeContentRules(List<Concept.Content> contentRules, int level, List<Concept> directory) {
@@ -60,7 +64,7 @@ class StashToTara {
 		writeVariables(conceptOf(contentRules.type, directory).variables, level);
 		writeParameters(conceptOf(contentRules.type, directory).parameters, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
-		writeComponents(conceptOf(contentRules.type, directory).nodes, level);
+		writeNodes(conceptOf(contentRules.type, directory).nodes, level);
 		if (level == 0) newLine(0);
 	}
 
@@ -78,6 +82,7 @@ class StashToTara {
 	private void writeHeader(Concept.Content rule, Concept concept) {
 		write(coreType(concept), cardinalityOf(rule), simpleName(concept.name));
 		if (concept.parent != null) write(" extends " + concept.parent);
+		if (concept.name.contains("#")) write(" on " + concept.name.split("#")[1].replace("$", "."));
 		if (concept.types.size() > 1) {
 			write(" as ");
 			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
@@ -89,7 +94,7 @@ class StashToTara {
 				concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
 	}
 
-	private void writeComponents(List<? extends Node> instances, int level) {
+	private void writeNodes(List<? extends Node> instances, int level) {
 		instances.forEach(i -> writeNode(i, level + 1));
 	}
 
@@ -113,7 +118,7 @@ class StashToTara {
 		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
 		writeFacets(node);
 		writeVariables(node.variables, level);
-		writeComponents(node.nodes, level);
+		writeNodes(node.nodes, level);
 	}
 
 	private void writeFacets(Node node) {
@@ -181,6 +186,7 @@ class StashToTara {
 
 	@NotNull
 	private String cardinalityOf(Concept.Content rules) {
+		if (rules.min == 0 && (rules.max == 0 || rules.max == Integer.MAX_VALUE)) return " ";
 		return ":{" + rules.min + ".." + (rules.max == Integer.MAX_VALUE ? "*" : rules.max) + "} ";
 	}
 
