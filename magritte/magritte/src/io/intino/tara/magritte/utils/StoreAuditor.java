@@ -31,6 +31,12 @@ public class StoreAuditor {
 		this.oldChecksums = readOldChecksums();
 	}
 
+	public void removeTrack(String nodeId){
+		Map.Entry<String, String> entry = oldChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
+		if(entry == null) return;
+		oldChecksums.remove(entry.getKey());
+	}
+
 	private static String calculateChecksum(Node node) {
 		return node.hashCode() + "";
 	}
