@@ -35,6 +35,10 @@ public class StoreAuditor {
 		Map.Entry<String, String> entry = oldChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
 		if(entry == null) return;
 		oldChecksums.remove(entry.getKey());
+		entry = newChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
+		if(entry == null) return;
+		newChecksums.remove(entry.getKey());
+		changeMap = null;
 	}
 
 	private static String calculateChecksum(Node node) {
@@ -74,7 +78,6 @@ public class StoreAuditor {
 		int counter = 1;
 		while (newChecksums.containsKey(checksum + counter++)) ;
 		newChecksums.put(checksum, nodeId);
-
 	}
 
 	private String checksumOf(Node node) {
