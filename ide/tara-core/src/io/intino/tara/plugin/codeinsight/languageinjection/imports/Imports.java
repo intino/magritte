@@ -16,17 +16,17 @@ import java.util.stream.Collectors;
 
 public class Imports {
 
-	private File miscDirectory;
 	private static Map<String, Map<String, Set<String>>> imports;
+	private File taraDirectory;
 
 	public Imports(Project project) {
-		miscDirectory = LanguageManager.getMiscDirectory(project);
+		taraDirectory = LanguageManager.getTaraLocalDirectory(project);
 		imports = loadImports();
 	}
 
 	private Map<String, Map<String, Set<String>>> loadImports() {
-		if (miscDirectory == null) return Collections.emptyMap();
-		final File[] files = miscDirectory.listFiles((dir, name) -> name.endsWith(LanguageManager.JSON));
+		if (taraDirectory == null) return Collections.emptyMap();
+		final File[] files = taraDirectory.listFiles((dir, name) -> name.endsWith(LanguageManager.JSON));
 		Gson gson = new Gson();
 		Map<String, Map<String, Set<String>>> imports = new HashMap();
 		if (files == null) return imports;
@@ -58,7 +58,7 @@ public class Imports {
 
 	private void save(String fileName) {
 		try {
-			final File file = new File(miscDirectory, fileName.toLowerCase());
+			final File file = new File(taraDirectory, fileName.toLowerCase());
 			file.getParentFile().mkdirs();
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			Files.write(file.toPath(), gson.toJson(imports.get(fileName.toLowerCase())).getBytes());

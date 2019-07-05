@@ -7,6 +7,9 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Tag;
+import io.intino.tara.lang.model.rules.custom.Url;
 import io.intino.tara.plugin.annotator.TaraAnnotator;
 import io.intino.tara.plugin.annotator.fix.CreateNodeRuleClassIntention;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
@@ -15,15 +18,12 @@ import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.messages.MessageProvider;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
-import io.intino.tara.lang.model.Node;
-import io.intino.tara.lang.model.Tag;
-import io.intino.tara.lang.model.rules.custom.Url;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
-import static io.intino.tara.plugin.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static io.intino.tara.plugin.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 
 public class NodeRuleAnalyzer extends TaraAnalyzer {
 
@@ -35,7 +35,7 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 	public NodeRuleAnalyzer(TaraRuleContainer ruleContainer) {
 		this.node = TaraPsiImplUtil.getContainerByType(ruleContainer, Node.class);
 		this.rule = ruleContainer.getRule();
-		rulesPackage = (TaraModuleType.isTara(module()) ? TaraUtil.graphPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
+		rulesPackage = (IntinoModuleType.isIntino(module()) ? TaraUtil.graphPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
 	}
 
 	@Override

@@ -16,7 +16,7 @@ resources
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/cesar/.tara
+/Users/oroncal/workspace/cesar/.intino
 src.path
 /Users/oroncal/workspace/cesar/cesar/src
 

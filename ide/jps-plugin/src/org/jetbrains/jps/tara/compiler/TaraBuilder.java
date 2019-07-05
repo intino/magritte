@@ -54,6 +54,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String TEST = "test";
 	private static final String TEST_GEN = "test-gen";
 	private static final String LANGUAGES_DIRECTORY = ".m2";
+	private static final String INTINO_DIRECTORY = ".intino";
 	private static final String TARA_DIRECTORY = ".tara";
 	private static final String STASH = ".stash";
 	private final String builderName;
@@ -68,7 +69,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	public ExitCode build(CompileContext context,
 						  ModuleChunk chunk,
 						  DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
-						  OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
+						  OutputConsumer outputConsumer) throws ProjectBuildException {
 		long start = System.currentTimeMillis();
 		try {
 			final JpsTaraExtensionService service = JpsTaraExtensionService.instance();
@@ -125,7 +126,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		removeOldClasses(context, compiled);
 	}
 
-	private static void copyGeneratedStashes(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
+	private void copyGeneratedStashes(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
 		for (JpsModule module : chunk.getModules()) {
 			final File resourcesDirectory = chunk.containsTests() ? testResourcesDirectory(module) : getResourcesDirectory(module);
 			if (!resourcesDirectory.exists()) resourcesDirectory.mkdirs();
@@ -171,17 +172,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return toCompile;
 	}
 
-	private static boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler handler) {
-		if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) || !handler.shouldRetry()) return false;
-		if (CHUNK_REBUILD_ORDERED.get(context) != null) {
-			CHUNK_REBUILD_ORDERED.set(context, null);
-			return false;
-		}
-		CHUNK_REBUILD_ORDERED.set(context, Boolean.TRUE);
-		LOG.info("Order chunk rebuild");
-		return true;
-	}
-
 	private void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0])
@@ -190,11 +180,11 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 
-	private static Map<ModuleBuildTarget, List<OutputItem>> processCompiledFiles(CompileContext context,
-																				 ModuleChunk chunk,
-																				 Map<ModuleBuildTarget, List<String>> generationOutputs,
-																				 String compilerOutput,
-																				 List<OutputItem> successfullyCompiled) throws IOException {
+	private Map<ModuleBuildTarget, List<OutputItem>> processCompiledFiles(CompileContext context,
+																		  ModuleChunk chunk,
+																		  Map<ModuleBuildTarget, List<String>> generationOutputs,
+																		  String compilerOutput,
+																		  List<OutputItem> successfullyCompiled) throws IOException {
 		ProjectDescriptor pd = context.getProjectDescriptor();
 		final Map<ModuleBuildTarget, List<OutputItem>> compiled = new THashMap<>();
 		for (final OutputItem item : successfullyCompiled)
@@ -203,12 +193,12 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return compiled;
 	}
 
-	private static void processOutputItem(CompileContext context,
-										  ModuleChunk chunk,
-										  Map<ModuleBuildTarget, List<String>> generationOutputs,
-										  String compilerOutput, ProjectDescriptor pd,
-										  Map<ModuleBuildTarget, List<OutputItem>> compiled,
-										  OutputItem item) throws IOException {
+	private void processOutputItem(CompileContext context,
+								   ModuleChunk chunk,
+								   Map<ModuleBuildTarget, List<String>> generationOutputs,
+								   String compilerOutput, ProjectDescriptor pd,
+								   Map<ModuleBuildTarget, List<OutputItem>> compiled,
+								   OutputItem item) throws IOException {
 		if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("compiled=" + item);
 		final JavaSourceRootDescriptor rd = pd.getBuildRootIndex().findJavaRootDescriptor(context, new File(item.getSourcePath()));
 		if (rd != null) {
@@ -220,11 +210,11 @@ class TaraBuilder extends ModuleLevelBuilder {
 			LOG.info("No java source root descriptor for the item found =" + item);
 	}
 
-	private static void ensureCorrectOutput(ModuleChunk chunk,
-											OutputItem item,
-											Map<ModuleBuildTarget, List<String>> generationOutputs,
-											String compilerOutput,
-											@NotNull ModuleBuildTarget srcTarget) throws IOException {
+	private void ensureCorrectOutput(ModuleChunk chunk,
+									 OutputItem item,
+									 Map<ModuleBuildTarget, List<String>> generationOutputs,
+									 String compilerOutput,
+									 @NotNull ModuleBuildTarget srcTarget) throws IOException {
 		if (chunk.getModules().size() > 1 && !srcTarget.equals(chunk.representativeTarget())) {
 			File output = new File(item.getSourcePath());
 			String srcTargetOutput = generationOutputs.get(srcTarget).get(0);
@@ -255,7 +245,9 @@ class TaraBuilder extends ModuleLevelBuilder {
 		list.add(finalOutput);
 		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
 		list.add(new File(new File(System.getProperty("user.home")), LANGUAGES_DIRECTORY).getAbsolutePath());
-		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA_DIRECTORY).getAbsolutePath());
+		File file = new File(JpsModelSerializationDataService.getBaseDirectory(project), INTINO_DIRECTORY);
+		if (file.exists()) list.add(file.getAbsolutePath());
+		else list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA_DIRECTORY).getAbsolutePath());
 		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
 		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
 		else
@@ -286,16 +278,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		handler.getCompilerMessages(chunk.getName()).forEach(context::processMessage);
 	}
 
-	private static File getResourcesDirectory(JpsModule module) {
-		final Iterator<JpsTypedModuleSourceRoot<JavaResourceRootProperties>> iterator = module.getSourceRoots(JavaResourceRootType.RESOURCE).iterator();
-		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
-	}
-
-	private static File testResourcesDirectory(JpsModule module) {
-		final Iterator<JpsTypedModuleSourceRoot<JavaResourceRootProperties>> iterator = module.getSourceRoots(JavaResourceRootType.TEST_RESOURCE).iterator();
-		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), TEST_RES);
-	}
-
 	private String getGenDir(JpsModule module) {
 		for (JpsModuleSourceRoot moduleSourceRoot : module.getSourceRoots())
 			if (GEN.equals(moduleSourceRoot.getFile().getName())) return moduleSourceRoot.getFile().getAbsolutePath();
@@ -324,6 +306,27 @@ class TaraBuilder extends ModuleLevelBuilder {
 		resourcesFileRoot.mkdirs();
 		add(generationOutputs, buildTarget, resourcesFileRoot.getPath());
 		return generationOutputs;
+	}
+
+	private boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler handler) {
+		if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) || !handler.shouldRetry()) return false;
+		if (CHUNK_REBUILD_ORDERED.get(context) != null) {
+			CHUNK_REBUILD_ORDERED.set(context, null);
+			return false;
+		}
+		CHUNK_REBUILD_ORDERED.set(context, Boolean.TRUE);
+		LOG.info("Order chunk rebuild");
+		return true;
+	}
+
+	private File getResourcesDirectory(JpsModule module) {
+		final Iterator<JpsTypedModuleSourceRoot<JavaResourceRootProperties>> iterator = module.getSourceRoots(JavaResourceRootType.RESOURCE).iterator();
+		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
+	}
+
+	private File testResourcesDirectory(JpsModule module) {
+		final Iterator<JpsTypedModuleSourceRoot<JavaResourceRootProperties>> iterator = module.getSourceRoots(JavaResourceRootType.TEST_RESOURCE).iterator();
+		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), TEST_RES);
 	}
 
 	private void add(Map<ModuleBuildTarget, List<String>> outputs, ModuleBuildTarget target, String path) {

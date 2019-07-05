@@ -10,39 +10,43 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class TaraModuleType extends JavaModuleType {
-
-	private static final String TARA_MODULE = "TARA_MODULE";
+public class IntinoModuleType extends JavaModuleType {
 
 	@SuppressWarnings("WeakerAccess")
+	public static final String INTINO_MODULE_OPTION_NAME = "io.intino.tara.isIntinoModule";
 	public static final String TARA_MODULE_OPTION_NAME = "io.intino.tara.isTaraModule";
+	private static final String TARA_MODULE = "TARA_MODULE";
 
-	public TaraModuleType(@NonNls String id) {
+	public IntinoModuleType(@NonNls String id) {
 		super(id);
 	}
 
-	public TaraModuleType() {
+	public IntinoModuleType() {
 		this(TARA_MODULE);
+	}
+
+	public static boolean isIntino(Module module) {
+		return module != null && !module.isDisposed() && (isIntinoModule(module) || ModuleType.is(module, ModuleTypeManager.getInstance().findByID(TARA_MODULE)));
+	}
+
+	private static boolean isIntinoModule(Module module) {
+		return "true".equals(module.getOptionValue(TARA_MODULE_OPTION_NAME)) || "true".equals(module.getOptionValue(INTINO_MODULE_OPTION_NAME));
 	}
 
 	@NotNull
 	@Override
 	public String getName() {
-		return "Tara";
+		return "Intino";
 	}
 
 	@NotNull
 	@Override
 	public String getDescription() {
-		return "Tara Module";
+		return "Intino Module";
 	}
 
 	@Override
 	public Icon getNodeIcon(@Deprecated boolean isOpened) {
 		return TaraIcons.ICON_16;
-	}
-
-	public static boolean isTara(Module module) {
-		return module != null && !module.isDisposed() && ("true".equals(module.getOptionValue(TARA_MODULE_OPTION_NAME)) || ModuleType.is(module, ModuleTypeManager.getInstance().findByID(TARA_MODULE)));
 	}
 }

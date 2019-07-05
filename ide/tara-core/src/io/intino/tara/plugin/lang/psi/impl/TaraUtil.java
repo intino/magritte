@@ -235,7 +235,7 @@ public class TaraUtil {
 		Module module = ModuleProvider.moduleOf(psiFile);
 		if (module == null) return new TaraModelImpl[0];
 		List<TaraModel> taraFiles = getFilesOfModuleByFileType(module, psiFile.getFileType());
-		return taraFiles.toArray(new TaraModel[taraFiles.size()]);
+		return taraFiles.toArray(new TaraModel[0]);
 	}
 
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {

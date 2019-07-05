@@ -17,7 +17,7 @@ import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.messages.MessageProvider;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -115,7 +115,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private PluralInflector getInflector(Facet apply) {
-		return !TaraModuleType.isTara(ModuleProvider.moduleOf((PsiElement) apply)) ? null : new EnglishPluralInflector();
+		return !IntinoModuleType.isIntino(ModuleProvider.moduleOf((PsiElement) apply)) ? null : new EnglishPluralInflector();
 	}
 
 	private String getFacetPackage(Node node) {

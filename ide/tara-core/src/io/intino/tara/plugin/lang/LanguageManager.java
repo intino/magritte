@@ -34,7 +34,7 @@ public class LanguageManager {
 	public static final String DSL = "dsl";
 	public static final String FRAMEWORK = "framework";
 	public static final String TARA_USER = ".m2";
-	public static final String TARA_LOCAL = ".tara";
+	public static final String TARA_LOCAL = ".intino/tara";
 	public static final String JSON = ".json";
 	@SuppressWarnings("WeakerAccess")
 	public static final String DSL_GROUP_ID = "tara.dsl";
@@ -42,7 +42,6 @@ public class LanguageManager {
 	private static final Map<String, Language> core = new HashMap<>();
 	private static final Map<String, Map<Project, Language>> auxiliarLanguages = new HashMap<>();
 	private static final String INFO_JSON = "info" + JSON;
-	private static final String MISC = "misc";
 	private static final String LATEST = "LATEST";
 
 	static {
@@ -143,13 +142,6 @@ public class LanguageManager {
 
 	public static File getLanguageDirectory(String dsl) {
 		return new File(getLanguagesDirectory().getPath(), DSL_GROUP_ID.replace(".", File.separator) + File.separator + dsl.toLowerCase());
-	}
-
-	public static File getMiscDirectory(Project project) {
-		final File taraLocalDirectory = getTaraLocalDirectory(project);
-		final File misc = new File(taraLocalDirectory.getPath(), MISC);
-		misc.mkdirs();
-		return misc;
 	}
 
 	public static Map<String, Object> getImportedLanguageInfo(String dsl) {

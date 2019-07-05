@@ -47,32 +47,40 @@ public class SetupConfigurationOperation extends SetupOperation {
 		}
 	}
 
-	private boolean readConfiguration() throws TaraException {
+	private void readConfiguration() throws TaraException {
 		try {
-			final File miscDirectory = configuration.getMiscDirectory();
-			if (miscDirectory == null || !miscDirectory.exists()) return checkConfiguration();
-			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
-			if (!file.exists()) return checkConfiguration();
+			final File intinoArtifactsDirectory = configuration.artifactsDirectory();
+			if (intinoArtifactsDirectory == null || !intinoArtifactsDirectory.exists()) {
+				checkConfiguration();
+				return;
+			}
+			final File file = new File(intinoArtifactsDirectory, configuration.getModule() + ".conf");
+			if (!file.exists()) {
+				checkConfiguration();
+				return;
+			}
 			final Stash stash = StashDeserializer.stashFrom(file);
 			final Graph graph = new Graph().loadStashes(stash);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
 			LegioGraph legio = graph.as(LegioGraph.class);
-			if (legio == null) return checkConfiguration();
+			if (legio == null) {
+				checkConfiguration();
+				return;
+			}
 			extractConfiguration(legio);
-			return checkConfiguration();
+			checkConfiguration();
 		} catch (Throwable t) {
 			throw new TaraException(t.getMessage() == null ? "java.lang.NullPointerException at " + t.getStackTrace()[0].toString() : t.getMessage());
 		}
 	}
 
-	private boolean checkConfiguration() throws TaraException {
+	private void checkConfiguration() throws TaraException {
 		if (configuration.languages().isEmpty())
 			throw new TaraException("Language not defined or not found.");
 		if (configuration.artifactId() == null || configuration.artifactId().isEmpty())
 			throw new TaraException("Project name not found. Reload configuration");
 		else if (configuration.languages().get(0).get() == null)
 			throw new TaraException("Language not defined or not found: " + configuration.languages().get(0).name() + "-" + configuration.languages().get(0).version());
-		return true;
 	}
 
 	private void extractConfiguration(LegioGraph legio) {
