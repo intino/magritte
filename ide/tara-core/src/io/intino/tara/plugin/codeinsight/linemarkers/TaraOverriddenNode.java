@@ -44,8 +44,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
 			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overrides element " + (reference.getName()), renderer);
 		}
-	}
-	);
+	});
 
 	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
@@ -53,7 +52,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!Node.class.isInstance(element)) return super.getLineMarkerInfo(element);
+		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
 		if (isOverridden(node)) {
 			final Icon icon = AllIcons.Gutter.OverridingMethod;
