@@ -59,10 +59,8 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 		if (element instanceof TaraNode) {
 			String name = ((Node) element).name();
 			return name == null ? ANONYMOUS : name;
-		} else if (element instanceof Identifier)
-			return element.getText();
-		else if (element instanceof TaraModel)
-			return ((TaraModel) element).getName();
+		} else if (element instanceof Identifier) return element.getText();
+		else if (element instanceof TaraModel) return ((TaraModel) element).getName();
 		return element.getText();
 	}
 }

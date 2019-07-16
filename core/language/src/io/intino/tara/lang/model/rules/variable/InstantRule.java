@@ -25,6 +25,6 @@ public class InstantRule implements VariableRule<List<String>> {
 
 	@Override
 	public String errorMessage() {
-		return "Instant must match ISO pattern";
+		return "Instant value must have ISO_INSTANT format";
 	}
 }
