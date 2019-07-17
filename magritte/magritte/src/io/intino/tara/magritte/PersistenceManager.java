@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface PersistenceManager {
+
+	void delete(String path);
+
 	InputStream read(String path);
 
 	OutputStream write(String path);
@@ -14,6 +17,11 @@ public interface PersistenceManager {
 
 		public FilePersistenceManager(File directory) {
 			this.directory = directory;
+		}
+
+		@Override
+		public void delete(String path) {
+			new File(directory, path).delete();
 		}
 
 		@Override
@@ -42,6 +50,11 @@ public interface PersistenceManager {
 
 	class InMemoryPersistenceManager implements PersistenceManager {
 		private final Map<String, ByteArrayOutputStream> content = new HashMap<>();
+
+		@Override
+		public void delete(String path) {
+			content.remove(path);
+		}
 
 		@Override
 		public InputStream read(String path) {
