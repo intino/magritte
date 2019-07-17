@@ -4,15 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public interface PersistenceManager {
 	InputStream read(String path);
+
 	void write(String path, InputStream stream);
 
-	class FilePersistenceManager implements  PersistenceManager{
+	class FilePersistenceManager implements PersistenceManager {
 		private final File directory;
 
 		public FilePersistenceManager(File directory) {
