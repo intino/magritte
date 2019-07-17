@@ -27,6 +27,7 @@ import static io.intino.tara.compiler.shared.TaraBuildConstants.WORKING_PACKAGE;
 import static java.io.File.separator;
 
 public class CompilerConfiguration implements Cloneable, Configuration {
+	public static final String REPOSITORY = "repository";
 	private static final Logger LOG = Logger.getGlobal();
 
 	static {
@@ -41,7 +42,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		LOG.addHandler(infoHandler);
 	}
 
-	public static final String REPOSITORY = "repository";
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
@@ -62,7 +62,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
-	private File taraProjectDirectory;
+	private File intinoProjectDirectory;
 	private File taraDirectory;
 	private boolean test;
 	private String workingPackage;
@@ -291,12 +291,12 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.excludedPhases = excludedPhases;
 	}
 
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
-	}
-
 	public boolean isVerbose() {
 		return verbose;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 	public boolean isMake() {
@@ -307,20 +307,25 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.make = make;
 	}
 
-	public void setTaraProjectDirectory(File taraPath) {
-		this.taraProjectDirectory = taraPath;
+	public void intinoProjectDirectory(File intinoPath) {
+		this.intinoProjectDirectory = intinoPath;
 	}
 
-	public File getTaraProjectDirectory() {
-		return taraProjectDirectory;
+	public File intinoProjectDirectory() {
+		return intinoProjectDirectory;
 	}
 
-	public File getMiscDirectory() {
-		return new File(getTaraProjectDirectory(), "misc");
+	public File artifactsDirectory() {
+		return new File(intinoProjectDirectory(), "artifacts");
 	}
+
+	private File getTaraProjectDirectory() {
+		return new File(intinoProjectDirectory(), "tara");
+	}
+
 
 	public File getImportsFile() {
-		return new File(getMiscDirectory(), module + ".json");
+		return new File(getTaraProjectDirectory(), module + ".json");
 	}
 
 	public List<File> sourceDirectories() {
@@ -349,12 +354,12 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return null;
 	}
 
-	public void setTest(boolean test) {
-		this.test = test;
-	}
-
 	public boolean isTest() {
 		return test;
+	}
+
+	public void setTest(boolean test) {
+		this.test = test;
 	}
 
 	@Override

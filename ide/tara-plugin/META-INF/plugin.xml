@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.8.3</version>
+    <version>1.9.0</version>
     <change-notes>
         <![CDATA[
         Improved language reloading. Fixed minor errors.
@@ -117,7 +117,7 @@
         <!--<psi.referenceContributor implementation="io.intino.tara.plugin.model.psi.resolve.TaraReferenceContributor"/>-->
         <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
         <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
-        <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
+
         <intentionAction>
             <className>io.intino.tara.plugin.codeinsight.intentions.FromBodyToExplicitParameters</className>
             <category>Move To parameters</category>
@@ -186,7 +186,7 @@
         <extendWordSelectionHandler implementation="io.intino.tara.plugin.lang.psi.TaraSelectionHandler"/>
         <basicWordSelectionFilter implementation="io.intino.tara.plugin.lang.psi.TaraBasicWordSelectionFilter"/>
 
-        <moduleType id="TARA_MODULE" implementationClass="io.intino.tara.plugin.project.TaraModuleType"/>
+        <moduleType id="TARA_MODULE" implementationClass="io.intino.tara.plugin.project.IntinoModuleType"/>
     </extensions>
     <actions>
         <action id="NewPackage" class="io.intino.tara.plugin.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">

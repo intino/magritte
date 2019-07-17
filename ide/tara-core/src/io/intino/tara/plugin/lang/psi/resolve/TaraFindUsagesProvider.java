@@ -18,14 +18,13 @@ import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerBy
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	private static final String ANONYMOUS = "Anonymous";
-	private final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
-			TokenSet.create(TaraTypes.IDENTIFIER),
-			TokenSet.create(TaraTypes.DOC, TaraTypes.DOC_LINE), TokenSet.EMPTY);
 
 	@Nullable
 	@Override
 	public WordsScanner getWordsScanner() {
-		return WORDS_SCANNER;
+		return new DefaultWordsScanner(new TaraLexerAdapter(),
+				TokenSet.create(TaraTypes.IDENTIFIER),
+				TokenSet.create(TaraTypes.DOC, TaraTypes.DOC_LINE), TokenSet.EMPTY);
 	}
 
 	@Override
@@ -60,10 +59,8 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 		if (element instanceof TaraNode) {
 			String name = ((Node) element).name();
 			return name == null ? ANONYMOUS : name;
-		} else if (element instanceof Identifier)
-			return element.getText();
-		else if (element instanceof TaraModel)
-			return ((TaraModel) element).getName();
+		} else if (element instanceof Identifier) return element.getText();
+		else if (element instanceof TaraModel) return ((TaraModel) element).getName();
 		return element.getText();
 	}
 }

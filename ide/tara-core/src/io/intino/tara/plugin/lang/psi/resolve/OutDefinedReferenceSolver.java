@@ -12,7 +12,7 @@ import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +32,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	public OutDefinedReferenceSolver(@NotNull PsiElement element, TextRange range) {
 		super(element, range);
 		this.module = ModuleProvider.moduleOf(element);
-		if (!TaraModuleType.isTara(module)) return;
+		if (!IntinoModuleType.isIntino(module)) return;
 		this.outputDsl = TaraUtil.graphPackage(element);
 	}
 

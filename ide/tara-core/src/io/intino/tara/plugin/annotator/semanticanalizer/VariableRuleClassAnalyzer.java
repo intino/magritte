@@ -5,23 +5,23 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import io.intino.tara.lang.model.Primitive;
+import io.intino.tara.lang.model.Variable;
+import io.intino.tara.lang.model.rules.custom.Url;
 import io.intino.tara.plugin.annotator.TaraAnnotator;
 import io.intino.tara.plugin.annotator.fix.CreateMetricClassIntention;
 import io.intino.tara.plugin.annotator.fix.CreateVariableRuleClassIntention;
 import io.intino.tara.plugin.codeinsight.languageinjection.CreateFunctionInterfaceIntention;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.Rule;
+import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
+import io.intino.tara.plugin.lang.psi.TaraVariable;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.plugin.messages.MessageProvider;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
-import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
-import io.intino.tara.plugin.lang.psi.TaraVariable;
-import io.intino.tara.lang.model.Primitive;
-import io.intino.tara.lang.model.Variable;
-import io.intino.tara.lang.model.rules.custom.Url;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
@@ -38,7 +38,7 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 	public VariableRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
-		workingPackage = TaraModuleType.isTara(module()) ? TaraUtil.graphPackage(ruleContainer) : "";
+		workingPackage = IntinoModuleType.isIntino(module()) ? TaraUtil.graphPackage(ruleContainer) : "";
 		rulesPackage = workingPackage.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}
 

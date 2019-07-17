@@ -136,7 +136,7 @@ public class TaraModuleListener implements ModuleComponent {
 			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, newName.toLowerCase(), false, false);
 			refactoring.doRefactoring(refactoring.findUsages());
 		}
-		final File miscDirectory = LanguageManager.getMiscDirectory(project);
+		final File miscDirectory = LanguageManager.getTaraLocalDirectory(project);
 		if (miscDirectory == null || !miscDirectory.exists()) return;
 		final File[] files = miscDirectory.listFiles();
 		if (files == null) return;
