@@ -2,12 +2,14 @@ package io.intino.tara.magritte.utils;
 
 import io.intino.tara.io.Node;
 import io.intino.tara.io.Stash;
+import io.intino.tara.magritte.PersistenceManager;
+import io.intino.tara.magritte.PersistenceManager.FilePersistenceManager;
 import io.intino.tara.magritte.Predicate;
 import io.intino.tara.magritte.stores.FileSystemStore;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
@@ -17,28 +19,24 @@ public class StoreAuditor {
 	private static final String CHECKSUM_FILE = ".checksum";
 	private final FileSystemStore store;
 	private final Map<String, String> oldChecksums;
-	private String checksumName;
+	private final PersistenceManager manager;
+	private final String checksumName;
 	private Map<String, String> newChecksums = new HashMap<>();
 	private Map<String, Action> changeMap;
 
-	public StoreAuditor(FileSystemStore file) {
-		this(file, CHECKSUM_FILE);
+	public StoreAuditor(FileSystemStore store) {
+		this(store, new FilePersistenceManager(store.directory()), CHECKSUM_FILE);
 	}
 
-	public StoreAuditor(FileSystemStore fileSystemStore, String checksumName) {
+	public StoreAuditor(FileSystemStore store, String checksumName) {
+		this(store, new FilePersistenceManager(store.directory()), checksumName);
+	}
+
+	public StoreAuditor(FileSystemStore fileSystemStore, PersistenceManager manager, String checksumName) {
+		this.manager = manager;
 		this.checksumName = checksumName;
 		this.store = fileSystemStore;
 		this.oldChecksums = readOldChecksums();
-	}
-
-	public void removeTrack(String nodeId){
-		Map.Entry<String, String> entry = oldChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
-		if(entry == null) return;
-		oldChecksums.remove(entry.getKey());
-		entry = newChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
-		if(entry == null) return;
-		newChecksums.remove(entry.getKey());
-		changeMap = null;
 	}
 
 	private static String calculateChecksum(Node node) {
@@ -49,13 +47,19 @@ public class StoreAuditor {
 		return str.length() == 36 && str.charAt(8) == '-' && str.charAt(13) == '-' && str.charAt(18) == '-' && str.charAt(23) == '-';
 	}
 
+	public void removeTrack(String nodeId) {
+		Map.Entry<String, String> entry = oldChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
+		if (entry == null) return;
+		oldChecksums.remove(entry.getKey());
+		entry = newChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
+		if (entry == null) return;
+		newChecksums.remove(entry.getKey());
+		changeMap = null;
+	}
+
 	private Map<String, String> readOldChecksums() {
-		try {
-			return Files.lines(new File(store.directory(), checksumName).toPath())
-					.collect(toMap(l -> l.split("@")[0], l -> l.split("@")[1]));
-		} catch (IOException e) {
-			return Collections.emptyMap();
-		}
+		return new BufferedReader(new InputStreamReader(manager.read(checksumName))).lines()
+				.collect(toMap(l -> l.split("@")[0], l -> l.split("@")[1]));
 	}
 
 	public void commit() {
@@ -140,15 +144,10 @@ public class StoreAuditor {
 	}
 
 	private void writeNewChecksums() {
-		try {
-			Files.write(new File(store.directory(), checksumName).toPath(),
-					newChecksums.entrySet().stream()
-							.map(e -> e.getKey() + "@" + e.getValue())
-							.collect(joining("\n")).getBytes()
-			);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		manager.write(checksumName,
+				new ByteArrayInputStream(newChecksums.entrySet().stream()
+						.map(e -> e.getKey() + "@" + e.getValue())
+						.collect(joining("\n")).getBytes()));
 	}
 
 	public enum Action {Created, Modified, Removed}
