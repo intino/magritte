@@ -10,7 +10,8 @@ import io.intino.tara.magritte.Store;
 import io.intino.tara.magritte.stores.FileSystemStore;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
@@ -152,10 +153,15 @@ public class StoreAuditor {
 	}
 
 	private void writeNewChecksums() {
-		manager.write(checksumName,
-				new ByteArrayInputStream(newChecksums.entrySet().stream()
-						.map(e -> e.getKey() + "@" + e.getValue())
-						.collect(joining("\n")).getBytes()));
+		try {
+			DataOutputStream stream = new DataOutputStream(manager.write(checksumName));
+			stream.write(newChecksums.entrySet().stream()
+							.map(e -> e.getKey() + "@" + e.getValue())
+							.collect(joining("\n")).getBytes());
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public enum Action {Created, Modified, Removed}
