@@ -4,7 +4,9 @@ import io.intino.tara.io.Node;
 import io.intino.tara.io.Stash;
 import io.intino.tara.magritte.PersistenceManager;
 import io.intino.tara.magritte.PersistenceManager.FilePersistenceManager;
+import io.intino.tara.magritte.PersistenceManager.InMemoryPersistenceManager;
 import io.intino.tara.magritte.Predicate;
+import io.intino.tara.magritte.Store;
 import io.intino.tara.magritte.stores.FileSystemStore;
 
 import java.io.BufferedReader;
@@ -17,26 +19,32 @@ import static java.util.stream.Collectors.*;
 public class StoreAuditor {
 
 	private static final String CHECKSUM_FILE = ".checksum";
-	private final FileSystemStore store;
+	private final Store store;
 	private final Map<String, String> oldChecksums;
 	private final PersistenceManager manager;
 	private final String checksumName;
 	private Map<String, String> newChecksums = new HashMap<>();
 	private Map<String, Action> changeMap;
 
-	public StoreAuditor(FileSystemStore store) {
-		this(store, new FilePersistenceManager(store.directory()), CHECKSUM_FILE);
+	public StoreAuditor(Store store) {
+		this(store, defaultPersistenceManager(store), CHECKSUM_FILE);
 	}
 
-	public StoreAuditor(FileSystemStore store, String checksumName) {
-		this(store, new FilePersistenceManager(store.directory()), checksumName);
+	public StoreAuditor(Store store, String checksumName) {
+		this(store, defaultPersistenceManager(store), checksumName);
 	}
 
-	public StoreAuditor(FileSystemStore fileSystemStore, PersistenceManager manager, String checksumName) {
+	public StoreAuditor(Store fileSystemStore, PersistenceManager manager, String checksumName) {
 		this.manager = manager;
 		this.checksumName = checksumName;
 		this.store = fileSystemStore;
 		this.oldChecksums = readOldChecksums();
+	}
+
+	private static PersistenceManager defaultPersistenceManager(Store store) {
+		return store instanceof FileSystemStore ?
+				new FilePersistenceManager(((FileSystemStore) store).directory()) :
+				new InMemoryPersistenceManager();
 	}
 
 	private static String calculateChecksum(Node node) {
