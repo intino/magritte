@@ -1,7 +1,7 @@
 def type(Layer & decorable)
 	package $package+javaValidName+lowercase;
 
-	public [$abstract ]class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
+	public [$abstract] class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 
 		public $name+javaValidName+FirstUpperCase(io.intino.tara.magritte.Node node) {
 			super(node);
@@ -123,7 +123,7 @@ def trigger(decorable)
 end
 
 def !type(target) type(nodeimpl) !type(instance) trigger(Node)
-	public[ $inner][ $abstract] class $decorable$name+javaValidName+FirstUpperCase[ extends $parent? extends io.intino.tara.magritte.Layer][ implements $flag+tag...[, ]] {
+	public [$inner] [$abstract] class $decorable$name+javaValidName+FirstUpperCase [extends $parent? extends io.intino.tara.magritte.Layer] [implements $flag+tag...[, ]] {
 		$variable+declaration...[$NL]
 		[$node+declaration...[$NL]]
 		[$facetTarget+declaration...[$NL]]

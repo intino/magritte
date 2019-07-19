@@ -43,13 +43,14 @@ class StashHelper {
 	}
 
 	static boolean hasToBeConverted(List<Object> values, Primitive type) {
-		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(INSTANT) || type.equals(RESOURCE);
+		if ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) return true;
+		if (type.equals(INSTANT) || type.equals(RESOURCE)) return true;
+		return type.equals(LONG) && values.get(0) instanceof Integer;
 	}
 
 	static List<Object> buildResourceValue(List<Object> values, String filePath) {
-		return new ArrayList<>(values.stream().
-				map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).
-				collect(toList()));
+		return values.stream().
+				map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).collect(toList());
 	}
 
 	private static String getPresentableName(String name) {
