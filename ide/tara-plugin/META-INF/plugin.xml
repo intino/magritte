@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.9.0</version>
+    <version>1.9.1</version>
     <change-notes>
         <![CDATA[
         Improved language reloading. Fixed minor errors.
@@ -43,8 +43,8 @@
                                         implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.TaraNativeImplementationToJava"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
-        <codeInsight.lineMarkerProvider language="Groovy"
-                                        implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.GroovyNativeImplementationToTara"/>
+        <!--        <codeInsight.lineMarkerProvider language="Groovy"-->
+        <!--                                        implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.GroovyNativeImplementationToTara"/>-->
         <defaultLiveTemplatesProvider implementation="io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateProvider"/>
         <liveTemplateContext implementation="io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext"/>
 

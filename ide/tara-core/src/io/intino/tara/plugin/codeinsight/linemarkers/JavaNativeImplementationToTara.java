@@ -7,12 +7,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
-import io.intino.tara.plugin.lang.TaraIcons;
-import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
+import io.intino.tara.plugin.lang.TaraIcons;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.plugin.project.module.ModuleProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -41,9 +41,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
-		NavigationGutterIconBuilder<PsiElement> builder =
-			NavigationGutterIconBuilder.create(TaraIcons.ICON_16).setTarget(destiny).setTooltipText("Navigate to the native declaration");
-		result.add(builder.createLineMarkerInfo(element));
+		result.add(NavigationGutterIconBuilder.create(TaraIcons.ICON_16).setTarget(destiny).setTooltipText("Navigate to the native declaration").createLineMarkerInfo(element));
 	}
 
 	private String outPackage(@NotNull PsiElement element) {
