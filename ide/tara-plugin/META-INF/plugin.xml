@@ -2,16 +2,15 @@
     <id>io.intino.tara</id>
     <depends>org.intellij.intelliLang</depends>
     <depends>org.jetbrains.idea.maven</depends>
-
+    <depends>com.intellij.modules.java</depends>
     <name>Tara</name>
-    <version>1.9.1</version>
+    <version>2.0.0</version>
     <change-notes>
         <![CDATA[
         Improved language reloading. Fixed minor errors.
       ]]>
     </change-notes>
-    <idea-version since-build="182"/>
-
+    <idea-version since-build="192"/>
     <description>
         <![CDATA[
         <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven

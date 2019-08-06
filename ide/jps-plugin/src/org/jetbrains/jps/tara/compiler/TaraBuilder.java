@@ -296,7 +296,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return map;
 	}
 
-	private Map<ModuleBuildTarget, List<String>> getStubGenerationOutputs(ModuleChunk chunk) throws IOException {
+	private Map<ModuleBuildTarget, List<String>> getStubGenerationOutputs(ModuleChunk chunk) {
 		Map<ModuleBuildTarget, List<String>> generationOutputs = new HashMap<>();
 		File targetRoot = new File(getGenDir(chunk.getModules().iterator().next()));
 		targetRoot.mkdirs();

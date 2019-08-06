@@ -7,9 +7,9 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.DisplayPriority;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.messages.MessageProvider;
 import io.intino.tara.plugin.lang.TaraLanguage;
+import io.intino.tara.plugin.messages.MessageProvider;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS;
 import static com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.SPACES_WITHIN;
@@ -68,15 +68,12 @@ public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSett
 	}
 
 	@Override
-	public CommonCodeStyleSettings getDefaultCommonSettings() {
-		CommonCodeStyleSettings defaultSettings = new CommonCodeStyleSettings(TaraLanguage.INSTANCE);
-		CommonCodeStyleSettings.IndentOptions indentOptions = defaultSettings.initIndentOptions();
+    protected void customizeDefaults(@NotNull CommonCodeStyleSettings defaultSettings, @NotNull CommonCodeStyleSettings.IndentOptions indentOptions) {
 		indentOptions.INDENT_SIZE = 4;
 		indentOptions.USE_TAB_CHARACTER = true;
 		defaultSettings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS = false;
 		defaultSettings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0;
 		defaultSettings.KEEP_BLANK_LINES_IN_CODE = 0;
-		return defaultSettings;
 	}
 
 	@Override

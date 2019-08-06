@@ -1,8 +1,8 @@
 package io.intino.tara.plugin.project;
 
 import com.intellij.ProjectTopics;
+import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -29,7 +29,7 @@ import java.util.List;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 
-public class TaraModuleListener implements ModuleComponent {
+public class TaraModuleListener implements BaseComponent {
 
 	private final Project project;
 	private final ModuleListener listener;
@@ -41,8 +41,9 @@ public class TaraModuleListener implements ModuleComponent {
 		listener = newModuleListener();
 	}
 
+
 	@Override
-	public void projectOpened() {
+	public void initComponent() {
 		TaraSyntaxHighlighter.setProject(this.project);
 		connection.subscribe(ProjectTopics.MODULES, listener);
 		addDSLNameToDictionary();
@@ -62,21 +63,9 @@ public class TaraModuleListener implements ModuleComponent {
 	}
 
 	@Override
-	public void projectClosed() {
-		connection.disconnect();
-	}
-
-	@Override
-	public void moduleAdded() {
-	}
-
-	@Override
-	public void initComponent() {
-	}
-
-	@Override
 	public void disposeComponent() {
 		TaraSyntaxHighlighter.setProject(null);
+		connection.disconnect();
 	}
 
 	@NotNull

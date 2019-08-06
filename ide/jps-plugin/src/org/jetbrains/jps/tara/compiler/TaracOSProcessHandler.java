@@ -14,6 +14,7 @@ import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
@@ -166,6 +167,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			}
 		}
 		if (getStdErr().length() > 0) {
+            if (Arrays.stream(getStdErr().toString().split("\n")).allMatch(l -> l.startsWith("WARNING:"))) return false;
 			LOG.debug("Non-empty stderr: '" + getStdErr() + "'");
 			LOG.error(getStdErr().toString());
 			return true;

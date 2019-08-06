@@ -7,6 +7,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -156,7 +157,7 @@ public class LanguageManager {
 	}
 
 	public static File getTaraLocalDirectory(Project project) {
-		final VirtualFile baseDir = project.getBaseDir();
+        final VirtualFile baseDir = VfsUtil.findFileByIoFile(new File(project.getBasePath()), true);
 		final VirtualFile tara = baseDir.findChild(TARA_LOCAL);
 		return tara == null ? createTaraDirectory(baseDir) : new File(tara.getPath());
 	}

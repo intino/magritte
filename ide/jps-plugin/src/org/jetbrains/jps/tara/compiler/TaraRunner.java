@@ -90,7 +90,7 @@ class TaraRunner {
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		LOG.info("Tarac classpath: " + String.join("\n", classpath));
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
-		List<String> vmParams = ContainerUtilRt.newArrayList();
+		List<String> vmParams = ContainerUtilRt.newArrayList("--add-opens=java.base/java.nio=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED");
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(

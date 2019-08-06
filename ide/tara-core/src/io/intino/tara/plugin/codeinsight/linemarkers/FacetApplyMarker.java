@@ -1,11 +1,8 @@
 package io.intino.tara.plugin.codeinsight.linemarkers;
 
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
@@ -63,9 +60,6 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 	);
 
-	public FacetApplyMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
 
 	private NavigatablePsiElement[] toNavigatable(List<PsiElement> facetClasses) {
 		return facetClasses.stream().map(facetClass -> (NavigatablePsiElement) facetClass).toArray(NavigatablePsiElement[]::new);
@@ -93,7 +87,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		}
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
-			return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
+            return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, markerType.getTooltip(),
 					markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
