@@ -1,6 +1,7 @@
 package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.SystemProperties;
@@ -16,10 +17,7 @@ import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
@@ -90,7 +88,7 @@ class TaraRunner {
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		LOG.info("Tarac classpath: " + String.join("\n", classpath));
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
-		List<String> vmParams = ContainerUtilRt.newArrayList("--add-opens=java.base/java.nio=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED");
+		List<String> vmParams = getJavaVersion().startsWith("1.8") ? new ArrayList<>() : ContainerUtilRt.newArrayList("--add-opens=java.base/java.nio=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED");
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
@@ -109,6 +107,10 @@ class TaraRunner {
 
 	private String getJavaExecutable() {
 		return SystemProperties.getJavaHome() + "/bin/java";
+	}
+
+	private String getJavaVersion() {
+		return SystemInfo.JAVA_VERSION;
 	}
 
 	@NotNull
