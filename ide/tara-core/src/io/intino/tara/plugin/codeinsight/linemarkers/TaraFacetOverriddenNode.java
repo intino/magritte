@@ -1,32 +1,25 @@
 package io.intino.tara.plugin.codeinsight.linemarkers;
 
-import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.DaemonBundle;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.MethodCellRenderer;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
+import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.lang.model.Facet;
-import io.intino.tara.lang.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
-
-	public TaraFacetOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
 
 	private final MarkerType markerType = new MarkerType("", element -> {
 		if (!Node.class.isInstance(element)) return null;
@@ -61,7 +54,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 		if (isOverridden(node)) {
 			final Icon icon = AllIcons.Gutter.OverridenMethod;
 			final MarkerType type = markerType;
-			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
+            return new LineMarkerInfo(element, element.getTextRange(), icon, type.getTooltip(),
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}

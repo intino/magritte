@@ -1,13 +1,10 @@
 package io.intino.tara.plugin.codeinsight.linemarkers;
 
-import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.DaemonBundle;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.MethodCellRenderer;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
@@ -44,21 +41,16 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
 			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overrides element " + (reference.getName()), renderer);
 		}
-	}
-	);
-
-	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
+	});
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!Node.class.isInstance(element)) return super.getLineMarkerInfo(element);
+		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
 		if (isOverridden(node)) {
 			final Icon icon = AllIcons.Gutter.OverridingMethod;
 			final MarkerType type = markerType;
-			return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
+            return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, type.getTooltip(),
 					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}

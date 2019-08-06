@@ -2,6 +2,11 @@ package io.intino.tara.plugin.project.configuration.maven;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import io.intino.tara.compiler.shared.Configuration;
+import io.intino.tara.dsl.Proteo;
+import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.plugin.lang.LanguageManager;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenArtifact;
 import org.jetbrains.idea.maven.project.MavenProject;
@@ -10,11 +15,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import io.intino.tara.compiler.shared.Configuration;
-import io.intino.tara.dsl.Proteo;
-import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.plugin.lang.LanguageManager;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -275,7 +275,7 @@ public class MavenHelper implements MavenTags {
 	private Module parentModule(Module module, String dsl) {
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(aModule);
-			if (conf != null && (dsl.equals(conf.outDSL())))
+			if (conf != null && (dsl.equals(conf.outLanguage())))
 				return aModule;
 		}
 		return null;

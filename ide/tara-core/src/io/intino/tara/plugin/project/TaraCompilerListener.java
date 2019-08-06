@@ -2,19 +2,19 @@ package io.intino.tara.plugin.project;
 
 import com.intellij.compiler.CompilerConfigurationImpl;
 import com.intellij.compiler.server.CustomBuilderMessageHandler;
-import com.intellij.ide.SaveAndSyncHandlerImpl;
+import com.intellij.configurationStore.StoreReloadManager;
+import com.intellij.ide.SaveAndSyncHandler;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -37,23 +37,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TaraCompilerListener extends AbstractProjectComponent {
+public class TaraCompilerListener implements ProjectComponent {
 	private static final Logger LOG = Logger.getInstance(TaraCompilerListener.class.getName());
 	private static final String TARA_PATTERN = "!?*.tara";
 	private static final String TABLE_PATTERN = "!?*.table";
+    private final Project project;
 
 	private MessageBusConnection messageBusConnection;
 
 	public TaraCompilerListener(Project project) {
-		super(project);
+        this.project = project;
 	}
 
 	@Override
 	public void initComponent() {
-		super.initComponent();
-		messageBusConnection = myProject.getMessageBus().connect();
+        messageBusConnection = project.getMessageBus().connect();
 		messageBusConnection.subscribe(CustomBuilderMessageHandler.TOPIC, new FileInvalidationListener());
-		fillResourcePatterns(new CompilerConfigurationImpl(myProject));
+        fillResourcePatterns(new CompilerConfigurationImpl(project));
 	}
 
 	private void fillResourcePatterns(CompilerConfigurationImpl configuration) {
@@ -66,7 +66,6 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 	@Override
 	public void disposeComponent() {
 		messageBusConnection.disconnect();
-		super.disposeComponent();
 	}
 
 	private class FileInvalidationListener implements CustomBuilderMessageHandler {
@@ -84,11 +83,10 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		}
 
 		private void refreshLanguage(String moduleName) {
-			Module module = ApplicationManager.getApplication().runReadAction((Computable<Module>) () -> ModuleManager.getInstance(myProject).findModuleByName(moduleName));
+            Module module = ApplicationManager.getApplication().runReadAction((Computable<Module>) () -> ModuleManager.getInstance(project).findModuleByName(moduleName));
 			final Configuration configuration = TaraUtil.configurationOf(module);
 			if (configuration != null) {
-				String outDSL = configuration.outDSL();
-				LanguageManager.reloadLanguageForProjects(myProject, outDSL);
+                LanguageManager.reloadLanguage(project, configuration.outLanguage(), configuration.outLanguageVersion());
 			}
 		}
 
@@ -108,7 +106,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		private void reformatGeneratedCode(VirtualFile outDir) {
 			if (outDir == null || !outDir.isValid()) return;
 			FileDocumentManager.getInstance().saveAllDocuments();
-			ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
+            StoreReloadManager.getInstance().blockReloadingProjectOnExternalChanges();
 			final DataContext result = io.intino.tara.plugin.project.DataContext.getContext();
 			Project project = result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null;
 			if (project == null) return;
@@ -139,9 +137,9 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		}
 
 		private void reloadProject(Project project) {
-			SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
+            SaveAndSyncHandler.getInstance().refreshOpenFiles();
 			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-			ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+            StoreReloadManager.getInstance().unblockReloadingProjectOnExternalChanges();
 			refreshFiles(project);
 		}
 

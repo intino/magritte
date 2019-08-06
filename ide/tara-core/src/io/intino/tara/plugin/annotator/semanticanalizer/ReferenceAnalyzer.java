@@ -164,10 +164,10 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 				: startElement.getTextRange();
 	}
 
-	private IntentionAction toIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
+	private IntentionAction toIntention(PsiElement element, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};
-		CommonProblemDescriptorImpl descriptor = new ProblemDescriptorImpl(node, node, message,
-				quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
+		CommonProblemDescriptorImpl descriptor = new ProblemDescriptorImpl(element, element, message,
+				quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, null, true);
 		return QuickFixWrapper.wrap((ProblemDescriptor) descriptor, 0);
 	}
 

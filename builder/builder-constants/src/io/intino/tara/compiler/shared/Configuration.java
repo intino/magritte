@@ -38,7 +38,14 @@ public interface Configuration {
 		return languages().stream().filter(predicate).findFirst().orElse(null);
 	}
 
-	String outDSL();
+	@Deprecated
+	default String outDSL() {
+		return outLanguage();
+	}
+
+	String outLanguage();
+
+	String outLanguageVersion();
 
 	String boxVersion();
 

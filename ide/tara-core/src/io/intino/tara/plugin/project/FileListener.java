@@ -1,9 +1,9 @@
 package io.intino.tara.plugin.project;
 
-import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiDirectory;
@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
 	Listen remove, move or rename of tara files to propagate this change to the attached java class
  **/
-public class FileListener implements com.intellij.openapi.components.ApplicationComponent {
+public class FileListener implements BaseComponent {
 
 	private VirtualFileListener listener;
 

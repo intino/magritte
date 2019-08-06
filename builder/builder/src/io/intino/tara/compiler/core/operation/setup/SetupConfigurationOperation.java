@@ -4,6 +4,7 @@ import io.intino.legio.graph.Artifact;
 import io.intino.legio.graph.LegioGraph;
 import io.intino.legio.graph.Parameter;
 import io.intino.legio.graph.level.LevelArtifact;
+import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -46,32 +47,40 @@ public class SetupConfigurationOperation extends SetupOperation {
 		}
 	}
 
-	private boolean readConfiguration() throws TaraException {
+	private void readConfiguration() throws TaraException {
 		try {
-			final File miscDirectory = configuration.getMiscDirectory();
-			if (miscDirectory == null || !miscDirectory.exists()) return checkConfiguration();
-			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
-			if (!file.exists()) return checkConfiguration();
+			final File intinoArtifactsDirectory = configuration.artifactsDirectory();
+			if (intinoArtifactsDirectory == null || !intinoArtifactsDirectory.exists()) {
+				checkConfiguration();
+				return;
+			}
+			final File file = new File(intinoArtifactsDirectory, configuration.getModule() + ".conf");
+			if (!file.exists()) {
+				checkConfiguration();
+				return;
+			}
 			final Stash stash = StashDeserializer.stashFrom(file);
 			final Graph graph = new Graph().loadStashes(stash);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
 			LegioGraph legio = graph.as(LegioGraph.class);
-			if (legio == null) return checkConfiguration();
+			if (legio == null) {
+				checkConfiguration();
+				return;
+			}
 			extractConfiguration(legio);
-			return checkConfiguration();
+			checkConfiguration();
 		} catch (Throwable t) {
 			throw new TaraException(t.getMessage() == null ? "java.lang.NullPointerException at " + t.getStackTrace()[0].toString() : t.getMessage());
 		}
 	}
 
-	private boolean checkConfiguration() throws TaraException {
+	private void checkConfiguration() throws TaraException {
 		if (configuration.languages().isEmpty())
 			throw new TaraException("Language not defined or not found.");
 		if (configuration.artifactId() == null || configuration.artifactId().isEmpty())
 			throw new TaraException("Project name not found. Reload configuration");
 		else if (configuration.languages().get(0).get() == null)
 			throw new TaraException("Language not defined or not found: " + configuration.languages().get(0).name() + "-" + configuration.languages().get(0).version());
-		return true;
 	}
 
 	private void extractConfiguration(LegioGraph legio) {
@@ -82,7 +91,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			String outDSL = artifact.asLevel().model().outLanguage();
 			configuration.outDSL(outDSL == null ? snakeCaseToCamelCase(artifact.name$()) : outDSL);
 		}
-		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + artifact.name$().toLowerCase();
+		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + Format.reference().format(artifact.name$()).toString().toLowerCase();
 		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
 		configuration.artifactId(artifact.name$().toLowerCase());
 		configuration.groupId(artifact.groupId());
@@ -91,7 +100,10 @@ public class SetupConfigurationOperation extends SetupOperation {
 		for (Parameter p : legio.artifact().parameterList()) params.put(p.name(), p.defaultValue());
 		configuration.packageParameters(params);
 		if (configuration.isTest()) {
-			configuration.addLanguage(artifact.name$(), artifact.version());
+			String language = null;
+			if (artifact.isLevel())
+				language = artifact.asLevel().model().outLanguage() != null ? artifact.asLevel().model().outLanguage() : artifact.name$();
+			configuration.addLanguage(language, artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else if (artifact.isLevel()) {
 			final LevelArtifact.Model model = artifact.asLevel().model();

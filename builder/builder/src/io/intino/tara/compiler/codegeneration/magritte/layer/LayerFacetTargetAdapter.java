@@ -12,9 +12,12 @@ import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Variable;
+import io.intino.tara.lang.model.rules.Size;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
@@ -86,9 +89,13 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 			if (parent != null) context.add("parentName", cleanQn(getQn(parent, workingPackage)));
 		}
 		if ((context.contains(NODE)) && parent != null &&
-				(!parent.components().isEmpty() ||
+				(!multipleComponents(parent).isEmpty() ||
 						(parent.facetTarget() != null && !parent.facetTarget().targetNode().components().isEmpty() && hasLists(parent.facetTarget().targetNode()))))
 			context.add("parentClearName", cleanQn(getQn(parent, workingPackage)));
+	}
+
+	private List<Node> multipleComponents(Node parent) {
+		return parent.components().stream().filter(c -> c.container().rulesOf(c).stream().noneMatch(rule -> rule instanceof Size && ((Size) rule).isSingle())).collect(Collectors.toList());
 	}
 
 	private boolean hasLists(Node node) {

@@ -12,7 +12,6 @@ import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.indexing.FileBasedIndex;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.compiler.shared.Configuration.Level;
@@ -235,30 +234,28 @@ public class TaraUtil {
 		Module module = ModuleProvider.moduleOf(psiFile);
 		if (module == null) return new TaraModelImpl[0];
 		List<TaraModel> taraFiles = getFilesOfModuleByFileType(module, psiFile.getFileType());
-		return taraFiles.toArray(new TaraModel[taraFiles.size()]);
+		return taraFiles.toArray(new TaraModel[0]);
 	}
 
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {
-		List<TaraModel> taraFiles = new ArrayList<>();
-		if (module == null) return taraFiles;
-		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.instance(), GlobalSearchScope.moduleScope(module));
-		files.stream().filter(Objects::nonNull).forEach(file -> {
-			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
-			if (taraFile != null) taraFiles.add(taraFile);
-		});
-		return taraFiles;
+        return filesOf(module, TaraFileType.instance());
 	}
 
-	public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
-		List<TaraModel> taraFiles = new ArrayList<>();
-		if (module == null) return taraFiles;
-		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, fileType, GlobalSearchScope.moduleScope(module));
-		files.stream().filter(Objects::nonNull).forEach(file -> {
-			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
-			if (taraFile != null) taraFiles.add(taraFile);
-		});
-		return taraFiles;
-	}
+    public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
+        return filesOf(module, fileType);
+    }
+
+    @NotNull
+    private static List<TaraModel> filesOf(Module module, FileType fileType) {
+        List<TaraModel> taraFiles = new ArrayList<>();
+        if (module == null) return taraFiles;
+        Collection<VirtualFile> files = FileTypeIndex.getFiles(fileType, GlobalSearchScope.moduleScope(module));
+        files.stream().filter(Objects::nonNull).forEach(file -> {
+            TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
+            if (taraFile != null) taraFiles.add(taraFile);
+        });
+        return taraFiles;
+    }
 
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
@@ -358,7 +355,7 @@ public class TaraUtil {
 		return getResourcesRoot(module, isTestModelFile(element.getContainingFile()));
 	}
 
-	private static VirtualFile getResourcesRoot(Module module, boolean test) {
+	public static VirtualFile getResourcesRoot(Module module, boolean test) {
 		if (module == null) return null;
 		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(test ? TEST_RESOURCE : RESOURCE);
 		if (roots.isEmpty()) return null;
@@ -372,7 +369,7 @@ public class TaraUtil {
 		return null;
 	}
 
-	private static VirtualFile getContentRoot(Module module, String name) {
+	public static VirtualFile getContentRoot(Module module, String name) {
 		if (module == null) return null;
 		final VirtualFile[] roots = ModuleRootManager.getInstance(module).getSourceRoots();
 		for (VirtualFile file : roots)

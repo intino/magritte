@@ -23,7 +23,7 @@ import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraVariableImpl;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 
 import java.util.*;
@@ -160,7 +160,7 @@ public class MethodReferenceCreator {
 		Module module = ModuleProvider.moduleOf(valued);
 		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
 		final String qualifiedName = TaraUtil.methodReference(valued);
-		return TaraModuleType.isTara(module) && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, moduleWithDependenciesScope(module)) : null;
+		return IntinoModuleType.isIntino(module) && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, moduleWithDependenciesScope(module)) : null;
 	}
 
 	private void addImports(PsiClass aClass) {

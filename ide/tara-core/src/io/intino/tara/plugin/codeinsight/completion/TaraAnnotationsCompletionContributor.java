@@ -14,7 +14,7 @@ import io.intino.tara.lang.model.Tag;
 import io.intino.tara.plugin.lang.TaraIcons;
 import io.intino.tara.plugin.lang.TaraLanguage;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -42,7 +42,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 											   ProcessingContext context,
 											   @NotNull CompletionResultSet resultSet) {
 						final Module module = moduleOf(parameters.getOriginalFile());
-						if (!TaraModuleType.isTara(module)) return;
+						if (!IntinoModuleType.isIntino(module)) return;
 						addTags(parameters, resultSet);
 					}
 				}
@@ -55,7 +55,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 											   ProcessingContext context,
 											   @NotNull CompletionResultSet resultSet) {
 						final Module module = moduleOf(parameters.getOriginalFile());
-						if (!TaraModuleType.isTara(module)) return;
+						if (!IntinoModuleType.isIntino(module)) return;
 						final Configuration.Level type = TaraUtil.configurationOf(module).level();
 						if (type.equals(Solution) || type.equals(Product)) return;
 						addTags(parameters, resultSet);

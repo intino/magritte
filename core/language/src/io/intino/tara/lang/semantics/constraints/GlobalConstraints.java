@@ -2,8 +2,8 @@ package io.intino.tara.lang.semantics.constraints;
 
 import io.intino.tara.Language;
 import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
@@ -27,6 +27,18 @@ import static java.util.Collections.singletonList;
 public class GlobalConstraints {
 
 	public GlobalConstraints() {
+	}
+
+	private static boolean isOverridden(Variable variable, Variable parentVar) {
+		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
+	}
+
+	private static void error(String message, Element element, List<?> parameters) throws SemanticException {
+		throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
+	}
+
+	private static void error(String message, Element element) throws SemanticException {
+		throw new SemanticException(new SemanticNotification(ERROR, message, element));
 	}
 
 	public Constraint[] all() {
@@ -146,21 +158,23 @@ public class GlobalConstraints {
 	private Constraint checkVariables() {
 		return element -> {
 			Node node = (Node) element;
-			inNode(node);
+			checkDuplicatesBetween(node.components(), node.variables());
+			checkDuplicates(node.variables());
+			checkDuplicates(node.parameters());
+			for (Variable variable : node.variables()) checkVariable(variable);
 		};
 	}
 
-	private void inNode(Node node) throws SemanticException {
-		checkDuplicates(node.variables());
-		checkDuplicates(node.parameters());
-		for (Variable variable : node.variables())
-			checkVariable(variable);
-
+	private void checkDuplicatesBetween(List<Node> components, List<Variable> variables) throws SemanticException {
+		for (Variable var : variables) {
+			if (components.stream().anyMatch(c -> c.name().equals(var.name())))
+				error("reject.duplicated.name.between.variables.and.components", var, Collections.singletonList(var.name()));
+		}
 	}
 
-	private void checkDuplicates(List<? extends Valued> valueds) throws SemanticException {
+	private void checkDuplicates(List<? extends Valued> values) throws SemanticException {
 		Set<String> names = new LinkedHashSet();
-		for (Valued valued : valueds)
+		for (Valued valued : values)
 			if (valued.name() != null && !valued.name().isEmpty() && !names.add(valued.name()))
 				error("reject.duplicated.valued", valued, Collections.singletonList(valued.getClass().getSimpleName().contains("Parameter") ? "parameter" : "variable"));
 	}
@@ -178,6 +192,8 @@ public class GlobalConstraints {
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type().javaName()));
 		else if (Primitive.REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
+		else if (Primitive.INSTANT.equals(variable.type()) && !hasCorrectInstantValues(variable))
+			error("reject.value.instant.variable", variable);
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.default.value.reference.to.instance", variable);
 		else if (!variable.isReference() && isRedefiningTerminal(variable))
@@ -192,6 +208,10 @@ public class GlobalConstraints {
 		checkVariableFlags(variable);
 		if (variable.name() != null && Character.isUpperCase(variable.name().charAt(0)))
 			warning("warning.variable.name.starts.uppercase", variable);
+	}
+
+	private boolean hasCorrectInstantValues(Variable variable) {
+		return variable.values().stream().filter(v -> !(v instanceof Primitive.Expression)).noneMatch(o -> o.toString().isEmpty());
 	}
 
 	private boolean isRedefiningTerminal(Variable variable) {
@@ -256,10 +276,6 @@ public class GlobalConstraints {
 				if (isOverridden(variable, parentVar))
 					return parentVar;
 		return null;
-	}
-
-	private static boolean isOverridden(Variable variable, Variable parentVar) {
-		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
 	private boolean isInAbstract(Variable variable) {
@@ -350,14 +366,6 @@ public class GlobalConstraints {
 			if ((node.type().equals(ProteoConstants.METAFACET) || node.type().equals(ProteoConstants.FACET)) && node.facetTarget() == null && !node.isAbstract() && node.subs().isEmpty())
 				error("no.targets.in.facet", node, singletonList(node.name()));
 		};
-	}
-
-	private static void error(String message, Element element, List<?> parameters) throws SemanticException {
-		throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
-	}
-
-	private static void error(String message, Element element) throws SemanticException {
-		throw new SemanticException(new SemanticNotification(ERROR, message, element));
 	}
 
 	private void warning(String message, Element element) throws SemanticException {

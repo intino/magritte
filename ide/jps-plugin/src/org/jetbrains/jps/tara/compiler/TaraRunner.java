@@ -52,14 +52,12 @@ class TaraRunner {
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
-			writer.close();
 		}
 	}
 
-	private void loadClassPath(String projectConfigurationDirectory, String moduleName) throws IOException {
-		File misc = new File(projectConfigurationDirectory, "misc");
-		final File classPathFile = new File(misc, "compiler.classpath");
-		if (!classPathFile.exists()) new File(misc, moduleName);
+	private void loadClassPath(String intinoDirectory, String moduleName) throws IOException {
+		final File classPathFile = new File(intinoDirectory, "compiler.classpath");
+		if (!classPathFile.exists()) new File(intinoDirectory, moduleName);
 		if (!classPathFile.exists())
 			throw new IOException("Unable to find builder classpath. Please reload configuration");
 		this.classpath = Arrays.asList(new String(Files.readAllBytes(classPathFile.toPath())).replace("$HOME", System.getProperty("user.home")).split(":"));
@@ -92,7 +90,7 @@ class TaraRunner {
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		LOG.info("Tarac classpath: " + String.join("\n", classpath));
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
-		List<String> vmParams = ContainerUtilRt.newArrayList();
+		List<String> vmParams = ContainerUtilRt.newArrayList("--add-opens=java.base/java.nio=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED");
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(

@@ -7,6 +7,7 @@ import io.intino.tara.compiler.model.VariableReference;
 import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
+import io.intino.tara.lang.model.Primitive;
 
 import java.io.File;
 import java.util.Collection;
@@ -26,6 +27,21 @@ public class ReferenceManager {
 		this.model = model;
 	}
 
+	private static boolean areNamesake(String name, Node node) {
+		return name.equals(node.name());
+	}
+
+	private static void addNodeSiblings(String identifier, Node container, Set<Node> set) {
+		if (container == null) return;
+		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
+	}
+
+	private static void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
+		set.addAll(parent.components().stream().
+				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
+				collect(Collectors.toList()));
+	}
+
 	public NodeImpl resolve(NodeReference reference) {
 		return (NodeImpl) resolve(reference.getReference(), reference.container());
 	}
@@ -40,9 +56,19 @@ public class ReferenceManager {
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 
+	Node resolveParameterReference(Primitive.Reference value, Node node) {
+		String[] path = value.get().split("\\.");
+		List<Node> roots = findRoots(node, path).stream().filter(n -> !n.equals(node)).collect(Collectors.toList());
+		return selectFromOptions(node, path, roots);
+	}
+
 	Node resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = findRoots(node, path);
+		return selectFromOptions(node, path, roots);
+	}
+
+	private Node selectFromOptions(Node node, String[] path, Collection<Node> roots) {
 		roots = sortRootsByFile(roots, node.file());
 		if (roots.isEmpty()) return null;
 		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
@@ -64,6 +90,7 @@ public class ReferenceManager {
 		if (!roots.isEmpty()) return roots;
 		for (Node root : model.components())
 			if (getNameWithoutExtension(new File(root.file()).getName()).equals(path[0])) {
+				if (path.length == 1) continue;
 				roots = searchPossibleRoots(root, path[1], false);
 				break;
 			}
@@ -105,10 +132,6 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static boolean areNamesake(String name, Node node) {
-		return name.equals(node.name());
-	}
-
 	private Collection<Node> searchPossibleRoots(Node node, String name, boolean parent) {
 		Set<Node> set = new LinkedHashSet<>();
 		final String[] names = name.split("\\" + FACET_SEPARATOR);//TODO Candidate to remove. Now all components are in the node body
@@ -135,11 +158,6 @@ public class ReferenceManager {
 		return null;
 	}
 
-	private static void addNodeSiblings(String identifier, Node container, Set<Node> set) {
-		if (container == null) return;
-		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
-	}
-
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().
 				filter(node -> areNamesake(name, node)).
@@ -158,12 +176,6 @@ public class ReferenceManager {
 				if (parentNode != null) collectParentComponents(name, set, container, parentNode);
 			}
 		}
-	}
-
-	private static void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
-		set.addAll(parent.components().stream().
-				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
-				collect(Collectors.toList()));
 	}
 
 	private void checkSiblings(String name, Set<Node> set, Node container) {

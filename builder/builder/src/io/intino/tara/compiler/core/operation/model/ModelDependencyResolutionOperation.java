@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
-import static java.lang.System.out;
 
 public class ModelDependencyResolutionOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getGlobal();
@@ -29,7 +28,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			final CompilerConfiguration conf = unit.configuration();
 			if (conf.isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Resolving dependencies...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outLanguage() + "]" + " Resolving dependencies...");
 			final DependencyResolver dependencyResolver = new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory());
 			dependencyResolver.resolve();
 			notifyRulesNotLoaded(dependencyResolver);

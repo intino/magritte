@@ -57,7 +57,7 @@ public class ModuleMavenCreator {
 		final PsiManager manager = PsiManager.getInstance(module.getProject());
 		PsiDirectory directory = moduleFile != null ?
 				manager.findDirectory(moduleFile.getParent()) :
-				manager.findDirectory(module.getProject().getBaseDir()).findSubdirectory(module.getName());
+                manager.findDirectory(VfsUtil.findFile(new File(module.getProject().getBasePath()).toPath(), true)).findSubdirectory(module.getName());
 		if (directory == null) directory = create(manager, new File(module.getModuleFilePath()).getParentFile());
 		return directory;
 	}

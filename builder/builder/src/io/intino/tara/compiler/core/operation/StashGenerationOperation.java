@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
-import static java.lang.System.out;
 
 public class StashGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(StashGenerationOperation.class.getName());
@@ -43,10 +42,10 @@ public class StashGenerationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) {
-		this.outDSL = conf.level().equals(Solution) ? conf.getModule() : conf.outDSL();
+		this.outDSL = conf.level().equals(Solution) ? conf.getModule() : conf.outLanguage();
 		try {
 			if (conf.isVerbose())
-				conf.out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
+				conf.out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outLanguage() + "]" + " Generating Stashes...");
 			if ((conf.isTest() || conf.level().equals(Solution)) && !conf.isStashGeneration()) createSeparatedStashes(model);
 			else createFullStash(model);
 		} catch (TaraException e) {
@@ -95,7 +94,7 @@ public class StashGenerationOperation extends ModelOperation {
 		destiny.mkdirs();
 		return conf.isTest() || conf.level().equals(Solution) ?
 				new File(destiny, taraFile.getName().split("\\.")[0] + STASH) :
-				new File(destiny, Format.firstUpperCase().format(conf.outDSL()).toString() + STASH);
+				new File(destiny, Format.firstUpperCase().format(conf.outLanguage()).toString() + STASH);
 	}
 
 	private List<List<Node>> pack(Model model) {

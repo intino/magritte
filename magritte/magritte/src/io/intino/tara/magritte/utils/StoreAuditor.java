@@ -2,12 +2,17 @@ package io.intino.tara.magritte.utils;
 
 import io.intino.tara.io.Node;
 import io.intino.tara.io.Stash;
+import io.intino.tara.magritte.PersistenceManager;
+import io.intino.tara.magritte.PersistenceManager.FilePersistenceManager;
+import io.intino.tara.magritte.PersistenceManager.InMemoryPersistenceManager;
 import io.intino.tara.magritte.Predicate;
+import io.intino.tara.magritte.Store;
 import io.intino.tara.magritte.stores.FileSystemStore;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
@@ -15,20 +20,32 @@ import static java.util.stream.Collectors.*;
 public class StoreAuditor {
 
 	private static final String CHECKSUM_FILE = ".checksum";
-	private final FileSystemStore store;
+	private final Store store;
 	private final Map<String, String> oldChecksums;
-	private String checksumName;
+	private final PersistenceManager manager;
+	private final String checksumName;
 	private Map<String, String> newChecksums = new HashMap<>();
 	private Map<String, Action> changeMap;
 
-	public StoreAuditor(FileSystemStore file) {
-		this(file, CHECKSUM_FILE);
+	public StoreAuditor(Store store) {
+		this(store, defaultPersistenceManager(store), CHECKSUM_FILE);
 	}
 
-	public StoreAuditor(FileSystemStore fileSystemStore, String checksumName) {
+	public StoreAuditor(Store store, String checksumName) {
+		this(store, defaultPersistenceManager(store), checksumName);
+	}
+
+	public StoreAuditor(Store fileSystemStore, PersistenceManager manager, String checksumName) {
+		this.manager = manager;
 		this.checksumName = checksumName;
 		this.store = fileSystemStore;
 		this.oldChecksums = readOldChecksums();
+	}
+
+	private static PersistenceManager defaultPersistenceManager(Store store) {
+		return store instanceof FileSystemStore ?
+				new FilePersistenceManager(((FileSystemStore) store).directory()) :
+				new InMemoryPersistenceManager();
 	}
 
 	private static String calculateChecksum(Node node) {
@@ -39,13 +56,19 @@ public class StoreAuditor {
 		return str.length() == 36 && str.charAt(8) == '-' && str.charAt(13) == '-' && str.charAt(18) == '-' && str.charAt(23) == '-';
 	}
 
+	public void removeTrack(String nodeId) {
+		Map.Entry<String, String> entry = oldChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
+		if (entry == null) return;
+		oldChecksums.remove(entry.getKey());
+		entry = newChecksums.entrySet().stream().filter(e -> e.getValue().equals(nodeId)).findFirst().orElse(null);
+		if (entry == null) return;
+		newChecksums.remove(entry.getKey());
+		changeMap = null;
+	}
+
 	private Map<String, String> readOldChecksums() {
-		try {
-			return Files.lines(new File(store.directory(), checksumName).toPath())
-					.collect(toMap(l -> l.split("@")[0], l -> l.split("@")[1]));
-		} catch (IOException e) {
-			return Collections.emptyMap();
-		}
+		return new BufferedReader(new InputStreamReader(manager.read(checksumName))).lines()
+				.collect(toMap(l -> l.split("@")[0], l -> l.split("@")[1]));
 	}
 
 	public void commit() {
@@ -68,7 +91,6 @@ public class StoreAuditor {
 		int counter = 1;
 		while (newChecksums.containsKey(checksum + counter++)) ;
 		newChecksums.put(checksum, nodeId);
-
 	}
 
 	private String checksumOf(Node node) {
@@ -132,11 +154,11 @@ public class StoreAuditor {
 
 	private void writeNewChecksums() {
 		try {
-			Files.write(new File(store.directory(), checksumName).toPath(),
-					newChecksums.entrySet().stream()
+			DataOutputStream stream = new DataOutputStream(manager.write(checksumName));
+			stream.write(newChecksums.entrySet().stream()
 							.map(e -> e.getKey() + "@" + e.getValue())
-							.collect(joining("\n")).getBytes()
-			);
+							.collect(joining("\n")).getBytes());
+			stream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

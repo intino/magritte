@@ -119,8 +119,8 @@ public class DependencyResolver {
 		return false;
 	}
 
-	private Node resolveReferenceParameter(Node node, Primitive.Reference reference) throws DependencyException {
-		return manager.resolve(reference.get(), node);
+	private Node resolveReferenceParameter(Node node, Primitive.Reference value) throws DependencyException {
+		return manager.resolveParameterReference(value, node);
 	}
 
 	private boolean areReferenceValues(Parameter parameter) {

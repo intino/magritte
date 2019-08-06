@@ -2,16 +2,15 @@
     <id>io.intino.tara</id>
     <depends>org.intellij.intelliLang</depends>
     <depends>org.jetbrains.idea.maven</depends>
-
+    <depends>com.intellij.modules.java</depends>
     <name>Tara</name>
-    <version>1.8.1</version>
+    <version>2.0.0</version>
     <change-notes>
         <![CDATA[
-        Replaced Verso by Meta. Fixed minor errors.
+        Improved language reloading. Fixed minor errors.
       ]]>
     </change-notes>
-    <idea-version since-build="182"/>
-
+    <idea-version since-build="192"/>
     <description>
         <![CDATA[
         <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
@@ -43,8 +42,8 @@
                                         implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.TaraNativeImplementationToJava"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
-        <codeInsight.lineMarkerProvider language="Groovy"
-                                        implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.GroovyNativeImplementationToTara"/>
+        <!--        <codeInsight.lineMarkerProvider language="Groovy"-->
+        <!--                                        implementationClass="io.intino.tara.plugin.codeinsight.linemarkers.GroovyNativeImplementationToTara"/>-->
         <defaultLiveTemplatesProvider implementation="io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateProvider"/>
         <liveTemplateContext implementation="io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext"/>
 
@@ -117,7 +116,7 @@
         <!--<psi.referenceContributor implementation="io.intino.tara.plugin.model.psi.resolve.TaraReferenceContributor"/>-->
         <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
         <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
-        <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
+
         <intentionAction>
             <className>io.intino.tara.plugin.codeinsight.intentions.FromBodyToExplicitParameters</className>
             <category>Move To parameters</category>
@@ -186,7 +185,7 @@
         <extendWordSelectionHandler implementation="io.intino.tara.plugin.lang.psi.TaraSelectionHandler"/>
         <basicWordSelectionFilter implementation="io.intino.tara.plugin.lang.psi.TaraBasicWordSelectionFilter"/>
 
-        <moduleType id="TARA_MODULE" implementationClass="io.intino.tara.plugin.project.TaraModuleType"/>
+        <moduleType id="TARA_MODULE" implementationClass="io.intino.tara.plugin.project.IntinoModuleType"/>
     </extensions>
     <actions>
         <action id="NewPackage" class="io.intino.tara.plugin.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">

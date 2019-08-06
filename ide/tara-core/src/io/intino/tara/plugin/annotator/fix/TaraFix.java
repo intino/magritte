@@ -12,6 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+
 public abstract class TaraFix implements LocalQuickFix {
 
 	public static final TaraFix[] EMPTY_ARRAY = new TaraFix[0];
@@ -25,7 +27,7 @@ public abstract class TaraFix implements LocalQuickFix {
 		final JavaPsiFacade facade = JavaPsiFacade.getInstance(problemElement.getProject());
 		final Project project = facade.getProject();
 		final ReadonlyStatusHandler handler = ReadonlyStatusHandler.getInstance(project);
-		final ReadonlyStatusHandler.OperationStatus status = handler.ensureFilesWritable(virtualFile);
+        final ReadonlyStatusHandler.OperationStatus status = handler.ensureFilesWritable(Collections.singletonList(virtualFile));
 		return status.hasReadonlyFiles();
 	}
 

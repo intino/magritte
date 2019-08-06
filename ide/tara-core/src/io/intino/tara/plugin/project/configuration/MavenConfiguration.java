@@ -102,7 +102,7 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String workingPackage() {
 		final String property = maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
-		return property == null ? outDSL() : property;
+		return property == null ? outLanguage() : property;
 	}
 
 	@Override
@@ -133,9 +133,14 @@ public class MavenConfiguration implements Configuration {
 
 
 	@Override
-	public String outDSL() {
+	public String outLanguage() {
 		final String outDSL = maven.getProperties().getProperty(MavenTags.OUT_DSL);
 		return outDSL != null ? outDSL : "";
+	}
+
+	@Override
+	public String outLanguageVersion() {
+		return version();
 	}
 
 	@Override

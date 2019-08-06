@@ -156,7 +156,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 				if (!EventQueue.isDispatchThread()) {
 					try {
 						final Application application = ApplicationManager.getApplication();
-						application.acquireReadActionLock().close();
+//						application.acquireReadActionLock().close();
 						application.invokeAndWait(() -> result[0] = syncContext());
 					} catch (Throwable ignored) {
 					}
@@ -169,7 +169,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 	private DataContext syncContext() {
 		try {
-			return DataManager.getInstance().getDataContextFromFocus().getResultSync(100);
+            return DataManager.getInstance().getDataContextFromFocusAsync().blockingGet(100);
 		} catch (Throwable e) {
 			return null;
 		}

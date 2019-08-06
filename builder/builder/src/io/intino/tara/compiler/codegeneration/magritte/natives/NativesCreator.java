@@ -33,7 +33,7 @@ public class NativesCreator {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
-		outDSL = (conf.outDSL() != null ? conf.outDSL().toLowerCase() : conf.getModule());
+		outDSL = (conf.outLanguage() != null ? conf.outLanguage().toLowerCase() : conf.getModule());
 		nativesPackage = conf.workingPackage().toLowerCase().replace(".", separator) + separator + NATIVES + separator;
 		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}

@@ -8,9 +8,9 @@ import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.io.Concept;
-import io.intino.tara.io.*;
 import io.intino.tara.io.Node;
 import io.intino.tara.io.Variable;
+import io.intino.tara.io.*;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 
@@ -51,6 +51,10 @@ public class StashCreator {
 		this.test = conf.isTest();
 		this.stashGeneration = conf.isStashGeneration();
 		this.stash.language = language.languageName();
+	}
+
+	private static String toSystemIndependentName(String fileName) {
+		return fileName.replace('\\', '/');
 	}
 
 	public Stash create() {
@@ -254,13 +258,17 @@ public class StashCreator {
 	private List<?> convert(Valued valued) {
 		final Primitive type = valued.type();
 		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
-		else if (type.equals(INSTANT))
-			return INSTANT.convert(valued.values().toArray(new String[0]));
+		if (type.equals(LONG) && areIntegers(valued)) return valued.values().stream().map(v -> Long.valueOf((Integer) v)).collect(toList());
+		else if (type.equals(INSTANT)) return INSTANT.convert(valued.values().toArray(new String[0]));
 		if (type.equals(RESOURCE)) {
 			return (valued.values()).stream()
 					.map(o -> relative((File) o))
 					.collect(toList());
 		} else return type.convert(valued.values().toArray(new String[0]));
+	}
+
+	private boolean areIntegers(Valued valued) {
+		return valued.values().stream().allMatch(v -> v instanceof Integer);
 	}
 
 	private String relative(File file) {
@@ -283,10 +291,6 @@ public class StashCreator {
 
 	private String nodeStashQualifiedName(io.intino.tara.lang.model.Node node) {
 		return (((node).is(Instance)) ? getStash(node) + "#" : "") + (node).cleanQn();
-	}
-
-	private static String toSystemIndependentName(String fileName) {
-		return fileName.replace('\\', '/');
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {

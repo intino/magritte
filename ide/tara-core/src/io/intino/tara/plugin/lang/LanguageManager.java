@@ -7,6 +7,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -34,7 +35,7 @@ public class LanguageManager {
 	public static final String DSL = "dsl";
 	public static final String FRAMEWORK = "framework";
 	public static final String TARA_USER = ".m2";
-	public static final String TARA_LOCAL = ".tara";
+	public static final String TARA_LOCAL = ".intino/tara";
 	public static final String JSON = ".json";
 	@SuppressWarnings("WeakerAccess")
 	public static final String DSL_GROUP_ID = "tara.dsl";
@@ -42,7 +43,6 @@ public class LanguageManager {
 	private static final Map<String, Language> core = new HashMap<>();
 	private static final Map<String, Map<Project, Language>> auxiliarLanguages = new HashMap<>();
 	private static final String INFO_JSON = "info" + JSON;
-	private static final String MISC = "misc";
 	private static final String LATEST = "LATEST";
 
 	static {
@@ -83,12 +83,6 @@ public class LanguageManager {
 		return languages.get(project) == null ? null : languages.get(project).get(dsl);
 	}
 
-	public static void reloadLanguageForProjects(Project myProject, String dsl) {
-		languages.keySet().stream().filter(project -> myProject.equals(project) || languageFrom(dsl, languages.get(project)) != null).forEach(project -> {
-			final Language language = languageFrom(dsl, languages.get(project));
-			reloadLanguage(project, language != null ? language.languageName() : dsl);
-		});
-	}
 
 	private static Language languageFrom(String dsl, Map<String, Language> languages) {
 		for (String currentDSL : languages.keySet())
@@ -151,13 +145,6 @@ public class LanguageManager {
 		return new File(getLanguagesDirectory().getPath(), DSL_GROUP_ID.replace(".", File.separator) + File.separator + dsl.toLowerCase());
 	}
 
-	public static File getMiscDirectory(Project project) {
-		final File taraLocalDirectory = getTaraLocalDirectory(project);
-		final File misc = new File(taraLocalDirectory.getPath(), MISC);
-		misc.mkdirs();
-		return misc;
-	}
-
 	public static Map<String, Object> getImportedLanguageInfo(String dsl) {
 		try {
 			final File languageDirectory = getLanguageDirectory(dsl);
@@ -170,7 +157,7 @@ public class LanguageManager {
 	}
 
 	public static File getTaraLocalDirectory(Project project) {
-		final VirtualFile baseDir = project.getBaseDir();
+        final VirtualFile baseDir = VfsUtil.findFileByIoFile(new File(project.getBasePath()), true);
 		final VirtualFile tara = baseDir.findChild(TARA_LOCAL);
 		return tara == null ? createTaraDirectory(baseDir) : new File(tara.getPath());
 	}

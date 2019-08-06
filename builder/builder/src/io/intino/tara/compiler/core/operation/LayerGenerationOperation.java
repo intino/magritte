@@ -79,7 +79,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeAbstractGraph(new AbstractGraphCreator(model.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
+		registerOutputs(layers, writeAbstractGraph(new AbstractGraphCreator(model.language(), conf.outLanguage(), conf.level(), conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage()).create(model)));
 		writeGraph(createGraph());
 	}
 
@@ -107,7 +107,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private String createGraph() {
 		FrameBuilder builder = new FrameBuilder("wrapper");
-		builder.add(OUT_LANGUAGE, conf.outDSL());
+		builder.add(OUT_LANGUAGE, conf.outLanguage());
 		builder.add(WORKING_PACKAGE, conf.workingPackage());
 		return Format.customize(new GraphTemplate()).render(builder.toFrame());
 	}
@@ -180,7 +180,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private void writeGraph(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.outDSL())) + GRAPH + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.outLanguage())) + GRAPH + JAVA);
 		if (!destiny.exists()) write(destiny, text);
 	}
 
@@ -240,6 +240,6 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String prefix() {
-		return PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]";
+		return PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outLanguage() + "]";
 	}
 }

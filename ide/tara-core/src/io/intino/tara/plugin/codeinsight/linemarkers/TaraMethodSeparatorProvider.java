@@ -1,6 +1,5 @@
 package io.intino.tara.plugin.codeinsight.linemarkers;
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.daemon.impl.LineMarkersPass;
@@ -17,20 +16,12 @@ import java.util.List;
 
 public class TaraMethodSeparatorProvider implements LineMarkerProvider {
 
-	private final DaemonCodeAnalyzerSettings myDaemonSettings;
-	private final EditorColorsManager myColorsManager;
-
-
-	public TaraMethodSeparatorProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		myDaemonSettings = daemonSettings;
-		myColorsManager = colorsManager;
-	}
 
 	@Nullable
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element) {
 		if (!(element instanceof TaraNode) || !isRoot((Node) element)) return null;
-		return LineMarkersPass.createMethodSeparatorLineMarker(leafOf(element), myColorsManager);
+        return LineMarkersPass.createMethodSeparatorLineMarker(leafOf(element), EditorColorsManager.getInstance());
 	}
 
 	private boolean isRoot(Node element) {

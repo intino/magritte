@@ -62,7 +62,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public String scope() {
 		final Configuration conf = TaraUtil.configurationOf(this);
-		return conf != null ? conf.outDSL() : "";
+		return conf != null ? conf.outLanguage() : "";
 	}
 
 	@Nullable

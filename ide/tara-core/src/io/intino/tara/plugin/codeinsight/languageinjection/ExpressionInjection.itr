@@ -3,7 +3,7 @@ def type(function)
 
 	$imports...[$NL]
 
-	class $name+FirstUpperCase implements [$scope+lowercase.functions.]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
+	class $name+FirstUpperCase implements[ $scope+lowercase.functions.? ]$rule+FirstUpperCase, io.intino.tara.magritte.Function {
 		$nativeContainer self;
 
 		@Override

@@ -1,11 +1,8 @@
 package io.intino.tara.plugin.codeinsight.linemarkers;
 
-import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
@@ -17,7 +14,7 @@ import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.messages.MessageProvider;
-import io.intino.tara.plugin.project.TaraModuleType;
+import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -63,9 +60,6 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 	);
 
-	public FacetApplyMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
 
 	private NavigatablePsiElement[] toNavigatable(List<PsiElement> facetClasses) {
 		return facetClasses.stream().map(facetClass -> (NavigatablePsiElement) facetClass).toArray(NavigatablePsiElement[]::new);
@@ -93,7 +87,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		}
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
-			return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
+            return new LineMarkerInfo(leafOf(element), element.getTextRange(), icon, markerType.getTooltip(),
 					markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
@@ -115,7 +109,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private PluralInflector getInflector(Facet apply) {
-		return !TaraModuleType.isTara(ModuleProvider.moduleOf((PsiElement) apply)) ? null : new EnglishPluralInflector();
+		return !IntinoModuleType.isIntino(ModuleProvider.moduleOf((PsiElement) apply)) ? null : new EnglishPluralInflector();
 	}
 
 	private String getFacetPackage(Node node) {
