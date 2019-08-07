@@ -8,6 +8,7 @@ import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -32,8 +33,8 @@ public class LanguageLoader {
 				if (!jar.exists()) errorMessage[0] = "Language file not found: " + jar.getPath();
 				ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 				Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.toCamelCase().format(name));
-				return (Language) cls.newInstance();
-			} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+				return (Language) cls.getConstructors()[0].newInstance();
+			} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
 				LOG.info(e1.getMessage());
 				return null;
 			}

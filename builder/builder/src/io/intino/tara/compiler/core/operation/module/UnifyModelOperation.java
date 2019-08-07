@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
-import static java.lang.System.out;
 
 public class UnifyModelOperation extends ModuleUnitOperation {
 	private static final Logger LOG = Logger.getGlobal();

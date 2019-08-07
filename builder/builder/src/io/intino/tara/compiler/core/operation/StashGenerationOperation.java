@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
@@ -81,7 +80,6 @@ public class StashGenerationOperation extends ModelOperation {
 		file.getParentFile().mkdirs();
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			stream.write(content);
-			stream.close();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Error writing stashes: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -108,7 +106,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
-		return nodes.values().stream().collect(Collectors.toList());
+		return new ArrayList<>(nodes.values());
 	}
 
 }

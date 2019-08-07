@@ -51,11 +51,6 @@
         <option value="$PROJECT_DIR$/ide/tara-core/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/ide/jps-plugin/pom.xml" />
-      </set>
-    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="IDEA Konos" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />

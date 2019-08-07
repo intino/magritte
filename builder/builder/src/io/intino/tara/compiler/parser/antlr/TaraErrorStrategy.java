@@ -60,7 +60,7 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 				"Column: " + token.getCharPositionInLine() + "\n" +
 				"Text Length: " + token.getText().length() + "\n" +
 				(token.getType() > 0 ? "Token type: " + nameList[token.getType()] + "\n" : "") +
-				"Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getTokenNames()) + "\n" +
+				"Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getVocabulary()) + "\n" +
 				"Text: " + token.getText().replace("\n", "\\n"));
 	}
 }

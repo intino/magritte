@@ -27,7 +27,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
-
 	private final String file;
 	private final String outDsl;
 	private final Deque<Node> deque = new ArrayDeque<>();
@@ -227,17 +226,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private Tag[] resolveTags(AnnotationsContext annotations) {
-		List<Tag> values = new ArrayList<>();
 		if (annotations == null) return new Tag[0];
-		values.addAll(annotations.annotation().stream().map(a -> Tag.valueOf(Format.capitalize(a.getText()))).collect(toList()));
-		return values.toArray(new Tag[values.size()]);
+		return annotations.annotation().stream().map(a -> Tag.valueOf(Format.capitalize(a.getText()))).toArray(Tag[]::new);
 	}
 
 	private List<Tag> resolveTags(FlagsContext flags) {
-		List<Tag> tags = new ArrayList<>();
 		if (flags == null) return emptyList();
-		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(Format.capitalize(f.getText()))).collect(toList()));
-		return tags;
+		return new ArrayList<>(flags.flag().stream().map(f -> Tag.valueOf(Format.capitalize(f.getText()))).collect(toList()));
 	}
 
 	@Override
@@ -252,7 +247,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		variable.size(size);
 		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : variable.type().defaultRule());
 		final List<Tag> tags = resolveTags(ctx.flags());
-		variable.addFlags(tags.toArray(new Tag[tags.size()]));
+		variable.addFlags(tags.toArray(new Tag[0]));
 		container.add(variable);
 	}
 
@@ -390,7 +385,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.value() == null && ctx.bodyValue() == null) return;
 		List<Object> values = ctx.bodyValue() != null ? resolveValue(ctx.bodyValue()) : resolveValue(ctx.value());
 		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
-			values = values.stream().map(v -> new Double((Integer) v)).collect(toList());
+			values = values.stream().map(v -> Double.valueOf((Integer) v)).collect(toList());
 		variable.values(values);
 		if (ctx.value() != null && ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
@@ -409,13 +404,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 					map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-					map(context -> INTEGER.convert((String) context.getText()).get(0)).collect(toList()));
+					map(context -> INTEGER.convert(context.getText()).get(0)).collect(toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-					map(context -> DOUBLE.convert((String) context.getText()).get(0)).collect(toList()));
+					map(context -> DOUBLE.convert(context.getText()).get(0)).collect(toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-					map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText()).get(0))).collect(toList()));
+					map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert(context.doubleValue().getText()).get(0))).collect(toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 					map(context -> formatString(context.getText())).collect(toList()));

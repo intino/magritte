@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class StashBuilder {
 		this.module = module;
 		this.stream = stream;
 		this.language = null;
-		this.charset = Charset.forName("UTF-8");
+		this.charset = StandardCharsets.UTF_8;
 		try {
 			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
 		} catch (IOException ignored) {

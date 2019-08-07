@@ -36,7 +36,7 @@ public class LayerFrameCreator implements TemplateTags {
 		this.workingPackage = workingPackage;
 		this.layerFacetTargetAdapter = new LayerFacetTargetAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage);
 		this.adapters = new HashMap<>();
-		this.adapters.put(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode, workingPackage, languageWorkingPackage));
+		this.adapters.put(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, null, workingPackage, languageWorkingPackage));
 		this.adapters.put(FacetTarget.class, layerFacetTargetAdapter);
 		this.adapters.put(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage));
 	}

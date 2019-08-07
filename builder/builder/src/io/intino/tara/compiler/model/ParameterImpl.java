@@ -18,7 +18,7 @@ public class ParameterImpl implements Parameter {
 	private String file;
 	private int line;
 	private int column;
-	private String metric = "";
+	private String metric;
 	private VariableRule rule;
 	private Primitive inferredType;
 	private boolean multiple;

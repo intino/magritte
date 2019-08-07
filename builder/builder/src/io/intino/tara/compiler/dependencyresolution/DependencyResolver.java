@@ -110,7 +110,7 @@ public class DependencyResolver {
 
 	private boolean tryWithAnInstance(Primitive.Reference value) {
 		final Language language = model.language();
-		if (language != null && language.instances().keySet().contains(value.get())) {
+		if (language != null && language.instances().containsKey(value.get())) {
 			value.setToInstance(true);
 			value.instanceTypes(language.instances().get(value.get()).types());
 			value.path(language.instances().get(value.get()).path());

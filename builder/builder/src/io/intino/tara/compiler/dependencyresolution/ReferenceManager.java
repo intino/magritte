@@ -68,15 +68,19 @@ public class ReferenceManager {
 		return selectFromOptions(node, path, roots);
 	}
 
-	private Node selectFromOptions(Node node, String[] path, Collection<Node> roots) {
-		roots = sortRootsByFile(roots, node.file());
-		if (roots.isEmpty()) return null;
-		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
-		for (Node root : roots) {
-			Node candidate = resolvePathInNode(path, root);
-			if (candidate != null) return candidate;
-		}
+	Node resolveFacetConstraint(String facet, String target) {
+		for (Node node : model.components())
+			if (facet.equals(node.name()) && node.facetTarget() != null && target.equals(node.facetTarget().target()))
+				return node;
 		return null;
+	}
+
+	Node resolveParent(String reference, Node node) {
+		return resolve(reference.split("\\."), searchPossibleRoots(node, reference.split("\\.")[0], true));
+	}
+
+	private Node selectFromOptions(Node node, String[] path, Collection<Node> roots) {
+		return resolve(path, sortRootsByFile(roots, node.file()));
 	}
 
 	private Collection<Node> sortRootsByFile(Collection<Node> roots, String file) {
@@ -97,16 +101,7 @@ public class ReferenceManager {
 		return roots;
 	}
 
-	Node resolveFacetConstraint(String facet, String target) {
-		for (Node node : model.components())
-			if (facet.equals(node.name()) && node.facetTarget() != null && target.equals(node.facetTarget().target()))
-				return node;
-		return null;
-	}
-
-	Node resolveParent(String reference, Node node) {
-		String[] path = reference.split("\\.");
-		Collection<Node> roots = searchPossibleRoots(node, path[0], true);
+	private Node resolve(String[] path, Collection<Node> roots) {
 		if (roots.isEmpty()) return null;
 		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
 		for (Node root : roots) {

@@ -52,7 +52,7 @@ public class Model implements NodeRoot {
 
 	@Override
 	public boolean contains(Node nodeContainer) {
-		return components.keySet().contains(nodeContainer);
+		return components.containsKey(nodeContainer);
 	}
 
 	@Override

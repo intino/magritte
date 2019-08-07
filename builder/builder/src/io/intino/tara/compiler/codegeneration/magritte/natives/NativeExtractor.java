@@ -36,7 +36,7 @@ public class NativeExtractor {
 		final String token = " throws ";
 		if (signature == null || signature.isEmpty() || !signature.contains(token))
 			return new String[0];
-		String[] exceptions = signature.substring(signature.indexOf(token) + token.length(), signature.length()).split(",");
+		String[] exceptions = signature.substring(signature.indexOf(token) + token.length()).split(",");
 		return Arrays.stream(exceptions).map(String::trim).toArray(String[]::new);
 	}
 

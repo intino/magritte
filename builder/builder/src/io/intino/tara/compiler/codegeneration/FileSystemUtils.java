@@ -1,10 +1,12 @@
 package io.intino.tara.compiler.codegeneration;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +50,7 @@ public class FileSystemUtils {
 					if (!oDestination.exists())
 						oDestination.mkdir();
 					String[] children = oSource.list();
-					for (String aChildren : children)
+					for (String aChildren : children != null ? children : new String[0])
 						copyDir(new File(oSource, aChildren), new File(oDestination, aChildren));
 				} else {
 					InputStream in = new FileInputStream(oSource);
@@ -113,7 +115,7 @@ public class FileSystemUtils {
 	public static Boolean writeFile(String sFilename, String sContent) throws FileSystemException {
 
 		try {
-			OutputStreamWriter oWriter = new OutputStreamWriter(new FileOutputStream(sFilename), "UTF-8");
+			OutputStreamWriter oWriter = new OutputStreamWriter(new FileOutputStream(sFilename), StandardCharsets.UTF_8);
 			oWriter.write(sContent);
 			oWriter.close();
 		} catch (IOException e) {
@@ -170,7 +172,7 @@ public class FileSystemUtils {
 
 	public static void addToZip(File directoryToZip, File file, ZipOutputStream zos) throws IOException {
 		FileInputStream fis = new FileInputStream(file);
-		String zipFilePath = file.getCanonicalPath().substring(directoryToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length());
+		String zipFilePath = file.getCanonicalPath().substring(directoryToZip.getCanonicalPath().length() + 1);
 		zipFilePath = zipFilePath.replace("\\", "/");
 		ZipEntry zipEntry = new ZipEntry(zipFilePath);
 		zipEntry.setTime(file.lastModified());
@@ -187,7 +189,7 @@ public class FileSystemUtils {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(name), manifest);
-		for (File file : new File(directory).listFiles())
+		for (File file : Objects.requireNonNull(new File(directory).listFiles()))
 			add(directory, file, target);
 		target.close();
 	}
@@ -198,7 +200,7 @@ public class FileSystemUtils {
 			if (source.isDirectory()) {
 				String name;
 				try {
-					name = source.getCanonicalPath().substring(new File(directory).getCanonicalPath().length() + 1, source.getCanonicalPath().length());
+					name = source.getCanonicalPath().substring(new File(directory).getCanonicalPath().length() + 1);
 					name = name.replace("\\", "/");
 				} catch (Exception e) {
 					LOG.log(Level.INFO, e.getMessage(), e);
@@ -212,25 +214,28 @@ public class FileSystemUtils {
 					target.putNextEntry(entry);
 					target.closeEntry();
 				}
-				for (File nestedFile : source.listFiles())
+				for (File nestedFile : Objects.requireNonNull(source.listFiles()))
 					add(directory, nestedFile, target);
 				return;
 			}
-			String name = source.getCanonicalPath().substring(new File(directory).getCanonicalPath().length() + 1, source.getCanonicalPath().length());
+			String name = source.getCanonicalPath().substring(new File(directory).getCanonicalPath().length() + 1);
 			JarEntry entry = new JarEntry(name.replace("\\", "/"));
 			entry.setTime(source.lastModified());
 			target.putNextEntry(entry);
 			in = new BufferedInputStream(new FileInputStream(source));
-
-			byte[] buffer = new byte[1024];
-			while (true) {
-				int count = in.read(buffer);
-				if (count == -1) break;
-				target.write(buffer, 0, count);
-			}
+			writeBuffer(in, target);
 			target.closeEntry();
 		} finally {
 			if (in != null) in.close();
+		}
+	}
+
+	public static void writeBuffer(InputStream in, OutputStream target) throws IOException {
+		byte[] buffer = new byte[1024];
+		while (true) {
+			int count = in.read(buffer);
+			if (count == -1) break;
+			target.write(buffer, 0, count);
 		}
 	}
 
