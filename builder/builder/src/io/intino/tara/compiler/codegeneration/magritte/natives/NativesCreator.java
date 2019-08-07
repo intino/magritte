@@ -63,11 +63,7 @@ public class NativesCreator {
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
 			builder.put(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.level(), conf.workingPackage(), conf.language(l -> l.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
-			final File destiny = calculateDestiny(p);
-			final FrameBuilder frameBuilder = builder.append(p).add(conf.nativeLanguage());
-			if (FUNCTION.equals(p.type())) frameBuilder.add(p.type().name());
-			nativeCodes.put(destiny, expressionsTemplate.render(frameBuilder.toFrame()));
-			if (!originToDestiny.containsKey(p.file())) originToDestiny.put(destiny.getAbsolutePath(), p.file());
+			createNativeFrame(originToDestiny, expressionsTemplate, nativeCodes, calculateDestination(p), builder.append(p), p.type(), p.file());
 		});
 		return nativeCodes;
 	}
@@ -78,24 +74,27 @@ public class NativesCreator {
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
 			builder.put(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
-			final File destiny = calculateDestiny(variable);
-			final FrameBuilder frameBuilder = builder.append(variable).add(conf.nativeLanguage());
-			if (FUNCTION.equals(variable.type())) frameBuilder.add(variable.type().name());
-			nativeCodes.put(destiny, expressionsTemplate.render(frameBuilder.toFrame()));
-			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
+			createNativeFrame(files, expressionsTemplate, nativeCodes, calculateDestination(variable), builder.append(variable), variable.type(), variable.file());
 		});
 		return nativeCodes;
+	}
+
+	private void createNativeFrame(Map<String, String> originToDestiny, Template expressionsTemplate, Map<File, String> nativeCodes, File destination, FrameBuilder append, Primitive type, String file2) {
+		final FrameBuilder frameBuilder = append.add(conf.nativeLanguage());
+		if (FUNCTION.equals(type)) frameBuilder.add(type.name());
+		nativeCodes.put(destination, expressionsTemplate.render(frameBuilder.toFrame()));
+		if (!originToDestiny.containsKey(file2)) originToDestiny.put(destination.getAbsolutePath(), file2);
 	}
 
 	private Template expressionsTemplate() {
 		return Format.customize(new ExpressionsTemplate());
 	}
 
-	private File calculateDestiny(Parameter parameter) {
+	private File calculateDestination(Parameter parameter) {
 		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(parameter.container()).replace(".", separator) + separator + nativeName(parameter));
 	}
 
-	private File calculateDestiny(Variable variable) {
+	private File calculateDestination(Variable variable) {
 		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(variable.container()).replace(".", separator) + separator + nativeName(variable));
 	}
 

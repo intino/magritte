@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="ExternalSystem" externalSystem="Maven" />
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
     <output url="file://$MODULE_DIR$/../../out/production/builder" />
     <output-test url="file://$MODULE_DIR$/../../out/test/builder" />
     <content url="file://$MODULE_DIR$">
@@ -10,14 +10,10 @@
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: io.intino.tara:language:1.0.11" level="project" />
     <orderEntry type="module" module-name="language" />
-    <orderEntry type="module" module-name="io" />
-    <orderEntry type="module" module-name="builder-constants" />
-    <orderEntry type="module" module-name="language" />
-    <orderEntry type="library" name="Maven: io.intino.tara:magritte:2.3.1" level="project" />
+    <orderEntry type="module" module-name="magritte" />
     <orderEntry type="module" module-name="io" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:kryo:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:reflectasm:1.11.3" level="project" />

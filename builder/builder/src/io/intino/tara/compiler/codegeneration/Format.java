@@ -118,9 +118,9 @@ public class Format {
 		if (value.isEmpty()) return "";
 		String[] parts = value.split(regex);
 		if (parts.length == 1) return value;
-		String caseString = parts[0];
-		for (int i = 1; i < parts.length; i++) caseString = caseString + capitalize(parts[i]);
-		return caseString;
+		StringBuilder caseString = new StringBuilder(parts[0]);
+		for (int i = 1; i < parts.length; i++) caseString.append(capitalize(parts[i]));
+		return caseString.toString();
 	}
 
 	public static Formatter javaValidWord() {
@@ -170,7 +170,7 @@ public class Format {
 			list.add(parameters.substring(i == 0 ? 0 : commas.get(i - 1) + 1, commas.get(i)).trim());
 		}
 		if (!commas.isEmpty()) list.add(parameters.substring(commas.get(commas.size() - 1) + 1).trim());
-		return list.isEmpty() ? new String[]{parameters.trim()} : list.toArray(new String[list.size()]);
+		return list.isEmpty() ? new String[]{parameters.trim()} : list.toArray(new String[0]);
 	}
 
 	private static List<Integer> recollectCommas(String parameters) {

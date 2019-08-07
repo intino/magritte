@@ -46,6 +46,6 @@ public class DependencyException extends TaraException {
 	}
 
 	private String getCompleteMessage() {
-		return MessageProvider.message(message, parameters);
+		return MessageProvider.message(message, (Object[]) parameters);
 	}
 }

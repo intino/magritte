@@ -2,7 +2,10 @@ package io.intino.tara.compiler.codegeneration.magritte;
 
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
-import io.intino.tara.lang.model.*;
+import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.FacetTarget;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.NodeRoot;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +13,6 @@ import java.util.List;
 import static io.intino.tara.compiler.codegeneration.Format.*;
 
 public class NameFormatter {
-
 	public static final char DOT = '.';
 
 	private NameFormatter() {
@@ -56,10 +58,10 @@ public class NameFormatter {
 	}
 
 	private static FacetTarget isInFacetTarget(Node node) {
-		NodeContainer container = node.container();
-		while (container != null && ((Node) container).facetTarget() == null)
+		Node container = node.container();
+		while (container != null && container.facetTarget() == null)
 			container = container.container();
-		return container != null ? ((Node) container).facetTarget() : null;
+		return container != null ? container.facetTarget() : null;
 	}
 
 	public static String cleanQn(String qualifiedName) {

@@ -10,7 +10,6 @@ import io.intino.tara.lang.grammar.TaraLexer;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.VocabularyImpl;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.File;
@@ -45,6 +44,15 @@ public class Parser {
 		grammar.addErrorListener(new GrammarErrorListener());
 	}
 
+	public void parse() throws SyntaxException {
+		try {
+			rootContext = grammar.root();
+		} catch (RecognitionException e) {
+			LOG.log(Level.INFO, e.getMessage(), e);
+			throwError(e);
+		}
+	}
+
 	public Model convert() throws SyntaxException {
 		try {
 			ParseTreeWalker walker = new ParseTreeWalker();
@@ -54,30 +62,23 @@ public class Parser {
 				throw extractor.getErrors().get(0);
 			return extractor.getModel();
 		} catch (RecognitionException e) {
-			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
-			Token token = recognizer.getCurrentToken();
 			LOG.log(Level.SEVERE, e.getMessage());
-			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
+			return throwError(e);
 		}
+	}
+
+	private Model throwError(RecognitionException e) throws SyntaxException {
+		org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
+		Token token = recognizer.getCurrentToken();
+		throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 	}
 
 	private String getExpectedTokens(org.antlr.v4.runtime.Parser recognizer) {
 		try {
-			return recognizer.getExpectedTokens().toString(VocabularyImpl.fromTokenNames(recognizer.getTokenNames()));
+			return recognizer.getExpectedTokens().toString(recognizer.getVocabulary());
 		} catch (Exception e) {
 			LOG.log(Level.INFO, e.getMessage(), e);
 			return "";
-		}
-	}
-
-	public void parse() throws SyntaxException {
-		try {
-			rootContext = grammar.root();
-		} catch (RecognitionException e) {
-			LOG.log(Level.INFO, e.getMessage(), e);
-			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
-			Token token = recognizer.getCurrentToken();
-			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 		}
 	}
 }

@@ -55,7 +55,7 @@ public final class TypesProvider implements TemplateTags {
 		List<String> list = new ArrayList<>();
 		list.add(FACET);
 		list.add(facet.type());
-		return list.toArray(new String[list.size()]);
+		return list.toArray(new String[0]);
 	}
 
 	static String[] getTypes(FacetTarget facetTarget) {
@@ -63,7 +63,7 @@ public final class TypesProvider implements TemplateTags {
 		list.add(FACET_TARGET);
 		if (facetTarget.targetNode().qualifiedName() != null)
 			list.add(facetTarget.targetNode().qualifiedName());
-		return list.toArray(new String[list.size()]);
+		return list.toArray(new String[0]);
 	}
 
 	private static List<String> nodeAnnotations(Node node, Language language) {

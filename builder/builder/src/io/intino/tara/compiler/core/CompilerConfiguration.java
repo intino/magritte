@@ -459,8 +459,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		private io.intino.tara.Language loadLanguage() {
 			try {
 				final io.intino.tara.Language language = LanguageLoader.load(name, version, languagesDirectory().getAbsolutePath());
-				if (language != null)
-					generationPackage(getLanguagePath(name, version, languagesDirectory().getAbsolutePath()));
+				generationPackage(getLanguagePath(name, version, languagesDirectory().getAbsolutePath()));
 				return language;
 			} catch (NoClassDefFoundError | TaraException e) {
 				LOG.info("Language " + name() + " cannot be load");

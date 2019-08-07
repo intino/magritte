@@ -92,14 +92,11 @@ class NativeTransformationOperation extends ModelOperation {
 	}
 
 	private Set<Parameter> findReactiveParameters(Parametrized parametrized) {
-		Set<Parameter> parameters = new HashSet<>();
-		parameters.addAll(parametrized.parameters().stream().
+		Set<Parameter> parameters = parametrized.parameters().stream().
 				filter(p -> p.flags().contains(Reactive) &&
-						!(p.values().get(0) instanceof Primitive.Expression) && !(p.values().get(0) instanceof Primitive.MethodReference)).
-				collect(Collectors.toList()));
-		if (parametrized instanceof Node && !((Node) parametrized).isReference()) {
+						!(p.values().get(0) instanceof Primitive.Expression) && !(p.values().get(0) instanceof MethodReference)).collect(Collectors.toSet());
+		if (parametrized instanceof Node && !((Node) parametrized).isReference())
 			((Node) parametrized).components().forEach(n -> parameters.addAll(findReactiveParameters(n)));
-		}
 		return parameters;
 	}
 

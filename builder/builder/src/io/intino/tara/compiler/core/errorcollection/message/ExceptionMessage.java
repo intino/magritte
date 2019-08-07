@@ -9,9 +9,9 @@ import java.util.logging.Logger;
 public class ExceptionMessage extends Message {
 	private static final Logger LOG = Logger.getGlobal();
 
-	private boolean verbose = true;
-	private SourceUnit owner = null;
-	private Exception cause = null;
+	private boolean verbose;
+	private SourceUnit owner;
+	private Exception cause;
 
 	public ExceptionMessage(Exception cause, boolean v, SourceUnit owner) {
 		this.verbose = v;

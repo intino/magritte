@@ -3,6 +3,7 @@ package io.intino.tara.compiler.core;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,7 +11,7 @@ class FileReaderSource extends AbstractReaderSource {
 
 	private static final Logger LOG = Logger.getGlobal();
 
-	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private static final Charset UTF8 = StandardCharsets.UTF_8;
 	private File file;
 
 	FileReaderSource(File file, CompilerConfiguration configuration) {
@@ -23,10 +24,10 @@ class FileReaderSource extends AbstractReaderSource {
 		InputStream in = new BufferedInputStream(new FileInputStream(this.file));
 		if (UTF8.name().equalsIgnoreCase(cs.name())) {
 			in.mark(3);
-			boolean hasBOM = true;
+			boolean hasBOM;
 			try {
 				int i = in.read();
-				hasBOM &= i == 239;
+				hasBOM = i == 239;
 				i = in.read();
 				hasBOM &= i == 187;
 				i = in.read();

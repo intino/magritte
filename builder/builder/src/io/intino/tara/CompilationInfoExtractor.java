@@ -90,10 +90,10 @@ public class CompilationInfoExtractor {
 				configuration.version(reader.readLine());
 				break;
 			case MAKE:
-				configuration.setMake(Boolean.valueOf(reader.readLine()));
+				configuration.setMake(Boolean.parseBoolean(reader.readLine()));
 				break;
 			case TEST:
-				configuration.setTest(Boolean.valueOf(reader.readLine()));
+				configuration.setTest(Boolean.parseBoolean(reader.readLine()));
 				break;
 			case WORKING_PACKAGE:
 				configuration.workingPackage(reader.readLine());

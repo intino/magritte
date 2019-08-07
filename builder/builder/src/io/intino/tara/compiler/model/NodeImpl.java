@@ -1,15 +1,16 @@
 package io.intino.tara.compiler.model;
 
-import io.intino.tara.lang.model.*;
 import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.addAll;
-import static java.util.Collections.unmodifiableList;
 import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
 import static io.intino.tara.lang.model.Tag.*;
+import static java.util.Collections.addAll;
+import static java.util.Collections.unmodifiableList;
 
 public class NodeImpl implements Node {
 
@@ -127,7 +128,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isAbstract() {
-		return flags.contains(Abstract) || children().stream().filter(Node::isSub).findAny().isPresent();
+		return flags.contains(Abstract) || children().stream().anyMatch(Node::isSub);
 	}
 
 	@Override
@@ -294,8 +295,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> siblings() {
-		List<Node> siblings = new ArrayList<>();
-		siblings.addAll(container().components());
+		List<Node> siblings = new ArrayList<>(container().components());
 		siblings.remove(this);
 		return unmodifiableList(siblings);
 	}
@@ -316,7 +316,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean contains(Node nodeContainer) {
-		return nodeContainer != null && components.keySet().contains(nodeContainer);
+		return nodeContainer != null && components.containsKey(nodeContainer);
 	}
 
 	@Override

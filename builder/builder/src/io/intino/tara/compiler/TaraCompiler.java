@@ -1,13 +1,12 @@
 package io.intino.tara.compiler;
 
+import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerMessage;
+import io.intino.tara.compiler.core.SourceUnit;
 import io.intino.tara.compiler.core.errorcollection.*;
 import io.intino.tara.compiler.core.errorcollection.message.*;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.SourceUnit;
 import io.intino.tara.lang.model.Element;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

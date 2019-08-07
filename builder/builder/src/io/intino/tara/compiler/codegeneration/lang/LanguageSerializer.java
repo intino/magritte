@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.codegeneration.FileSystemUtils.writeBuffer;
 import static io.intino.tara.compiler.codegeneration.Format.firstUpperCase;
 import static io.intino.tara.compiler.codegeneration.Format.reference;
 import static io.intino.tara.compiler.core.CompilerConfiguration.REPOSITORY;
@@ -191,22 +192,17 @@ public class LanguageSerializer {
 		}
 	}
 
-	private BufferedInputStream writeEntry(File source, JarOutputStream target) throws IOException {
+	private BufferedInputStream writeEntry(File source, OutputStream target) throws IOException {
 		BufferedInputStream in;
 		in = new BufferedInputStream(new FileInputStream(source));
-		byte[] buffer = new byte[1024];
-		while (true) {
-			int count = in.read(buffer);
-			if (count == -1) break;
-			target.write(buffer, 0, count);
-		}
+		writeBuffer(in, target);
 		return in;
 	}
 
 	private void createDirectory(File base, File source, JarOutputStream target) throws IOException {
 		String name = getRelativePath(base, source).replace("\\", "/");
 		if (!name.isEmpty()) createEntry(source, target, name);
-		for (File nestedFile : source.listFiles())
+		for (File nestedFile : Objects.requireNonNull(source.listFiles()))
 			add(base, nestedFile, target);
 	}
 

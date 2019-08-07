@@ -9,12 +9,10 @@ import java.util.List;
 public class LanguageNodeReference implements Node {
 
 	private List<String> types;
-	private String name;
 	private String qualifiedName;
 
 	public LanguageNodeReference(List<String> types, String qualifiedName) {
 		this.types = types;
-		this.name = name;
 		this.qualifiedName = qualifiedName;
 	}
 

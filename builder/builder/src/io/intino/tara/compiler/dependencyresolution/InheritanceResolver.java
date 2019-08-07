@@ -150,7 +150,7 @@ public class InheritanceResolver {
 	}
 
 	private void resolveAllowedFacets(Node parent, Node child) {
-		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
+		child.addAllowedFacets(parent.allowedFacets().toArray(new String[0]));
 	}
 
 	private void resolveAppliedFacets(Node parent, Node child) {
@@ -261,10 +261,12 @@ public class InheritanceResolver {
 		for (Variable variable : parent.variables())
 			if (isOverridden(child, variable)) {
 				final Variable overridenVariable = findVariable(child, variable.name());
-				overridenVariable.addFlags(variable.flags().toArray(new Tag[variable.flags().size()]));
-				overridenVariable.overriden(true);
+				if (overridenVariable != null) {
+					overridenVariable.addFlags(variable.flags().toArray(new Tag[0]));
+					overridenVariable.overriden(true);
+				}
 			} else variables.add(variable.cloneIt(child));
-		child.add(0, variables.toArray(new Variable[variables.size()]));
+		child.add(0, variables.toArray(new Variable[0]));
 	}
 
 	private Variable findVariable(Node child, String name) {
@@ -314,7 +316,7 @@ public class InheritanceResolver {
 
 			private int maxLevel(Node node) {
 				List<Integer> levels = new ArrayList<>(Collections.singletonList(0));
-				levels.addAll(node.children().stream().map(child -> maxLevel((Node) child)).collect(Collectors.toList()));
+				levels.addAll(node.children().stream().map(this::maxLevel).collect(Collectors.toList()));
 				levels.sort(Collections.reverseOrder());
 				return 1 + levels.get(0);
 			}

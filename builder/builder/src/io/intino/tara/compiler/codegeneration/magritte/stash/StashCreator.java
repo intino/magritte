@@ -187,7 +187,7 @@ public class StashCreator {
 	}
 
 	private List<Variable> variablesOf(io.intino.tara.lang.model.Node node) {
-		return new ArrayList<>(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::transformTaraVariableToStashVariable).collect(toList()));
+		return node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::transformTaraVariableToStashVariable).collect(Collectors.toList());
 	}
 
 	private List<Variable> parametersOf(io.intino.tara.lang.model.Node node) {
@@ -279,7 +279,7 @@ public class StashCreator {
 
 	private List<Object> buildReferenceValues(List<Object> values) {
 		if (values.get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(values.stream().map(this::buildReferenceName).collect(toList()));
+		return values.stream().map(this::buildReferenceName).collect(Collectors.toList());
 	}
 
 	private String buildReferenceName(Object o) {
