@@ -10,8 +10,6 @@ import io.intino.tara.lang.model.Node;
 import java.io.File;
 import java.util.*;
 
-import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
-
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
 	private final CompilerConfiguration conf;
@@ -43,7 +41,6 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.languageName(components.get(0).languageName());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose()) conf.out().println(PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
 		return model;
 	}
 

@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraDocImpl extends DocMixin implements TaraDoc {
 
-  public TaraDocImpl(ASTNode node) {
+  public TaraDocImpl(@NotNull ASTNode node) {
     super(node);
   }
 

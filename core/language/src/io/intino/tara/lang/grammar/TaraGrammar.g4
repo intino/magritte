@@ -38,7 +38,7 @@ value : identifierReference+
 		| EMPTY;
 body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DEDENT;
 
-facetTarget : ON (identifierReference | ANY) with?;
+facetTarget : ON (identifierReference+ | ANY) with?;
 nodeReference : HAS ruleContainer* identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? bodyValue?;
@@ -63,7 +63,7 @@ ruleContainer : COLON ruleValue;
 
 ruleValue    : (LEFT_CURLY (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | (identifierReference);
 
-range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
+range        : (doubleValue | integerValue | STAR) (DOT DOT (doubleValue | integerValue | STAR))?;
 
 size		 : LEFT_SQUARE sizeRange? RIGHT_SQUARE;
 sizeRange 	 : NATURAL_VALUE | listRange;

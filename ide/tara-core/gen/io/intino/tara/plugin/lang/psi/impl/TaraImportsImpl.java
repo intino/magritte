@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraImportsImpl extends ASTWrapperPsiElement implements TaraImports {
 
-  public TaraImportsImpl(ASTNode node) {
+  public TaraImportsImpl(@NotNull ASTNode node) {
     super(node);
   }
 

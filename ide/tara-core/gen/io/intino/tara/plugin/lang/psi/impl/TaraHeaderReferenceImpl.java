@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraHeaderReferenceImpl extends IdentifierReferenceMixin implements TaraHeaderReference {
 
-  public TaraHeaderReferenceImpl(ASTNode node) {
+  public TaraHeaderReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 

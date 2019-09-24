@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraParametersImpl extends ParametersMixin implements TaraParameters {
 
-  public TaraParametersImpl(ASTNode node) {
+  public TaraParametersImpl(@NotNull ASTNode node) {
     super(node);
   }
 

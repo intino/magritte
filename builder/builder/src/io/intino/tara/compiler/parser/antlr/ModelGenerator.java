@@ -168,7 +168,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl peek = getNodeContainer();
 		FacetTargetImpl facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
-		facetTarget.target(ctx.identifierReference().getText());
+		facetTarget.target(ctx.identifierReference().get(0).getText());//TODO allow multiple
 		if (ctx.with() != null) facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
 		peek.facetTarget(facetTarget);
 		facetTarget.owner(peek);

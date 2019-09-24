@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraVarInitImpl extends VarInitMixin implements TaraVarInit {
 
-  public TaraVarInitImpl(ASTNode node) {
+  public TaraVarInitImpl(@NotNull ASTNode node) {
     super(node);
   }
 

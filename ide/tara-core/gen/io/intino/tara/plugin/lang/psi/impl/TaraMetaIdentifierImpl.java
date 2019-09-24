@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraMetaIdentifierImpl extends MetaIdentifierMixin implements TaraMetaIdentifier {
 
-  public TaraMetaIdentifierImpl(ASTNode node) {
+  public TaraMetaIdentifierImpl(@NotNull ASTNode node) {
     super(node);
   }
 
