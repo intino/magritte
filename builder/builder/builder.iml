@@ -13,7 +13,7 @@
     <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="language" />
-    <orderEntry type="module" module-name="magritte" />
+    <orderEntry type="library" name="Maven: io.intino.tara:magritte:2.4.0" level="project" />
     <orderEntry type="module" module-name="io" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:kryo:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:reflectasm:1.11.3" level="project" />
