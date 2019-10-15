@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface TaraSignature extends Signature {
 
   @Nullable
-  TaraFacetTarget getFacetTarget();
+  TaraAspects getAspects();
 
   @Nullable
-  TaraFacets getFacets();
+  TaraConstraint getConstraint();
 
   @Nullable
   TaraIdentifier getIdentifier();

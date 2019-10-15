@@ -10,16 +10,14 @@ import static io.intino.tara.lang.model.Tag.Terminal;
 import static java.util.Collections.unmodifiableList;
 
 public class NodeReference implements Node {
-
 	private Node container;
-	private NodeImpl destiny;
+	private NodeImpl destination;
 	private String reference;
 	private String file;
 	private int line;
 	private String doc;
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
-	private Set<String> allowedFacets = new HashSet<>();
 	private List<String> uses = new ArrayList<>();
 	private boolean has;
 	private String language;
@@ -28,31 +26,36 @@ public class NodeReference implements Node {
 		this.reference = reference;
 	}
 
-	public NodeReference(NodeImpl destiny) {
-		this.destiny = destiny;
-		reference = destiny.qualifiedName();
+	public NodeReference(NodeImpl destination) {
+		this.destination = destination;
+		reference = destination.qualifiedName();
 	}
 
 	public String getReference() {
 		return reference;
 	}
 
-	public NodeImpl getDestiny() {
-		return destiny;
+	public NodeImpl destination() {
+		return destination;
 	}
 
-	public void setDestiny(NodeImpl destiny) {
-		this.destiny = destiny;
+	public void destination(NodeImpl destination) {
+		this.destination = destination;
 	}
 
 	@Override
 	public String name() {
-		return destiny != null ? destiny.name() : "";
+		return destination != null ? destination.name() : "";
 	}
 
 	@Override
 	public void name(String name) {
 
+	}
+
+	@Override
+	public String layerName() {
+		return destination != null ? destination.layerName() : "";
 	}
 
 	@Override
@@ -110,7 +113,7 @@ public class NodeReference implements Node {
 
 	@Override
 	public List<Node> subs() {
-		return unmodifiableList(destiny.subs());
+		return unmodifiableList(destination.subs());
 	}
 
 	@Override
@@ -139,23 +142,23 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isFacet() {
-		return destiny.isFacet();
+	public boolean isAspect() {
+		return destination.isAspect();
 	}
 
 	@Override
 	public boolean is(Tag tag) {
-		return destiny.is(tag) || flags().contains(tag);
+		return destination.is(tag) || flags().contains(tag);
 	}
 
 	@Override
 	public boolean into(Tag tag) {
-		return destiny.into(tag) || annotations().contains(tag);
+		return destination.into(tag) || annotations().contains(tag);
 	}
 
 	@Override
 	public List<Tag> annotations() {
-		List<Tag> tags = new ArrayList<>(destiny.annotations());
+		List<Tag> tags = new ArrayList<>(destination.annotations());
 		annotations.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
 		return unmodifiableList(tags);
 	}
@@ -164,7 +167,7 @@ public class NodeReference implements Node {
 	public List<Tag> flags() {
 		List<Tag> tags = new ArrayList<>();
 		flags.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
-		if (isHas()) tags.addAll(destiny.flags());
+		if (isHas()) tags.addAll(destination.flags());
 		return unmodifiableList(tags);
 	}
 
@@ -198,17 +201,17 @@ public class NodeReference implements Node {
 
 	@Override
 	public boolean isAnonymous() {
-		return destiny.isAnonymous();
+		return destination.isAnonymous();
 	}
 
 	@Override
 	public String qualifiedName() {
-		return getContainerQualifiedName() + "." + destiny.name();
+		return getContainerQualifiedName() + "." + destination.name();
 	}
 
 	@Override
-	public String cleanQn() {
-		return container.cleanQn() + "$" + destiny.name();
+	public String layerQualifiedName() {
+		return container.layerQualifiedName() + "$" + destination.name();
 	}
 
 	private String getContainerQualifiedName() {
@@ -217,22 +220,27 @@ public class NodeReference implements Node {
 
 	@Override
 	public String type() {
-		return destiny.type();
+		return destination.type();
 	}
 
 	@Override
 	public List<String> types() {
-		return destiny.types();
+		return destination.types();
 	}
 
 	@Override
 	public List<String> secondaryTypes() {
-		return destiny.secondaryTypes();
+		return destination.secondaryTypes();
 	}
 
 
 	@Override
 	public void type(String type) {
+	}
+
+	@Override
+	public void stashNodeName(String name) {
+
 	}
 
 	@Override
@@ -259,12 +267,12 @@ public class NodeReference implements Node {
 
 	@Override
 	public List<Node> components() {
-		return unmodifiableList(destiny.components());
+		return unmodifiableList(destination.components());
 	}
 
 	@Override
 	public List<Rule> rulesOf(Node component) {
-		return destiny.rulesOf(component);
+		return destination.rulesOf(component);
 	}
 
 	@Override
@@ -274,46 +282,31 @@ public class NodeReference implements Node {
 
 	@Override
 	public List<Variable> variables() {
-		return unmodifiableList(destiny.variables());
+		return unmodifiableList(destination.variables());
 	}
 
 	@Override
 	public List<Node> referenceComponents() {
-		return unmodifiableList(destiny.referenceComponents());
+		return unmodifiableList(destination.referenceComponents());
 	}
 
 	@Override
 	public Node destinyOfReference() {
-		return destiny;
+		return destination;
 	}
 
 	@Override
 	public List<Node> children() {
-		return unmodifiableList(destiny.children());
+		return unmodifiableList(destination.children());
 	}
 
 	@Override
-	public List<Facet> facets() {
-		return unmodifiableList(destiny.facets());
-	}
-
-	@Override
-	public List<String> allowedFacets() {
-		return Collections.unmodifiableList(new ArrayList<>(allowedFacets));
-	}
-
-	@Override
-	public void addAllowedFacets(String... facet) {
-		Collections.addAll(allowedFacets, facet);
-	}
-
-	@Override
-	public FacetTarget facetTarget() {
-		return destiny.facetTarget();
+	public List<Aspect> appliedAspects() {
+		return unmodifiableList(destination.appliedAspects());
 	}
 
 	@Override
 	public String toString() {
-		return destiny != null ? qualifiedName() : reference;
+		return destination != null ? qualifiedName() : reference;
 	}
 }

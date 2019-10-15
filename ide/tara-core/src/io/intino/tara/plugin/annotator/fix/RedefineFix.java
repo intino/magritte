@@ -19,13 +19,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext;
 import io.intino.tara.plugin.lang.psi.TaraElementFactory;
 import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.lang.model.Node;
 
 public class RedefineFix implements IntentionAction {
@@ -33,7 +33,7 @@ public class RedefineFix implements IntentionAction {
 	private final String[] parameters;
 
 	public RedefineFix(PsiElement element, String... parameters) {
-		this.node = element instanceof Node ? (Node) element : TaraPsiImplUtil.getContainerNodeOf(element);
+		this.node = element instanceof Node ? (Node) element : TaraPsiUtil.getContainerNodeOf(element);
 		this.parameters = parameters;
 	}
 
@@ -69,7 +69,7 @@ public class RedefineFix implements IntentionAction {
 	}
 
 	private PsiElement addLineSeparator(TaraNode node) {
-		final PsiElement newLineIndent = TaraElementFactory.getInstance(node.getProject()).createBodyNewLine(TaraPsiImplUtil.getIndentation(node) + 1);
+		final PsiElement newLineIndent = TaraElementFactory.getInstance(node.getProject()).createBodyNewLine(TaraPsiUtil.getIndentation(node) + 1);
 		return node.add(newLineIndent);
 	}
 

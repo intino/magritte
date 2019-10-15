@@ -7,23 +7,23 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.TaraElementFactory;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.Expression;
 import io.intino.tara.plugin.lang.psi.TaraVarInit;
 import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.lang.model.Variable;
 
 public class InlineToMultiline extends PsiElementBaseIntentionAction implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
+		final Expression expression = TaraPsiUtil.getContainerByType(element, Expression.class);
 		if (expression == null) return;
 		final String indent = getIndent(expression) + "\t";
 		final TaraElementFactory factory = TaraElementFactory.getInstance(project);
 		final PsiElement newExpression = factory.createMultiLineExpression(expression.getValue(), indent, indent, "---");
-		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
+		final Valued valued = TaraPsiUtil.getContainerByType(expression, Valued.class);
 		if (valued == null) return;
 		expression.getParent().getPrevSibling().delete();
 		expression.getParent().getPrevSibling().delete();
@@ -35,8 +35,8 @@ public class InlineToMultiline extends PsiElementBaseIntentionAction implements 
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
-		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
+		final Expression expression = TaraPsiUtil.getContainerByType(element, Expression.class);
+		final Valued valued = TaraPsiUtil.getContainerByType(element, Valued.class);
 		return valued != null && expression != null &&
 			!expression.isMultiLine() && valued.getValue() != null && valued.getValue().getExpressionList().size() == 1 &&
 			(valued instanceof Variable || valued instanceof TaraVarInit);

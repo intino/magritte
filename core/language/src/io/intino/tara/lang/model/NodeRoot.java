@@ -35,7 +35,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default String cleanQn() {
+	default String layerQualifiedName() {
 		return "";
 	}
 
@@ -55,7 +55,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default boolean isFacet() {
+	default boolean isAspect() {
 		return false;
 	}
 
@@ -135,6 +135,11 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
+	default void stashNodeName(String name) {
+
+	}
+
+	@Override
 	default Node resolve() {
 		return null;
 	}
@@ -170,7 +175,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default List<Facet> facets() {
+	default List<Aspect> appliedAspects() {
 		return Collections.emptyList();
 	}
 
@@ -178,5 +183,4 @@ public interface NodeRoot extends Node, Element {
 	default List<Parameter> parameters() {
 		return Collections.emptyList();
 	}
-
 }

@@ -18,12 +18,12 @@ import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 import io.intino.tara.plugin.lang.psi.Expression;
 import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import static io.intino.tara.lang.model.Primitive.FUNCTION;
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerByType;
 import static io.intino.tara.plugin.project.module.ModuleProvider.moduleOf;
 
 public class TaraLanguageInjector implements LanguageInjector {
@@ -60,7 +60,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private void resolve(PsiLanguageInjectionHost host) {
-		final Node node = TaraPsiImplUtil.getContainerNodeOf(host);
+		final Node node = TaraPsiUtil.getContainerNodeOf(host);
 		if (node != null) try {
 			final io.intino.tara.Language language = TaraUtil.getLanguage(host);
 			if (language != null) new Checker(language).check(node.resolve());

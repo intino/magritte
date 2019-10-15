@@ -11,9 +11,15 @@ public interface Node extends Parametrized, NodeContainer {
 
 	void name(String name);
 
+	default String layerName() {
+		String name = name();
+		name = name.isEmpty() ? "" : name.substring(0, 1).toUpperCase() + name.substring(1);
+		return isAspect() ? name + "Aspect" : name;
+	}
+
 	String qualifiedName();
 
-	String cleanQn();
+	String layerQualifiedName();
 
 	Node container();
 
@@ -21,7 +27,11 @@ public interface Node extends Parametrized, NodeContainer {
 
 	List<Node> subs();
 
-	boolean isFacet();
+	boolean isAspect();
+
+	default List<AspectConstraint> aspectConstraints() {
+		return Collections.emptyList();
+	}
 
 	boolean is(Tag tag);
 
@@ -57,6 +67,8 @@ public interface Node extends Parametrized, NodeContainer {
 
 	void type(String type);
 
+	void stashNodeName(String name);
+
 	default List<String> metaTypes() {
 		return Collections.emptyList();
 	}
@@ -85,27 +97,12 @@ public interface Node extends Parametrized, NodeContainer {
 	default <T extends Node> void addChild(T node) {
 	}
 
-	List<Facet> facets();
+	List<Aspect> appliedAspects();
 
-	default List<String> allowedFacets() {
-		return Collections.emptyList();
+	default void applyAspects(Aspect... aspects) {
 	}
 
-	default void addAllowedFacets(String... facet) {
-	}
-
-	default void addFacets(Facet... facets) {
-	}
-
-	default void addFacet(String type) {
-
-	}
-
-	default FacetTarget facetTarget() {
-		return null;
-	}
-
-	default void facetTarget(FacetTarget target) {
+	default void applyAspect(String aspectType) {
 	}
 
 	@Override
@@ -116,4 +113,10 @@ public interface Node extends Parametrized, NodeContainer {
 
 	@Override
 	int hashCode();
+
+	interface AspectConstraint {
+		String name();
+
+		Node node();
+	}
 }

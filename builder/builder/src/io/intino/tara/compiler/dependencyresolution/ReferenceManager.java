@@ -4,7 +4,6 @@ import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Primitive;
@@ -17,7 +16,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.FileSystemUtils.getNameWithoutExtension;
-import static io.intino.tara.dsl.ProteoConstants.FACET_SEPARATOR;
 
 public class ReferenceManager {
 
@@ -46,14 +44,10 @@ public class ReferenceManager {
 		return (NodeImpl) resolve(reference.getReference(), reference.container());
 	}
 
-	Node resolve(FacetTarget target, Node owner) {
-		Node result = resolve(target.target(), owner);
-		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
-	}
 
 	NodeImpl resolve(VariableReference variable, Node container) {
 		Node result = resolve(variable.destinyName(), container);
-		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
+		return result instanceof NodeReference ? ((NodeReference) result).destination() : (NodeImpl) result;
 	}
 
 	Node resolveParameterReference(Primitive.Reference value, Node node) {
@@ -68,12 +62,6 @@ public class ReferenceManager {
 		return selectFromOptions(node, path, roots);
 	}
 
-	Node resolveFacetConstraint(String facet, String target) {
-		for (Node node : model.components())
-			if (facet.equals(node.name()) && node.facetTarget() != null && target.equals(node.facetTarget().target()))
-				return node;
-		return null;
-	}
 
 	Node resolveParent(String reference, Node node) {
 		return resolve(reference.split("\\."), searchPossibleRoots(node, reference.split("\\.")[0], true));
@@ -129,28 +117,11 @@ public class ReferenceManager {
 
 	private Collection<Node> searchPossibleRoots(Node node, String name, boolean parent) {
 		Set<Node> set = new LinkedHashSet<>();
-		final String[] names = name.split("\\" + FACET_SEPARATOR);//TODO Candidate to remove. Now all components are in the node body
-		namesake(names[0], set, node);
-		addInContext(names[0], set, node, parent);
-		addNodeSiblings(names[0], node, set);
-		addRoots(names[0], set);
-		return names.length == 1 || set.isEmpty() ? set : filterByFacet(set, names[1]);
-	}
-
-	private Collection<Node> filterByFacet(Set<Node> set, String name) {
-		return set.stream().filter(node -> {
-			final FacetTarget target = node.facetTarget() == null ? findTargetInParent(node) : node.facetTarget();
-			return target != null && (target.target().endsWith("." + name) || target.target().equals(name));
-		}).collect(Collectors.toSet());
-	}
-
-	private FacetTarget findTargetInParent(Node node) {
-		Node parent = node.parent();
-		while (parent != null) {
-			if (parent.facetTarget() != null) return parent.facetTarget();
-			else parent = parent.parent();
-		}
-		return null;
+		namesake(name, set, node);
+		addInContext(name, set, node, parent);
+		addNodeSiblings(name, node, set);
+		addRoots(name, set);
+		return set;
 	}
 
 	private void addRoots(String name, Set<Node> set) {

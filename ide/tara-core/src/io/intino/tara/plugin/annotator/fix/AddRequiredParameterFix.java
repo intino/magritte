@@ -12,18 +12,17 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Parametrized;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
 import io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext;
+import io.intino.tara.plugin.lang.psi.TaraAspectApply;
 import io.intino.tara.plugin.lang.psi.TaraElementFactory;
-import io.intino.tara.plugin.lang.psi.TaraFacetApply;
 import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +39,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	private final Parametrized parametrized;
 
 	public AddRequiredParameterFix(PsiElement element) {
-		this.parametrized = element instanceof Node ? (Parametrized) element : (Parametrized) TaraPsiImplUtil.getContainerOf(element);
+		this.parametrized = element instanceof Node ? (Parametrized) element : (Parametrized) TaraPsiUtil.getContainerOf(element);
 	}
 
 	@Nls
@@ -79,8 +78,8 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 		List<Constraint> facetConstraints = new ArrayList<>();
 		final List<String> facets = facetTypes(node);
 		constraintsOf.stream().
-				filter(c -> c instanceof Constraint.Facet && facets.contains(((Constraint.Facet) c).type())).
-				forEach(c -> facetConstraints.addAll(((Constraint.Facet) c).constraints()));
+				filter(c -> c instanceof Constraint.Aspect && facets.contains(((Constraint.Aspect) c).type())).
+				forEach(c -> facetConstraints.addAll(((Constraint.Aspect) c).constraints()));
 		constraintsOf.addAll(facetConstraints);
 		return constraintsOf;
 	}
@@ -95,7 +94,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 //	}
 
 	private List<String> facetTypes(Node node) {
-		return node.facets().stream().map(Facet::type).collect(Collectors.toList());
+		return node.appliedAspects().stream().map(io.intino.tara.lang.model.Aspect::type).collect(Collectors.toList());
 	}
 
 	private void createLiveTemplateFor(List<Constraint.Parameter> requires, PsiFile file, Editor editor) {
@@ -112,7 +111,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	}
 
 	private PsiElement findAnchor(List<Constraint.Parameter> requires) {
-		return requires.get(0).facet().isEmpty() ? findAnchor((TaraNode) parametrized) : findAnchor((TaraFacetApply) ((Node) parametrized).facets().stream().filter(f -> f.type().equals(requires.get(0).facet())).findFirst().get());
+		return requires.get(0).aspect().isEmpty() ? findAnchor((TaraNode) parametrized) : findAnchor((TaraAspectApply) ((Node) parametrized).appliedAspects().stream().filter(f -> f.type().equals(requires.get(0).aspect())).findFirst().get());
 	}
 
 	private PsiElement findAnchor(TaraNode node) {
@@ -131,7 +130,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 				node.getSignature().getMetaIdentifier();
 	}
 
-	private PsiElement findAnchor(TaraFacetApply apply) {
+	private PsiElement findAnchor(TaraAspectApply apply) {
 		if (!hasParameters(apply)) {
 			final PsiElement emptyParameters = TaraElementFactory.getInstance(apply.getProject()).createEmptyParameters();
 			return apply.addAfter(emptyParameters, apply.getMetaIdentifier()).getFirstChild();
@@ -142,11 +141,11 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	}
 
 	private boolean hasParameters(PsiElement element) {
-		final TaraFacetApply facet = TaraPsiImplUtil.getContainerByType(element, TaraFacetApply.class);
-		return facet != null ? hasParameters(facet) : hasParameters(TaraPsiImplUtil.getContainerByType(element, TaraNode.class));
+		final TaraAspectApply facet = TaraPsiUtil.getContainerByType(element, TaraAspectApply.class);
+		return facet != null ? hasParameters(facet) : hasParameters(TaraPsiUtil.getContainerByType(element, TaraNode.class));
 	}
 
-	private boolean hasParameters(TaraFacetApply apply) {
+	private boolean hasParameters(TaraAspectApply apply) {
 		return apply.getParameters() != null && !apply.getParameters().getParameters().isEmpty();
 	}
 

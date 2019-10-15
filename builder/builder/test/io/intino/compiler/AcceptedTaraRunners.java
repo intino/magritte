@@ -45,6 +45,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void legioM1() {
+		main(new String[]{home + "sandbox/confFiles/legio/M1.txt"});
+	}
+
+
+	@Test
 	public void consulM2() {
 		main(new String[]{home + "sandbox/confFiles/cesar/consul.txt"});
 	}
@@ -54,6 +60,21 @@ public class AcceptedTaraRunners {
 		final long l = System.currentTimeMillis();
 		main(new String[]{home + "sandbox/confFiles/sumus/M3.txt"});
 		System.out.println((System.currentTimeMillis() - l) / 1000);
+	}
+
+	@Test
+	public void tafatM3() {
+		main(new String[]{home + "sandbox/confFiles/tafat/tafat.txt"});
+	}
+
+	@Test
+	public void tafatM2() {
+		main(new String[]{home + "sandbox/confFiles/tafat/tafat-test-m2.txt"});
+	}
+
+	@Test
+	public void tafatM1() {
+		main(new String[]{home + "sandbox/confFiles/tafat/tafat-test-m1.txt"});
 	}
 
 	@Test

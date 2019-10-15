@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.codegeneration.Format.noPackage;
+import static io.intino.tara.compiler.codegeneration.Format.withDollar;
+import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.DOT;
 import static io.intino.tara.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
 import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.lang.model.Primitive.*;
@@ -30,7 +33,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public class StashCreator {
-
 	private final List<io.intino.tara.lang.model.Node> nodes;
 	private final Language language;
 	private final File resourceFolder;
@@ -59,31 +61,28 @@ public class StashCreator {
 
 	public Stash create() {
 		nodes.forEach(node -> create(node, null));
-		stash.contentRules = collectContents(nodes.stream().filter(node -> !node.is(Component) && !node.isFacet() && !node.is(Instance)).collect(Collectors.toList()));
+		stash.contentRules = collectContents(nodes.stream().filter(node -> !node.is(Component) && !node.isAspect() && !node.is(Instance)).collect(Collectors.toList()));
 		return stash;
 	}
 
 	private void create(io.intino.tara.lang.model.Node node, Concept container) {
-		if (!node.isReference()) asNode(node, container);
-	}
-
-	private void asNode(io.intino.tara.lang.model.Node node, Concept container) {
+		if (node.isReference()) return;
 		if (node.is(Instance))
-			if (container == null) stash.nodes.add(createInstance(node));
-			else container.nodes.add(createInstance(node));
+			if (container == null) stash.nodes.add(createNode(node));
+			else container.nodes.add(createNode(node));
 		else createConcept(node);
 	}
 
 	private void createConcept(io.intino.tara.lang.model.Node node) {
-		if (node.facetTarget() != null) stash.concepts.addAll(create(node.facetTarget(), node));
+		if (node.isAspect()) stash.concepts.addAll(createFromAspect(node));
 		else {
 			List<io.intino.tara.lang.model.Node> nodeList = collectTypeComponents(node.components());
-			Concept concept = Helper.newConcept(name(node),
-					node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.META_CONCEPT),
+			Concept concept = Helper.newConcept(StashHelper.name(node, workingPackage),
+					node.isAbstract() || node.isAspect(), node.type().equals(ProteoConstants.META_CONCEPT),
 					node.container() instanceof Model && !node.is(Tag.Component),
 					className(node),
-					node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
-					StashHelper.collectTypes(node),
+					node.parentName() != null ? Format.qualifiedName().format(node.parent().layerQualifiedName()).toString() : null,
+					StashHelper.collectTypes(node, this.language),
 					collectContents(nodeList),
 					variablesOf(node),
 					parametersOf(node),
@@ -93,8 +92,39 @@ public class StashCreator {
 		}
 	}
 
+	private List<Concept> createFromAspect(io.intino.tara.lang.model.Node aspectNode) {
+		List<io.intino.tara.lang.model.Node> components = collectTypeComponents(aspectNode.components());
+		List<Concept> concepts = new ArrayList<>();
+		final Concept concept = new Concept();
+		concepts.add(concept);
+		concept.isMetaConcept = aspectNode.type().equals(ProteoConstants.META_CONCEPT);
+		concept.isAbstract = aspectNode.isAbstract();
+		concept.name = StashHelper.name(aspectNode, workingPackage);
+		concept.className = aspectClassName(aspectNode);
+		concept.types = StashHelper.collectTypes(aspectNode, language);
+		concept.parent = calculateParent(aspectNode);
+		concept.contentRules = collectContents(components);
+		concept.variables = variablesOf(aspectNode);
+		concept.parameters = parametersOf(aspectNode);
+		for (io.intino.tara.lang.model.Node component : aspectNode.components()) create(component, concept);
+		io.intino.tara.lang.model.Node targetNode = aspectNode.container();
+		concepts.addAll(collectChildren(targetNode).stream().
+				map(node -> createChildFacetType(aspectNode, node, concept)).
+				collect(toList()));
+		return concepts;
+	}
+
 	private String className(io.intino.tara.lang.model.Node node) {
-		return !node.isAnonymous() ? (isInDecorable(node) ? NameFormatter.layerQn(node, workingPackage) : NameFormatter.stashQn(node, workingPackage)).replace("#", "") : null;
+		return workingPackage + DOT + withDollar().format(noPackage().format(isInDecorable(node) ?
+				NameFormatter.decorableInnerClassQn(node, workingPackage) :
+				NameFormatter.getQn(node, workingPackage))).toString();
+	}
+
+	private String aspectClassName(io.intino.tara.lang.model.Node aspectNode) {
+		return workingPackage + DOT + withDollar().format(noPackage().format(
+				aspectNode.container().is(Decorable) ?
+						NameFormatter.decorableInnerClassQn(aspectNode, workingPackage) :
+						NameFormatter.getQn(aspectNode, workingPackage)).toString());
 	}
 
 	private boolean isInDecorable(io.intino.tara.lang.model.Node node) {
@@ -106,30 +136,6 @@ public class StashCreator {
 		return false;
 	}
 
-	private List<Concept> create(FacetTarget facetTarget, io.intino.tara.lang.model.Node owner) {
-		List<io.intino.tara.lang.model.Node> components = collectTypeComponents(owner.components());
-		List<Concept> concepts = new ArrayList<>();
-		final Concept concept = new Concept();
-		concepts.add(concept);
-		concept.isMetaConcept = owner.type().equals(ProteoConstants.META_CONCEPT);
-		concept.isAbstract = owner.isAbstract();
-		concept.name = name(owner);
-		concept.className = NameFormatter.getQn(facetTarget, owner, workingPackage);
-		concept.types = StashHelper.collectTypes(facetTarget, language.constraints(owner.type()));
-		concept.parent = calculateParent(facetTarget);
-		concept.contentRules = collectContents(components);
-		concept.variables = variablesOf(owner);
-		concept.parameters = parametersOf(owner);
-		for (io.intino.tara.lang.model.Node component : owner.components()) create(component, concept);
-		concepts.addAll(collectChildren(facetTarget.targetNode()).stream().
-				map(node -> createChildFacetType(facetTarget, node, concept)).
-				collect(toList()));
-		return concepts;
-	}
-
-	private String name(io.intino.tara.lang.model.Node owner) {
-		return Format.withDollar().format(Format.noPackage().format(NameFormatter.stashQn(owner, workingPackage))).toString();
-	}
 
 	private List<io.intino.tara.lang.model.Node> collectChildren(io.intino.tara.lang.model.Node parent) {
 		Set<io.intino.tara.lang.model.Node> set = new HashSet<>();
@@ -140,18 +146,17 @@ public class StashCreator {
 		return new ArrayList<>(set);
 	}
 
-	private String calculateParent(FacetTarget facetTarget) {
-		if (facetTarget.parent() != null) return facetTarget.parent().cleanQn();
-		if (facetTarget.owner().parent() != null) return facetTarget.owner().parent().cleanQn();
+	private String calculateParent(io.intino.tara.lang.model.Node node) {
+		if (node.parent() != null) return node.parent().layerQualifiedName();
 		else return null;
 	}
 
-	private Concept createChildFacetType(FacetTarget facetTarget, io.intino.tara.lang.model.Node node, Concept parent) {
+	private Concept createChildFacetType(io.intino.tara.lang.model.Node aspectNode, io.intino.tara.lang.model.Node node, Concept parent) {
 		final Concept child = new Concept();
-		child.name = facetTarget.owner().name() + "#" + name(node);
+		child.name = StashHelper.name(aspectNode, workingPackage);//TODO
 		child.parent = parent.name;
-		child.isAbstract = facetTarget.owner().isAbstract();
-		child.className = NameFormatter.getQn(facetTarget, facetTarget.owner(), workingPackage);
+		child.isAbstract = aspectNode.isAbstract();
+		child.className = aspectClassName(aspectNode);
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
@@ -165,20 +170,20 @@ public class StashCreator {
 
 	private List<Concept.Content> collectContents(List<io.intino.tara.lang.model.Node> nodes) {
 		return nodes.stream().
-				filter(node -> !node.isFacet() && !node.is(Instance)).
-				map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().cleanQn() : n.cleanQn(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
+				filter(node -> !node.isAspect() && !node.is(Instance)).
+				map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().layerQualifiedName() : n.layerQualifiedName(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
 	}
 
-	private List<Node> createInstances(List<io.intino.tara.lang.model.Node> nodes) {
-		return nodes.stream().map(this::createInstance).collect(toList());
+	private List<Node> createNodes(List<io.intino.tara.lang.model.Node> nodes) {
+		return nodes.stream().map(this::createNode).collect(toList());
 	}
 
-	private Node createInstance(io.intino.tara.lang.model.Node node) {
+	private Node createNode(io.intino.tara.lang.model.Node node) {
 		Node instanceNode = new Node();
 		instanceNode.name = buildReferenceName(node);
-		instanceNode.facets = StashHelper.collectTypes(node);
+		instanceNode.facets = StashHelper.collectTypes(node, this.language);
 		instanceNode.variables.addAll(parametersOf(node));
-		instanceNode.nodes.addAll(createInstances(node.components()));
+		instanceNode.nodes.addAll(createNodes(node.components()));
 		return instanceNode;
 	}
 
@@ -290,7 +295,7 @@ public class StashCreator {
 	}
 
 	private String nodeStashQualifiedName(io.intino.tara.lang.model.Node node) {
-		return (((node).is(Instance)) ? getStash(node) + "#" : "") + (node).cleanQn();
+		return (((node).is(Instance)) ? getStash(node) + "#" : "") + (node).layerQualifiedName();
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {

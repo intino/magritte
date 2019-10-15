@@ -43,7 +43,7 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public String cleanQn() {
+	public String layerQualifiedName() {
 		return null;
 	}
 
@@ -63,7 +63,7 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public boolean isFacet() {
+	public boolean isAspect() {
 		return false;
 	}
 
@@ -143,6 +143,11 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
+	public void stashNodeName(String name) {
+
+	}
+
+	@Override
 	public Node resolve() {
 		return null;
 	}
@@ -178,7 +183,7 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public List<Facet> facets() {
+	public List<Aspect> appliedAspects() {
 		return Collections.emptyList();
 	}
 

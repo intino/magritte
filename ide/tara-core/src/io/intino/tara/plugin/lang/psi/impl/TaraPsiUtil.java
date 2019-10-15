@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 
-public class TaraPsiImplUtil {
+public class TaraPsiUtil {
 
-	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
+	private static final Logger LOG = Logger.getInstance(TaraPsiUtil.class.getName());
 
-	private TaraPsiImplUtil() {
+	private TaraPsiUtil() {
 	}
 
 	public static String getIdentifier(Identifier keyNode) {
@@ -80,7 +80,7 @@ public class TaraPsiImplUtil {
 	}
 
 	public static int getIndentation(PsiElement element) {
-		PsiElement container = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
+		PsiElement container = (PsiElement) TaraPsiUtil.getContainerOf(element);
 		if (container == null) return 0;
 		if (is(container.getPrevSibling(), TaraTypes.NEWLINE) || is(container.getPrevSibling(), TaraTypes.NEW_LINE_INDENT))
 			return 1 + countTabs(container.getPrevSibling().getText());

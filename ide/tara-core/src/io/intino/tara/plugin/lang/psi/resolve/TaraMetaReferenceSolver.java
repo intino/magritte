@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import io.intino.tara.plugin.lang.psi.MetaIdentifier;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	@Nullable
 	private PsiElement findDestiny() {
 		Language language = TaraUtil.getLanguage(myElement);
-		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
+		final Node node = TaraPsiUtil.getContainerNodeOf(myElement);
 		if (language == null || node == null) return null;
 		final Documentation doc = language.doc(node.resolve().type());
 		if (doc == null) return null;

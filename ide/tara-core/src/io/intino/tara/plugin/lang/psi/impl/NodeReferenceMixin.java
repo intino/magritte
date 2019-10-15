@@ -2,19 +2,19 @@ package io.intino.tara.plugin.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.Rule;
-import org.jetbrains.annotations.Nullable;
+import io.intino.tara.lang.model.*;
+import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableList;
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format.firstUpperCase;
+import static java.util.Collections.unmodifiableList;
 
 
 public class NodeReferenceMixin extends ASTWrapperPsiElement {
@@ -31,7 +31,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	public List<String> secondaryTypes() {
 		final Node destiny = destinyOfReference();
 		if (destiny == null) return Collections.emptyList();
-		return Collections.unmodifiableList(destiny.facets().stream().map(Facet::type).collect(Collectors.toList()));
+		return Collections.unmodifiableList(destiny.appliedAspects().stream().map(Aspect::type).collect(Collectors.toList()));
 	}
 
 	public String simpleType() {
@@ -86,9 +86,13 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	public void addAnnotations(Tag... annotations) {
 	}
 
-	public boolean isFacet() {
+	public boolean isAspect() {
 		final Node node = destinyOfReference();
-		return node != null && node.isFacet();
+		return node != null && node.isAspect();
+	}
+
+	public boolean isMetaAspect() {
+		return isAspect();
 	}
 
 	public boolean isAbstract() {
@@ -107,17 +111,13 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return annotations().contains(tag);
 	}
 
-	public String anchor() {
-		return "";
-	}
-
 	public List<Tag> annotations() {
 		final Node node = destinyOfReference();
 		if (node == null) return Collections.emptyList();
 		List<Tag> annotations = node.annotations();
 		if (getAnnotationsNode() != null)
 			annotations.addAll(getAnnotationsNode().getAnnotationList().stream().
-				map(a -> Tag.valueOf(a.getText().toUpperCase())).collect(Collectors.toList()));
+					map(a -> Tag.valueOf(a.getText().toUpperCase())).collect(Collectors.toList()));
 		return annotations;
 	}
 
@@ -128,7 +128,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		flags.addAll(inheritedFlags);
 		if (getFlagsNode() != null)
 			flags.addAll(getFlagsNode().getFlagList().stream().
-				map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(Collectors.toList()));
+					map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(Collectors.toList()));
 		return flags;
 	}
 
@@ -147,14 +147,11 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public void anchor(String anchor) {
-	}
-
 	public String qualifiedName() {
 		return null;
 	}
 
-	public String cleanQn() {
+	public String layerQualifiedName() {
 		return null;
 	}
 
@@ -176,7 +173,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+		return TaraPsiUtil.getContainerNodeOf(this);
 	}
 
 	public String type() {
@@ -201,10 +198,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	public List<String> allowedFacets() {
-		return Collections.emptyList();
-	}
-
 	public Node parent() {
 		return null;
 	}
@@ -224,15 +217,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	public String tableName() {
-		return "";
-	}
-
-	public List<Facet> facets() {
-		return Collections.emptyList();
-	}
-
-	public List<FacetTarget> facetTargets() {
+	public List<Aspect> appliedAspects() {
 		return Collections.emptyList();
 	}
 
@@ -244,5 +229,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return "Reference -> " + ((TaraNodeReference) this).getIdentifierReference().getText() + "@" + type();
 	}
 
-
+	public void stashNodeName(String name) {
+	}
 }

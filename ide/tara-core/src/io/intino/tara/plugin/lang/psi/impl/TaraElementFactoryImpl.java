@@ -78,20 +78,20 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public TaraFacets createFacets(String type) {
+	public TaraAspects createAspects(String type) {
 		final TaraModelImpl file = createDummyFile(
 				CONCEPT_DUMMY + " as " + type + "\n" +
 						"\t" + CONCEPT_DUMMY + "2\n"
 		);
-		return PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getFacets();
+		return PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getAspects();
 	}
 
-	public TaraFacetApply createFacet(String type) {
+	public TaraAspectApply createFacet(String type) {
 		final TaraModelImpl file = createDummyFile(
 				CONCEPT_DUMMY + " as " + type + "\n" +
 						"\t" + CONCEPT_DUMMY + "2\n"
 		);
-		return PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getFacets().getFacetApplyList().get(0);
+		return PsiTreeUtil.getChildOfType(file, TaraNode.class).getSignature().getAspects().getAspectApplyList().get(0);
 	}
 
 	public TaraVariable createResource(String name, String type) {

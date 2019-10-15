@@ -8,7 +8,7 @@ import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.plugin.lang.psi.TaraParameter;
 import io.intino.tara.plugin.lang.psi.TaraTypes;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ class AddMetricFix extends PsiElementBaseIntentionAction {
 	}
 
 	private Parameter findParameterContainer(PsiElement element) {
-		return element instanceof Parameter ? (Parameter) element : TaraPsiImplUtil.getContainerByType(element.getNode().getElementType().equals(TaraTypes.NEWLINE) ? findParameter(element) : element, TaraParameter.class);
+		return element instanceof Parameter ? (Parameter) element : TaraPsiUtil.getContainerByType(element.getNode().getElementType().equals(TaraTypes.NEWLINE) ? findParameter(element) : element, TaraParameter.class);
 	}
 
 	private PsiElement findParameter(PsiElement element) {

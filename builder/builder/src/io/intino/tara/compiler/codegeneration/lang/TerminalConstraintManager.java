@@ -46,8 +46,8 @@ class TerminalConstraintManager implements TemplateTags {
 				asComponent(constraintsFrame, (Constraint.Component) c);
 			else if (c instanceof Constraint.Parameter)
 				addParameter(constraintsFrame, (Constraint.Parameter) c);
-			else if (c instanceof Constraint.Facet)
-				addFacet(constraintsFrame, ((Constraint.Facet) c));
+			else if (c instanceof Constraint.Aspect)
+				addFacet(constraintsFrame, ((Constraint.Aspect) c));
 		}
 	}
 
@@ -64,17 +64,17 @@ class TerminalConstraintManager implements TemplateTags {
 		constraints.add(relation, NAME);
 	}
 
-	private void addFacet(FrameBuilderContext constraints, Constraint.Facet facet) {
-		final FrameBuilder builder = new FrameBuilder(CONSTRAINT, FACET);
-		builder.add(VALUE, facet.type());
-		if (facet.terminal()) builder.add(TERMINAL, "true");
-		builder.add(WITH, facet.with());
-		addConstraints(facet.constraints(), builder);
+	private void addFacet(FrameBuilderContext constraints, Constraint.Aspect aspect) {
+		final FrameBuilder builder = new FrameBuilder(CONSTRAINT, ASPECT);
+		builder.add(VALUE, aspect.type());
+		if (aspect.terminal()) builder.add(TERMINAL, "true");
+		builder.add(WITH, aspect.with());
+		addConstraints(aspect.constraints(), builder);
 		constraints.add(CONSTRAINT, builder.toFrame());
 	}
 
 	private void addParameter(FrameBuilderContext constraints, Constraint.Parameter constraint) {
-		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.facet(), constraint.position(), constraint.scope(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.aspect(), constraint.position(), constraint.scope(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
 		final FrameBuilder primitiveFrameBuilder = new FrameBuilder();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences(constraint);
@@ -102,7 +102,7 @@ class TerminalConstraintManager implements TemplateTags {
 		builder.add(NAME, parameters[0]).
 				add(TYPE, parameters[1]).
 				add(SIZE, parameters[2]).
-				add(FACET, parameters[3]).
+				add(ASPECT, parameters[3]).
 				add(POSITION, parameters[4]).
 				add(SCOPE, parameters[5]);
 		if (parameters[6] != null) builder.add(RULE, parameters[6]);

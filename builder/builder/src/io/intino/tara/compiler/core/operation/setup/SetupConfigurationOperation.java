@@ -3,7 +3,6 @@ package io.intino.tara.compiler.core.operation.setup;
 import io.intino.legio.graph.Artifact;
 import io.intino.legio.graph.LegioGraph;
 import io.intino.legio.graph.Parameter;
-import io.intino.legio.graph.level.LevelArtifact;
 import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -106,7 +105,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.addLanguage(language, artifact.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else if (artifact.isLevel()) {
-			final LevelArtifact.Model model = artifact.asLevel().model();
+			final Artifact.Level.Model model = artifact.asLevel().model();
 			configuration.addLanguage(model.language(), model.effectiveVersion().isEmpty() ? model.version() : model.effectiveVersion());
 			configuration.level(level);
 		}

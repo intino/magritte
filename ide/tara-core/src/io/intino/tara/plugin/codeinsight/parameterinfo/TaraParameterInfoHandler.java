@@ -13,7 +13,7 @@ import io.intino.tara.lang.model.rules.variable.ReferenceRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -98,7 +98,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public void showParameterInfo(@NotNull Parameters parameters, @NotNull CreateParameterInfoContext context) {
 		Language language = TaraUtil.getLanguage(parameters);
 		if (language == null) return;
-		List<Constraint> constraints = language.constraints(TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type());
+		List<Constraint> constraints = language.constraints(TaraPsiUtil.getContainerNodeOf(parameters).resolve().type());
 		if (constraints == null) return;
 		List<Constraint.Parameter> parameterConstraints = collectParameterConstraints(constraints, parameters.isInFacet());
 		if (!parameterConstraints.isEmpty())
@@ -106,7 +106,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		context.showHint(parameters, parameters.getTextRange().getStartOffset(), this);
 	}
 
-	private List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeConstraints, TaraFacetApply inFacet) {
+	private List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeConstraints, TaraAspectApply inFacet) {
 		List<Constraint> scopeAllows = nodeConstraints;
 		if (inFacet != null) scopeAllows = collectFacetParameterConstraints(nodeConstraints, inFacet.type());
 		return scopeAllows.stream().
@@ -116,8 +116,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	private List<Constraint> collectFacetParameterConstraints(List<Constraint> nodeAllows, String type) {
 		for (Constraint constraint : nodeAllows)
-			if ((constraint instanceof Constraint.Facet) && ((Constraint.Facet) constraint).type().equals(type))
-				return ((Constraint.Facet) constraint).constraints();
+			if ((constraint instanceof Constraint.Aspect) && ((Constraint.Aspect) constraint).type().equals(type))
+				return ((Constraint.Aspect) constraint).constraints();
 		return Collections.emptyList();
 	}
 

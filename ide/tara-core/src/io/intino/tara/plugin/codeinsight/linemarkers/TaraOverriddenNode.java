@@ -10,7 +10,7 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import io.intino.tara.lang.model.Node;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,7 +56,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	}
 
 	private Node getOverriddenNode(Node inner) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) inner);
+		Node node = TaraPsiUtil.getContainerNodeOf((PsiElement) inner);
 		if (node == null) return null;
 		Node parent = node.parent();
 		while (parent != null) {

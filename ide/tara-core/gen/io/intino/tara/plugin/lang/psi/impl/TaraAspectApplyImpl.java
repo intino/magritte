@@ -8,17 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import io.intino.tara.plugin.lang.psi.*;
 
-public class TaraFacetsImpl extends ASTWrapperPsiElement implements TaraFacets {
+public class TaraAspectApplyImpl extends AspectApplyMixin implements TaraAspectApply {
 
-  public TaraFacetsImpl(@NotNull ASTNode node) {
+  public TaraAspectApplyImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TaraVisitor visitor) {
-    visitor.visitFacets(this);
+    visitor.visitAspectApply(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +27,15 @@ public class TaraFacetsImpl extends ASTWrapperPsiElement implements TaraFacets {
 
   @Override
   @NotNull
-  public List<TaraFacetApply> getFacetApplyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetApply.class);
+  public TaraMetaIdentifier getMetaIdentifier() {
+    return findNotNullChildByClass(TaraMetaIdentifier.class);
   }
+
+  @Override
+  @Nullable
+  public TaraParameters getParameters() {
+    return findChildByClass(TaraParameters.class);
+  }
+
 
 }

@@ -6,13 +6,12 @@
 
     <groupId>io.intino.tara</groupId>
     <artifactId>builder</artifactId>
-    <version>3.0.0</version>
+    <version>4.0.0</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
     </properties>
 
     <repositories>
@@ -112,7 +111,7 @@
         <dependency>
             <groupId>io.intino.legio</groupId>
             <artifactId>model</artifactId>
-            <version>[3.1.0, 4.0.0)</version>
+            <version>3.2.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>io.intino.tara</groupId>

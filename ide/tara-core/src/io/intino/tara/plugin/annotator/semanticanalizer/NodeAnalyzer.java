@@ -3,15 +3,17 @@ package io.intino.tara.plugin.annotator.semanticanalizer;
 import com.intellij.psi.PsiElement;
 import io.intino.tara.Checker;
 import io.intino.tara.Language;
-import io.intino.tara.lang.model.*;
-import io.intino.tara.plugin.annotator.TaraAnnotator;
-import io.intino.tara.plugin.annotator.fix.FixFactory;
-import io.intino.tara.plugin.lang.psi.TaraFacetApply;
-import io.intino.tara.plugin.lang.psi.TaraFacetTarget;
-import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import io.intino.tara.lang.model.Aspect;
+import io.intino.tara.lang.model.Element;
+import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.semantics.errorcollector.SemanticException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
+import io.intino.tara.plugin.annotator.TaraAnnotator;
+import io.intino.tara.plugin.annotator.fix.FixFactory;
+import io.intino.tara.plugin.lang.psi.TaraAspectApply;
+import io.intino.tara.plugin.lang.psi.TaraNode;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +36,11 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		} catch (SemanticFatalException fatal) {
 			for (SemanticException e : fatal.exceptions()) {
 				List<PsiElement> origins = e.origin() != null ? cast(e.origin()) : Collections.singletonList((TaraNode) node);
-				for (PsiElement destiny : origins) {
-					if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
-					else if (destiny instanceof NodeRoot) return;
-					else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifier();
-					else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
-					results.put(destiny, annotateAndFix(e, destiny));
+				for (PsiElement origin : origins) {
+					if (origin instanceof TaraNode) origin = ((TaraNode) origin).getSignature();
+					else if (origin instanceof NodeRoot) return;
+					else if (origin instanceof Aspect) origin = ((TaraAspectApply) origin).getMetaIdentifier();
+					results.put(origin, annotateAndFix(e, origin));
 				}
 			}
 		}

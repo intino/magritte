@@ -142,33 +142,33 @@ public class TaraUtil {
 		List<Constraint.Parameter> parameters = new ArrayList<>();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
-			else if (constraint instanceof Constraint.Facet && hasFacet(node, (Constraint.Facet) constraint))
-				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+			else if (constraint instanceof Constraint.Aspect && hasFacet(node, (Constraint.Aspect) constraint))
+				parameters.addAll(((Constraint.Aspect) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
 	}
 
-	private static boolean hasFacet(Node node, Constraint.Facet constraint) {
-		return node.facets().stream().anyMatch(facet -> facet.type().equalsIgnoreCase(constraint.type()));
+	private static boolean hasFacet(Node node, Constraint.Aspect constraint) {
+		return node.appliedAspects().stream().anyMatch(facet -> facet.type().equalsIgnoreCase(constraint.type()));
 	}
 
 	@Nullable
-	public static List<Constraint> getConstraintsOf(Facet facet) {
-		final Node nodeOf = TaraPsiImplUtil.getContainerNodeOf((PsiElement) facet);
+	public static List<Constraint> getConstraintsOf(Aspect aspect) {
+		final Node nodeOf = TaraPsiUtil.getContainerNodeOf((PsiElement) aspect);
 		final List<Constraint> allowsOf = getConstraintsOf(nodeOf);
 		if (allowsOf == null || allowsOf.isEmpty()) return Collections.emptyList();
-		return collectFacetConstrains(facet, allowsOf);
+		return collectFacetConstrains(aspect, allowsOf);
 	}
 
-	private static List<Constraint> collectFacetConstrains(Facet facet, List<Constraint> constraints) {
+	private static List<Constraint> collectFacetConstrains(Aspect aspect, List<Constraint> constraints) {
 		for (Constraint constraint : constraints)
-			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(facet.type()))
-				return ((Constraint.Facet) constraint).constraints();
+			if (constraint instanceof Constraint.Aspect && ((Constraint.Aspect) constraint).type().equals(aspect.type()))
+				return ((Constraint.Aspect) constraint).constraints();
 		return Collections.emptyList();
 	}
 
 	@Nullable
 	public static TaraVariable getOverriddenVariable(Variable variable) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) variable);
+		Node node = TaraPsiUtil.getContainerNodeOf((PsiElement) variable);
 		if (node == null) return null;
 		Node parent = node.parent();
 		while (parent != null) {
@@ -177,10 +177,7 @@ public class TaraUtil {
 					return (TaraVariable) parentVar;
 			parent = parent.parent();
 		}
-		if (node.facetTarget() != null && node.facetTarget().targetNode() != null)
-			for (Variable parentVar : node.facetTarget().targetNode().variables())
-				if (isOverridden(variable, parentVar))
-					return (TaraVariable) parentVar;
+
 		return null;
 	}
 
@@ -275,7 +272,7 @@ public class TaraUtil {
 
 	@NotNull
 	public static List<Node> getComponentsOf(NodeContainer container) {
-		return TaraPsiImplUtil.getComponentsOf((Node) container);
+		return TaraPsiUtil.getComponentsOf((Node) container);
 	}
 
 	@Nullable
@@ -381,6 +378,6 @@ public class TaraUtil {
 		final TaraNode[] childrenOfType = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
 		if (childrenOfType == null) return Collections.emptyList();
 		final List<Node> rootNodes = Arrays.asList(childrenOfType);
-		return rootNodes.stream().filter((node) -> !TaraPsiImplUtil.isAnnotatedAsComponent(node)).collect(Collectors.toList());
+		return rootNodes.stream().filter((node) -> !TaraPsiUtil.isAnnotatedAsComponent(node)).collect(Collectors.toList());
 	}
 }

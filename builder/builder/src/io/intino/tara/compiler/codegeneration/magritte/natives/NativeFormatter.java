@@ -11,7 +11,6 @@ import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static io.intino.tara.Resolver.shortType;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
-import static io.intino.tara.dsl.Proteo.FACET_SEPARATOR;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
 import static io.intino.tara.lang.model.Tag.*;
 
@@ -55,32 +53,21 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String getQn(Node owner, String language, boolean m0) {
-		return asNode(owner, language, m0, null);
+		return !m0 ? NameFormatter.getQn(owner, language) : language.toLowerCase() + DOT + owner.type();
 	}
 
-	private static String getQn(Facet facet, String language, boolean m0) {
-		return asFacet(facet, language); //TODO
+	private static String getQn(Aspect aspect, String language, boolean m0) {
+		return asFacet(aspect, language); //TODO
 	}
 
-	private static String asFacet(Facet facet, String language) {
+	private static String asFacet(Aspect aspect, String language) {
 		return null;
 	}
 
-	private static String getQn(Node owner, Node node, String language, boolean m0) {
-		final FacetTarget facetTarget = isInFacetTarget(node);
-		if (owner.isFacet() && facetTarget != null) return asFacetTarget(owner, language, facetTarget);
-		else return asNode(owner, language, m0, facetTarget);
+	private static String getQn(Node owner, Node node, String workingPackage, boolean m0) {
+		return !m0 ? NameFormatter.getQn(owner, workingPackage) : workingPackage.toLowerCase() + DOT + owner.type();
 	}
 
-	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
-		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
-				language.toLowerCase() + DOT + node.type();
-	}
-
-	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
-		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-				Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
-	}
 
 	public static String getSignature(Parameter parameter) {
 		return ((NativeRule) parameter.rule()).signature();
@@ -119,18 +106,16 @@ public class NativeFormatter implements TemplateTags {
 		return ((NativeRule) variable.rule()).signature();
 	}
 
-	public static String buildContainerPath(String scopeLanguage, Node owner, String workingPackage) {
-		if (owner instanceof Node && ((Node) owner).facetTarget() == null) {
-			final Node scope = owner.is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+	public static String buildContainerPath(String languageWorkingPackage, Node node, String workingPackage) {
+		if (node instanceof Node) {
+			final Node scope = node.is(Instance) ? firstNoFeature(node) : firstNoFeatureAndNamed(node);
 			if (scope == null) return "";
-			if (scope.is(Instance)) return getTypeAsScope(scope, scopeLanguage);
-			if (scope.facetTarget() != null) return NameFormatter.getQn(scope.facetTarget(), scope, workingPackage);
-			return getQn(scope, (Node) owner, workingPackage, false);
-		} else if (owner instanceof Node) return NameFormatter.getQn(owner.facetTarget(), owner, workingPackage);
-		else if (owner instanceof Facet) {
-			final Node parent = firstNoFeatureAndNamed(owner);
-			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, scopeLanguage) : getQn(parent, workingPackage, false);
+			if (scope.is(Instance)) return getTypeAsScope(scope, languageWorkingPackage);
+			return getQn(scope, (Node) node, workingPackage, false);
+		} else if (node instanceof Aspect) {
+			final Node scope = firstNoFeatureAndNamed(node);
+			if (scope == null) return "";
+			return scope.is(Instance) ? getTypeAsScope(scope, languageWorkingPackage) : getQn(scope, workingPackage, false);
 		} else return "";
 	}
 
@@ -140,13 +125,9 @@ public class NativeFormatter implements TemplateTags {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
 			if (scope.is(Instance)) return getTypeAsScope(scope, trueWorkingPackage);
-			if (scope.facetTarget() != null)
-				return NameFormatter.getQn(((Node) scope).facetTarget(), scope, workingPackage);
 			else return getQn(scope, (Node) owner, workingPackage, false);
-		} else if (owner instanceof FacetTarget)
-			return NameFormatter.getQn((FacetTarget) owner, workingPackage);
-		else if (owner instanceof Facet) {
-			return ((Node) owner.container()).is(Instance) ? getTypeAsScope(owner, trueWorkingPackage) : getQn((Facet) owner, workingPackage, false);
+		} else if (owner instanceof Aspect) {
+			return ((Node) owner.container()).is(Instance) ? getTypeAsScope(owner, trueWorkingPackage) : getQn((Aspect) owner, workingPackage, false);
 		} else return "";
 	}
 
@@ -154,27 +135,19 @@ public class NativeFormatter implements TemplateTags {
 		return scope != null && !scope.isEmpty() ? scope : language;
 	}
 
-	private static String getTypeAsScope(Node scope, String workingPackage) {
-		return workingPackage + DOT +
-				(scope instanceof Node ? cleanQn(qualifiedType(scope, containerFacets(scope))) : cleanQn(facetType((Facet) scope)));
+	private static String getTypeAsScope(Node scope, String languageWorkingPackage) {
+		return languageWorkingPackage + DOT +
+				(scope instanceof Node ? cleanQn(scope.type()) : cleanQn(facetType((Aspect) scope)));
 	}
 
-	private static List<Facet> containerFacets(Node scope) {
+	private static List<Aspect> containerFacets(Node scope) {
 		NodeContainer container = scope.container();
-		while (container != null && ((Node) container).facets().isEmpty())
+		while (container != null && ((Node) container).appliedAspects().isEmpty())
 			container = container.container();
-		return container != null ? ((Node) container).facets() : Collections.emptyList();
+		return container != null ? ((Node) container).appliedAspects() : Collections.emptyList();
 	}
 
-	private static String qualifiedType(Node scope, List<Facet> facets) {
-		if (facets.isEmpty()) return scope.type();
-		for (Facet facet : facets)
-			if (scope.type().startsWith(facet.type() + FACET_SEPARATOR) || scope.type().startsWith(DOT + facet.type() + FACET_SEPARATOR))
-				return facet.type().toLowerCase() + DOT + scope.type();
-		return scope.type();
-	}
-
-	private static String facetType(Facet scope) {
+	private static String facetType(Aspect scope) {
 		return scope.type().toLowerCase() + DOT + scope.type() + shortType(scope.container().type());//TODO cuando la faceta esté contenido dentro de otro concepto como saberlo
 	}
 
@@ -225,16 +198,9 @@ public class NativeFormatter implements TemplateTags {
 		return null;
 	}
 
-	private static FacetTarget isInFacetTarget(Node node) {
-		Node container = node.container();
-		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
-			container = container.container();
-		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
-	}
-
 	public static String calculatePackage(Node container) {
 		final Node node = firstNamedContainer(container);
-		return node == null ? "" : node.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
+		return node == null ? "" : node.layerQualifiedName().replace("$", ".").replace("#", ".").toLowerCase();
 	}
 
 	private static Node firstNamedContainer(Node container) {
@@ -307,7 +273,7 @@ public class NativeFormatter implements TemplateTags {
 		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, this.outDsl);
 		if (!context.contains(NAME)) context.add(NAME, parameter.name());
 		if (!this.aPackage.isEmpty()) context.add(PACKAGE, this.aPackage.toLowerCase());
-		if (!context.contains(QN)) context.add(QN, parameter.container().qualifiedName());
+		if (!context.contains(QN)) context.add(QN, cleanQn(parameter.container().qualifiedName()));
 		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackageScope(parameter, workingPackage));
 		if (!context.contains(WORKING_PACKAGE)) context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(parameter)));
@@ -403,7 +369,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public String buildContainerPathOfExpression(Valued valued) {
-		return buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, system ? languageWorkingPackage : workingPackage);
+		return cleanQn(buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, system ? languageWorkingPackage : workingPackage));
 	}
 
 	public Constraint.Parameter parameterConstraintOf(Parameter parameter) {
@@ -420,8 +386,8 @@ public class NativeFormatter implements TemplateTags {
 		List<Constraint.Parameter> parameters = new ArrayList<>();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
-			else if (constraint instanceof Constraint.Facet)
-				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+			else if (constraint instanceof Constraint.Aspect)
+				parameters.addAll(((Constraint.Aspect) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
 	}
 }

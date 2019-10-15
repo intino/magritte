@@ -451,7 +451,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 					final Attributes tara = manifest.getAttributes("tara");
 					this.generationPackage = tara == null ? name : tara.getValue(WORKING_PACKAGE.replace(".", "-"));
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOG.severe(e.getMessage());
 				}
 			}
 		}

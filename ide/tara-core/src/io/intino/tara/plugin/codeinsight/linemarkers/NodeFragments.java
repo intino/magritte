@@ -75,7 +75,7 @@ public class NodeFragments extends JavaLineMarkerProvider {
 	}
 
 	private String name(Node node) {
-		return node.name() + (node.facetTarget() != null ? ":" + node.facetTarget().target() : "");
+		return node.name() + (node.isAspect() ? "Aspect" : "");
 	}
 
 	private static class DefaultPsiElementListCellRenderer extends PsiElementListCellRenderer {

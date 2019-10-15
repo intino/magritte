@@ -1,8 +1,6 @@
 package io.intino.tara.lang.semantics.constraints;
 
 import io.intino.tara.Language;
-import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -18,7 +16,6 @@ import java.util.*;
 
 import static io.intino.tara.lang.model.Primitive.WORD;
 import static io.intino.tara.lang.model.Tag.*;
-import static io.intino.tara.lang.semantics.constraints.JavaWords.isKeyword;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 import static java.util.Arrays.asList;
@@ -52,10 +49,8 @@ public class GlobalConstraints {
 				invalidNodeRules(),
 				checkVariables(),
 				nodeName(),
-				facetInstance(),
-				abstractFacetTarget(),
-				duplicatedFacets(),
-				facetTargetAnyWithoutConstrains()};
+				duplicatedAspects()
+		};
 	}
 
 	private Constraint invalidNodeRules() {
@@ -124,7 +119,7 @@ public class GlobalConstraints {
 			if (node.isReference()) return;//TODO check referenceFlags
 			else if (node.container() instanceof NodeRoot) {
 				availableTags = new ArrayList<>(Flags.forRoot());
-				if (!node.isFacet()) availableTags.remove(Required);
+				if (!node.isAspect()) availableTags.remove(Required);
 			} else availableTags = Flags.forComponent();
 			for (Tag tag : node.flags())
 				if (!isInternalFlag(tag) && !availableTags.contains(tag))
@@ -167,7 +162,7 @@ public class GlobalConstraints {
 
 	private void checkDuplicatesBetween(List<Node> components, List<Variable> variables) throws SemanticException {
 		for (Variable var : variables) {
-			if (components.stream().anyMatch(c -> c.name().equals(var.name())))
+			if (components.stream().anyMatch(c -> var.name().equals(c.name())))
 				error("reject.duplicated.name.between.variables.and.components", var, Collections.singletonList(var.name()));
 		}
 	}
@@ -271,10 +266,6 @@ public class GlobalConstraints {
 					return parentVar;
 			parent = parent.parent();
 		}
-		if (node.facetTarget() != null && node.facetTarget().targetNode() != null)
-			for (Variable parentVar : node.facetTarget().targetNode().variables())
-				if (isOverridden(variable, parentVar))
-					return parentVar;
 		return null;
 	}
 
@@ -315,62 +306,20 @@ public class GlobalConstraints {
 			else if (node.is(Instance)) return;
 			if (node.container() != null && node.container() != null && !node.isReference() && !node.isAnonymous() && node.name().equals(node.container().name()))
 				error("reject.container.and.component.namesake", node);
-			if (node.facetTarget() != null && isKeyword(node.name().toLowerCase()))
-				error("reject.facet.with.java.keyword", node);
 		};
 	}
 
-	private Constraint facetInstance() {
-		return new Constraint() {
-			@Override
-			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				if (node.isSub() && node.facetTarget() != null && !node.facetTarget().inherited() && node.facetTarget().owner() == node)
-					error("reject.target.in.sub", node);
-				else if (node.isFacet() && hasSubs(node)) checkTargetExists(node);
-			}
-
-			private void checkTargetExists(Node node) throws SemanticException {
-				if (node.isFacet() && !node.isReference() && node.facetTarget() == null && !node.isSub())
-					error("no.targets.in.facet", node, singletonList(node.name()));
-			}
-
-			private boolean hasSubs(Node node) {
-				return !node.subs().isEmpty();
-			}
-		};
-	}
-
-	private Constraint duplicatedFacets() {
+	private Constraint duplicatedAspects() {
 		return element -> {
 			Node node = (Node) element;
-			Set<String> facets = new HashSet<>();
-			for (Facet facet : node.facets())
-				if (!facets.add(facet.type()))
-					error("reject.duplicated.facet", facet);
-		};
-	}
-
-	private Constraint facetTargetAnyWithoutConstrains() {
-		return element -> {
-			Node node = (Node) element;
-			if (node.facetTarget() == null) return;
-			if (node.facetTarget().target().equals(FacetTarget.ANY) && node.facetTarget().constraints().isEmpty())
-				error("reject.facet.target.any.without.constrains", node.facetTarget());
-		};
-	}
-
-	private Constraint abstractFacetTarget() {
-		return element -> {
-			Node node = (Node) element;
-			if ((node.type().equals(ProteoConstants.METAFACET) || node.type().equals(ProteoConstants.FACET)) && node.facetTarget() == null && !node.isAbstract() && node.subs().isEmpty())
-				error("no.targets.in.facet", node, singletonList(node.name()));
+			Set<String> aspects = new HashSet<>();
+			for (Aspect aspect : node.appliedAspects())
+				if (!aspects.add(aspect.type()))
+					error("reject.duplicated.aspect", aspect);
 		};
 	}
 
 	private void warning(String message, Element element) throws SemanticException {
 		throw new SemanticException(new SemanticNotification(WARNING, message, element));
 	}
-
-
 }

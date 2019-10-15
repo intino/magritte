@@ -1,7 +1,9 @@
 package io.intino.tara;
 
-import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.lang.semantics.Constraint.OneOf;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,16 +34,14 @@ public class Resolver {
 		final Node context = context(node);
 		List<Constraint> constraints = context != null && context.type() != null ? language.constraints(context.type()) : null;
 		if (constraints != null && contextNodeConstraints(constraints, node)) return constraints;
-		constraints = findInFacets(node);
-		return constraints;
+		return findInAspects(node);
 	}
 
 	private boolean contextNodeConstraints(List<Constraint> context, Node node) {
-		for (Constraint constraint : context)
-			if (constraint instanceof Constraint.Component &&
-				(shortType(((Constraint.Component) constraint).type()).equals(node.type()) || isOneOf((Constraint.Component) constraint, node.type())))
-				return true;
-		return false;
+		return context.stream().anyMatch(constraint -> constraint instanceof Constraint.Component &&
+				(shortType(((Constraint.Component) constraint).type()).equals(node.type()) ||
+						((Constraint.Component) constraint).type().equals(node.type()) ||
+						isOneOf((Constraint.Component) constraint, node.type())));
 	}
 
 	private List<Constraint.Component> components(List<Constraint> context) {
@@ -49,25 +49,29 @@ public class Resolver {
 	}
 
 	private boolean isOneOf(Constraint.Component allow, String type) {
-		if (!(allow instanceof Constraint.Component.OneOf)) return false;
-		Constraint.Component.OneOf oneOf = (Constraint.Component.OneOf) allow;
-		for (Constraint one : oneOf.components())
-			if (((Constraint.Component) one).type().endsWith("." + type)) return true;
-		return false;
+		if (!(allow instanceof OneOf)) return false;
+		return ((OneOf) allow).components().stream().anyMatch(one -> one.type().endsWith("." + type));
 	}
 
-	private List<Constraint> findInFacets(Node node) {
+	private List<Constraint> findInAspects(Node node) {
 		final Node context = context(node);
-		for (String type : context.secondaryTypes()) {
-			List<Constraint> constraints = language.constraints(type.contains(":") ? type : type + ":" + context.type().replace(".",":"));
+		for (Aspect aspect : context.appliedAspects()) {
+			List<Constraint> constraints = language.constraints(context.type() + "." + aspect.type());
 			if (constraints != null && contextNodeConstraints(constraints, node)) return constraints;
 		}
 		return null;
 	}
 
+	private void resolveAspects(Node node) {
+		for (Aspect aspect : node.appliedAspects()) {
+			if (language.constraints(node.type() + "." + aspect.type()) != null)
+				aspect.fullType(node.type() + "." + aspect.type());
+		}
+	}
+
 	private boolean checkComponentConstraint(Node node, Constraint constraint) {
 		if (!(constraint instanceof Constraint.Component)) return false;
-		if (constraint instanceof Constraint.OneOf) return checkAllowOneOf(node, constraint);
+		if (constraint instanceof OneOf) return checkAllowOneOf(node, constraint);
 		return checkAsComponent(node, (Constraint.Component) constraint);
 	}
 
@@ -76,13 +80,14 @@ public class Resolver {
 		if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 			node.type(absoluteType);
 			node.metaTypes(language.types(absoluteType));
+			resolveAspects(node);
 			return true;
 		}
 		return false;
 	}
 
 	private boolean checkAllowOneOf(Node node, Constraint allow) {
-		for (Constraint one : ((Constraint.OneOf) allow).components()) {
+		for (Constraint one : ((OneOf) allow).components()) {
 			String absoluteType = ((Constraint.Component) one).type();
 			if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 				node.type(absoluteType);

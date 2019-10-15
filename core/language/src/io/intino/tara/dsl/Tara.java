@@ -79,7 +79,7 @@ public abstract class Tara implements Language {
 			return shortType.contains(":") ? shortType.substring(0, shortType.indexOf(":")) : shortType;
 		}).collect(Collectors.toSet());
 		for (Context context : rulesCatalog.values())
-			collect.addAll(context.constraints().stream().filter(c -> c instanceof Constraint.Facet).map(c -> ((Constraint.Facet) c).type()).collect(Collectors.toSet()));
+			collect.addAll(context.constraints().stream().filter(c -> c instanceof Constraint.Aspect).map(c -> ((Constraint.Aspect) c).type()).collect(Collectors.toSet()));
 		return collect;
 	}
 

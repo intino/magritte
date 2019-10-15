@@ -1,12 +1,10 @@
 package io.intino.tara.compiler.dependencyresolution;
 
 import io.intino.tara.compiler.core.errorcollection.DependencyException;
-import io.intino.tara.compiler.model.FacetTargetImpl;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration;
-import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
@@ -29,43 +27,13 @@ public class InheritanceResolver {
 		mergeFragmentNodes();
 		List<Node> nodes = new ArrayList<>(collectNodes(model));
 		sort(nodes);
-		model.components().forEach(this::resolveAsMetaFacet);
-		for (Node node : nodes) resolve(node);
-		model.components().forEach(this::resolveAsFacetTargetFragment);
+		for (Node node : nodes) resolve(node);//TODO añadir la herencia de aspectos a la resolución
 	}
 
 	private void resolve(Node node) throws DependencyException {
 		List<Node> children = getChildrenSorted(node);
 		if (!node.isAbstract() && !node.subs().isEmpty()) node.addFlag(Tag.Abstract);
 		for (Node child : children) resolve(node, child);
-		resolveAsFacetTargetFragment(node);
-	}
-
-	private void resolveAsMetaFacet(Node node) {
-		if (node.type().startsWith(ProteoConstants.METAFACET + Proteo.FACET_SEPARATOR) && node.facetTarget() != null && !node.facetTarget().targetNode().children().isEmpty())
-			for (Node child : node.facetTarget().targetNode().children())
-				node.container().add(createChildMetaFacet(node, child), node.container().rulesOf(node));
-	}
-
-	private Node createChildMetaFacet(Node node, Node child) {
-		final NodeImpl metaFacet = new NodeImpl();
-		metaFacet.setVirtual(true);
-		metaFacet.setDirty(true);
-		metaFacet.file(node.file());
-		metaFacet.line(node.line());
-		metaFacet.column(node.column());
-		metaFacet.doc(node.doc());
-		metaFacet.container(node.container());
-		metaFacet.name(node.name());
-		metaFacet.type(node.type());
-		metaFacet.setParent(node);
-		final FacetTargetImpl target = new FacetTargetImpl();
-		target.targetNode(child);
-		target.target(child.qualifiedName());
-		target.setConstraints(node.facetTarget().constraints());
-		target.owner(metaFacet);
-		metaFacet.facetTarget(target);
-		return metaFacet;
 	}
 
 	private void resolve(Node node, Node child) throws DependencyException {
@@ -73,9 +41,8 @@ public class InheritanceResolver {
 		resolveVariables(node, child);
 		resolveFlags(node, child);
 		resolveAnnotations(node, child);
-		resolveAllowedFacets(node, child);
-		resolveAppliedFacets(node, child);
-		resolveFacetTarget(node, child);
+		resolveAllowedAspects(node, child);
+		resolveAppliedAspects(node, child);
 		resolveNodeRules(node, child);
 		resolve(child);
 	}
@@ -116,14 +83,9 @@ public class InheritanceResolver {
 	}
 
 	private String name(Node node) {
-		return node.name() + (node.facetTarget() != null ? ":" + node.facetTarget().target() : "");
+		return node.name() + (node.isAspect() ? ProteoConstants.ASPECT : "");
 	}
 
-	private void resolveAsFacetTargetFragment(Node node) {
-		if (node.facetTarget() == null || node.facetTarget().parent() == null) return;
-		resolveComponents(node.facetTarget().parent(), node);
-		resolveVariables(node.facetTarget().parent(), node);
-	}
 
 	private void resolveNodeRules(Node parent, Node child) {
 		List<Rule> parentRules = parent.container().rulesOf(parent);
@@ -141,64 +103,15 @@ public class InheritanceResolver {
 		return parent.min() > child.min() || parent.max() < child.max();
 	}
 
-	private void resolveAllowedFacets(Node parent, Node child) {
-		child.addAllowedFacets(parent.allowedFacets().toArray(new String[0]));
+	private void resolveAllowedAspects(Node parent, Node child) {
 	}
 
-	private void resolveAppliedFacets(Node parent, Node child) {
-		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	private void resolveAppliedAspects(Node parent, Node child) {
+		parent.appliedAspects().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::applyAspects);
 	}
 
-	private void resolveFacetTarget(Node parent, Node child) {
-		if (parent.facetTarget() != null && child.facetTarget() == null) {
-			try {
-				final FacetTargetImpl clone = ((FacetTargetImpl) parent.facetTarget()).clone();
-				clone.inherited(true);
-				clone.owner(child);
-				child.facetTarget(clone);
-			} catch (CloneNotSupportedException e) {
-				LOG.severe(e.getMessage());
-			}
-			if (child.isSub())
-				child.parent().children().stream().filter(sibling -> !sibling.equals(child)).forEach(s -> child.facetTarget().constraints().add(rejectSiblings(s)));
-		}
-	}
-
-	private FacetTarget.Constraint rejectSiblings(final Node node) {
-		return new FacetTarget.Constraint() {
-			@Override
-			public String name() {
-				return node.qualifiedName();
-			}
-
-			@Override
-			public Node node() {
-				return node;
-			}
-
-			@Override
-			public void node(Node node) {
-			}
-
-			@Override
-			public boolean negated() {
-				return true;
-			}
-
-			@Override
-			public String toString() {
-				return "without" + " " + node.qualifiedName();
-			}
-
-			@Override
-			public FacetTarget.Constraint clone() throws CloneNotSupportedException {
-				return (FacetTarget.Constraint) super.clone();
-			}
-		};
-	}
-
-	private boolean isOverridden(Node child, Facet facet) {
-		for (Facet childFacet : child.facets()) if (childFacet.type().equals(facet.type())) return true;
+	private boolean isOverridden(Node child, Aspect aspect) {
+		for (Aspect childAspect : child.appliedAspects()) if (childAspect.type().equals(aspect.type())) return true;
 		return false;
 	}
 
@@ -221,7 +134,7 @@ public class InheritanceResolver {
 		Map<Node, List<Rule>> nodes = new LinkedHashMap<>();
 		for (Node component : parent.components()) {
 			if (isOverridden(child, component)) continue;
-			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
+			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).destination()) : new NodeReference((NodeImpl) component);
 			addTags(component, reference);
 			reference.setHas(false);
 			reference.file(child.file());

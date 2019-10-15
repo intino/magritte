@@ -5,10 +5,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.Parameters;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.TaraElementFactory;
 import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.semantics.Constraint;
@@ -20,7 +20,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final List<Constraint> constraints = TaraUtil.getConstraintsOf(TaraPsiImplUtil.getContainerNodeOf(element));
+		final List<Constraint> constraints = TaraUtil.getConstraintsOf(TaraPsiUtil.getContainerNodeOf(element));
 		if (constraints == null) return;
 		Parameters parameters = getParametersScope(element);
 		Map<Integer, String> implicit = extractParametersData(parameters, constraints);

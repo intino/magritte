@@ -230,6 +230,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return "";
 	}
 
+	@Override
+	public void stashNodeName(String name) {
+
+	}
+
 
 	public void name(String name) {
 	}

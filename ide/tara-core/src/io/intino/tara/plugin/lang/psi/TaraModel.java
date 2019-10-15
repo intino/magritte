@@ -29,4 +29,8 @@ public interface TaraModel extends NodeRoot, PsiFile {
 	TaraDslDeclaration getDSLDeclaration();
 
 	void updateDSL(String dsl);
+
+	@Override
+	default void stashNodeName(String name) {
+	}
 }

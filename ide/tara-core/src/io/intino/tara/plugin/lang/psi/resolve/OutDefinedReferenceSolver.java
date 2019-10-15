@@ -10,7 +10,7 @@ import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.NodeRule;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
@@ -44,7 +44,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	@NotNull
 	private String reference() {
-		Variable variable = TaraPsiImplUtil.getContainerByType(myElement, Variable.class);
+		Variable variable = TaraPsiUtil.getContainerByType(myElement, Variable.class);
 		if (variable == null) return outputDsl.toLowerCase() + ".rules." + myElement.getText();
 		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
 		else return getPackage(variable.type()) + "." + myElement.getText();
@@ -60,7 +60,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		final Variable variableContainer = TaraPsiImplUtil.getContainerByType(myElement, Variable.class);
+		final Variable variableContainer = TaraPsiUtil.getContainerByType(myElement, Variable.class);
 		if (variableContainer != null) return variableVariants(variableContainer);
 		return nodeRuleVariants();
 	}

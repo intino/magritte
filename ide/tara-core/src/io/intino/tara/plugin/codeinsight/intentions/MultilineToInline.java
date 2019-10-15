@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +19,9 @@ import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 public class MultilineToInline extends PsiElementBaseIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
+		final Expression expression = TaraPsiUtil.getContainerByType(element, Expression.class);
 		final PsiElement newExpression = TaraElementFactory.getInstance(project).createExpression(expression.getValue());
-		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
+		final Valued valued = TaraPsiUtil.getContainerByType(expression, Valued.class);
 		if (valued == null) return;
 		expression.delete();
 		if (valued.getValue() != null) valued.getValue().getExpressionList().add((TaraExpression) newExpression);
@@ -37,7 +37,7 @@ public class MultilineToInline extends PsiElementBaseIntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
+		final Expression expression = TaraPsiUtil.getContainerByType(element, Expression.class);
 		return expression != null && expression.isMultiLine() && !expression.getValue().contains("\n");
 	}
 

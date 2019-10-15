@@ -7,10 +7,10 @@ public interface Assumption {
 
 	void assume(Node node);
 
-	interface Facet extends Assumption {
+	interface Aspect extends Assumption {
 	}
 
-	interface FacetInstance extends Assumption {
+	interface AspectInstance extends Assumption {
 	}
 
 	interface Main extends Assumption {
@@ -32,6 +32,10 @@ public interface Assumption {
 	}
 
 	interface Local extends Assumption {
+	}
+
+	interface StashNodeName extends Assumption {
+		public String stashNodeName();
 	}
 
 	interface Terminal extends Assumption {

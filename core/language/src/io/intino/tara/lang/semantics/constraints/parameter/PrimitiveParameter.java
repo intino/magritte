@@ -13,24 +13,23 @@ import java.util.*;
 
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.RECOVERABLE_ERROR;
-import static java.lang.Enum.valueOf;
 import static java.util.Collections.unmodifiableList;
 
 public final class PrimitiveParameter extends ParameterConstraint {
 
 	private final String name;
 	private final Primitive type;
-	private final String facet;
+	private final String aspect;
 	private final Size size;
 	private final int position;
 	private final String scope;
 	private final VariableRule rule;
 	private final Set<Tag> flags;
 
-	public PrimitiveParameter(String name, Primitive type, String facet, Size size, int position, String level, VariableRule rule, List<Tag> flags) {
+	public PrimitiveParameter(String name, Primitive type, String aspect, Size size, int position, String level, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
-		this.facet = facet;
+		this.aspect = aspect;
 		this.size = size;
 		this.position = position;
 		this.scope = level;
@@ -55,8 +54,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	@Override
-	public String facet() {
-		return facet;
+	public String aspect() {
+		return aspect;
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	private void checkParameter(Element element, List<io.intino.tara.lang.model.Parameter> parameters) throws SemanticException {
-		io.intino.tara.lang.model.Parameter parameter = findParameter(parameters, facet, name, position);
+		io.intino.tara.lang.model.Parameter parameter = findParameter(parameters, aspect, name, position);
 		if (parameter == null) {
 			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
 				error(element, null, error = ParameterError.NOT_FOUND);
@@ -94,7 +93,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.type(type());
-			parameter.facet(this.facet);
+			parameter.aspect(this.aspect);
 			parameter.scope(this.scope);
 			if (parameter.rule() == null) parameter.rule(rule());
 			else fillRule(parameter);

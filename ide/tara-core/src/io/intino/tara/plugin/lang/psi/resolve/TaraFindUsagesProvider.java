@@ -14,7 +14,7 @@ import io.intino.tara.plugin.lang.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerByType;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	private static final String ANONYMOUS = "Anonymous";

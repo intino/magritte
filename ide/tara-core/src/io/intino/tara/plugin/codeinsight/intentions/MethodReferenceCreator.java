@@ -19,7 +19,7 @@ import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
 import io.intino.tara.plugin.lang.psi.TaraRule;
 import io.intino.tara.plugin.lang.psi.TaraVariable;
 import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraVariableImpl;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
@@ -88,7 +88,7 @@ public class MethodReferenceCreator {
 			if (!methodBody.endsWith(";")) methodBody += ";";
 		}
 		builder.add("body", methodBody);
-		builder.add("scope", cleanQn(buildContainerPath(valued.scope(), TaraPsiImplUtil.getContainerNodeOf(valued), workingPackage)));
+		builder.add("scope", cleanQn(buildContainerPath(TaraPsiUtil.getContainerNodeOf(valued), valued.scope(), workingPackage)));
 		return new MethodTemplate().render(builder.toFrame());
 	}
 
@@ -117,7 +117,7 @@ public class MethodReferenceCreator {
 
 	private String type() {
 		try {
-			Node node = TaraPsiImplUtil.getContainerNodeOf(valued);
+			Node node = TaraPsiUtil.getContainerNodeOf(valued);
 			if (node != null) new Checker(TaraUtil.getLanguage(valued)).check(node.resolve());
 		} catch (SemanticFatalException ignored) {
 		}
@@ -139,7 +139,7 @@ public class MethodReferenceCreator {
 
 	private String getReferenceReturnType(Valued valued) {
 		final Node node = ((TaraVariableImpl) valued).destinyOfReference();
-		return QualifiedNameFormatter.getQn(node, workingPackage, false);
+		return QualifiedNameFormatter.qn(node, workingPackage, false);
 	}
 
 	private PsiType getFunctionReturnType() {
@@ -223,10 +223,10 @@ public class MethodReferenceCreator {
 
 	private List<Node> tree(Valued valued) {
 		List<Node> list = new ArrayList<>();
-		Node container = TaraPsiImplUtil.getContainerNodeOf(valued);
+		Node container = TaraPsiUtil.getContainerNodeOf(valued);
 		list.add(container);
-		while ((TaraPsiImplUtil.getContainerNodeOf((PsiElement) container)) != null) {
-			container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) container);
+		while ((TaraPsiUtil.getContainerNodeOf((PsiElement) container)) != null) {
+			container = TaraPsiUtil.getContainerNodeOf((PsiElement) container);
 			list.add(container);
 		}
 		return list;

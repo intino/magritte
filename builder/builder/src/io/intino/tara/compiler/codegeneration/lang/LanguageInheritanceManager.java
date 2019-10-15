@@ -56,13 +56,17 @@ class LanguageInheritanceManager implements TemplateTags {
 
 	private void addAssumptions(FrameBuilder frame, List<Assumption> assumptions) {
 		FrameBuilder builder = new FrameBuilder(ASSUMPTIONS);
-		for (Assumption assumption : assumptions)
+		for (Assumption assumption : assumptions) {
 			builder.add(ASSUMPTION, getAssumptionValue(assumption));
+		}
 		if (builder.slots() != 0) frame.add(ASSUMPTIONS, builder.toFrame());
 	}
 
 	private Object getAssumptionValue(Assumption assumption) {
-		return assumption.getClass().getInterfaces()[0].getName().
+		String name = assumption.getClass().getInterfaces()[0].getName().
 				substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
+		if (assumption instanceof Assumption.StashNodeName)
+			return new FrameBuilder().add("stashNodeName").add("value", ((Assumption.StashNodeName) assumption).stashNodeName());
+		return name;
 	}
 }

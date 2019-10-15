@@ -13,7 +13,7 @@ import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerNodeOf;
 import static io.intino.tara.lang.model.Tag.Instance;
 
 class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {

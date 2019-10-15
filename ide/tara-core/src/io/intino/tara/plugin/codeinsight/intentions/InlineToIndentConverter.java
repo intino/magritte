@@ -11,7 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.TaraTypes;
 import io.intino.tara.plugin.lang.psi.impl.TaraElementFactoryImpl;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.psi.TokenType.NEW_LINE_INDENT;
@@ -26,15 +26,15 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 	}
 
 	private void replace(TaraElementFactoryImpl factory, PsiElement toReplace) {
-		PsiTreeUtil.getChildrenOfTypeAsList(TaraPsiImplUtil.getBodyContextOf(toReplace), LeafPsiElement.class).stream().
+		PsiTreeUtil.getChildrenOfTypeAsList(TaraPsiUtil.getBodyContextOf(toReplace), LeafPsiElement.class).stream().
 				filter(leaf -> is(leaf, TaraTypes.NEWLINE) && ";".equals(leaf.getText())).forEach(leaf -> {
 			if (is(leaf.getNextSibling(), WHITE_SPACE)) leaf.getNextSibling().delete();
 			if (is(leaf.getPrevSibling(), WHITE_SPACE)) leaf.getPrevSibling().delete();
-			leaf.replace(factory.createBodyNewLine(TaraPsiImplUtil.getIndentation(toReplace)));
+			leaf.replace(factory.createBodyNewLine(TaraPsiUtil.getIndentation(toReplace)));
 		});
 		if (is(toReplace.getNextSibling(), WHITE_SPACE))
 			toReplace.getNextSibling().delete();
-		toReplace.replace(factory.createNewLineIndent(TaraPsiImplUtil.getIndentation(toReplace)));
+		toReplace.replace(factory.createNewLineIndent(TaraPsiUtil.getIndentation(toReplace)));
 	}
 
 
@@ -64,7 +64,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 			if (previous == null) return false;
 		}
 		PsiElement toReplace = getReplacingElement(element);
-		return TaraPsiImplUtil.getIndentation(toReplace) != 0 && (isAfterInline(element, element.getText()) || isAfterInline(previous, previous.getText()));
+		return TaraPsiUtil.getIndentation(toReplace) != 0 && (isAfterInline(element, element.getText()) || isAfterInline(previous, previous.getText()));
 	}
 
 	private boolean isAfterInline(@NotNull PsiElement element, String text) {

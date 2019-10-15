@@ -1,7 +1,6 @@
 package io.intino.tara.lang.semantics.constraints;
 
 import io.intino.tara.Resolver;
-import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.VariableRule;
@@ -18,13 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.lang.model.Tag.FacetInstance;
+import static io.intino.tara.lang.model.Tag.AspectInstance;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Arrays.asList;
 
-
 public class RuleFactory {
-
 	private RuleFactory() {
 	}
 
@@ -41,24 +38,24 @@ public class RuleFactory {
 		return new OneOf(asList(components), rules);
 	}
 
-	public static Constraint.Parameter parameter(final String name, final Primitive type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
-		return new PrimitiveParameter(name, type, facet, size, position, scope, rule, asList(tags));
+	public static Constraint.Parameter parameter(final String name, final Primitive type, String aspect, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new PrimitiveParameter(name, type, aspect, size, position, scope, rule, asList(tags));
 	}
 
-	public static Constraint.Parameter parameter(final String name, String type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
-		return new ReferenceParameter(name, type, facet, size, position, scope, rule, asList(tags));
+	public static Constraint.Parameter parameter(final String name, String type, String aspect, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new ReferenceParameter(name, type, aspect, size, position, scope, rule, asList(tags));
 	}
 
-	public static Constraint.Facet facet(final String type, boolean terminal, String[] with, String[] without) {
-		return facet(type, terminal, false, with, without);
+	public static Constraint.Aspect aspect(final String type, boolean terminal, String[] with, String[] without) {
+		return aspect(type, terminal, false, with, without);
 	}
 
-	public static Constraint.Facet facet(final String type, boolean terminal, boolean required, String[] with, String[] without) {
-		return new FacetConstraint(type, terminal,required, with, without);
+	public static Constraint.Aspect aspect(final String type, boolean terminal, boolean required, String[] with, String[] without) {
+		return new AspectConstraint(type, terminal, required, with, without);
 	}
 
-	public static Constraint.MetaFacet metaFacet(final String type, String... with) {
-		return new MetaFacetConstraint(type, with);
+	public static Constraint.MetaAspect metaAspect(final String type, String... with) {
+		return new MetaAspectConstraint(type, with);
 	}
 
 	public static Constraint.ComponentNotFound rejectOtherComponents(List<String> types) {
@@ -75,11 +72,8 @@ public class RuleFactory {
 	}
 
 	private static boolean areCompatibles(Node component, List<String> allowedTypes) {
-		for (String componentType : component.types()) {
-			if (componentType != null && (allowedTypes.contains(componentType) || (component.container() != null && fromFacet(component.container().facets(), componentType, allowedTypes))))
-				return true;
-		}
-		return checkFacets(component, allowedTypes);
+		return component.types().stream().anyMatch(componentType -> componentType != null && (allowedTypes.contains(componentType) || (component.container() != null && fromAspect(component.container().appliedAspects(), componentType, allowedTypes))))
+				|| checkAspect(component, allowedTypes);
 	}
 
 	public static Constraint.RejectOtherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
@@ -87,67 +81,61 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Parametrized parametrized = (Parametrized) element;
-				for (io.intino.tara.lang.model.Parameter parameter : parametrized.parameters())
+				for (io.intino.tara.lang.model.Parameter parameter : parametrized.parameters()) {
 					if (!isAcceptable(parameter, parameters))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.singletonList(parameter.name())));
-
+				}
 			}
 
 			private boolean isAcceptable(io.intino.tara.lang.model.Parameter parameter, List<Parameter> parameters) {
-				for (Parameter constraint : parameters)
-					if (constraint.name().equals(parameter.name()) && hasFacet(constraint.facet(), parameter.container().facets()))
+				for (Parameter constraint : parameters) {
+					if (constraint.name().equals(parameter.name()) && hasAspect(constraint.aspect(), parameter.container().appliedAspects()))
 						return true;
+				}
 				return false;
 			}
 
-			private boolean hasFacet(String requiredFacet, List<io.intino.tara.lang.model.Facet> facets) {
-				if (requiredFacet.isEmpty()) return true;
-				for (io.intino.tara.lang.model.Facet facet : facets) if (facet.type().equals(requiredFacet)) return true;
+			private boolean hasAspect(String requiredAspect, List<io.intino.tara.lang.model.Aspect> aspects) {
+				if (requiredAspect.isEmpty()) return true;
+				for (io.intino.tara.lang.model.Aspect aspect : aspects) if (aspect.type().equals(requiredAspect)) return true;
 				return false;
 			}
 		};
 	}
 
-	public static Constraint.RejectOtherParameters rejectOtherFacets(List<Constraint.Facet> facets) {
+	public static Constraint.RejectOtherParameters rejectOtherAspects(List<Constraint.Aspect> aspects) {
 		return new Constraint.RejectOtherParameters() {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				for (io.intino.tara.lang.model.Facet facet : node.facets())
-					if (!isAcceptable(facets, facet))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.facet.in.context", facet, Collections.singletonList(facet.type())));
-
+				for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects()) {
+					if (!isAcceptable(aspects, aspect))
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.aspect.in.context", aspect, Collections.singletonList(aspect.type())));
+				}
 			}
 
-			private boolean isAcceptable(List<Facet> facets, io.intino.tara.lang.model.Facet facet) {
-				for (Facet constraint : facets)
-					if (constraint.type().equals(facet.type())) return true;
-				return false;
+			private boolean isAcceptable(List<Aspect> aspects, io.intino.tara.lang.model.Aspect aspect) {
+				return aspects.stream().anyMatch(a -> a.type().equals(aspect.fullType()));
 			}
 		};
 	}
 
-
-	private static boolean fromFacet(List<Facet> facets, String nodeType, List<String> types) {
-		return facetComponent(facets, nodeType, types) || asFacet(facets, nodeType.split(":")[0]);
+	private static boolean fromAspect(List<Aspect> aspects, String nodeType, List<String> types) {
+		return aspectComponent(aspects, nodeType, types) || asAspect(aspects, nodeType.split(":")[0]);
 	}
 
-	private static boolean facetComponent(List<Facet> facets, String nodeType, List<String> types) {
-		return facets.stream().anyMatch(facet -> types.contains(facet.type() + ProteoConstants.FACET_SEPARATOR + nodeType));
+	private static boolean aspectComponent(List<Aspect> aspects, String nodeType, List<String> types) {
+		return aspects.stream().anyMatch(aspect -> types.contains(nodeType));
 	}
 
-	private static boolean asFacet(List<Facet> facets, String facet) {
-		for (Facet f : facets) if (f.type().equals(facet)) return true;
-		return false;
+	private static boolean asAspect(List<Aspect> aspects, String aspect) {
+		return aspects.stream().anyMatch(a -> a.type().equals(aspect));
 	}
 
-	private static boolean checkFacets(Node node, List<String> types) {
+	private static boolean checkAspect(Node node, List<String> types) {
 		List<String> shortTypes = types.stream().map(Resolver::shortType).collect(Collectors.toList());
-		for (Facet facet : node.facets())
-			if (shortTypes.contains(facet.type())) return true;
-		return false;
+		return node.appliedAspects().stream().anyMatch(aspect -> shortTypes.contains(aspect.type()));
 	}
-
 
 	public static Constraint name() {
 		return new Constraint.Name() {
@@ -174,21 +162,21 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isFacet() {
-		return new Assumption.Facet() {
+	public static Assumption isAspect() {
+		return new Assumption.Aspect() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Facet)) node.addFlag(Tag.Facet);
+				if (!node.flags().contains(Tag.Aspect)) node.addFlag(Tag.Aspect);
 				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
 			}
 		};
 	}
 
-	public static Assumption isFacetInstance() {
-		return new Assumption.FacetInstance() {
+	public static Assumption isAspectInstance() {
+		return new Assumption.AspectInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FacetInstance)) node.addFlag(FacetInstance);
+				if (!node.flags().contains(AspectInstance)) node.addFlag(AspectInstance);
 			}
 		};
 	}
@@ -243,6 +231,20 @@ public class RuleFactory {
 				if (!node.flags().contains(Tag.Instance)) node.addFlag(Tag.Instance);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Instance)).forEach(variable -> variable.addFlags(Tag.Instance));
 				propagateFlags(node, Tag.Instance);
+			}
+		};
+	}
+
+	public static Assumption stashNodeName(String stashNodeName) {
+		return new Assumption.StashNodeName() {
+			@Override
+			public String stashNodeName() {
+				return stashNodeName;
+			}
+
+			@Override
+			public void assume(Node node) {
+				node.stashNodeName(stashNodeName);
 			}
 		};
 	}

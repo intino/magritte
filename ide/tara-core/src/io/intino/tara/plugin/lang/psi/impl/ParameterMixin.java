@@ -70,12 +70,12 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		this.type = type;
 	}
 
-	public String facet() {
-		TaraFacetApply facetApply = TaraPsiImplUtil.getContainerByType(this, TaraFacetApply.class);
+	public String aspect() {
+		TaraAspectApply facetApply = TaraPsiUtil.getContainerByType(this, TaraAspectApply.class);
 		return facetApply != null ? facetApply.type() : "";
 	}
 
-	public void facet(String facet) {
+	public void aspect(String aspect) {
 	}
 
 
@@ -152,7 +152,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+		return TaraPsiUtil.getContainerNodeOf(this);
 	}
 
 	public String file() {

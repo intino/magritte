@@ -1,4 +1,4 @@
-def type(facetTarget & overriden) trigger(set)
+def type(aspect & overriden) trigger(set)
 	_$name+FirstLowerCase.core$$().set(_$name+FirstLowerCase, name, values);
 end
 

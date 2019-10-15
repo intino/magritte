@@ -13,7 +13,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.codeinsight.livetemplates.TaraTemplateContext;
@@ -25,7 +25,7 @@ public class AddNativeRuleNameFix extends WithLiveTemplateFix implements Intenti
 	private final TaraVariable variable;
 
 	public AddNativeRuleNameFix(PsiElement element) {
-		this.variable = TaraPsiImplUtil.getContainerByType(element, TaraVariable.class);
+		this.variable = TaraPsiUtil.getContainerByType(element, TaraVariable.class);
 	}
 
 	@Nls

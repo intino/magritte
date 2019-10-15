@@ -47,7 +47,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isFacet() {
+	public boolean isAspect() {
 		return false;
 	}
 
@@ -194,7 +194,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String cleanQn() {
+	public String layerQualifiedName() {
 		return null;
 	}
 
@@ -211,6 +211,11 @@ public class EmptyNode implements Node {
 	@Override
 	public void type(String type) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void stashNodeName(String name) {
+
 	}
 
 	@Override
@@ -244,28 +249,8 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public List<Facet> facets() {
+	public List<Aspect> appliedAspects() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public List<String> allowedFacets() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public void addAllowedFacets(String... facet) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void addFacets(Facet... facets) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public FacetTarget facetTarget() {
-		return null;
 	}
 
 	@Override

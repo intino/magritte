@@ -101,13 +101,13 @@ public class Component implements Constraint.Component {
 
 	private boolean isCompatibles(Node node) {
 		for (String nodeType : node.types())
-			if (nodeType != null && nodeType.equals(type) || nodeType.equals(Resolver.shortType(type))) return true;
+			if (nodeType != null && (nodeType.equals(type) || nodeType.equals(Resolver.shortType(type)))) return true;
 		return checkFacets(node);
 	}
 
 	private boolean checkFacets(Node node) {
-		for (io.intino.tara.lang.model.Facet facet : node.facets())
-			if (facet.type().equals(Resolver.shortType(type))) return true;
+		for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects())
+			if (aspect.type().equals(Resolver.shortType(type))) return true;
 		return false;
 	}
 

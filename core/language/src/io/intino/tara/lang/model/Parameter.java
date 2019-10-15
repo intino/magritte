@@ -13,9 +13,9 @@ public interface Parameter extends Valued {
 
 	void type(Primitive type);
 
-	String facet();
+	String aspect();
 
-	void facet(String facet);
+	void aspect(String aspect);
 
 	List<Tag> flags();
 

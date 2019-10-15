@@ -91,7 +91,7 @@ public interface Variable extends Valued, Cloneable {
 
 		private static String calculatePackage(NodeContainer container) {
 			final Node nodeContainer = (Node) firstNamedContainer(container);
-			return nodeContainer == null ? "" : nodeContainer.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
+			return nodeContainer == null ? "" : nodeContainer.layerQualifiedName().replace("$", ".").replace("#", ".").toLowerCase();
 		}
 
 		private static NodeContainer firstNamedContainer(NodeContainer container) {

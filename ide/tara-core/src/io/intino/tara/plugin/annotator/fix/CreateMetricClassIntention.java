@@ -9,7 +9,7 @@ import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.TaraModel;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.TaraRule;
@@ -29,7 +29,7 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 
 	public CreateMetricClassIntention(Rule rule) {
 		this.rule = rule;
-		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
+		this.variable = TaraPsiUtil.getContainerByType((TaraRule) rule, Variable.class);
 		if (variable != null) this.rulesPath = TaraUtil.graphPackage((PsiElement) variable).toLowerCase() + RULES_PACKAGE;
 	}
 

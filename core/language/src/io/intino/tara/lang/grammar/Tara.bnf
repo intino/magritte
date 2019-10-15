@@ -13,7 +13,7 @@
 	elementTypeClass='io.intino.tara.plugin.lang.psi.TaraElementType'
 	tokenTypeClass='io.intino.tara.plugin.lang.psi.TaraTokenType'
 
-	psiImplUtilClass='io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil'
+	psiImplUtilClass='io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil'
 }
 
 root ::=COMMENT? NEWLINE* (dslDeclaration NEWLINE+)? imports? (node NEWLINE+)*
@@ -38,13 +38,13 @@ node ::= doc? signature body? {
 	implements='io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | (metaIdentifier ruleContainer* parameters? identifier? facets? parent?)) (facetTarget? tags?)  {
+signature::= (subNode | (metaIdentifier ruleContainer* parameters? identifier? aspects? parent?)) (constraint? tags?)  {
 	pin = 1
 	mixin= 'io.intino.tara.plugin.lang.psi.impl.SignatureMixin'
 	implements='io.intino.tara.plugin.lang.psi.Signature'
 }
 
-private subNode ::= SUB ruleContainer* parameters? identifier facets?
+private subNode ::= SUB ruleContainer* parameters? identifier aspects?
 {pin = 1}
 
 private parent ::= EXTENDS identifierReference
@@ -62,12 +62,12 @@ parameter ::= (identifier EQUALS)? value {
 	implements = 'io.intino.tara.plugin.lang.psi.Valued, io.intino.tara.lang.model.Parameter, com.intellij.pom.Navigatable'
 }
 
-facets ::= AS facetApply+
+aspects ::= AS aspectApply+
 {pin = 1}
 
-facetApply ::= metaIdentifier parameters? {
-	mixin = 'io.intino.tara.plugin.lang.psi.impl.FacetApplyMixin'
-    implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Facet, com.intellij.pom.Navigatable'
+aspectApply ::= metaIdentifier parameters? {
+	mixin = 'io.intino.tara.plugin.lang.psi.impl.AspectApplyMixin'
+    implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Aspect, com.intellij.pom.Navigatable'
 }
 
 body ::= (NEW_LINE_INDENT NEWLINE? | INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
@@ -156,11 +156,6 @@ integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 metric          ::= identifier | METRIC_VALUE_KEY
 
-facetTarget ::= ON (identifierReference | ANY) constraint? {
-	pin = 1
-	mixin = 'io.intino.tara.plugin.lang.psi.impl.FacetTargetMixin'
-	implements = 'io.intino.tara.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.FacetTarget, com.intellij.pom.Navigatable'
-}
 constraint::= WITH identifierReference (COMMA identifierReference)*
 {pin = 1}
 
@@ -177,7 +172,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | REQUIRED | DECORABLE {
+	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | REQUIRED | DECORABLE | DIVINE {
 	mixin = 'io.intino.tara.plugin.lang.psi.impl.FlagMixin'
 	implements = 'io.intino.tara.plugin.lang.psi.Flag'
 }

@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.ui.ClassCellRenderer;
 import io.intino.itrules.formatters.StringFormatters.PluralInflector;
 import io.intino.itrules.formatters.inflectors.EnglishPluralInflector;
-import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.messages.MessageProvider;
@@ -67,7 +67,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 
 	private List<PsiElement> getFacetClasses(Node node) {
 		List<PsiElement> references = new ArrayList<>();
-		for (Facet apply : node.facets()) {
+		for (Aspect apply : node.appliedAspects()) {
 			PsiElement reference = resolveExternal(node, apply);
 			if (reference != null)
 				references.add(reference);
@@ -79,10 +79,10 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
 		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
-		if (node.facets().isEmpty()) return null;
+		if (node.appliedAspects().isEmpty()) return null;
 		PsiElement reference = null;
-		for (Facet facetApply : node.facets()) {
-			reference = resolveExternal(node, facetApply);
+		for (Aspect aspectApply : node.appliedAspects()) {
+			reference = resolveExternal(node, aspectApply);
 			if (reference != null) break;
 		}
 		if (reference != null) {
@@ -98,17 +98,17 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		return leaf;
 	}
 
-	private PsiElement resolveExternal(Node node, Facet apply) {
+	private PsiElement resolveExternal(Node node, Aspect apply) {
 		return resolveJavaClassReference(((TaraNode) node).getProject(), getFacetApplyPackage(node, apply) + DOT + node.name() + apply.type());
 	}
 
-	private String getFacetApplyPackage(Node node, Facet apply) {
+	private String getFacetApplyPackage(Node node, Aspect apply) {
 		PluralInflector inflector = getInflector(apply);
 		if (inflector == null) return "";
 		return (getFacetPackage(node) + DOT + inflector.plural(apply.type())).toLowerCase();
 	}
 
-	private PluralInflector getInflector(Facet apply) {
+	private PluralInflector getInflector(Aspect apply) {
 		return !IntinoModuleType.isIntino(ModuleProvider.moduleOf((PsiElement) apply)) ? null : new EnglishPluralInflector();
 	}
 

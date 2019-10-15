@@ -104,15 +104,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		if (type == null && this.isSub()) {
 			Node parent = parent();
 			return parent != null ? parent.type() : "";
-		} else return type == null || type.getText() == null ? "" : type.getText() + targetType(facetTarget());
-	}
-
-	private String targetType(FacetTarget target) {
-		if (target == null) return "";
-		final Node node = target.targetNode();
-		if (node == null) return "";
-		final String type = node.type();
-		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
+		} else return type == null || type.getText() == null ? "" : type.getText();
 	}
 
 	public void type(String fullType) {
@@ -145,11 +137,11 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Variable> variables() {
-		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
+		return TaraPsiUtil.getVariablesInBody(this.getBody());
 	}
 
 	public List<Node> referenceComponents() {
-		return unmodifiableList(TaraPsiImplUtil.getNodeReferencesOf((Node) this));
+		return unmodifiableList(TaraPsiUtil.getNodeReferencesOf((Node) this));
 	}
 
 	@Nullable
@@ -158,8 +150,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return signature.getParentReference() != null ? signature.getParentReference().getText() : null;
 	}
 
+	public boolean isMetaAspect() {
+		return isAspect();
+	}
+
 	public Node parent() {
-		return TaraPsiImplUtil.getParentOf((Node) this);
+		return TaraPsiUtil.getParentOf((Node) this);
 	}
 
 	public MetaIdentifier getMetaIdentifier() {
@@ -169,7 +165,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public String name() {
-		Identifier identifierNode = TaraPsiImplUtil.getIdentifierNode((Node) this);
+		Identifier identifierNode = TaraPsiUtil.getIdentifierNode((Node) this);
 		return identifierNode != null ? identifierNode.getText() : "";
 	}
 
@@ -178,8 +174,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		final Parameters parameters = getSignature().getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
 		parameterList.addAll(getVarInits());
-		for (Facet facet : facets()) {
-			final TaraParameters p = ((TaraFacetApply) facet).getParameters();
+		for (Aspect aspect : appliedAspects()) {
+			final TaraParameters p = ((TaraAspectApply) aspect).getParameters();
 			if (p != null) parameterList.addAll(p.getParameterList());
 		}
 		return parameterList;
@@ -196,16 +192,16 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return new StringBuilder().append(container.isEmpty() ? "" : container + ".").
 				append(name().isEmpty() ?
 						"[" + ANONYMOUS + shortType() + "]" :
-						name() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
+						name()).toString();
 	}
 
-	public String cleanQn() {
+	public String layerQualifiedName() {
 		if (container() == null) return firstUpperCase().format(name()).toString();
 		String container = container().qualifiedName();
 		return new StringBuilder().append(container.isEmpty() ? "" : container + "$").
 				append(name().isEmpty() ?
 						"[" + ANONYMOUS + shortType() + "]" :
-						firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
+						firstUpperCase().format(name()).toString()).toString();
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
@@ -221,11 +217,11 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	private PsiElement setName(String name) {
-		return TaraPsiImplUtil.setName(this.getSignature(), name);
+		return TaraPsiUtil.setName(this.getSignature(), name);
 	}
 
 	private PsiElement setType(String type) {
-		return TaraPsiImplUtil.setType(this.getSignature(), type);
+		return TaraPsiUtil.setType(this.getSignature(), type);
 	}
 
 	@Nullable
@@ -237,8 +233,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().isSub();
 	}
 
-	public boolean isFacet() {
-		return ProteoConstants.FACET.equals(type()) || (metaTypes() != null && metaTypes().contains(ProteoConstants.METAFACET));
+	public boolean isAspect() {
+		return ProteoConstants.ASPECT.equals(type()) || (metaTypes() != null && metaTypes().contains(ProteoConstants.META_ASPECT));
 	}
 
 	public List<String> metaTypes() {
@@ -282,7 +278,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Node> subs() {
 		ArrayList<Node> subs = new ArrayList<>();
-		List<Node> children = TaraPsiImplUtil.getBodyComponents(this.getBody());
+		List<Node> children = TaraPsiUtil.getBodyComponents(this.getBody());
 		children.stream().filter(Node::isSub).forEach(child -> {
 			subs.add(child);
 			subs.addAll(child.subs());
@@ -291,24 +287,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		return isSub() ? containerOfSub((Node) this) : TaraPsiImplUtil.getContainerNodeOf(this);
+		return isSub() ? containerOfSub((Node) this) : TaraPsiUtil.getContainerNodeOf(this);
 	}
 
 	private Node containerOfSub(Node node) {
 		Node container = node;
 		while (container != null && container.isSub())
-			container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) container);
+			container = TaraPsiUtil.getContainerNodeOf((PsiElement) container);
 		return container != null ? container.container() : null;
 	}
 
-	public List<Facet> facets() {
-		return unmodifiableList(((TaraNode) this).getSignature().facets());
-	}
-
-	public FacetTarget facetTarget() {
-		FacetTarget facetTarget = this.getSignature().getFacetTarget();
-		if (facetTarget == null && parent() != null) facetTarget = parent().facetTarget();
-		return facetTarget;
+	public List<Aspect> appliedAspects() {
+		return unmodifiableList(((TaraNode) this).getSignature().appliedAspects());
 	}
 
 	public List<String> types() {
@@ -319,7 +309,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> secondaryTypes() {
-		Set<String> types = facets().stream().map(f -> f.type() + ":" + this.type()).collect(Collectors.toSet());
+		Set<String> types = appliedAspects().stream().map(f -> f.type() + ":" + this.type()).collect(Collectors.toSet());
 		if (parent() != null && !parent().equals(this)) types.addAll(parent().types());
 		return new ArrayList<>(types);
 	}
@@ -471,14 +461,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public void addFacet(String type) {
+	public void addAspect(String type) {
 		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
-		if (facets().isEmpty()) {
+		if (appliedAspects().isEmpty()) {
 			final PsiElement anchor = anchor();
 			final PsiElement psiElement = getSignature().addAfter(factory.createWhiteSpace(), anchor);
-			getSignature().addAfter(factory.createFacets(type), psiElement);
+			getSignature().addAfter(factory.createAspects(type), psiElement);
 		} else
-			getSignature().addAfter(factory.createFacet(type), (PsiElement) getSignature().facets().get(getSignature().facets().size() - 1));
+			getSignature().addAfter(factory.createFacet(type), (PsiElement) getSignature().appliedAspects().get(getSignature().appliedAspects().size() - 1));
 	}
 
 	@Nullable
@@ -501,7 +491,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	private TaraMetaIdentifier findFacet(String facet) {
-		for (Facet f : getSignature().facets()) if (f.type().equals(facet)) return ((TaraFacetApply) f).getMetaIdentifier();
+		for (Aspect f : getSignature().appliedAspects()) if (f.type().equals(facet)) return ((TaraAspectApply) f).getMetaIdentifier();
 		return null;
 	}
 
@@ -527,6 +517,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return parameterList.isEmpty() ? null : (PsiElement) parameterList.get(parameterList.size() - 1);
 	}
 
+	public void stashNodeName(String name) {
+
+	}
 
 	public String toString() {
 		return (isAnonymous() ? "unNamed" : name()) + "@" + type();

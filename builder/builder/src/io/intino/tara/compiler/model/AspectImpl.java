@@ -1,18 +1,18 @@
 package io.intino.tara.compiler.model;
 
 
-import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 
-public class FacetImpl implements Facet {
-
+public class AspectImpl implements Aspect {
 	private String file;
 	private int line;
 	private Node container;
 	private String type;
+	private String fullType;
 	private String language;
 
-	public FacetImpl(String type) {
+	public AspectImpl(String type) {
 		this.type = type;
 	}
 
@@ -26,13 +26,19 @@ public class FacetImpl implements Facet {
 		this.container = container;
 	}
 
-	private String shortType() {
-		return type().contains(".") ? type().substring(type().lastIndexOf(".") + 1) : type();
-	}
-
 	@Override
 	public String type() {
 		return type;
+	}
+
+	@Override
+	public void fullType(String type) {
+		this.fullType = type;
+	}
+
+	@Override
+	public String fullType() {
+		return fullType;
 	}
 
 	@Override

@@ -136,7 +136,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+		return TaraPsiUtil.getContainerNodeOf(this);
 	}
 
 	public void container(Node container) {

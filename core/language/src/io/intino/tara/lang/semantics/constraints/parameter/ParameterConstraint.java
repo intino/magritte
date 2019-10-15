@@ -18,14 +18,12 @@ abstract class ParameterConstraint implements Constraint.Parameter {
 	static io.intino.tara.lang.model.Parameter findParameter(List<io.intino.tara.lang.model.Parameter> parameters, String facet, String name, int position) {
 		for (io.intino.tara.lang.model.Parameter parameter : parameters)
 			if (!parameter.name().isEmpty() && parameter.name().equals(name)) return parameter;
-		io.intino.tara.lang.model.Parameter parameter = byPosition(parameters, facet, position);
-		if (parameter != null) return parameter;
-		return null;
+		return byPosition(parameters, facet, position);
 	}
 
 	private static io.intino.tara.lang.model.Parameter byPosition(List<io.intino.tara.lang.model.Parameter> parameters, String facet, int position) {
 		for (io.intino.tara.lang.model.Parameter parameter : parameters) {
-			if (parameter.name().isEmpty() && parameter.facet().equals(facet) && parameter.position() == position)
+			if (parameter.name().isEmpty() && parameter.aspect().equals(facet) && parameter.position() == position)
 				return parameter;
 		}
 		return null;

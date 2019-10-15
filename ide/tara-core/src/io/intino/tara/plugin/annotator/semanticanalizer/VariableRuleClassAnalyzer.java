@@ -16,7 +16,7 @@ import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.Rule;
 import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
 import io.intino.tara.plugin.lang.psi.TaraVariable;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.plugin.messages.MessageProvider;
@@ -36,7 +36,7 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 	private final Variable variable;
 
 	public VariableRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
-		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
+		this.variable = TaraPsiUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
 		workingPackage = IntinoModuleType.isIntino(module()) ? TaraUtil.graphPackage(ruleContainer) : "";
 		rulesPackage = workingPackage.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);

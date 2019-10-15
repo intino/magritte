@@ -38,7 +38,7 @@ public interface Constraint {
 		List<Component> components();
 	}
 
-	interface Facet extends Constraint {
+	interface Aspect extends Constraint {
 		String type();
 
 		String[] with();
@@ -49,12 +49,12 @@ public interface Constraint {
 
 		boolean terminal();
 
-		Facet has(Constraint... require);
+		Aspect has(Constraint... require);
 
 		List<Constraint> constraints();
 	}
 
-	interface MetaFacet extends Constraint {
+	interface MetaAspect extends Constraint {
 		String type();
 
 		String[] with();
@@ -66,7 +66,7 @@ public interface Constraint {
 
 		Primitive type();
 
-		String facet();
+		String aspect();
 
 		Size size();
 

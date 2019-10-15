@@ -12,7 +12,7 @@ import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.TaraLanguage;
 import io.intino.tara.plugin.lang.psi.Body;
 import io.intino.tara.plugin.lang.psi.impl.TaraElementFactoryImpl;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import io.intino.tara.plugin.lang.psi.TaraBody;
@@ -32,7 +32,7 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 		List<PsiElement> replaced = new ArrayList<>();
 		if (toReplace == null) return;
 		TaraElementFactoryImpl factory = new TaraElementFactoryImpl(project);
-		Body body = TaraPsiImplUtil.getBodyContextOf(element);
+		Body body = TaraPsiUtil.getBodyContextOf(element);
 		propagateIndents(replaced, factory, body);
 		addSpaces(factory, replaced);
 	}
@@ -57,7 +57,7 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 		if (is(previous, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body)
 			return element.getParent().getParent().getFirstChild();
 		if (previous == null)
-			previous = ((PsiElement) TaraPsiImplUtil.getContainerOf(element)).getPrevSibling();
+			previous = ((PsiElement) TaraPsiUtil.getContainerOf(element)).getPrevSibling();
 		return previous;
 	}
 
@@ -93,7 +93,7 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 	private PsiElement calculatePrevious(PsiElement element) {
 		PsiElement previous = element.getPrevSibling() != null ? element.getPrevSibling() : element.getParent().getPrevSibling();
 		if (previous == null) {
-			PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
+			PsiElement contextOf = (PsiElement) TaraPsiUtil.getContainerOf(element);
 			if (contextOf != null) previous = contextOf.getPrevSibling();
 		}
 		return previous;

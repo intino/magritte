@@ -22,6 +22,10 @@ def attribute(this:object) trigger(variableType)
 	java.lang.Object
 end
 
+def attribute(this:time) trigger(variableType)
+	java.time.LocalTime
+end
+
 def attribute(this:type) trigger(variableType)
 	Concept
 end
@@ -56,6 +60,10 @@ end
 
 def attribute(this:boolean) trigger(fulltype)
 	java.lang.Boolean
+end
+
+def attribute(this:time) trigger(fulltype)
+	java.time.LocalTime
 end
 
 def attribute(this:string) trigger(fulltype)

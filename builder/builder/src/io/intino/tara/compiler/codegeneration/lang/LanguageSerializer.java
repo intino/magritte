@@ -51,7 +51,7 @@ public class LanguageSerializer {
 	private List<Class<?>> collectRules(Collection<Model> models) {
 		Set<Class<?>> classes = new HashSet<>();
 		for (Model model : models) {
-			classes.addAll(model.getRules().values());
+			classes.addAll(model.rules().values());
 			classes.addAll(collectLanguageRules(model));
 		}
 		return new ArrayList<>(classes);

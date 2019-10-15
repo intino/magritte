@@ -11,7 +11,7 @@ public interface TemplateTags {
 	String NATIVE = "native";
 	String PARENT_SUPER = "parentSuper";
 	String POSITION = "position";
-	String AVAILABLE_FACET = "availableFacet";
+	String AVAILABLE_ASPECT = "availableAspect";
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";
 	String CONCEPT_LAYER = "conceptLayer";
@@ -51,13 +51,11 @@ public interface TemplateTags {
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String RETURN = "return";
-	String META_FACET = "metaFacet";
-	String FACET_TARGET = "facetTarget";
+	String META_ASPECT = "metaAspect";
+	String ASPECT = "aspect";
 	String CONSTRAINTS = "constraints";
 	String ASSUMPTIONS = "assumptions";
 	String COMPONENT = "component";
-	String FACET = "facet";
-	String METAFACET = "metafacet";
 	String TARGET = "target";
 	String METRIC = "metric";
 	String LANGUAGE = "language";
@@ -65,7 +63,6 @@ public interface TemplateTags {
 	String LAYER = "Layer";
 	String PACKAGE = "package";
 	String WITH = "with";
-	String WITHOUT = "without";
 	String CONSTRAINT = "constraint";
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";
