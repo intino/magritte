@@ -15,16 +15,8 @@ class StashReader {
     private static List<String> proteoTypes = new ArrayList<>(asList(
             "Concept",
             "MetaConcept",
-            "Facet",
-            "MetaFacet",
-            "Facet#MetaConcept",
-            "Facet#Concept",
-            "Facet#Facet",
-            "Facet#MetaFacet",
-            "MetaFacet#MetaConcept",
-            "MetaFacet#Concept",
-            "MetaFacet#Facet",
-            "MetaFacet#MetaFacet"));
+            "Aspect",
+            "MetaAspect"));
     private final Graph graph;
 
     StashReader(Graph graph) {

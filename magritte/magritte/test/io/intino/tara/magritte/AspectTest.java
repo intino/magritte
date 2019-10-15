@@ -10,7 +10,7 @@ import static io.intino.tara.io.Helper.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class FacetTest {
+public class AspectTest {
 
 	@Test
 	public void should_have_all_parents_of_facet() throws Exception {
@@ -38,7 +38,7 @@ public class FacetTest {
 	@Test
 	public void should_remove_instances_facet_when_removing_meta_facet() throws Exception {
 		Graph graph = new Graph(store()).loadStashes("foo");
-		graph.rootList().get(0).removeFacet("Aspect#Entity");
+		graph.rootList().get(0).removeFacet("Facet#Entity");
 		assertThat(graph.rootList().get(0).typeNames.size(), is(2));
 		assertThat(graph.rootList().get(0).layers.size(), is(2));
 	}
@@ -57,11 +57,11 @@ public class FacetTest {
 			public Stash stashFrom(String path) {
 				return newStash("Meta", list(), list(),
 						list(
-								newConcept("Entity", false, true, true, "io.intino.tara.magritte.FacetTest$Entity", null, list("Concept"), list(), list(), list(), list()),
-								newConcept("Car", false, false, true, "io.intino.tara.magritte.FacetTest$Car", null, list("Entity"), list(), list(), list(), list()),
-								newConcept("Aspect#Entity", false, true, true, "io.intino.tara.magritte.FacetTest$AspectEntity", null, list("Facet"), list(), list(), list(), list()),
-								newConcept("Motorized#Car", true, false, true, "io.intino.tara.magritte.FacetTest$MotorizedCar", null, list("Aspect#Entity"), list(), list(), list(), list()),
-								newConcept("Oiled#Car", false, false, true, "io.intino.tara.magritte.FacetTest$OiledCar", "Motorized#Car", list(), list(), list(), list(), list())),
+								newConcept("Entity", false, true, true, "io.intino.tara.magritte.AspectTest$Entity", null, list("Concept"), list(), list(), list(), list()),
+								newConcept("Car", false, false, true, "io.intino.tara.magritte.AspectTest$Car", null, list("Entity"), list(), list(), list(), list()),
+								newConcept("Facet#Entity", false, true, true, "io.intino.tara.magritte.AspectTest$AspectEntity", null, list("Aspect"), list(), list(), list(), list()),
+								newConcept("Motorized#Car", true, false, true, "io.intino.tara.magritte.AspectTest$MotorizedCar", null, list("Facet#Entity"), list(), list(), list(), list()),
+								newConcept("Oiled#Car", false, false, true, "io.intino.tara.magritte.AspectTest$OiledCar", "Motorized#Car", list(), list(), list(), list(), list())),
 						list(
 								newNode("Car1", list("Car", "Oiled#Car"), list(), list())
 						));
