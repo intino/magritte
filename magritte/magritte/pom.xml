@@ -17,7 +17,7 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>io</artifactId>
-            <version>1.2.0</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.intino.tara</groupId>

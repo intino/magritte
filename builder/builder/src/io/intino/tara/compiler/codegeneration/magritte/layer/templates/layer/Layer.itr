@@ -79,7 +79,7 @@ def type(availableAspect) attribute(variable) trigger(availableAspect)
 	}
 
 	public $qn as$name+FirstUpperCase([$variable+parameters...[, ]]) {
-		$qn+reference newElement = core$$().addFacet($qn+reference.class);
+		$qn+reference newElement = core$$().addAspect($qn+reference.class);
 		$variable+assign...[$NL]
         return newElement;
     }
@@ -89,14 +89,14 @@ def type(availableAspect) attribute(variable) trigger(availableAspect)
     }
 
     public void remove$name+FirstUpperCase() {
-		core$$().removeFacet($qn+reference.class);
+		core$$().removeAspect($qn+reference.class);
     }
 end
 
 def type(availableAspect) trigger(availableAspect)
 	public $qn+reference as$name+FirstUpperCase() {
 		io.intino.tara.magritte.Layer as = a$$($qn+reference.class);
-		return as != null ? ($qn+reference) as : [$abstract?core$$().addFacet($qn+reference.class)];
+		return as != null ? ($qn+reference) as : [$abstract?core$$().addAspect($qn+reference.class)];
 	}
 
 	public boolean is$name+FirstUpperCase() {
