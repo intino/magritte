@@ -13,40 +13,40 @@ import static org.hamcrest.core.Is.is;
 public class AspectTest {
 
 	@Test
-	public void should_have_all_parents_of_facet() throws Exception {
+	public void should_have_all_parents_of_aspect() throws Exception {
 		Graph graph = new Graph(store()).loadStashes("foo");
 		assertThat(graph.rootList().get(0).typeNames.size(), is(5));
 		assertThat(graph.rootList().get(0).layers.size(), is(4));
 	}
 
 	@Test
-	public void should_remove_parent_facet_when_children_is_removed() throws Exception {
+	public void should_remove_parent_aspect_when_children_is_removed() throws Exception {
 		Graph graph = new Graph(store()).loadStashes("foo");
-		graph.rootList().get(0).removeFacet("Oiled#Car");
+		graph.rootList().get(0).removeAspect("Oiled#Car");
 		assertThat(graph.rootList().get(0).typeNames.size(), is(2));
 		assertThat(graph.rootList().get(0).layers.size(), is(2));
 	}
 
 	@Test
-	public void should_children_facet_when_removing_parent_facet() throws Exception {
+	public void should_children_aspect_when_removing_parent_aspect() throws Exception {
 		Graph graph = new Graph(store()).loadStashes("foo");
-		graph.rootList().get(0).removeFacet("Motorized#Car");
+		graph.rootList().get(0).removeAspect("Motorized#Car");
 		assertThat(graph.rootList().get(0).typeNames.size(), is(2));
 		assertThat(graph.rootList().get(0).layers.size(), is(2));
 	}
 
 	@Test
-	public void should_remove_instances_facet_when_removing_meta_facet() throws Exception {
+	public void should_remove_instances_aspect_when_removing_meta_aspect() throws Exception {
 		Graph graph = new Graph(store()).loadStashes("foo");
-		graph.rootList().get(0).removeFacet("Facet#Entity");
+		graph.rootList().get(0).removeAspect("Facet#Entity");
 		assertThat(graph.rootList().get(0).typeNames.size(), is(2));
 		assertThat(graph.rootList().get(0).layers.size(), is(2));
 	}
 
 	@Test
-	public void should_not_remove_facets_of_core_objects() throws Exception {
+	public void should_not_remove_aspects_of_core_objects() throws Exception {
 		Graph graph = new Graph(store()).loadStashes("foo");
-		graph.rootList().get(0).removeFacet("Entity");
+		graph.rootList().get(0).removeAspect("Entity");
 		assertThat(graph.rootList().get(0).typeNames.size(), is(5));
 		assertThat(graph.rootList().get(0).layers.size(), is(4));
 	}

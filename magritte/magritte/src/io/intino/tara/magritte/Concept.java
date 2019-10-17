@@ -214,7 +214,7 @@ public class Concept extends Predicate {
 		return name().equals(concept) || typeNames.contains(concept);
 	}
 
-	public boolean isFacet() {
+	public boolean isAspect() {
 		return id.contains("#");
 	}
 

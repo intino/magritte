@@ -115,15 +115,15 @@ class StashToTara {
 	}
 
 	private void writeCore(Node node, int level) {
-		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
+		write(simpleName(node.layers.get(0)), " ", simpleName(node.name));
 		writeFacets(node);
 		writeVariables(node.variables, level);
 		writeNodes(node.nodes, level);
 	}
 
 	private void writeFacets(Node node) {
-		if (node.facets.size() > 1) write(" as");
-		node.facets.stream().filter(facet -> facet.contains("#")).map(facet -> " " + facet.split("#")[0]).forEach(this::write);
+		if (node.layers.size() > 1) write(" as");
+		node.layers.stream().filter(facet -> facet.contains("#")).map(facet -> " " + facet.split("#")[0]).forEach(this::write);
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {

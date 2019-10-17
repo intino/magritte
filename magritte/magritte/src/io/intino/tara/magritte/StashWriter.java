@@ -46,10 +46,10 @@ class StashWriter {
 	}
 
 	private io.intino.tara.io.Node node(Node node) {
-		return newNode(node.id, facetsOf(node), variablesOf(node.variables()), nodes(node.componentList()));
+		return newNode(node.id, layersOf(node), variablesOf(node.variables()), nodes(node.componentList()));
 	}
 
-	private List<String> facetsOf(Node node) {
+	private List<String> layersOf(Node node) {
 		return node.layers.stream()
 				.filter(l -> l instanceof Terminal)
 				.map(this::conceptIdOf).collect(toList());

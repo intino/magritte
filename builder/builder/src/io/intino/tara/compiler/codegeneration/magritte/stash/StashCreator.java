@@ -181,7 +181,7 @@ public class StashCreator {
 	private Node createNode(io.intino.tara.lang.model.Node node) {
 		Node instanceNode = new Node();
 		instanceNode.name = buildReferenceName(node);
-		instanceNode.facets = StashHelper.collectTypes(node, this.language);
+		instanceNode.layers = StashHelper.collectTypes(node, this.language);
 		instanceNode.variables.addAll(parametersOf(node));
 		instanceNode.nodes.addAll(createNodes(node.components()));
 		return instanceNode;

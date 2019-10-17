@@ -45,10 +45,10 @@ public class Helper {
 		return concept;
 	}
 
-	public static Node newNode(String name, List<String> facets, List<? extends Variable> variables, List<Node> nodes) {
+	public static Node newNode(String name, List<String> layers, List<? extends Variable> variables, List<Node> nodes) {
 		Node node = new Node();
 		node.name = name;
-		node.facets.addAll(facets);
+		node.layers.addAll(layers);
 		node.variables.addAll(variables);
 		node.nodes.addAll(nodes);
 		return node;

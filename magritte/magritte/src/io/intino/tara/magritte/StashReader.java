@@ -72,7 +72,7 @@ class StashReader {
     }
 
     private Node loadNode(Node node, io.intino.tara.io.Node rawNode) {
-        List<Concept> metaTypes = metaTypesOf(conceptsOf(rawNode.facets));
+        List<Concept> metaTypes = metaTypesOf(conceptsOf(rawNode.layers));
         addConcepts(node, metaTypes);
         loadNodes(node, rawNode.nodes);
         cloneNodes(node);
@@ -90,11 +90,11 @@ class StashReader {
         node.syncLayers();
     }
 
-    private List<Concept> conceptsOf(List<String> facets) {
+    private List<Concept> conceptsOf(List<String> layers) {
         List<Concept> result = new ArrayList<>();
-        for (String facet : facets) {
-            Concept concept = graph.concepts.get(facet);
-            if (concept == null) throw new MagritteException("Concept " + facet + " not found");
+        for (String layer : layers) {
+            Concept concept = graph.concepts.get(layer);
+            if (concept == null) throw new MagritteException("Concept " + layer + " not found");
             result.add(concept);
         }
         return result;
