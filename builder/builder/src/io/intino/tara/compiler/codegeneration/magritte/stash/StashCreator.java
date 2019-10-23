@@ -78,10 +78,12 @@ public class StashCreator {
 		else {
 			List<io.intino.tara.lang.model.Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(StashHelper.name(node, workingPackage),
-					node.isAbstract() || node.isAspect(), node.type().equals(ProteoConstants.META_CONCEPT),
+					node.isAbstract() || node.isAspect(),
+					node.type().equals(ProteoConstants.META_CONCEPT),
+					node.isAspect() || node.isMetaAspect(),
 					node.container() instanceof Model && !node.is(Tag.Component),
 					className(node),
-					node.parentName() != null ? Format.qualifiedName().format(node.parent().layerQualifiedName()).toString() : null,
+					node.parent() != null ? Format.qualifiedName().format(node.parent().layerQualifiedName()).toString() : null,
 					StashHelper.collectTypes(node, this.language),
 					collectContents(nodeList),
 					variablesOf(node),
@@ -109,7 +111,7 @@ public class StashCreator {
 		for (io.intino.tara.lang.model.Node component : aspectNode.components()) create(component, concept);
 		io.intino.tara.lang.model.Node targetNode = aspectNode.container();
 		concepts.addAll(collectChildren(targetNode).stream().
-				map(node -> createChildFacetType(aspectNode, node, concept)).
+				map(node -> createChildAspectType(aspectNode, node, concept)).
 				collect(toList()));
 		return concepts;
 	}
@@ -151,7 +153,7 @@ public class StashCreator {
 		else return null;
 	}
 
-	private Concept createChildFacetType(io.intino.tara.lang.model.Node aspectNode, io.intino.tara.lang.model.Node node, Concept parent) {
+	private Concept createChildAspectType(io.intino.tara.lang.model.Node aspectNode, io.intino.tara.lang.model.Node node, Concept parent) {
 		final Concept child = new Concept();
 		child.name = StashHelper.name(aspectNode, workingPackage);//TODO
 		child.parent = parent.name;

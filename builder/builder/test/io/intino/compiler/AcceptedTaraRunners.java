@@ -227,6 +227,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void MonopolyM2() {
+		main(new String[]{home + "sandbox/confFiles/tafat/tafat-monopoly-m2.txt"});
+	}
+
+	@Test
 	public void sumusM3Test() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M3Test.txt"});
 	}

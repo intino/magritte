@@ -10,6 +10,7 @@ import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -25,9 +26,21 @@ public class InheritanceResolver {
 
 	public void resolve() throws DependencyException {
 		mergeFragmentNodes();
-		List<Node> nodes = new ArrayList<>(collectNodes(model));
+		resolveFacetNodes();
+		List<Node> nodes = new ArrayList<>(collectNodes(model, node -> !node.children().isEmpty()));
 		sort(nodes);
-		for (Node node : nodes) resolve(node);//TODO añadir la herencia de aspectos a la resolución
+		for (Node node : nodes) resolve(node);
+	}
+
+	private void resolveFacetNodes() {
+		model.components().stream().filter(n -> ProteoConstants.FACET.equals(n.type())).forEach(n -> {
+			n.addFlag(Tag.Abstract);
+			Collection<Node> nodes = collectNodes(model, node -> (node.isAspect() || node.isMetaAspect()) && node.name().equals(n.name()));
+			for (Node node : nodes) {
+				n.addChild(node);
+				((NodeImpl) node).setParent(n);
+			}
+		});
 	}
 
 	private void resolve(Node node) throws DependencyException {
@@ -115,19 +128,19 @@ public class InheritanceResolver {
 		return false;
 	}
 
-	private Set<Node> collectNodes(Model model) {
+	private Collection<Node> collectNodes(Model model, Predicate<Node> condition) {
 		Set<Node> collection = new HashSet<>();
 		for (Node node : model.components()) {
-			if (!node.children().isEmpty()) collection.add(node);
-			collect(node, collection);
+			if (condition.test(node)) collection.add(node);
+			collect(node, collection, condition);
 		}
 		return collection;
 	}
 
-	private void collect(Node node, Set<Node> collection) {
+	private void collect(Node node, Set<Node> collection, Predicate<Node> condition) {
 		if (!(node instanceof NodeImpl)) return;
-		if (!node.children().isEmpty()) collection.add(node);
-		for (Node component : node.components()) collect(component, collection);
+		if (condition.test(node)) collection.add(node);
+		for (Node component : node.components()) collect(component, collection, condition);
 	}
 
 	private void resolveComponents(Node parent, Node child) {

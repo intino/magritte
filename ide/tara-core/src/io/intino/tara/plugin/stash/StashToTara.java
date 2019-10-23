@@ -90,8 +90,8 @@ class StashToTara {
 	}
 
 	private String coreType(Concept concept) {
-		return concept.types.get(0).startsWith("MetaFacet") ? "MetaFacet" :
-				concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
+		return concept.types.get(0).startsWith("MetaAspect") ? "MetaAspect" :
+				concept.types.get(0).startsWith("Aspect") ? "Aspect" : simpleName(concept.types.get(0));
 	}
 
 	private void writeNodes(List<? extends Node> instances, int level) {
@@ -116,14 +116,14 @@ class StashToTara {
 
 	private void writeCore(Node node, int level) {
 		write(simpleName(node.layers.get(0)), " ", simpleName(node.name));
-		writeFacets(node);
+		writeAspects(node);
 		writeVariables(node.variables, level);
 		writeNodes(node.nodes, level);
 	}
 
-	private void writeFacets(Node node) {
+	private void writeAspects(Node node) {
 		if (node.layers.size() > 1) write(" as");
-		node.layers.stream().filter(facet -> facet.contains("#")).map(facet -> " " + facet.split("#")[0]).forEach(this::write);
+		node.layers.stream().filter(a -> a.contains("#")).map(facet -> " " + facet.split("#")[0]).forEach(this::write);
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {

@@ -84,6 +84,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	@Override
+	public boolean isMetaAspect() {
+		return false;
+	}
+
+	@Override
 	public List<String> uses() {
 		return getImports().stream().map(anImport -> anImport.getHeaderReference().toString()).collect(Collectors.toList());
 	}

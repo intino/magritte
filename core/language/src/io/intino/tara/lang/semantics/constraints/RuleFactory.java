@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import static io.intino.tara.lang.model.Tag.AspectInstance;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class RuleFactory {
 	private RuleFactory() {
@@ -31,7 +32,7 @@ public class RuleFactory {
 
 	@Deprecated
 	public static Constraint.Component component(final String type, Rule rule, final Tag... flags) {
-		return new Component(type, Collections.singletonList(rule), asList(flags));
+		return new Component(type, singletonList(rule), asList(flags));
 	}
 
 	public static Constraint.OneOf oneOf(List<Rule> rules, final Constraint.Component... components) {
@@ -64,16 +65,18 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				NodeContainer node = (NodeContainer) element;
-				for (Node component : node.components())
+				for (Node component : node.components()) {
 					if (!areCompatibles(component, types))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type().replace(":", ""))));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, singletonList(component.type().replace(":", ""))));
+				}
 			}
 		};
 	}
 
-	private static boolean areCompatibles(Node component, List<String> allowedTypes) {
-		return component.types().stream().anyMatch(componentType -> componentType != null && (allowedTypes.contains(componentType) || (component.container() != null && fromAspect(component.container().appliedAspects(), componentType, allowedTypes))))
-				|| checkAspect(component, allowedTypes);
+	private static boolean areCompatibles(Node node, List<String> allowedTypes) {
+		return node.types().stream().anyMatch(type -> type != null &&
+				(allowedTypes.contains(type) || (node.container() != null && fromAspect(node.container().appliedAspects(), type, allowedTypes))))
+				|| checkAspect(node, allowedTypes);
 	}
 
 	public static Constraint.RejectOtherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
@@ -83,7 +86,7 @@ public class RuleFactory {
 				Parametrized parametrized = (Parametrized) element;
 				for (io.intino.tara.lang.model.Parameter parameter : parametrized.parameters()) {
 					if (!isAcceptable(parameter, parameters))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.singletonList(parameter.name())));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, singletonList(parameter.name())));
 				}
 			}
 
@@ -110,7 +113,7 @@ public class RuleFactory {
 				Node node = (Node) element;
 				for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects()) {
 					if (!isAcceptable(aspects, aspect))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.aspect.in.context", aspect, Collections.singletonList(aspect.type())));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.aspect.in.context", aspect, singletonList(aspect.type())));
 				}
 			}
 

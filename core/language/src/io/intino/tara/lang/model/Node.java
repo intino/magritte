@@ -29,6 +29,8 @@ public interface Node extends Parametrized, NodeContainer {
 
 	boolean isAspect();
 
+	boolean isMetaAspect();
+
 	default List<AspectConstraint> aspectConstraints() {
 		return Collections.emptyList();
 	}

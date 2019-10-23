@@ -12,7 +12,7 @@ public class StashReader {
 
 	@Test
 	public void m3() throws Exception {
-		final Stash stash = StashDeserializer.stashFrom(new File("/Users/oroncal/workspace/sandbox/tara-problems/m1/res/Legio.stash"));
+		final Stash stash = StashDeserializer.stashFrom(new File("/Users/oroncal/workspace/sandbox/tafat/platform/res/Tafat.stash"));
 		stash.nodes.get(0).nodes.get(0).name = "projects/drillwise#drillwise$drillwise:iointinodrillwise-solution100";
 	}
 

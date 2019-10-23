@@ -167,19 +167,19 @@ public class TestHelper {
 
 	public static Stash m3() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+				list(newConcept("Mock", false, false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
 				emptyList());
 	}
 
 	public static Stash highHierarchy() {
 		return newStash("Proteo", emptyList(), emptyList(),
 				list(
-						newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.SubMockLayer", "Super1Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
-						newConcept("Super1Mock", false, false, true, "io.intino.tara.magritte.layers.Super1MockLayer", "Super2Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
-						newConcept("Super2Mock", false, false, true, "io.intino.tara.magritte.layers.Super2MockLayer", "Super3Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
-						newConcept("Super3Mock", false, false, true, "io.intino.tara.magritte.layers.Super3MockLayer", "Super4Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
-						newConcept("Super4Mock", false, false, true, "io.intino.tara.magritte.layers.Super4MockLayer", "Super5Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
-						newConcept("Super5Mock", false, false, true, "io.intino.tara.magritte.layers.Super5MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())
+						newConcept("Mock", false, false, false, true, "io.intino.tara.magritte.layers.SubMockLayer", "Super1Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super1Mock", false, false, false, true, "io.intino.tara.magritte.layers.Super1MockLayer", "Super2Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super2Mock", false, false, false, true, "io.intino.tara.magritte.layers.Super2MockLayer", "Super3Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super3Mock", false, false, false, true, "io.intino.tara.magritte.layers.Super3MockLayer", "Super4Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super4Mock", false, false, false, true, "io.intino.tara.magritte.layers.Super4MockLayer", "Super5Mock", list("Concept"), emptyList(), emptyList(), emptyList(), emptyList()),
+						newConcept("Super5Mock", false, false, false, true, "io.intino.tara.magritte.layers.Super5MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())
 				),
 				singletonList(newNode(m1 + "#y", list("Mock"), emptyList(), emptyList())));
 	}

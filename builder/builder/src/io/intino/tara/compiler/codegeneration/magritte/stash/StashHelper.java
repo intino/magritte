@@ -34,7 +34,7 @@ public class StashHelper {
 		return types.stream().map(type -> {
 			Assumption.StashNodeName nodeName = (Assumption.StashNodeName) language.assumptions(type).stream().
 					filter(a -> a instanceof Assumption.StashNodeName).findFirst().orElse(null);
-			return nodeName != null ? nodeName.stashNodeName() : null;
+			return nodeName != null ? nodeName.stashNodeName() : type;
 		}).filter(Objects::nonNull).collect(toList());
 	}
 

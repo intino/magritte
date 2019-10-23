@@ -137,7 +137,12 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isAspect() {
-		return type().equals(ProteoConstants.ASPECT) || type().equals(ProteoConstants.META_ASPECT) || is(Tag.Aspect);
+		return ProteoConstants.ASPECT.equals(type()) || is(Tag.Aspect);
+	}
+
+	@Override
+	public boolean isMetaAspect() {
+		return ProteoConstants.META_ASPECT.equals(type());
 	}
 
 	public List<Node.AspectConstraint> aspectConstraints() {

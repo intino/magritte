@@ -36,7 +36,7 @@ class MetaAspectConstraint implements Constraint.MetaAspect {
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
 		if (!is(node.types()))
-			throw new SemanticException(new SemanticNotification(ERROR, "reject.facet.with.no.constrains.in.context", node, Arrays.asList(this.with)));
+			throw new SemanticException(new SemanticNotification(ERROR, "reject.aspect.with.no.constrains.in.context", node, Arrays.asList(this.with)));
 	}
 
 

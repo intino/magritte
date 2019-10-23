@@ -57,11 +57,6 @@ public class Checker {
 		return c instanceof Constraint.Aspect && findAspect(node, ((Constraint.Aspect) c).type()) != null;
 	}
 
-	private boolean hasFatal() {
-		for (SemanticException exception : exceptions) if (exception.level() == ERROR) return true;
-		return false;
-	}
-
 	private void checkConstraints(Node node) throws SemanticFatalException {
 		if (node == null)
 			throw new SemanticFatalException(new SemanticNotification(SemanticNotification.Level.ERROR, "Node is null", (Element) null));

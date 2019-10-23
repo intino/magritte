@@ -147,6 +147,11 @@ public class NodeReference implements Node {
 	}
 
 	@Override
+	public boolean isMetaAspect() {
+		return destination.isMetaAspect();
+	}
+
+	@Override
 	public boolean is(Tag tag) {
 		return destination.is(tag) || flags().contains(tag);
 	}

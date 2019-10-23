@@ -16,6 +16,7 @@ class StashReader {
             "Concept",
             "MetaConcept",
             "Aspect",
+			"Facet",
             "MetaAspect"));
     private final Graph graph;
 
@@ -43,6 +44,7 @@ class StashReader {
         concept.concepts(metaTypesOf(concepts));
         concept.isAbstract = rawConcept.isAbstract;
         concept.isMetaConcept = rawConcept.isMetaConcept;
+		concept.isAspect = rawConcept.isAspect;
         concept.isMain = rawConcept.isMain;
         concept.layerClass = graph.layerFactory.layerClass(concept.id);
         concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(graph.concept$(c.type), c.min, c.max)).collect(toSet());

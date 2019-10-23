@@ -25,21 +25,6 @@ public class ReferenceManager {
 		this.model = model;
 	}
 
-	private static boolean areNamesake(String name, Node node) {
-		return name.equals(node.name());
-	}
-
-	private static void addNodeSiblings(String identifier, Node container, Set<Node> set) {
-		if (container == null) return;
-		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
-	}
-
-	private static void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
-		set.addAll(parent.components().stream().
-				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
-				collect(Collectors.toList()));
-	}
-
 	public NodeImpl resolve(NodeReference reference) {
 		return (NodeImpl) resolve(reference.getReference(), reference.container());
 	}
@@ -103,7 +88,7 @@ public class ReferenceManager {
 		Node reference = null;
 		for (String name : path) {
 			if (reference == null) {
-				reference = areNamesake(name, node) ? node : null;
+				reference = areNamesake(node, name) ? node : null;
 				continue;
 			}
 			final List<Node> components = reference.component(name);
@@ -126,8 +111,13 @@ public class ReferenceManager {
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().
-				filter(node -> areNamesake(name, node)).
+				filter(node -> areNamesake(node, name)).
 				collect(Collectors.toList()));
+	}
+
+	private void addNodeSiblings(String identifier, Node container, Set<Node> set) {
+		if (container == null) return;
+		set.addAll(container.components().stream().filter(node -> areNamesake(node, identifier)).collect(Collectors.toList()));
 	}
 
 	private void addInContext(String name, Set<Node> set, Node node, boolean parent) {
@@ -148,12 +138,17 @@ public class ReferenceManager {
 		for (Node sibling : container.siblings()) namesake(name, set, sibling);
 	}
 
+	private void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
+		set.addAll(parent.components().stream().
+				filter(sibling -> areNamesake(sibling, identifier) && !sibling.equals(container)).
+				collect(Collectors.toList()));
+	}
+
 	private void namesake(String name, Set<Node> set, NodeContainer container) {
-		if (container instanceof NodeImpl && namesake((Node) container, name)) set.add((Node) container);
+		if (container instanceof NodeImpl && areNamesake((Node) container, name)) set.add((Node) container);
 	}
 
-	private boolean namesake(Node node, String name) {
-		return areNamesake(name, node);
+	private boolean areNamesake(Node node, String name) {
+		return name.equals(node.name());
 	}
-
 }

@@ -144,6 +144,11 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
+	public boolean isMetaAspect() {
+		return false;
+	}
+
+	@Override
 	public void stashNodeName(String name) {
 
 	}

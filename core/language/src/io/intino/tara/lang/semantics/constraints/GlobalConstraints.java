@@ -1,6 +1,8 @@
 package io.intino.tara.lang.semantics.constraints;
 
 import io.intino.tara.Language;
+import io.intino.tara.dsl.ProteoConstants;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -69,7 +71,10 @@ public class GlobalConstraints {
 			if (parent == null) return;
 			parent.resolve();
 			String nodeType = node.type();
-			if (!parent.type().equals(nodeType.split(":")[0]) && !parent.type().equals(nodeType))
+			if (parent.type().equals(ProteoConstants.FACET)) {
+				if (!nodeType.equals(ProteoConstants.ASPECT) && !nodeType.equals(ProteoConstants.META_ASPECT))
+					error("reject.parent.different.type", node, asList(parent.type(), nodeType));
+			} else if (!parent.type().equals(nodeType.split(":")[0]) && !parent.type().equals(nodeType))
 				error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};

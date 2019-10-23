@@ -52,6 +52,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isMetaAspect() {
+		return false;
+	}
+
+	@Override
 	public boolean is(Tag tag) {
 		return false;
 	}

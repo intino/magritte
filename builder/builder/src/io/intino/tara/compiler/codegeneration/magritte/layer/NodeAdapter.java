@@ -65,6 +65,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	}
 
 	private void addAspectClasses(Node node, FrameBuilderContext context) {
+		if (node.isReference()) return;
 		aspectNodes(node).
 				forEach(aspectNode -> addAspectSlot(context, aspectNode));
 	}

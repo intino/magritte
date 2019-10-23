@@ -1,10 +1,8 @@
 def.file
 /Users/oroncal/workspace/tafat/testm/src/test/RouterStateChart.tara#true
-/Users/oroncal/workspace/tafat/testm/src/test/TableFunction.tara#true
 /Users/oroncal/workspace/tafat/testm/src/test/Agent.tara#true
 /Users/oroncal/workspace/tafat/testm/src/test/Fridge.tara#true
 /Users/oroncal/workspace/tafat/testm/src/test/SystemDynamic.tara#true
-/Users/oroncal/workspace/tafat/testm/src/test/Task.tara#true
 
 project
 tafat

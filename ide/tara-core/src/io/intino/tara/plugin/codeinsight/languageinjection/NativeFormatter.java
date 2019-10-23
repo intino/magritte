@@ -120,6 +120,7 @@ public class NativeFormatter implements TemplateTags {
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).is(Feature))
 				return (Node) container;
+			if (container.container() instanceof NodeRoot) return (Node) container;
 			container = container.container();
 		}
 		return null;
@@ -131,6 +132,7 @@ public class NativeFormatter implements TemplateTags {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
 					!((Node) container).is(Feature))
 				return (Node) container;
+			if (container.container() instanceof NodeRoot) return (Node) container;
 			container = container.container();
 		}
 		return owner instanceof Node && ((Node) owner).isAnonymous() ? (Node) owner : TaraPsiUtil.getContainerNodeOf((PsiElement) owner);

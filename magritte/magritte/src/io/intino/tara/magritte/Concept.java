@@ -16,6 +16,7 @@ public class Concept extends Predicate {
 	private final Set<Concept> instances = new LinkedHashSet<>();
 	boolean isAbstract;
 	boolean isMetaConcept;
+	public boolean isAspect;
 	boolean isMain;
 	Class<? extends Layer> layerClass;
 	Concept metatype = null;
@@ -211,11 +212,11 @@ public class Concept extends Predicate {
 	}
 
 	public boolean is(String concept) {
-		return name().equals(concept) || typeNames.contains(concept);
+		return id.equals(concept) || typeNames.contains(concept);
 	}
 
 	public boolean isAspect() {
-		return id.contains("#");
+		return isAspect;
 	}
 
 	static class Content {

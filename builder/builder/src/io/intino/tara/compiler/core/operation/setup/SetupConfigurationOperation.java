@@ -85,7 +85,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 	private void extractConfiguration(LegioGraph legio) {
 		Artifact artifact = legio.artifact();
 		Artifact.Code code = artifact.code();
-		final Level level = Level.valueOf(artifact.core$().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
+		final Level level = Level.valueOf(artifact.core$().conceptList().stream().filter(c -> c.id().contains("$")).map(c -> c.id().split("\\$")[1]).findFirst().orElse("Platform"));
 		if (artifact.isLevel()) {
 			String outDSL = artifact.asLevel().model().outLanguage();
 			configuration.outDSL(outDSL == null ? snakeCaseToCamelCase(artifact.name$()) : outDSL);

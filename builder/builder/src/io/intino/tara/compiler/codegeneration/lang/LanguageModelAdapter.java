@@ -166,7 +166,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.ASPECT) ? node.name() : "", constraints,
 					LanguageParameterAdapter.terminalParameters(language, node) + terminalParameterIndex(constraints.toFrame()));
 		}
-		if (node.type().startsWith(ProteoConstants.META_ASPECT)) addMetaFacetConstraints(node, constraints);
+		addMetaAspectConstraints(node, constraints);
 		addAspectConstraints(node, constraints);
 	}
 
@@ -191,27 +191,19 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return variable.isFinal() && !variable.values().isEmpty();
 	}
 
-	private void addMetaFacetConstraints(Node aspectNode, FrameBuilder constraints) {
-		if (!aspectNode.type().equalsIgnoreCase(ProteoConstants.META_ASPECT) || aspectNode.isAbstract())
-			return;
-		final Node targetNode = aspectNode.container();
-		if (targetNode.isAbstract())
-			for (Node child : targetNode.children())
-				createMetaFacetConstraint(child, aspectNode.aspectConstraints(), constraints);
-		else createMetaFacetConstraint(targetNode, aspectNode.aspectConstraints(), constraints);
-	}
-
-	private void createMetaFacetConstraint(Node node, List<Node.AspectConstraint> with, FrameBuilder constraints) {
-		FrameBuilder builder = new FrameBuilder(CONSTRAINT, META_ASPECT).add(VALUE, node.qualifiedName());
-		if (with != null && !with.isEmpty())
-			builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
-		constraints.add(CONSTRAINT, builder.toFrame());
+	private void addMetaAspectConstraints(Node node, FrameBuilder constraints) {
+		node.components().stream().filter(Node::isMetaAspect).forEach(aspectNode -> {
+			List<Node.AspectConstraint> with = aspectNode.aspectConstraints();
+			FrameBuilder builder = new FrameBuilder(CONSTRAINT, META_ASPECT).add(VALUE, aspectNode.qualifiedName());
+			if (with != null && !with.isEmpty()) builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
+			constraints.add(CONSTRAINT, builder.toFrame());
+		});
 	}
 
 	private void addAspectConstraints(Node node, FrameBuilder constraintsBuilder) {
 		node.components().stream().filter(Node::isAspect).forEach(aspectNode -> {
 			if (aspectNode.isAbstract()) return;
-			FrameBuilder builder = new FrameBuilder(CONSTRAINT, ASPECT).add(VALUE, aspectNode.qualifiedName());//TODO FULL FACET REFERENCE
+			FrameBuilder builder = new FrameBuilder(CONSTRAINT, ASPECT).add(VALUE, aspectNode.qualifiedName());
 			builder.add(TERMINAL, aspectNode.isTerminal() + "");
 			if (aspectNode.aspectConstraints() != null && !aspectNode.aspectConstraints().isEmpty())
 				for (Node.AspectConstraint constraint : aspectNode.aspectConstraints())
@@ -308,16 +300,14 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		node.components().stream().
 				filter(c -> componentCompliant(node, c)).
 				forEach(c -> {
-					if (c.type().startsWith(ProteoConstants.META_ASPECT))
-						createMetaAspectComponentConstraint(frames, c);
+					if (c.isMetaAspect()) createMetaAspectComponentConstraint(frames, c);
 					else if (!c.isSub()) createComponentConstraint(frames, c);
 				});
-		if (node.isAspect() && node.parent() != null)
+		if ((node.isMetaAspect() || node.isAspect()) && node.parent() != null)
 			node.parent().components().stream().
 					filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
 					forEach(c -> {
-						if (c.type().startsWith(ProteoConstants.META_ASPECT))
-							createMetaAspectComponentConstraint(frames, c);
+						if (c.isMetaAspect()) createMetaAspectComponentConstraint(frames, c);
 						else createComponentConstraint(frames, c);
 					});
 	}
@@ -332,7 +322,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 
 
 	private void createMetaAspectComponentConstraint(List<Frame> frames, Node node) {
-		if (!node.type().startsWith(ProteoConstants.META_ASPECT) || node.isAbstract()) return;
+		if (!node.isMetaAspect() || node.isAbstract()) return;
 		final Node target = node.container();
 		if (target.isAbstract())
 			for (Node child : target.children()) {

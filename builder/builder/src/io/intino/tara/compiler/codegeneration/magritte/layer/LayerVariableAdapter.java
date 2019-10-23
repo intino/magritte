@@ -28,7 +28,6 @@ import static io.intino.tara.lang.model.Tag.Reactive;
 
 class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private final Set<String> imports = new HashSet<>();
 	private Level modelLevel;
 
 	LayerVariableAdapter(Language language, String generatedLanguage, Level modelLevel, String workingPackage, String languageWorkingPackage) {
@@ -96,7 +95,4 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		} else adapter.fillFrameNativeVariable(context, variable, next);
 	}
 
-	public Set<String> getImports() {
-		return imports;
-	}
 }
