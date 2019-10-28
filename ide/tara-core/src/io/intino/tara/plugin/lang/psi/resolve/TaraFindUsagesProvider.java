@@ -43,7 +43,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public String getType(@NotNull PsiElement element) {
 		if (getContainerByType(element, Variable.class) != null) return "variable";
 		else if (getContainerByType(element, Parameter.class) != null) return "parameter";
-		else if (element.getParent() instanceof Signature) return getContainerByType(element, TaraNode.class).simpleType();
+		else if (element.getParent() instanceof Signature) return getContainerByType(element, TaraNode.class).type();
 		return "reference";
 	}
 

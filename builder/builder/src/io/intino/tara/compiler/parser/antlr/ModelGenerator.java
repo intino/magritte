@@ -109,7 +109,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void addTags(TaraGrammar.TagsContext ctx, Node node) {
 		if (ctx == null) return;
-		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()));
+		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()).toArray(new Tag[0]));
 		if (ctx.annotations() != null) node.addAnnotations(resolveTags(ctx.annotations()));
 	}
 
@@ -122,7 +122,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = deque.peek();
-			if (!peek.isAbstract()) peek.addFlag(Tag.Abstract);
+			if (!peek.isAbstract() && !peek.flags().contains(Tag.Abstract)) peek.addFlags(Tag.Abstract);
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.name());

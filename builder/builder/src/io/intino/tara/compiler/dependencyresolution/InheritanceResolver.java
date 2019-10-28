@@ -11,12 +11,9 @@ import io.intino.tara.lang.model.rules.Size;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class InheritanceResolver {
-	private static final Logger LOG = Logger.getGlobal();
-
 	private Model model;
 
 	public InheritanceResolver(Model model) {
@@ -34,7 +31,7 @@ public class InheritanceResolver {
 
 	private void resolveFacetNodes() {
 		model.components().stream().filter(n -> ProteoConstants.FACET.equals(n.type())).forEach(n -> {
-			n.addFlag(Tag.Abstract);
+			if (!n.flags().contains(Tag.Abstract)) n.addFlags(Tag.Abstract);
 			Collection<Node> nodes = collectNodes(model, node -> (node.isAspect() || node.isMetaAspect()) && node.name().equals(n.name()));
 			for (Node node : nodes) {
 				n.addChild(node);
@@ -45,7 +42,7 @@ public class InheritanceResolver {
 
 	private void resolve(Node node) throws DependencyException {
 		List<Node> children = getChildrenSorted(node);
-		if (!node.isAbstract() && !node.subs().isEmpty()) node.addFlag(Tag.Abstract);
+		if (!node.isAbstract() && !node.subs().isEmpty() && !node.flags().contains(Tag.Abstract)) node.addFlags(Tag.Abstract);
 		for (Node child : children) resolve(node, child);
 	}
 
@@ -160,14 +157,14 @@ public class InheritanceResolver {
 	}
 
 	private void addTags(Node component, NodeReference reference) {
-		component.flags().stream().filter(tag -> !reference.flags().contains(tag) && Flags.forReference().contains(tag)).forEach(reference::addFlag);
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag) && Flags.forReference().contains(tag)).forEach(reference::addFlags);
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 
 	private void resolveFlags(Node parent, Node child) {
 		parent.flags().stream().
 				filter(tag -> !tag.equals(Tag.Abstract) && !child.flags().contains(tag)).
-				forEach(child::addFlag);
+				forEach(child::addFlags);
 	}
 
 	private void resolveAnnotations(Node parent, Node child) {

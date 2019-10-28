@@ -20,6 +20,7 @@ import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -118,7 +119,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private void addDoc(Node node, FrameBuilder frame) {
 		frame.add(DOC, new FrameBuilder(DOC).
 				add(LAYER, findLayer(node)).
-				add(FILE, node.file().replace("\\", "\\\\")).
+				add(FILE, new File(node.file()).getName().replace("\\", "\\\\")).
 				add(LINE, node.line()).
 				add(DOC, node.doc() != null ? format(node) : "").
 				toFrame());

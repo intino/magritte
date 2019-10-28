@@ -13,7 +13,7 @@ public class NameFormatter {
 	}
 
 	public static String getQn(Node node, String workingPackage) {
-		return workingPackage.toLowerCase() + DOT + qualifiedName().format(node.layerQualifiedName());
+		return workingPackage.toLowerCase() + DOT + qualifiedName().format(((NodeImpl) node).layerQualifiedName()).toString();
 	}
 
 	public static String getQn(Aspect aspect, String workingPackage) {

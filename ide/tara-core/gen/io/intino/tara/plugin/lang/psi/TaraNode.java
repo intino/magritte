@@ -19,4 +19,6 @@ public interface TaraNode extends TaraPsiElement, Node, Iconable, Navigatable {
   @NotNull
   TaraSignature getSignature();
 
+  void applyAspect(String aspect);
+
 }

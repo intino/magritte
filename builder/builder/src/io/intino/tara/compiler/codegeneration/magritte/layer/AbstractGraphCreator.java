@@ -51,7 +51,7 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 		builder.add(STASH_QN, qn);
 		builder.add(OUT_LANGUAGE, outDsl);
 		addType(node, size, builder);
-		builder.add(NAME, node.layerName());
+		builder.add(NAME, node.name());
 		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> builder.add(VARIABLE, frameOf(variable)));
 		addTerminalVariables(node, builder);
 		return builder.toFrame();

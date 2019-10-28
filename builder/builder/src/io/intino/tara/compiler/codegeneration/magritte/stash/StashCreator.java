@@ -6,6 +6,7 @@ import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
+import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.io.Concept;
 import io.intino.tara.io.Node;
@@ -83,7 +84,7 @@ public class StashCreator {
 					node.isAspect() || node.isMetaAspect(),
 					node.container() instanceof Model && !node.is(Tag.Component),
 					className(node),
-					node.parent() != null ? Format.qualifiedName().format(node.parent().layerQualifiedName()).toString() : null,
+					node.parent() != null ? Format.qualifiedName().format(((NodeImpl) node.parent()).layerQn()).toString() : null,
 					StashHelper.collectTypes(node, this.language),
 					collectContents(nodeList),
 					variablesOf(node),
@@ -149,8 +150,7 @@ public class StashCreator {
 	}
 
 	private String calculateParent(io.intino.tara.lang.model.Node node) {
-		if (node.parent() != null) return node.parent().layerQualifiedName();
-		else return null;
+		return node.parent() != null ? ((NodeImpl) node.parent()).layerQn() : null;
 	}
 
 	private Concept createChildAspectType(io.intino.tara.lang.model.Node aspectNode, io.intino.tara.lang.model.Node node, Concept parent) {
@@ -173,7 +173,7 @@ public class StashCreator {
 	private List<Concept.Content> collectContents(List<io.intino.tara.lang.model.Node> nodes) {
 		return nodes.stream().
 				filter(node -> !node.isAspect() && !node.is(Instance)).
-				map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().layerQualifiedName() : n.layerQualifiedName(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
+				map(n -> new Concept.Content(n.isReference() ? ((NodeImpl) n.destinyOfReference()).layerQn() : ((NodeImpl) n).layerQn(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
 	}
 
 	private List<Node> createNodes(List<io.intino.tara.lang.model.Node> nodes) {
@@ -297,7 +297,7 @@ public class StashCreator {
 	}
 
 	private String nodeStashQualifiedName(io.intino.tara.lang.model.Node node) {
-		return (((node).is(Instance)) ? getStash(node) + "#" : "") + (node).layerQualifiedName();
+		return (((node).is(Instance)) ? getStash(node) + "#" : "") + ((NodeImpl) node).layerQn();
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {

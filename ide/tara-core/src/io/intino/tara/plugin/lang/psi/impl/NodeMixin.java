@@ -370,8 +370,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		inheritedFlags().addAll(flags);
 	}
 
-	public void addFlag(Tag flag) {
-		inheritedFlags().add(flag);
+	public void addFlags(Tag... flag) {
+		Collections.addAll(inheritedFlags(), flag);
 	}
 
 	public void addAnnotations(Tag... annotations) {
@@ -461,7 +461,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public void addAspect(String type) {
+	public void applyAspect(String type) {
 		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
 		if (appliedAspects().isEmpty()) {
 			final PsiElement anchor = anchor();

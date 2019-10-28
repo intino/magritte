@@ -35,11 +35,6 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default String layerQualifiedName() {
-		return "";
-	}
-
-	@Override
 	default Node container() {
 		return null;
 	}
@@ -95,12 +90,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default void addFlags(List<Tag> flags) {
-
-	}
-
-	@Override
-	default void addFlag(Tag flags) {
+	default void addFlags(Tag... flags) {
 
 	}
 

@@ -9,6 +9,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Constraint;
+import io.intino.tara.plugin.lang.psi.TaraNode;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.Nls;
@@ -54,7 +55,7 @@ class AddRequiredAspectFix implements IntentionAction {
 				map(constraint -> (Constraint.Aspect) constraint).collect(Collectors.toList());
 		filterPresentFacets(requires);
 		for (Constraint.Aspect require : requires) {
-			node.applyAspect(require.type());
+			((TaraNode) node).applyAspect(require.type());
 		}
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}

@@ -39,12 +39,6 @@ public class LanguageNodeReference implements Node {
 
 	@Override
 	public void name(String name) {
-
-	}
-
-	@Override
-	public String layerQualifiedName() {
-		return null;
 	}
 
 	@Override
@@ -108,12 +102,7 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public void addFlags(List<Tag> flags) {
-
-	}
-
-	@Override
-	public void addFlag(Tag flags) {
+	public void addFlags(Tag... flags) {
 
 	}
 

@@ -169,8 +169,8 @@ public class RuleFactory {
 		return new Assumption.Aspect() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Aspect)) node.addFlag(Tag.Aspect);
-				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
+				if (!node.flags().contains(Tag.Aspect)) node.addFlags(Tag.Aspect);
+				if (!node.flags().contains(Tag.Terminal)) node.addFlags(Tag.Terminal);
 			}
 		};
 	}
@@ -179,7 +179,7 @@ public class RuleFactory {
 		return new Assumption.AspectInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(AspectInstance)) node.addFlag(AspectInstance);
+				if (!node.flags().contains(AspectInstance)) node.addFlags(AspectInstance);
 			}
 		};
 	}
@@ -188,7 +188,7 @@ public class RuleFactory {
 		return new Assumption.Feature() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Feature)) node.addFlag(Tag.Feature);
+				if (!node.flags().contains(Tag.Feature)) node.addFlags(Tag.Feature);
 				propagateFlags(node, Tag.Feature);
 			}
 		};
@@ -199,7 +199,7 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (node.isReference()) return;
-				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
+				if (!node.flags().contains(Tag.Terminal)) node.addFlags(Tag.Terminal);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Terminal)).forEach(variable -> variable.addFlags(Tag.Terminal));
 				propagateFlags(node, Tag.Terminal);
 			}
@@ -211,7 +211,7 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (node.isReference()) return;
-				if (!node.flags().contains(Tag.Volatile)) node.addFlag(Tag.Volatile);
+				if (!node.flags().contains(Tag.Volatile)) node.addFlags(Tag.Volatile);
 				propagateFlags(node, Tag.Volatile);
 			}
 		};
@@ -221,7 +221,7 @@ public class RuleFactory {
 		return new Assumption.Component() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Component)) node.addFlag(Tag.Component);
+				if (!node.flags().contains(Tag.Component)) node.addFlags(Tag.Component);
 			}
 		};
 	}
@@ -231,7 +231,7 @@ public class RuleFactory {
 		return new Assumption.Instance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Instance)) node.addFlag(Tag.Instance);
+				if (!node.flags().contains(Tag.Instance)) node.addFlags(Tag.Instance);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Instance)).forEach(variable -> variable.addFlags(Tag.Instance));
 				propagateFlags(node, Tag.Instance);
 			}
@@ -255,7 +255,7 @@ public class RuleFactory {
 	private static void propagateFlags(Node node, Tag flag) {
 		for (Node component : node.components()) {
 			if (component.isReference()) continue;
-			if (!component.flags().contains(flag)) component.addFlag(flag);
+			if (!component.flags().contains(flag)) component.addFlags(flag);
 			if (!component.equals(node)) propagateFlags(component, flag);
 		}
 	}

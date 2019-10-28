@@ -11,21 +11,13 @@ public interface Node extends Parametrized, NodeContainer {
 
 	void name(String name);
 
-	default String layerName() {
-		String name = name();
-		name = name.isEmpty() ? "" : name.substring(0, 1).toUpperCase() + name.substring(1);
-		return isAspect() ? name + "Aspect" : name;
-	}
+	String type();
 
 	String qualifiedName();
-
-	String layerQualifiedName();
 
 	Node container();
 
 	boolean isSub();
-
-	List<Node> subs();
 
 	boolean isAspect();
 
@@ -34,6 +26,8 @@ public interface Node extends Parametrized, NodeContainer {
 	default List<AspectConstraint> aspectConstraints() {
 		return Collections.emptyList();
 	}
+
+	List<Aspect> appliedAspects();
 
 	boolean is(Tag tag);
 
@@ -49,19 +43,13 @@ public interface Node extends Parametrized, NodeContainer {
 
 	void addAnnotations(Tag... annotations);
 
-	void addFlags(List<Tag> flags);
-
-	void addFlag(Tag flags);
+	void addFlags(Tag... flags);
 
 	Node parent();
 
 	String parentName();
 
 	boolean isAnonymous();
-
-	default String simpleType() {
-		return type();
-	}
 
 	List<String> types();
 
@@ -83,15 +71,13 @@ public interface Node extends Parametrized, NodeContainer {
 
 	boolean isReference();
 
-	List<Node> siblings();
-
 	List<Variable> variables();
-
-	List<Node> referenceComponents();
 
 	Node destinyOfReference();
 
 	List<Node> children();
+
+	List<Node> subs();
 
 	default void addUses(List<String> imports) {
 	}
@@ -99,12 +85,7 @@ public interface Node extends Parametrized, NodeContainer {
 	default <T extends Node> void addChild(T node) {
 	}
 
-	List<Aspect> appliedAspects();
-
 	default void applyAspects(Aspect... aspects) {
-	}
-
-	default void applyAspect(String aspectType) {
 	}
 
 	@Override

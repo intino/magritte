@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
@@ -32,7 +31,6 @@ import static io.intino.tara.lang.model.Tag.Decorable;
 import static io.intino.tara.lang.model.Tag.Instance;
 
 class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
-	private static final Logger LOG = Logger.getGlobal();
 	private final Model model;
 	private final Level level;
 	private Node initNode;
@@ -80,7 +78,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 
 	private void addAspect(Node aspect, Node target, FrameBuilderContext context) {
 		String qn = cleanQn(getQn(target, workingPackage));
-		final FrameBuilder builder = new FrameBuilder().add(ASPECT).add(NAME, target.layerName()).add(QN, qn).add(OUT_LANGUAGE, outDsl);
+		final FrameBuilder builder = new FrameBuilder().add(ASPECT).add(NAME, target.name()).add(QN, qn).add(OUT_LANGUAGE, outDsl);
 		if (aspect.isSub() && aspect.parent() != null) builder.add(OVERRIDEN);
 		context.add(ASPECT, builder.toFrame());
 		context.add("core", new FrameBuilder().add("core").add(QN, qn).add(NAME, target.name()).toFrame());
@@ -122,7 +120,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 				filter(c -> !c.isAnonymous()).
 				forEach(c -> {
 					List<FrameBuilder> children = new ArrayList<>();
-					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
+					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !n.isAspect() && !components.contains(n)).
 							forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
 					for (FrameBuilder child : children) context.add(CREATE, child.add(NODE).add(OWNER).toFrame());
 				});
@@ -173,7 +171,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			builder.add(QN, qn);
 			builder.add(STASH_QN, qn);
 			node.variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> builder.add(VARIABLE,
-					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, node.layerName()).toFrame()));
+					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, node.name()).toFrame()));
 			context.add(AVAILABLE_ASPECT, builder.toFrame());
 		});
 	}
@@ -181,7 +179,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private void addName(FrameBuilderContext context, Node node) {
 		String qn = cleanQn(buildQN(node));
 		context.add(QN, qn).add(STASH_QN, qn);
-		if (node.layerName() != null) context.add(NAME, node.layerName());
+		if (node.name() != null) context.add(NAME, node.name());
 	}
 
 	private String buildQN(Node node) {
@@ -193,16 +191,16 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			final FrameBuilder builder = FrameBuilder.from(this.context)
 					.add(OWNER)
 					.append(v)
-					.add(CONTAINER, node.layerName());
+					.add(CONTAINER, node.name());
 			context.add(VARIABLE, builder.toFrame());
 		});
 		if (node.isAspect()) {
 			node.container().variables().stream().
 					filter(variable -> !variable.isInherited() && !isOverriden(node, variable)).
-					forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(TARGET).add(CONTAINER, node.layerName()).toFrame()));
+					forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(TARGET).add(CONTAINER, node.name()).toFrame()));
 			node.aspectConstraints().forEach(c ->
 					c.node().variables().forEach(v ->
-							context.add(VARIABLE, FrameBuilder.from(context).append(v).add(TARGET).add(CONTAINER, node.layerName()).toFrame())));
+							context.add(VARIABLE, FrameBuilder.from(context).append(v).add(TARGET).add(CONTAINER, node.name()).toFrame())));
 		}
 		addTerminalVariables(node, context);
 	}

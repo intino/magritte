@@ -91,11 +91,7 @@ public class EmptyNode implements Node {
 		throw new UnsupportedOperationException();
 	}
 
-	public void addFlags(List<Tag> flags) {
-		throw new UnsupportedOperationException();
-	}
-
-	public void addFlag(Tag flag) {
+	public void addFlags(Tag... flag) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -117,11 +113,6 @@ public class EmptyNode implements Node {
 	@Override
 	public boolean isAnonymous() {
 		return false;
-	}
-
-	@Override
-	public String simpleType() {
-		return null;
 	}
 
 	@Override
@@ -195,11 +186,6 @@ public class EmptyNode implements Node {
 
 	@Override
 	public String qualifiedName() {
-		return null;
-	}
-
-	@Override
-	public String layerQualifiedName() {
 		return null;
 	}
 

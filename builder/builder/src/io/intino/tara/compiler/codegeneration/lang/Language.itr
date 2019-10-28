@@ -2,8 +2,13 @@ def type(Model)
 	package tara.dsl;
 
 	import io.intino.tara.lang.model.Tag;
+	import io.intino.tara.lang.model.Primitive;
+	import io.intino.tara.lang.model.rules.Size;
+	import io.intino.tara.lang.model.rules.variable.*;
 
+	import java.util.Arrays;
 	import java.util.Locale;
+
 	import static io.intino.tara.lang.semantics.constraints.RuleFactory.*;
 
 	public class $name+reference+FirstUpperCase extends io.intino.tara.dsl.Tara {
@@ -37,7 +42,7 @@ def type(Model)
 end
 
 def type(instance) trigger(super)
-	declare($qn+quoted, java.util.Arrays.asList($nodeType...[, ]), $path+quoted);
+	declare($qn+quoted, Arrays.asList($nodeType...[, ]), $path+quoted);
 end
 
 def type(node) trigger(super)
@@ -57,7 +62,7 @@ def trigger(method)
 end
 
 def type(instance) trigger(node)
-	self.declare($qn+quoted, java.util.Arrays.asList($nodeType...[, ]), $path+quoted);
+	self.declare($qn+quoted, Arrays.asList($nodeType...[, ]), $path+quoted);
 end
 
 def type(node) trigger(node)
@@ -73,7 +78,7 @@ def trigger(constraints)
 end
 
 def type(constraint) type(component) trigger(constraint)
-	component($type+quoted, java.util.Arrays.asList($size...[, ])[, $tags...[, ]])
+	component($type+quoted, Arrays.asList($size...[, ])[, $tags...[, ]])
 end
 
 def type(constraint) type(parameter) type(reference) trigger(constraint)
@@ -93,7 +98,7 @@ def type(constraint) type(aspect) trigger(constraint)
 end
 
 def type(constraint) type(oneOf) trigger(constraint)
-	oneOf(java.util.Arrays.asList($rule...[, ]), [$constraint...[, ]])
+	oneOf(Arrays.asList($rule...[, ]), [$constraint...[, ]])
 end
 
 def type(constraint) type(redefine) trigger(constraint)
@@ -105,7 +110,7 @@ def trigger(constraint)
 end
 
 def trigger(tags)
-	io.intino.tara.lang.model.Tag.$this
+	Tag.$this
 end
 
 def type(customRule & metric) trigger(rule)
@@ -113,7 +118,7 @@ def type(customRule & metric) trigger(rule)
 end
 
 def type(nativecustomwordrule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
+	new io.intino.tara.lang.model.rules.variable.WordRule(Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(customrule) trigger(rule)
@@ -125,11 +130,11 @@ def type(rule & customRule) trigger(size)
 end
 
 def type(rule & size) trigger(size)
-	new io.intino.tara.lang.model.rules.Size($min, $max[, $into+size])
+	new Size($min, $max[, $into+size])
 end
 
 def type(rule & size) trigger(rule)
-	new io.intino.tara.lang.model.rules.Size($min, $max[, $into+size])
+	new Size($min, $max[, $into+size])
 end
 
 def type(nativeObjectRule) trigger(rule)
@@ -137,19 +142,19 @@ def type(nativeObjectRule) trigger(rule)
 end
 
 def type(nativeReferenceRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.NativeReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]))
+	new io.intino.tara.lang.model.rules.variable.NativeReferenceRule(Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
 def type(nativerule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.NativeRule("$interfaceClass", "$signature", java.util.Arrays.asList($imports+quoted...[, ]))
+	new io.intino.tara.lang.model.rules.variable.NativeRule("$interfaceClass", "$signature", Arrays.asList($imports+quoted...[, ]))
 end
 
 def type(wordrule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
+	new io.intino.tara.lang.model.rules.variable.WordRule(Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(referenceRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.ReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]))
+	new io.intino.tara.lang.model.rules.variable.ReferenceRule(Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
 def type(doubleRule) trigger(rule)
@@ -169,7 +174,7 @@ def type(instantRule) trigger(rule)
 end
 
 def type(fileRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.FileRule(java.util.Arrays.asList($extensions+quoted...[, ]))
+	new io.intino.tara.lang.model.rules.variable.FileRule(Arrays.asList($extensions+quoted...[, ]))
 end
 
 def type(stringRule) trigger(rule)
@@ -211,7 +216,7 @@ def trigger(quoted)
 end
 
 def trigger(primitive)
-	io.intino.tara.lang.model.Primitive.$this+UpperCase
+	Primitive.$this+UpperCase
 end
 
 def trigger(locale) attribute(this:es)

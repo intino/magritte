@@ -14,7 +14,9 @@ public interface NodeContainer extends Element {
 
 	List<Node> components();
 
-	String type();
+	List<Node> siblings();
+
+	List<Node> referenceComponents();
 
 	default void add(Node node, List<Rule> rule) {
 

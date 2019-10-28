@@ -1,5 +1,5 @@
 def type(Layer & decorable)
-	package $package+javaValidName+lowercase;
+	package $package+javaValidName+lowercase[.$container+lowercase];
 
 	public [$abstract] class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 

@@ -49,11 +49,6 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String layerName() {
-		return name;
-	}
-
-	@Override
 	public String file() {
 		return file;
 	}
@@ -176,12 +171,9 @@ public class NodeImpl implements Node {
 		addAll(this.annotations, annotations);
 	}
 
-	public void addFlags(List<Tag> flags) {
-		this.flags.addAll(flags);
-	}
 
-	public void addFlag(Tag flag) {
-		this.flags.add(flag);
+	public void addFlags(Tag... flags) {
+		Collections.addAll(this.flags, flags);
 	}
 
 	@Override
@@ -219,9 +211,8 @@ public class NodeImpl implements Node {
 		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name);
 	}
 
-	@Override
 	public String layerQualifiedName() {
-		String containerQn = container.layerQualifiedName();
+		String containerQn = container instanceof Model ? "" : ((NodeImpl) container).layerQualifiedName();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
 		return (containerQn.isEmpty() ? "" : containerQn + "$") + (name == null ? newUUID() : name);
 	}
@@ -241,7 +232,6 @@ public class NodeImpl implements Node {
 	public String type() {
 		return type;
 	}
-
 
 	@Override
 	public List<String> types() {

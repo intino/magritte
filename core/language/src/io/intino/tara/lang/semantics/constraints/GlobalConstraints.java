@@ -72,7 +72,7 @@ public class GlobalConstraints {
 			parent.resolve();
 			String nodeType = node.type();
 			if (parent.type().equals(ProteoConstants.FACET)) {
-				if (!nodeType.equals(ProteoConstants.ASPECT) && !nodeType.equals(ProteoConstants.META_ASPECT))
+				if (!nodeType.equals(ProteoConstants.FACET) && !nodeType.equals(ProteoConstants.ASPECT) && !nodeType.equals(ProteoConstants.META_ASPECT))
 					error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			} else if (!parent.type().equals(nodeType.split(":")[0]) && !parent.type().equals(nodeType))
 				error("reject.parent.different.type", node, asList(parent.type(), nodeType));

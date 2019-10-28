@@ -2,6 +2,7 @@ package io.intino.tara.compiler.codegeneration.magritte.stash;
 
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
+import io.intino.tara.compiler.model.Model;
 import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
@@ -39,7 +40,7 @@ public class StashHelper {
 	}
 
 	public static String name(io.intino.tara.lang.model.Node owner, String workingPackage) {
-		return withDollar().format(noPackage().format(NameFormatter.getQn(owner, workingPackage))).toString();
+		return owner instanceof Model ? "" : withDollar().format(noPackage().format(NameFormatter.getQn(owner, workingPackage))).toString();
 	}
 
 	static boolean hasToBeConverted(List<Object> values, Primitive type) {

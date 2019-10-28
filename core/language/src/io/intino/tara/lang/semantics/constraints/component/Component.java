@@ -90,7 +90,7 @@ public class Component implements Constraint.Component {
 	private void addFlags(Node node) {
 		List<Tag> flags = new ArrayList<>(node.flags());
 		for (Tag flag : this.annotations) {
-			if (!flags.contains(flag)) node.addFlag(flag);
+			if (!flags.contains(flag)) node.addFlags(flag);
 			flags.add(flag);
 		}
 	}

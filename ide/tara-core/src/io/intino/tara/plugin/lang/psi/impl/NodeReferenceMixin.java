@@ -34,11 +34,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.unmodifiableList(destiny.appliedAspects().stream().map(Aspect::type).collect(Collectors.toList()));
 	}
 
-	public String simpleType() {
-		final Node node = destinyOfReference();
-		return node != null ? node.simpleType() : "";
-	}
-
 	public boolean isReference() {
 		return true;
 	}
@@ -79,10 +74,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		this.inheritedFlags.addAll(flags);
 	}
 
-	public void addFlag(Tag flag) {
-		this.inheritedFlags.add(flag);
-	}
 
+	public void addFlags(Tag... flag) {
+		Collections.addAll(inheritedFlags, flag);
+	}
 	public void addAnnotations(Tag... annotations) {
 	}
 

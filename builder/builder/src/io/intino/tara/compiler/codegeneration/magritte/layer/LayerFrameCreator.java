@@ -7,6 +7,7 @@ import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
+import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.Node;
@@ -62,17 +63,18 @@ public class LayerFrameCreator implements TemplateTags {
 	public Map.Entry<String, Frame> createDecorable(Node node) {
 		final FrameBuilder builder = new FrameBuilder(LAYER, DECORABLE);
 		final String aPackage = addWorkingPackage(builder);
-		builder.add(NAME, node.layerName());
+		builder.add(NAME, node.name());
+		builder.add(CONTAINER, ((NodeImpl) node).layerQn());
 		if (node.isAbstract()) builder.add(ABSTRACT, true);
 		return new SimpleEntry<>(calculateDecorablePath(node, aPackage), builder.toFrame());
 	}
 
 	private String calculateLayerPath(Node node, String aPackage) {
-		return aPackage + DOT + (node.is(Tag.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(node.layerName()).toString());
+		return aPackage + DOT + (node.is(Tag.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(node.name()).toString());
 	}
 
 	private String calculateDecorablePath(Node node, String aPackage) {
-		return aPackage + DOT + firstUpperCase().format(javaValidName().format(node.layerName()).toString());
+		return aPackage + (node.container() instanceof Model ? "" : DOT + node.container().qualifiedName().toLowerCase()) + DOT + firstUpperCase().format(javaValidName().format(node.name()).toString());
 	}
 
 	private void addNodeImports(FrameBuilder builder) {

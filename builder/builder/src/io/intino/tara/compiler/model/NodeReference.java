@@ -3,7 +3,9 @@ package io.intino.tara.compiler.model;
 
 import io.intino.tara.lang.model.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static io.intino.tara.lang.model.Tag.Abstract;
 import static io.intino.tara.lang.model.Tag.Terminal;
@@ -51,11 +53,6 @@ public class NodeReference implements Node {
 	@Override
 	public void name(String name) {
 
-	}
-
-	@Override
-	public String layerName() {
-		return destination != null ? destination.layerName() : "";
 	}
 
 	@Override
@@ -181,12 +178,8 @@ public class NodeReference implements Node {
 		Collections.addAll(this.annotations, annotations);
 	}
 
-	public void addFlags(List<Tag> flags) {
-		this.flags.addAll(flags);
-	}
-
-	public void addFlag(Tag flag) {
-		this.flags.add(flag);
+	public void addFlags(Tag... flags) {
+		Collections.addAll(this.flags, flags);
 	}
 
 	@Override
@@ -211,16 +204,7 @@ public class NodeReference implements Node {
 
 	@Override
 	public String qualifiedName() {
-		return getContainerQualifiedName() + "." + destination.name();
-	}
-
-	@Override
-	public String layerQualifiedName() {
-		return container.layerQualifiedName() + "$" + destination.name();
-	}
-
-	private String getContainerQualifiedName() {
-		return container.qualifiedName();
+		return container.qualifiedName() + "." + destination.name();
 	}
 
 	@Override

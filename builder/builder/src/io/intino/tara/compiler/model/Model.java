@@ -139,11 +139,6 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public String layerName() {
-		return name();
-	}
-
-	@Override
 	public boolean isMetaAspect() {
 		return false;
 	}

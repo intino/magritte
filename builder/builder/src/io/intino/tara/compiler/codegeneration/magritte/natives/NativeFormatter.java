@@ -10,7 +10,9 @@ import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
+import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.VariableReference;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -200,7 +202,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String calculatePackage(Node container) {
 		final Node node = firstNamedContainer(container);
-		return node == null ? "" : node.layerQualifiedName().replace("$", ".").replace("#", ".").toLowerCase();
+		return node == null ? "" : ((NodeImpl) node).layerQn().replace("$", ".").replace("#", ".").toLowerCase();
 	}
 
 	private static Node firstNamedContainer(Node container) {
