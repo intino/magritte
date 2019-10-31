@@ -280,8 +280,8 @@ public class Graph {
 		of(stashes).forEach(stashReader::read);
 		LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
 		clone.forEach((node, map) -> {
-			map.forEach(node::load);
 			variables.remove(node);
+			map.forEach(node::load);
 		});
 	}
 

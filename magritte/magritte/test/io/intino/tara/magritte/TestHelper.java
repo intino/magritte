@@ -1,6 +1,7 @@
 package io.intino.tara.magritte;
 
 import io.intino.tara.io.Stash;
+import io.intino.tara.io.Variable;
 import io.intino.tara.magritte.stores.FileSystemStore;
 import io.intino.tara.magritte.stores.ResourcesStore;
 
@@ -32,53 +33,11 @@ public class TestHelper {
 	public static final String m3 = "m3";
 	public static final String highHierarchy = "highHierarchy";
 	public static final String missingReference = "missingReference";
+	public static final String manyReferences = "manyReferences";
 	public static final String Extension = ".stash";
 
 	public static Store mockStore() {
-		return new Store() {
-
-			Map<String, Stash> store = new HashMap<String, Stash>() {{
-				put(emptyStash + Extension, emptyStash());
-				put(oneMockStash + Extension, oneMockStash());
-				put(uuidStash + Extension, uuidStash());
-				put(firstStash + Extension, firstStash());
-				put(secondStash + Extension, secondStash());
-				put(thirdStash + Extension, thirdStash());
-				put(dependantStashByUse + Extension, dependantStashByUse());
-				put(cyclicDependantStash + Extension, cyclicDependantStash());
-				put(independentStash + Extension, independentStashInSubStash());
-				put(m1 + Extension, m1());
-				put(m2 + Extension, m2());
-				put(m3 + Extension, m3());
-				put(highHierarchy + Extension, highHierarchy());
-				put(missingReference + Extension, missingReference());
-			}};
-
-			@Override
-			public Stash stashFrom(String stash) {
-				return store.get(stash);
-			}
-
-			@Override
-			public void writeStash(Stash stash, String path) {
-				store.put(path, composeStash(path, stash));
-			}
-
-			@Override
-			public URL resourceFrom(String path) {
-				return new ResourcesStore().resourceFrom(path);
-			}
-
-			@Override
-			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
-				return null;
-			}
-
-			@Override
-			public String relativePathOf(URL url) {
-				return null;
-			}
-		};
+		return new MockStore();
 	}
 
 	public static Store fileSystemMockStore(File file) {
@@ -191,6 +150,24 @@ public class TestHelper {
 		return stash;
 	}
 
+	public static Stash manyReferences() {
+		Stash stash = emptyStash();
+		io.intino.tara.io.Node node = newNode(missingReference + "#x", list("Mock"), list(), emptyList());
+		String[] references = new String[2000];
+		for (int i = 0; i < 2000; i++) {
+			references[i] = "stash" + i + "#x";
+		}
+		node.variables.add(newReference("varMockList", references));
+		stash.nodes.add(node);
+		return stash;
+	}
+
+	public static Stash referencedStash(String stashname) {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(stashname.replace(".stash", "") + "#x", list("Mock"), list(newReference("varMockList", "stash1#x")), emptyList()));
+		return stash;
+	}
+
 	static Stash emptyStash() {
 		return newStash("m3", list());
 	}
@@ -209,6 +186,51 @@ public class TestHelper {
 						| parseUnsignedHex(text.substring(1));
 			}
 			return Long.parseLong(text, 16);
+		}
+	}
+
+	public static class MockStore implements Store {
+		Map<String, Stash> store = new HashMap<String, Stash>() {{
+			put(emptyStash + Extension, emptyStash());
+			put(oneMockStash + Extension, oneMockStash());
+			put(uuidStash + Extension, uuidStash());
+			put(firstStash + Extension, firstStash());
+			put(secondStash + Extension, secondStash());
+			put(thirdStash + Extension, thirdStash());
+			put(dependantStashByUse + Extension, dependantStashByUse());
+			put(cyclicDependantStash + Extension, cyclicDependantStash());
+			put(independentStash + Extension, independentStashInSubStash());
+			put(m1 + Extension, m1());
+			put(m2 + Extension, m2());
+			put(m3 + Extension, m3());
+			put(highHierarchy + Extension, highHierarchy());
+			put(missingReference + Extension, missingReference());
+			put(manyReferences + Extension, manyReferences());
+		}};
+
+		@Override
+		public Stash stashFrom(String stash) {
+			return store.get(stash);
+		}
+
+		@Override
+		public void writeStash(Stash stash, String path) {
+			store.put(path, composeStash(path, stash));
+		}
+
+		@Override
+		public URL resourceFrom(String path) {
+			return new ResourcesStore().resourceFrom(path);
+		}
+
+		@Override
+		public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
+			return null;
+		}
+
+		@Override
+		public String relativePathOf(URL url) {
+			return null;
 		}
 	}
 }
