@@ -14,7 +14,6 @@ import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.*;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -236,9 +235,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement resolveRuleToClass(io.intino.tara.plugin.lang.psi.Rule rule) {
-		return IntinoModuleType.isIntino(ModuleProvider.moduleOf(rule)) ?
-				resolveJavaClassReference(rule.getProject(), TaraUtil.graphPackage(rule).toLowerCase() + ".rules." + rule.getText()) :
-				null;
+		return resolveJavaClassReference(rule.getProject(), TaraUtil.graphPackage(rule).toLowerCase() + ".rules." + rule.getText());
 	}
 
 	private static PsiElement resolveNativeClass(io.intino.tara.plugin.lang.psi.Rule rule, Project project) {

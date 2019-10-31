@@ -58,7 +58,7 @@ public class Resolver {
 
 	private boolean isOneOf(Constraint.Component allow, String type) {
 		if (!(allow instanceof OneOf)) return false;
-		return ((OneOf) allow).components().stream().anyMatch(one -> one.type().endsWith("." + type));
+		return ((OneOf) allow).components().stream().anyMatch(one -> one.type().endsWith("." + type) || one.type().equals(type));
 	}
 
 	private List<Constraint> findInAspects(Node node) {
@@ -72,9 +72,15 @@ public class Resolver {
 
 	private void resolveAspects(Node node) {
 		for (Aspect aspect : node.appliedAspects()) {
-			if (language.constraints(node.type() + "." + aspect.type()) != null)
-				aspect.fullType(node.type() + "." + aspect.type());
+			Constraint.Aspect constraint = (Constraint.Aspect) language.constraints(node.type()).stream().
+					filter(c -> c instanceof Constraint.Aspect &&
+							simpleType((Constraint.Aspect) c).equals(aspect.type())).findFirst().orElse(null);
+			if (constraint != null) aspect.fullType(constraint.type());
 		}
+	}
+
+	private String simpleType(Constraint.Aspect aspect) {
+		return aspect.type().contains(".") ? aspect.type().substring(aspect.type().lastIndexOf(".") + 1) : aspect.type();
 	}
 
 	private boolean checkComponentConstraint(Node node, Constraint constraint) {
@@ -104,6 +110,8 @@ public class Resolver {
 			String absoluteType = ((Constraint.Component) one).type();
 			if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 				node.type(absoluteType);
+				node.metaTypes(language.types(absoluteType));
+				resolveAspects(node);
 				return true;
 			}
 		}

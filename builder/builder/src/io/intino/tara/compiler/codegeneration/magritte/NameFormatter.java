@@ -1,6 +1,7 @@
 package io.intino.tara.compiler.codegeneration.magritte;
 
 import io.intino.tara.compiler.model.NodeImpl;
+import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 
@@ -13,7 +14,11 @@ public class NameFormatter {
 	}
 
 	public static String getQn(Node node, String workingPackage) {
-		return workingPackage.toLowerCase() + DOT + qualifiedName().format(((NodeImpl) node).layerQualifiedName()).toString();
+		return workingPackage.toLowerCase() + DOT + qualifiedName().format(layerQn(node)).toString();
+	}
+
+	private static String layerQn(Node node) {
+		return node instanceof NodeReference ? ((NodeReference) node).layerQualifiedName() : ((NodeImpl) node).layerQualifiedName();
 	}
 
 	public static String getQn(Aspect aspect, String workingPackage) {

@@ -55,7 +55,8 @@ public abstract class Generator implements TemplateTags {
 		String parentQN = cleanQn(getQn(parent, workingPackage));
 		context.add(PARENT, parentQN);
 		if (context.contains(CREATE) || context.contains(NODE)) context.add(PARENT_SUPER, true).add("parentName", parentQN);
-		if ((context.contains(NODE)) && !node.parent().components().isEmpty())
+		if ((context.contains(NODE)) && !node.parent().components().isEmpty()
+				|| (parent.isAspect() && parent.container().components().stream().anyMatch(c -> !c.isAspect() && !c.isMetaAspect()) && hasLists(parent.container())))
 			context.add("parentClearName", parentQN);
 	}
 
@@ -211,7 +212,7 @@ public abstract class Generator implements TemplateTags {
 	}
 
 
-//	private void addParent(FacetTarget target) {
+	//	private void addParent(FacetTarget target) {
 //		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
 //		if (parent != null) context.add(PARENT, cleanQn(NameFormatter.getQn(parent, workingPackage)));
 //		if ((context.contains(CREATE) || context.contains(NODE)) || !target.owner().children().isEmpty()) {
@@ -227,8 +228,8 @@ public abstract class Generator implements TemplateTags {
 //	return parent.components().stream().filter(c -> c.container().rulesOf(c).stream().noneMatch(rule -> rule instanceof Size && ((Size) rule).isSingle())).collect(Collectors.toList());
 //}
 //
-//	private boolean hasLists(Node node) {
-//		return node.components().stream().anyMatch(c -> !node.sizeOf(c).isSingle());
-//	}
+	private boolean hasLists(Node node) {
+		return node.components().stream().filter(c -> !c.isAspect() && !c.isMetaAspect()).anyMatch(c -> !node.sizeOf(c).isSingle());
+	}
 
 }

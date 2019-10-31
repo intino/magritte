@@ -113,14 +113,9 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void Sherlock_M1() {
-		main(new String[]{home + "sandbox/confFiles/ness/m1.txt"});
-	}
-
-	@Test
 	public void konos_M1() {
 		System.out.println(Instant.now().toString());
-		main(new String[]{home + "sandbox/confFiles/konos/m1.txt"});
+		main(new String[]{home + "sandbox/confFiles/konos/m1-test.txt"});
 		System.out.println(Instant.now().toString());
 	}
 

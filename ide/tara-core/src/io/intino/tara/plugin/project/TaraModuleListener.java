@@ -57,7 +57,7 @@ public class TaraModuleListener implements BaseComponent {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf != null) for (Configuration.LanguageLibrary lang : conf.languages())
-				if (!lang.name().isEmpty())
+				if (lang.name() != null && !lang.name().isEmpty())
 					SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(lang.name(), project);
 		}
 	}

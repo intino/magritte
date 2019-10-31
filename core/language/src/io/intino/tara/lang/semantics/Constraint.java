@@ -86,4 +86,8 @@ public interface Constraint {
 	interface RejectOtherParameters extends Constraint {
 
 	}
+
+	interface RejectOtherAspects extends Constraint {
+
+	}
 }

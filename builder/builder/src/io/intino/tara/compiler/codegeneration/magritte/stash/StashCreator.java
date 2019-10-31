@@ -75,11 +75,11 @@ public class StashCreator {
 	}
 
 	private void createConcept(io.intino.tara.lang.model.Node node) {
-		if (node.isAspect()) stash.concepts.addAll(createFromAspect(node));
+		if (node.isAspect()) stash.concepts.addAll(createAspectConcept(node));
 		else {
 			List<io.intino.tara.lang.model.Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(StashHelper.name(node, workingPackage),
-					node.isAbstract() || node.isAspect(),
+					node.isAbstract(),
 					node.type().equals(ProteoConstants.META_CONCEPT),
 					node.isAspect() || node.isMetaAspect(),
 					node.container() instanceof Model && !node.is(Tag.Component),
@@ -95,25 +95,21 @@ public class StashCreator {
 		}
 	}
 
-	private List<Concept> createFromAspect(io.intino.tara.lang.model.Node aspectNode) {
-		List<io.intino.tara.lang.model.Node> components = collectTypeComponents(aspectNode.components());
+	private List<Concept> createAspectConcept(io.intino.tara.lang.model.Node aspectNode) {
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
 		concepts.add(concept);
 		concept.isMetaConcept = aspectNode.type().equals(ProteoConstants.META_CONCEPT);
 		concept.isAbstract = aspectNode.isAbstract();
+		concept.isAspect = true;
 		concept.name = StashHelper.name(aspectNode, workingPackage);
 		concept.className = aspectClassName(aspectNode);
 		concept.types = StashHelper.collectTypes(aspectNode, language);
 		concept.parent = calculateParent(aspectNode);
-		concept.contentRules = collectContents(components);
 		concept.variables = variablesOf(aspectNode);
 		concept.parameters = parametersOf(aspectNode);
+		concept.contentRules = collectContents(collectTypeComponents(aspectNode.components()));
 		for (io.intino.tara.lang.model.Node component : aspectNode.components()) create(component, concept);
-		io.intino.tara.lang.model.Node targetNode = aspectNode.container();
-		concepts.addAll(collectChildren(targetNode).stream().
-				map(node -> createChildAspectType(aspectNode, node, concept)).
-				collect(toList()));
 		return concepts;
 	}
 

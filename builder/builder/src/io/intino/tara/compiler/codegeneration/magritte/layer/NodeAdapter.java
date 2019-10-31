@@ -18,10 +18,8 @@ import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Constraint.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
@@ -69,7 +67,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	}
 
 	private Stream<Node> aspectNodes(Node node) {
-		return node.components().stream().filter(Node::isAspect);
+		return node.components().stream().filter(n -> !n.isReference() && n.isAspect());
 	}
 
 	private void addAspectSlot(FrameBuilderContext context, Node aspectNode) {
@@ -163,7 +161,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	}
 
 	private void addAllowedAspects(Node node, FrameBuilderContext context) {
-		node.components().stream().filter(Node::isAspect).forEach(aspect -> {
+		allowedAspects(node).forEach(aspect -> {
 			FrameBuilder builder = new FrameBuilder(AVAILABLE_ASPECT);
 			builder.add(NAME, aspect.name());
 			if (node.isAbstract()) builder.add(ABSTRACT, "null");
@@ -176,10 +174,21 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 		});
 	}
 
+
+	private Collection<Node> allowedAspects(Node node) {
+		Set<Node> nodes = new HashSet<>();
+		for (Node aspectNode : node.components().stream().filter(Node::isAspect).collect(Collectors.toList())) {
+			if (aspectNode.isReference()) continue;
+			nodes.add(aspectNode);
+			nodes.addAll(collectChildren(aspectNode));
+		}
+		return nodes;
+	}
+
 	private void addName(FrameBuilderContext context, Node node) {
+		if (node.name() != null) context.add(NAME, node.name());
 		String qn = cleanQn(buildQN(node));
 		context.add(QN, qn).add(STASH_QN, qn);
-		if (node.name() != null) context.add(NAME, node.name());
 	}
 
 	private String buildQN(Node node) {
@@ -206,9 +215,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	}
 
 	private boolean isOverriden(Node node, Variable variable) {
-		for (Variable var : node.variables())
-			if (var.name().equals(variable.name())) return true;
-		return false;
+		return node.variables().stream().anyMatch(var -> var.name().equals(variable.name()));
 	}
 
 	private boolean isOverriden(Node targetNodeComponent, Node aspectNode) {

@@ -106,8 +106,8 @@ public class RuleFactory {
 		};
 	}
 
-	public static Constraint.RejectOtherParameters rejectOtherAspects(List<Constraint.Aspect> aspects) {
-		return new Constraint.RejectOtherParameters() {
+	public static Constraint.RejectOtherAspects rejectOtherAspects(List<Constraint.Aspect> aspects) {
+		return new Constraint.RejectOtherAspects() {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
