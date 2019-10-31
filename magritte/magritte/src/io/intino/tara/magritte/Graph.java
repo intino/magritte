@@ -260,7 +260,11 @@ public class Graph {
 	}
 
 	private void doLoadStashes(String... stashes) {
-		stream(stashes).forEach(s -> doLoadStashes(stashOf(stashWithExtension(s))));
+		stream(stashes).forEach(s -> {
+			Stash stash = stashOf(stashWithExtension(s));
+			doLoadStashes(stash);
+			if(stash != null && !stash.concepts.isEmpty()) this.languages.add(s);
+		});
 	}
 
 	void doLoadStashes(Stash... stashes) {
@@ -350,6 +354,7 @@ public class Graph {
 	}
 
 	void init(String language) {
+		if(language == null) return;
 		if (openedStashes.contains(stashWithExtension(language))) {
 			languages.add(language);
 			return;

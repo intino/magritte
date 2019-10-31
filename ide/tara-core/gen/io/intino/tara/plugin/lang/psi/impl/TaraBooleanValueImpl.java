@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraBooleanValueImpl extends ASTWrapperPsiElement implements TaraBooleanValue {
 
-  public TaraBooleanValueImpl(ASTNode node) {
+  public TaraBooleanValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -404,6 +404,7 @@ public class NodeImpl implements Node {
 		this.components.putAll(node.components);
 		this.variables.addAll(node.variables);
 		this.children.addAll(node.children);
+		for (Node child : node.children) ((NodeImpl) child).setParent(this);
 		this.annotations.addAll(node.annotations);
 		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Abstract)).collect(Collectors.toList()));
 		if (this.facetTarget() == null) this.facetTarget = node.facetTarget;

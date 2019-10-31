@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraAnImportImpl extends ImportMixin implements TaraAnImport {
 
-  public TaraAnImportImpl(ASTNode node) {
+  public TaraAnImportImpl(@NotNull ASTNode node) {
     super(node);
   }
 

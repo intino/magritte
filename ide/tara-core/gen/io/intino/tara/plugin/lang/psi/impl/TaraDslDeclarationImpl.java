@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraDslDeclarationImpl extends ASTWrapperPsiElement implements TaraDslDeclaration {
 
-  public TaraDslDeclarationImpl(ASTNode node) {
+  public TaraDslDeclarationImpl(@NotNull ASTNode node) {
     super(node);
   }
 

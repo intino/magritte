@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
-  public TaraSignatureImpl(ASTNode node) {
+  public TaraSignatureImpl(@NotNull ASTNode node) {
     super(node);
   }
 

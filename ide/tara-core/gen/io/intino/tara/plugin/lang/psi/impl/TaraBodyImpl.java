@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraBodyImpl extends BodyMixin implements TaraBody {
 
-  public TaraBodyImpl(ASTNode node) {
+  public TaraBodyImpl(@NotNull ASTNode node) {
     super(node);
   }
 

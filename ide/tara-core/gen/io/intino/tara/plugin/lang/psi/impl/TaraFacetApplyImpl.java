@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraFacetApplyImpl extends FacetApplyMixin implements TaraFacetApply {
 
-  public TaraFacetApplyImpl(ASTNode node) {
+  public TaraFacetApplyImpl(@NotNull ASTNode node) {
     super(node);
   }
 

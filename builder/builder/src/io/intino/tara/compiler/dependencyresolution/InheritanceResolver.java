@@ -26,12 +26,12 @@ public class InheritanceResolver {
 
 
 	public void resolve() throws DependencyException {
+		mergeFragmentNodes();
 		List<Node> nodes = new ArrayList<>(collectNodes(model));
 		sort(nodes);
 		model.components().forEach(this::resolveAsMetaFacet);
 		for (Node node : nodes) resolve(node);
 		model.components().forEach(this::resolveAsFacetTargetFragment);
-		mergeFragmentNodes();
 	}
 
 	private void resolve(Node node) throws DependencyException {
@@ -89,27 +89,19 @@ public class InheritanceResolver {
 		if (nodes.size() <= 1) return;
 		if (!correctParent(nodes))
 			throw new DependencyException("Error merging extension elements. Parents are not homogeneous.", nodes.get(0));
-		Node parent = selectParent(nodes);
-		if (parent == null) return;
-		final ArrayList<Node> receivers = new ArrayList<>(nodes);
-		receivers.remove(parent);
-		for (Node node : receivers) ((NodeImpl) node).absorb((NodeImpl) parent);
+		Node destination = nodes.get(0);
+		if (destination == null) return;
+		nodes.remove(destination);
+		for (Node node : nodes) {
+			((NodeImpl) destination).absorb((NodeImpl) node);
+			model.remove(node);
+		}
 	}
 
 	private boolean correctParent(List<Node> nodes) {
 		String parent = nodes.get(0).parentName() == null ? "" : nodes.get(0).parentName();
 		for (Node node : nodes) if (!parent.equals(node.parentName() == null ? "" : node.parentName())) return false;
 		return true;
-	}
-
-	private Node selectParent(List<Node> nodes) {
-		return nodes.stream().
-				filter(node -> node.facetTarget() != null && node.facetTarget().targetNode().isAbstract() && !hasParent(node, nodes)).
-				findFirst().orElse(null);
-	}
-
-	private boolean hasParent(Node node, List<Node> nodes) {
-		return nodes.stream().anyMatch(candidate -> candidate.equals(node.parent()));
 	}
 
 	private Map<String, List<Node>> fragmentNodes() {
@@ -308,7 +300,7 @@ public class InheritanceResolver {
 	}
 
 	private Comparator<Node> inheritanceComparator() {
-		return new Comparator<Node>() {
+		return new Comparator<>() {
 			@Override
 			public int compare(Node o1, Node o2) {
 				return maxLevel(o1) - maxLevel(o2);

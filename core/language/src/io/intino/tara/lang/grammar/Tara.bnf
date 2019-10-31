@@ -121,7 +121,7 @@ rule ::= (LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RI
 	implements = 'io.intino.tara.plugin.lang.psi.Rule, io.intino.tara.plugin.lang.psi.TaraPsiElement'
 }
 
-range ::= (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR)
+range ::= (doubleValue | integerValue | STAR) (DOT DOT (doubleValue | integerValue | STAR))?
 
 value ::= stringValue+
         | booleanValue+
