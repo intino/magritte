@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraVariableTypeImpl extends ASTWrapperPsiElement implements TaraVariableType {
 
-  public TaraVariableTypeImpl(ASTNode node) {
+  public TaraVariableTypeImpl(@NotNull ASTNode node) {
     super(node);
   }
 

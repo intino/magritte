@@ -1,23 +1,19 @@
 package io.intino.tara.compiler.dependencyresolution;
 
 import io.intino.tara.compiler.core.errorcollection.DependencyException;
-import io.intino.tara.compiler.model.FacetTargetImpl;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration;
-import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class InheritanceResolver {
-	private static final Logger LOG = Logger.getGlobal();
-
 	private Model model;
 
 	public InheritanceResolver(Model model) {
@@ -26,46 +22,28 @@ public class InheritanceResolver {
 
 
 	public void resolve() throws DependencyException {
-		List<Node> nodes = new ArrayList<>(collectNodes(model));
-		sort(nodes);
-		model.components().forEach(this::resolveAsMetaFacet);
-		for (Node node : nodes) resolve(node);
-		model.components().forEach(this::resolveAsFacetTargetFragment);
 		mergeFragmentNodes();
+		resolveFacetNodes();
+		List<Node> nodes = new ArrayList<>(collectNodes(model, node -> !node.children().isEmpty()));
+		sort(nodes);
+		for (Node node : nodes) resolve(node);
+	}
+
+	private void resolveFacetNodes() {
+		model.components().stream().filter(n -> ProteoConstants.FACET.equals(n.type())).forEach(n -> {
+			if (!n.flags().contains(Tag.Abstract)) n.addFlags(Tag.Abstract);
+			Collection<Node> nodes = collectNodes(model, node -> (node.isAspect() || node.isMetaAspect()) && node.name().equals(n.name()));
+			for (Node node : nodes) {
+				n.addChild(node);
+				((NodeImpl) node).setParent(n);
+			}
+		});
 	}
 
 	private void resolve(Node node) throws DependencyException {
 		List<Node> children = getChildrenSorted(node);
-		if (!node.isAbstract() && !node.subs().isEmpty()) node.addFlag(Tag.Abstract);
+		if (!node.isAbstract() && !node.subs().isEmpty() && !node.flags().contains(Tag.Abstract)) node.addFlags(Tag.Abstract);
 		for (Node child : children) resolve(node, child);
-		resolveAsFacetTargetFragment(node);
-	}
-
-	private void resolveAsMetaFacet(Node node) {
-		if (node.type().startsWith(ProteoConstants.METAFACET + Proteo.FACET_SEPARATOR) && node.facetTarget() != null && !node.facetTarget().targetNode().children().isEmpty())
-			for (Node child : node.facetTarget().targetNode().children())
-				node.container().add(createChildMetaFacet(node, child), node.container().rulesOf(node));
-	}
-
-	private Node createChildMetaFacet(Node node, Node child) {
-		final NodeImpl metaFacet = new NodeImpl();
-		metaFacet.setVirtual(true);
-		metaFacet.setDirty(true);
-		metaFacet.file(node.file());
-		metaFacet.line(node.line());
-		metaFacet.column(node.column());
-		metaFacet.doc(node.doc());
-		metaFacet.container(node.container());
-		metaFacet.name(node.name());
-		metaFacet.type(node.type());
-		metaFacet.setParent(node);
-		final FacetTargetImpl target = new FacetTargetImpl();
-		target.targetNode(child);
-		target.target(child.qualifiedName());
-		target.setConstraints(node.facetTarget().constraints());
-		target.owner(metaFacet);
-		metaFacet.facetTarget(target);
-		return metaFacet;
 	}
 
 	private void resolve(Node node, Node child) throws DependencyException {
@@ -73,9 +51,8 @@ public class InheritanceResolver {
 		resolveVariables(node, child);
 		resolveFlags(node, child);
 		resolveAnnotations(node, child);
-		resolveAllowedFacets(node, child);
-		resolveAppliedFacets(node, child);
-		resolveFacetTarget(node, child);
+		resolveAllowedAspects(node, child);
+		resolveAppliedAspects(node, child);
 		resolveNodeRules(node, child);
 		resolve(child);
 	}
@@ -89,27 +66,19 @@ public class InheritanceResolver {
 		if (nodes.size() <= 1) return;
 		if (!correctParent(nodes))
 			throw new DependencyException("Error merging extension elements. Parents are not homogeneous.", nodes.get(0));
-		Node parent = selectParent(nodes);
-		if (parent == null) return;
-		final ArrayList<Node> receivers = new ArrayList<>(nodes);
-		receivers.remove(parent);
-		for (Node node : receivers) ((NodeImpl) node).absorb((NodeImpl) parent);
+		Node destination = nodes.get(0);
+		if (destination == null) return;
+		nodes.remove(destination);
+		for (Node node : nodes) {
+			((NodeImpl) destination).absorb((NodeImpl) node);
+			model.remove(node);
+		}
 	}
 
 	private boolean correctParent(List<Node> nodes) {
 		String parent = nodes.get(0).parentName() == null ? "" : nodes.get(0).parentName();
 		for (Node node : nodes) if (!parent.equals(node.parentName() == null ? "" : node.parentName())) return false;
 		return true;
-	}
-
-	private Node selectParent(List<Node> nodes) {
-		return nodes.stream().
-				filter(node -> node.facetTarget() != null && node.facetTarget().targetNode().isAbstract() && !hasParent(node, nodes)).
-				findFirst().orElse(null);
-	}
-
-	private boolean hasParent(Node node, List<Node> nodes) {
-		return nodes.stream().anyMatch(candidate -> candidate.equals(node.parent()));
 	}
 
 	private Map<String, List<Node>> fragmentNodes() {
@@ -124,14 +93,9 @@ public class InheritanceResolver {
 	}
 
 	private String name(Node node) {
-		return node.name() + (node.facetTarget() != null ? ":" + node.facetTarget().target() : "");
+		return node.name() + (node.isAspect() ? ProteoConstants.ASPECT : "");
 	}
 
-	private void resolveAsFacetTargetFragment(Node node) {
-		if (node.facetTarget() == null || node.facetTarget().parent() == null) return;
-		resolveComponents(node.facetTarget().parent(), node);
-		resolveVariables(node.facetTarget().parent(), node);
-	}
 
 	private void resolveNodeRules(Node parent, Node child) {
 		List<Rule> parentRules = parent.container().rulesOf(parent);
@@ -149,87 +113,38 @@ public class InheritanceResolver {
 		return parent.min() > child.min() || parent.max() < child.max();
 	}
 
-	private void resolveAllowedFacets(Node parent, Node child) {
-		child.addAllowedFacets(parent.allowedFacets().toArray(new String[0]));
+	private void resolveAllowedAspects(Node parent, Node child) {
 	}
 
-	private void resolveAppliedFacets(Node parent, Node child) {
-		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	private void resolveAppliedAspects(Node parent, Node child) {
+		parent.appliedAspects().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::applyAspects);
 	}
 
-	private void resolveFacetTarget(Node parent, Node child) {
-		if (parent.facetTarget() != null && child.facetTarget() == null) {
-			try {
-				final FacetTargetImpl clone = ((FacetTargetImpl) parent.facetTarget()).clone();
-				clone.inherited(true);
-				clone.owner(child);
-				child.facetTarget(clone);
-			} catch (CloneNotSupportedException e) {
-				LOG.severe(e.getMessage());
-			}
-			if (child.isSub())
-				child.parent().children().stream().filter(sibling -> !sibling.equals(child)).forEach(s -> child.facetTarget().constraints().add(rejectSiblings(s)));
-		}
-	}
-
-	private FacetTarget.Constraint rejectSiblings(final Node node) {
-		return new FacetTarget.Constraint() {
-			@Override
-			public String name() {
-				return node.qualifiedName();
-			}
-
-			@Override
-			public Node node() {
-				return node;
-			}
-
-			@Override
-			public void node(Node node) {
-			}
-
-			@Override
-			public boolean negated() {
-				return true;
-			}
-
-			@Override
-			public String toString() {
-				return "without" + " " + node.qualifiedName();
-			}
-
-			@Override
-			public FacetTarget.Constraint clone() throws CloneNotSupportedException {
-				return (FacetTarget.Constraint) super.clone();
-			}
-		};
-	}
-
-	private boolean isOverridden(Node child, Facet facet) {
-		for (Facet childFacet : child.facets()) if (childFacet.type().equals(facet.type())) return true;
+	private boolean isOverridden(Node child, Aspect aspect) {
+		for (Aspect childAspect : child.appliedAspects()) if (childAspect.type().equals(aspect.type())) return true;
 		return false;
 	}
 
-	private Set<Node> collectNodes(Model model) {
+	private Collection<Node> collectNodes(Model model, Predicate<Node> condition) {
 		Set<Node> collection = new HashSet<>();
 		for (Node node : model.components()) {
-			if (!node.children().isEmpty()) collection.add(node);
-			collect(node, collection);
+			if (condition.test(node)) collection.add(node);
+			collect(node, collection, condition);
 		}
 		return collection;
 	}
 
-	private void collect(Node node, Set<Node> collection) {
+	private void collect(Node node, Set<Node> collection, Predicate<Node> condition) {
 		if (!(node instanceof NodeImpl)) return;
-		if (!node.children().isEmpty()) collection.add(node);
-		for (Node component : node.components()) collect(component, collection);
+		if (condition.test(node)) collection.add(node);
+		for (Node component : node.components()) collect(component, collection, condition);
 	}
 
 	private void resolveComponents(Node parent, Node child) {
 		Map<Node, List<Rule>> nodes = new LinkedHashMap<>();
 		for (Node component : parent.components()) {
 			if (isOverridden(child, component)) continue;
-			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
+			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).destination()) : new NodeReference((NodeImpl) component);
 			addTags(component, reference);
 			reference.setHas(false);
 			reference.file(child.file());
@@ -242,14 +157,14 @@ public class InheritanceResolver {
 	}
 
 	private void addTags(Node component, NodeReference reference) {
-		component.flags().stream().filter(tag -> !reference.flags().contains(tag) && Flags.forReference().contains(tag)).forEach(reference::addFlag);
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag) && Flags.forReference().contains(tag)).forEach(reference::addFlags);
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 
 	private void resolveFlags(Node parent, Node child) {
 		parent.flags().stream().
 				filter(tag -> !tag.equals(Tag.Abstract) && !child.flags().contains(tag)).
-				forEach(child::addFlag);
+				forEach(child::addFlags);
 	}
 
 	private void resolveAnnotations(Node parent, Node child) {
@@ -308,7 +223,7 @@ public class InheritanceResolver {
 	}
 
 	private Comparator<Node> inheritanceComparator() {
-		return new Comparator<Node>() {
+		return new Comparator<>() {
 			@Override
 			public int compare(Node o1, Node o2) {
 				return maxLevel(o1) - maxLevel(o2);

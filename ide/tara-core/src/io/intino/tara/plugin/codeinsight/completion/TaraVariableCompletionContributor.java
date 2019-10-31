@@ -11,7 +11,7 @@ import io.intino.tara.plugin.lang.TaraLanguage;
 import io.intino.tara.plugin.lang.psi.StringValue;
 import io.intino.tara.plugin.lang.psi.Valued;
 import io.intino.tara.plugin.lang.psi.impl.PsiCustomWordRule;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.TaraTypes;
 import io.intino.tara.plugin.lang.psi.TaraVariableType;
@@ -49,7 +49,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
-					final Valued valued = TaraPsiImplUtil.contextOf(parameters.getPosition(), Valued.class);
+					final Valued valued = TaraPsiUtil.contextOf(parameters.getPosition(), Valued.class);
 					if (valued == null) return;
 					if (valued instanceof Variable && Primitive.WORD.equals(valued.type())) {
 						if (valued.rule() instanceof WordRule) ((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));

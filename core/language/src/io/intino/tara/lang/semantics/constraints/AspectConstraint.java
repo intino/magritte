@@ -11,13 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.Resolver.shortType;
-import static io.intino.tara.lang.model.FacetTarget.ANY;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-public class FacetConstraint implements Constraint.Facet {
+public class AspectConstraint implements Constraint.Aspect {
 	private final String type;
 	private final boolean terminal;
 	private final boolean required;
@@ -25,7 +23,7 @@ public class FacetConstraint implements Constraint.Facet {
 	private final String[] withOut;
 	private final List<Constraint> constraints;
 
-	FacetConstraint(String type, boolean terminal, boolean required, String[] with, String[] withOut) {
+	AspectConstraint(String type, boolean terminal, boolean required, String[] with, String[] withOut) {
 		this.type = type;
 		this.terminal = terminal;
 		this.required = required;
@@ -64,7 +62,7 @@ public class FacetConstraint implements Constraint.Facet {
 	}
 
 	@Override
-	public Facet has(Constraint... requires) {
+	public Aspect has(Constraint... requires) {
 		this.constraints.addAll(asList(requires));
 		return this;
 	}
@@ -72,24 +70,22 @@ public class FacetConstraint implements Constraint.Facet {
 	@Override
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
-		io.intino.tara.lang.model.Facet facet = findFacet(node, this.type);
-		if (facet == null && required)
-			throw new SemanticException(new SemanticNotification(ERROR, "reject.node.with.required.facet.not.found", node, singletonList(this.type)));
-		if (facet == null && !ANY.equals(type())) return;
+		io.intino.tara.lang.model.Aspect aspect = findAspect(node, this.type);
+		if (aspect == null && required)
+			throw new SemanticException(new SemanticNotification(ERROR, "reject.node.with.required.aspect.not.found", node, singletonList(this.type)));
+		if (aspect == null) return;
 		final boolean hasType = is(node.types(), with);
 		final boolean hasIncompatibles = isAny(node.types(), withOut);
-		if (!hasType || hasIncompatibles || !checkFacetConstrains(node)) {
+		if (!hasType || hasIncompatibles || !checkAspectConstrains(node)) {
 			if (!hasType)
-				throw new SemanticException(new SemanticNotification(ERROR, "reject.facet.with.no.constrains.in.context", facet, Arrays.asList(this.with)));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.aspect.with.no.constrains.in.context", aspect, Arrays.asList(this.with)));
 			else if (hasIncompatibles)
-				throw new SemanticException(new SemanticNotification(ERROR, "reject.incompatible.facets.in.context", facet, singletonList(String.join(", ", Arrays.asList(this.withOut)))));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.incompatible.aspects.in.context", aspect, singletonList(String.join(", ", Arrays.asList(this.withOut)))));
 		}
 	}
 
-	public static io.intino.tara.lang.model.Facet findFacet(Node node, String type) {
-		for (io.intino.tara.lang.model.Facet facet : node.facets())
-			if (type.equals(shortType(facet.type()))) return facet;
-		return null;
+	public static io.intino.tara.lang.model.Aspect findAspect(Node node, String type) {
+		return node.appliedAspects().stream().filter(aspect -> type.equals(aspect.fullType())).findFirst().orElse(null);
 	}
 
 	private boolean is(List<String> nodeTypes, String[] constraints) {
@@ -108,11 +104,11 @@ public class FacetConstraint implements Constraint.Facet {
 		return false;
 	}
 
-	private boolean checkFacetConstrains(Node node) throws SemanticException {
+	private boolean checkAspectConstrains(Node node) throws SemanticException {
 		List<SemanticException> messages = new ArrayList<>();
-		for (Constraint require : constraints) {
+		for (Constraint c : constraints) {
 			try {
-				require.check(node);
+				c.check(node);
 			} catch (SemanticException e) {
 				if (e.level() == ERROR) throw e;
 				else messages.add(e);
@@ -124,6 +120,6 @@ public class FacetConstraint implements Constraint.Facet {
 
 	@Override
 	public String toString() {
-		return "Facet " + type;
+		return "Aspect " + type;
 	}
 }

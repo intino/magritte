@@ -22,12 +22,12 @@ import io.intino.tara.lang.model.rules.variable.WordRule;
 
 import java.util.*;
 
+import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.tara.lang.model.Tag.Reactive;
 
 
 class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private final Set<String> imports = new HashSet<>();
 	private Level modelLevel;
 
 	LayerVariableAdapter(Language language, String generatedLanguage, Level modelLevel, String workingPackage, String languageWorkingPackage) {
@@ -44,7 +44,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		context.add(LANGUAGE, language.languageName().toLowerCase());
 		Node container = variable.container();
 		context.add(CONTAINER_NAME, container.name());
-		context.add(QN, buildQN(container));
+		context.add(QN, cleanQn(buildQN(container)));
 		if (variable.values().stream().anyMatch(Objects::nonNull) && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(variable, context);
 		if (variable.rule() != null) {
@@ -68,7 +68,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private String buildQN(Node node) {
-		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
+		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).destination() : node, workingPackage.toLowerCase());
 	}
 
 	private void addValues(Variable variable, FrameBuilderContext context) {
@@ -95,7 +95,4 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		} else adapter.fillFrameNativeVariable(context, variable, next);
 	}
 
-	public Set<String> getImports() {
-		return imports;
-	}
 }

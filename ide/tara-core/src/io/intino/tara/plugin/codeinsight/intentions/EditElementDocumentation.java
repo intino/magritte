@@ -9,18 +9,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.documentation.TaraDocumentationProvider;
-import io.intino.tara.plugin.lang.TaraLanguage;
-import io.intino.tara.plugin.lang.psi.Identifier;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraFacetTarget;
-import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.plugin.lang.psi.TaraVariable;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Variable;
+import io.intino.tara.plugin.documentation.TaraDocumentationProvider;
+import io.intino.tara.plugin.lang.TaraLanguage;
+import io.intino.tara.plugin.lang.psi.Identifier;
+import io.intino.tara.plugin.lang.psi.TaraNode;
+import io.intino.tara.plugin.lang.psi.TaraVariable;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,9 +64,9 @@ public class EditElementDocumentation extends PsiElementBaseIntentionAction {
 	}
 
 	private String createQn(PsiElement element) {
-		final Variable variable = TaraPsiImplUtil.getContainerByType(element, Variable.class);
+		final Variable variable = TaraPsiUtil.getContainerByType(element, Variable.class);
 		if (variable != null) return createVariableQn(variable);
-		final Node node = TaraPsiImplUtil.getContainerByType(element, Node.class);
+		final Node node = TaraPsiUtil.getContainerByType(element, Node.class);
 		if (node != null) return createNodeQn(node);
 		return "";
 
@@ -83,18 +82,16 @@ public class EditElementDocumentation extends PsiElementBaseIntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		return element.getLanguage().equals(TaraLanguage.INSTANCE) && isDocumentable(TaraPsiImplUtil.getContainerByType(element, Identifier.class));
+		return element.getLanguage().equals(TaraLanguage.INSTANCE) && isDocumentable(TaraPsiUtil.getContainerByType(element, Identifier.class));
 	}
 
 	private boolean isDocumentable(Identifier identifier) {
 		if (identifier == null) return false;
-		final TaraVariable variable = TaraPsiImplUtil.getContainerByType(identifier, TaraVariable.class);
+		final TaraVariable variable = TaraPsiUtil.getContainerByType(identifier, TaraVariable.class);
 		if (variable != null) return identifier.equals(variable.getIdentifier());
-		final NodeContainer nodeContainer = TaraPsiImplUtil.getContainerByType(identifier, NodeContainer.class);
+		final NodeContainer nodeContainer = TaraPsiUtil.getContainerByType(identifier, NodeContainer.class);
 		if (nodeContainer != null) {
 			if (nodeContainer instanceof TaraNode) return identifier.equals(((TaraNode) nodeContainer).getSignature().getIdentifier());
-			else if (nodeContainer instanceof TaraFacetTarget && ((TaraFacetTarget) nodeContainer).getIdentifierReference() != null)
-				return ((TaraFacetTarget) nodeContainer).getIdentifierReference().getIdentifierList().contains(identifier);
 		}
 		return false;
 	}

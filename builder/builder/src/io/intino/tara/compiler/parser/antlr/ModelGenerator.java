@@ -109,7 +109,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void addTags(TaraGrammar.TagsContext ctx, Node node) {
 		if (ctx == null) return;
-		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()));
+		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()).toArray(new Tag[0]));
 		if (ctx.annotations() != null) node.addAnnotations(resolveTags(ctx.annotations()));
 	}
 
@@ -122,7 +122,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = deque.peek();
-			if (!peek.isAbstract()) peek.addFlag(Tag.Abstract);
+			if (!peek.isAbstract() && !peek.flags().contains(Tag.Abstract)) peek.addFlags(Tag.Abstract);
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.name());
@@ -148,41 +148,34 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		deque.pop();
 	}
 
-	@Override
-	public void enterFacet(FacetContext ctx) {
-		if (!errors.isEmpty()) return;
-		FacetImpl facet = new FacetImpl(ctx.metaidentifier().getText());
-		addHeaderInformation(ctx, facet);
-		if (deque.peek() == null) {
-			addError("Unavailable component facet apply in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
-			return;
-		}
-		Node peek = deque.peek();
-		peek.addFacets(facet);
-		facet.container(peek);
-	}
 
 	@Override
-	public void enterFacetTarget(FacetTargetContext ctx) {
-		if (!errors.isEmpty()) return;
-		NodeImpl peek = getNodeContainer();
-		FacetTargetImpl facetTarget = new FacetTargetImpl();
-		addHeaderInformation(ctx, facetTarget);
-		facetTarget.target(ctx.identifierReference().getText());
-		if (ctx.with() != null) facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
-		peek.facetTarget(facetTarget);
-		facetTarget.owner(peek);
+	public void enterWith(WithContext ctx) {
+		if (deque.peek() == null) {
+			addError("Unavailable constraint 'with' in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
+			return;
+		}
+		NodeImpl peek = (NodeImpl) deque.peek();
+		peek.aspectConstraints(collectConstrains(ctx.identifierReference()));
+		super.enterWith(ctx);
 	}
 
 	private List<String> collectConstrains(List<IdentifierReferenceContext> contexts) {
 		return contexts.stream().map(IdentifierReferenceContext::getText).collect(toList());
 	}
 
-	private NodeImpl getNodeContainer() {
-		NodeContainer peek = deque.peek();
-		while (!(peek instanceof NodeImpl))
-			peek = peek.container();
-		return (NodeImpl) peek;
+	@Override
+	public void enterAspect(AspectContext ctx) {
+		if (!errors.isEmpty()) return;
+		AspectImpl aspect = new AspectImpl(ctx.metaidentifier().getText());
+		addHeaderInformation(ctx, aspect);
+		if (deque.peek() == null) {
+			addError("Unavailable component facet apply in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
+			return;
+		}
+		Node current = deque.peek();
+		current.applyAspects(aspect);
+		aspect.container(current);
 	}
 
 	@Override
@@ -200,11 +193,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (!errors.isEmpty()) return;
 		int position = ((ParametersContext) ctx.getParent()).parameter().indexOf(ctx);
 		String metric = ctx.value().metric() != null ? ctx.value().metric().getText() : null;
-		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", facetOf(ctx), position, metric, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", aspectOf(ctx), position, metric, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	private String facetOf(ParameterContext ctx) {
-		return ctx.getParent().getParent() instanceof FacetContext ? ((FacetContext) ctx.getParent().getParent()).metaidentifier().getText() : "";
+	private String aspectOf(ParameterContext ctx) {
+		return ctx.getParent().getParent() instanceof AspectContext ? ((AspectContext) ctx.getParent().getParent()).metaidentifier().getText() : "";
 	}
 
 	private void addParameter(String name, String facet, int position, String measureValue, List<Object> values, int line, int column) {
@@ -404,7 +397,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 					map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-					map(context -> INTEGER.convert(context.getText()).get(0)).collect(toList()));
+					map(context -> {
+						try {
+							return INTEGER.convert(context.getText()).get(0);
+						} catch (NumberFormatException e) {
+							return LONG.convert(context.getText()).get(0);
+						}
+					}).collect(toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
 					map(context -> DOUBLE.convert(context.getText()).get(0)).collect(toList()));

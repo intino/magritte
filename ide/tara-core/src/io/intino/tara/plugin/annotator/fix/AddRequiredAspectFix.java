@@ -7,10 +7,10 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Constraint;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.TaraNode;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-class AddRequiredFacetFix implements IntentionAction {
+class AddRequiredAspectFix implements IntentionAction {
 
 	private final Node node;
 
-	public AddRequiredFacetFix(PsiElement element) {
-		this.node = element instanceof Node ? (Node) element : (Node) TaraPsiImplUtil.getContainerOf(element);
+	public AddRequiredAspectFix(PsiElement element) {
+		this.node = element instanceof Node ? (Node) element : (Node) TaraPsiUtil.getContainerOf(element);
 	}
 
 	@Nls
@@ -50,12 +50,12 @@ class AddRequiredFacetFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		List<Constraint.Facet> requires = findConstraints().stream().
-				filter(constraint -> constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).isRequired()).
-				map(constraint -> (Constraint.Facet) constraint).collect(Collectors.toList());
+		List<Constraint.Aspect> requires = findConstraints().stream().
+				filter(constraint -> constraint instanceof Constraint.Aspect && ((Constraint.Aspect) constraint).isRequired()).
+				map(constraint -> (Constraint.Aspect) constraint).collect(Collectors.toList());
 		filterPresentFacets(requires);
-		for (Constraint.Facet require : requires) {
-			node.addFacet(require.type());
+		for (Constraint.Aspect require : requires) {
+			((TaraNode) node).applyAspect(require.type());
 		}
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}
@@ -65,26 +65,26 @@ class AddRequiredFacetFix implements IntentionAction {
 		List<Constraint> facetConstraints = new ArrayList<>();
 		final List<String> facets = facetTypes(node);
 		constraintsOf.stream().
-				filter(c -> c instanceof Constraint.Facet && facets.contains(((Constraint.Facet) c).type())).
-				forEach(c -> facetConstraints.addAll(((Constraint.Facet) c).constraints()));
+				filter(c -> c instanceof Constraint.Aspect && facets.contains(((Constraint.Aspect) c).type())).
+				forEach(c -> facetConstraints.addAll(((Constraint.Aspect) c).constraints()));
 		constraintsOf.addAll(facetConstraints);
 		return constraintsOf;
 	}
 
 	private List<String> facetTypes(Node node) {
-		return node.facets().stream().map(Facet::type).collect(Collectors.toList());
+		return node.appliedAspects().stream().map(io.intino.tara.lang.model.Aspect::type).collect(Collectors.toList());
 	}
 
-	private void filterPresentFacets(List<Constraint.Facet> requires) {
-		for (Facet facet : node.facets()) {
-			Constraint.Facet require = findInConstraints(requires, facet.type());
+	private void filterPresentFacets(List<Constraint.Aspect> requires) {
+		for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects()) {
+			Constraint.Aspect require = findInConstraints(requires, aspect.type());
 			if (require != null) requires.remove(require);
 		}
 	}
 
 	@Nullable
-	private Constraint.Facet findInConstraints(List<Constraint.Facet> constraints, String name) {
-		for (Constraint.Facet require : constraints) if (require.type().equals(name)) return require;
+	private Constraint.Aspect findInConstraints(List<Constraint.Aspect> constraints, String name) {
+		for (Constraint.Aspect require : constraints) if (require.type().equals(name)) return require;
 		return null;
 	}
 

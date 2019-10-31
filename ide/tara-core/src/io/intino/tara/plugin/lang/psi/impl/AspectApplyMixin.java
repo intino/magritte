@@ -3,30 +3,39 @@ package io.intino.tara.plugin.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import io.intino.tara.plugin.lang.psi.Parameters;
-import io.intino.tara.plugin.lang.psi.TaraElementFactory;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraFacetApply;
-import io.intino.tara.plugin.lang.psi.TaraParameters;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.rules.NodeRule;
+import io.intino.tara.plugin.lang.psi.Parameters;
+import io.intino.tara.plugin.lang.psi.TaraAspectApply;
+import io.intino.tara.plugin.lang.psi.TaraElementFactory;
+import io.intino.tara.plugin.lang.psi.TaraParameters;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FacetApplyMixin extends ASTWrapperPsiElement {
+public class AspectApplyMixin extends ASTWrapperPsiElement {
+	private String fullType = type();
 
-	public FacetApplyMixin(@NotNull ASTNode node) {
+	public AspectApplyMixin(@NotNull ASTNode node) {
 		super(node);
 	}
 
 	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
-		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
+		final TaraParameters parameters = ((TaraAspectApply) this).getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
 		return parameterList;
+	}
+
+	public void fullType(String type) {
+		fullType = type;
+	}
+
+	public String fullType() {
+		return fullType;
 	}
 
 	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
@@ -34,8 +43,8 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		Map<String, String> params = new HashMap();
 		params.put(name, String.join(" ", toString(values)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
-		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
-		if (parameters == null) this.addAfter(newParameters, ((TaraFacetApply) this).getMetaIdentifier());
+		final TaraParameters parameters = ((TaraAspectApply) this).getParameters();
+		if (parameters == null) this.addAfter(newParameters, ((TaraAspectApply) this).getMetaIdentifier());
 		else {
 			PsiElement anchor = calculateAnchor(parameters, position);
 			parameters.addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
@@ -63,12 +72,12 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 
 	private PsiElement calculateAnchor(TaraParameters parameters, int position) {
 		return parameters.getParameters().size() <= position ?
-			parameters.getLastChild() :
-			(PsiElement) parameters.getParameters().get(position);
+				parameters.getLastChild() :
+				(PsiElement) parameters.getParameters().get(position);
 	}
 
 	public String type() {
-		return ((TaraFacetApply) this).getMetaIdentifier().getText();
+		return ((TaraAspectApply) this).getMetaIdentifier().getText();
 	}
 
 	public NodeRule ruleOf(Node component) {
@@ -76,7 +85,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+		return TaraPsiUtil.getContainerNodeOf(this);
 	}
 
 	public String doc() {

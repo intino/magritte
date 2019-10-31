@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Node {
 	public String name;
-	public List<String> facets = new ArrayList<>();
+	public List<String> layers = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
 	public List<Node> nodes = new ArrayList<>();
 
@@ -17,6 +17,6 @@ public class Node {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, facets, variables, nodes);
+		return Objects.hash(name, layers, variables, nodes);
 	}
 }

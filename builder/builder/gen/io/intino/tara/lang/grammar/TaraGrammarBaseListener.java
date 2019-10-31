@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.7
+// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.7.2
 package io.intino.tara.lang.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -136,25 +136,33 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFacets(TaraGrammar.FacetsContext ctx) { }
+	@Override
+	public void enterAspects(TaraGrammar.AspectsContext ctx) {
+	}
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFacets(TaraGrammar.FacetsContext ctx) { }
+	@Override
+	public void exitAspects(TaraGrammar.AspectsContext ctx) {
+	}
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFacet(TaraGrammar.FacetContext ctx) { }
+	@Override
+	public void enterAspect(TaraGrammar.AspectContext ctx) {
+	}
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFacet(TaraGrammar.FacetContext ctx) { }
+	@Override
+	public void exitAspect(TaraGrammar.AspectContext ctx) {
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -179,18 +187,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBody(TaraGrammar.BodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFacetTarget(TaraGrammar.FacetTargetContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFacetTarget(TaraGrammar.FacetTargetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

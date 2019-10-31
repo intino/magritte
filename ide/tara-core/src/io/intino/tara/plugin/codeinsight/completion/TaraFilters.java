@@ -9,12 +9,12 @@ import com.intellij.psi.tree.IElementType;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.TaraLanguage;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerNodeOf;
 
 
 class TaraFilters {
@@ -149,7 +149,7 @@ class TaraFilters {
 	private static class AfterEqualsFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			final PsiElement realContext = TaraPsiImplUtil.contextOf(context, Value.class);
+			final PsiElement realContext = TaraPsiUtil.contextOf(context, Value.class);
 			return isCandidate(element, realContext) && realContext.getPrevSibling().getPrevSibling() != null && isPreviousEquals(realContext);
 		}
 

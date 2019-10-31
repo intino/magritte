@@ -78,12 +78,12 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		this.inferredType = type;
 	}
 
-	public String facet() {
+	public String aspect() {
 		return facet;
 	}
 
-	public void facet(String facet) {
-		this.facet = facet;
+	public void aspect(String aspect) {
+		this.facet = aspect;
 	}
 
 	public String toString() {
@@ -108,9 +108,9 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return this.getValue() != null && this.getValue().getChildren().length - (this.getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
-	public Facet isInFacet() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
-		return contextOf instanceof Facet ? (Facet) contextOf : null;
+	public Aspect isInFacet() {
+		final NodeContainer contextOf = TaraPsiUtil.getContainerOf(this);
+		return contextOf instanceof Aspect ? (Aspect) contextOf : null;
 	}
 
 	public void name(String name) {
@@ -155,7 +155,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+		return TaraPsiUtil.getContainerNodeOf(this);
 	}
 
 	public String file() {

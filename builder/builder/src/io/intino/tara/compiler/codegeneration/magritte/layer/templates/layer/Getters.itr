@@ -66,9 +66,6 @@ def type(Variable & function) type(target | metaType) !type(owner) attribute(nam
 	}
 end
 
-def condition(t -> t.frame().frames("returnType").next().value().equals("ddldld"))
-end
-
 def type(Variable & concept & multiple & target & final) attribute(name) !type(inherited & owner) trigger(getter)
 	public java.util.List<io.intino.tara.magritte.Concept> $name+FirstLowerCase+javaValidName() {
 		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName());
@@ -91,6 +88,12 @@ end
 
 def type(Variable) type(concept) !type(owner) type(target) attribute(name) !type(inherited) trigger(getter)
 	public io.intino.tara.magritte.Concept $name+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	}
+end
+
+def type(Variable & target & reference) !type(owner | concept) attribute(name) trigger(getter)
+	public $type+reference $name+FirstLowerCase+javaValidName() {
 		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
 	}
 end
@@ -159,7 +162,7 @@ def type(variable & reference & concept & multiple & reactive) !type(inherited |
 	}
 end
 
-def type(variable & reference & concept & reactive) !type(inherited | overriden | overriden) trigger(getter)
+def type(variable & reference & concept & reactive) !type(inherited | overriden) trigger(getter)
 	public io.intino.tara.magritte.Concept $name+FirstLowerCase+javaValidName() {
 		return this.$name+FirstLowerCase+javaValidName.value();
 	}
@@ -172,7 +175,7 @@ def type(variable & reference & concept & multiple) !type(inherited | overriden)
 	}
 end
 
-def type(variable & reference & concept) !type(inherited | overriden | overriden) trigger(getter)
+def type(variable & reference & concept) !type(inherited | overriden) trigger(getter)
 	public io.intino.tara.magritte.Concept $name+FirstLowerCase+javaValidName() {
 		return this.$name+FirstLowerCase+javaValidName;
 	}
@@ -215,13 +218,13 @@ def type(variable & word) !type(outDefined | inherited | overriden | reactive) t
 end
 
 def type(variable & reactive & multiple) !type(inherited | overriden) trigger(getter)
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName.value();
 	}
 end
 
 def type(variable & reactive) !type(inherited | overriden) trigger(getter)
-	public $type+lowerCase+variableType $name+FirstLowerCase+javaValidName() {
+	public $type+reference $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName.value();
 	}
 end
@@ -237,6 +240,20 @@ def !attribute(this:void) trigger(isReturn)
 end
 
 def attribute(this:void) trigger(isReturn)
+end
+
+def type(Variable & multiple & owner & reference) !type(inherited | overriden | outdefined) trigger(getter)
+	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
+		return $name+FirstLowerCase+javaValidName;
+	}
+
+	public $type+reference $name+FirstLowerCase+javaValidName(int index) {
+		return $name+FirstLowerCase+javaValidName.get(index);
+	}
+
+	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+reference> predicate) {
+		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 end
 
 def type(Variable & multiple & owner) !type(inherited | overriden | outdefined) trigger(getter)
@@ -278,6 +295,12 @@ def type(Variable & multiple & owner) !type(inherited | overriden | reactive) tr
 
 	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
 		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+end
+
+def type(variable & owner) type(reference | objectVariable) !type(inherited | overriden| reactive) trigger(getter)
+	public $type+reference $name+FirstLowerCase+javaValidName() {
+		return $name+FirstLowerCase+javaValidName;
 	}
 end
 

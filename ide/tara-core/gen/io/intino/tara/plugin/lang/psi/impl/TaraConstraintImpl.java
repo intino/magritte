@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraConstraintImpl extends ASTWrapperPsiElement implements TaraConstraint {
 
-  public TaraConstraintImpl(ASTNode node) {
+  public TaraConstraintImpl(@NotNull ASTNode node) {
     super(node);
   }
 

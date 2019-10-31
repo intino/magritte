@@ -10,7 +10,7 @@ import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.annotator.fix.ClassCreationIntention;
 import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,14 +19,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerNodeOf;
 import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.importsFile;
 
 public class ConvertToMethodReference extends ClassCreationIntention {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
+		final Valued valued = TaraPsiUtil.getContainerByType(element, Valued.class);
 		return valued != null && expressionContext(valued) != null && valued.name() != null && !valued.name().isEmpty();
 	}
 
@@ -34,7 +34,7 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		final Node node = getContainerNodeOf(element);
 		if (node == null) return;
-		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
+		final Valued valued = TaraPsiUtil.getContainerByType(element, Valued.class);
 		if (valued == null) return;
 		final String name = valued.name();
 		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(name);

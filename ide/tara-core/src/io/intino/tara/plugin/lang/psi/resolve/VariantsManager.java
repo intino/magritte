@@ -2,7 +2,6 @@ package io.intino.tara.plugin.lang.psi.resolve;
 
 import com.intellij.psi.PsiElement;
 import io.intino.tara.Checker;
-import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Tag;
@@ -12,7 +11,7 @@ import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 import io.intino.tara.plugin.lang.LanguageManager;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +38,7 @@ class VariantsManager {
 			addInModelVariants();
 			addImportVariants();
 		}
-		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
+		final Node node = TaraPsiUtil.getContainerNodeOf(myElement);
 		if (node == null || node.type() == null) return variants;
 		if (isParentReference((IdentifierReference) myElement.getParent()))
 			variants.removeAll(collectUnacceptableNodes(singletonList(node.type())));
@@ -49,27 +48,28 @@ class VariantsManager {
 	}
 
 	private List<String> filterTypes(PsiElement element) {
-		final Node node = TaraPsiImplUtil.getContainerNodeOf(element);
+		final Node node = TaraPsiUtil.getContainerNodeOf(element);
 		check(node);
 		final List<Constraint> constraints = TaraUtil.getConstraintsOf(node);
-		final Parameter parameter = TaraPsiImplUtil.getContainerByType(element, Parameter.class);
+		final Parameter parameter = TaraPsiUtil.getContainerByType(element, Parameter.class);
 		if (constraints == null || parameter == null || parameter.name() == null) return emptyList();
 		Constraint.Parameter constraint = findParameter(constraints, parameter);
-		if (constraint == null && !node.facets().isEmpty()) constraint = searchInFacets(node.facets(), constraints, parameter);
+		if (constraint == null && !node.appliedAspects().isEmpty())
+			constraint = searchInFacets(node.appliedAspects(), constraints, parameter);
 		if (constraint == null || !(constraint.rule() instanceof ReferenceRule)) return emptyList();
 		return ((ReferenceRule) constraint.rule()).allowedReferences();
 	}
 
-	private Constraint.Parameter searchInFacets(List<Facet> facets, List<Constraint> constraints, Parameter parameter) {
+	private Constraint.Parameter searchInFacets(List<io.intino.tara.lang.model.Aspect> aspects, List<Constraint> constraints, Parameter parameter) {
 		for (Constraint c : constraints)
-			if (c instanceof Constraint.Facet && facetOf((Constraint.Facet) c, facets) != null)
-				return findParameter(((Constraint.Facet) c).constraints(), parameter);
+			if (c instanceof Constraint.Aspect && facetOf((Constraint.Aspect) c, aspects) != null)
+				return findParameter(((Constraint.Aspect) c).constraints(), parameter);
 		return null;
 	}
 
-	private Facet facetOf(Constraint.Facet c, List<Facet> facets) {
-		for (Facet facet : facets)
-			if (facet.type().equals(c.type())) return facet;
+	private io.intino.tara.lang.model.Aspect facetOf(Constraint.Aspect c, List<io.intino.tara.lang.model.Aspect> aspects) {
+		for (io.intino.tara.lang.model.Aspect aspect : aspects)
+			if (aspect.type().equals(c.type())) return aspect;
 		return null;
 	}
 
@@ -92,7 +92,7 @@ class VariantsManager {
 	}
 
 	private boolean isParameterReference(PsiElement element) {
-		return TaraPsiImplUtil.getContainerByType(element, Parameter.class) != null;
+		return TaraPsiUtil.getContainerByType(element, Parameter.class) != null;
 	}
 
 	private List<Node> collectUnacceptableNodes(List<String> expectedTypes) {
@@ -117,7 +117,7 @@ class VariantsManager {
 		final List<Identifier> aContext = (List<Identifier>) getContext();
 		final List<PsiElement> resolve = ReferenceManager.resolve(aContext.get(aContext.size() - 2));
 		if (resolve.isEmpty()) return;
-		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve.get(0));
+		final Node containerNodeOf = TaraPsiUtil.getContainerNodeOf(resolve.get(0));
 		if (containerNodeOf == null) return;
 		variants.addAll(containerNodeOf.components());
 	}
@@ -126,7 +126,7 @@ class VariantsManager {
 		TaraModel model = (TaraModel) myElement.getContainingFile();
 		if (model == null) return;
 		model.components().stream().
-			filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).
+				filter(node -> !node.equals(TaraPsiUtil.getContainerNodeOf(myElement))).
 			forEach(node -> resolvePathFor(node, context));
 		addMainConcepts(model);
 	}
@@ -136,7 +136,7 @@ class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			((TaraModel) resolve).components().stream().filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
+			((TaraModel) resolve).components().stream().filter(node -> !node.equals(TaraPsiUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
 			addMainConcepts((TaraModel) resolve);
 		}
 	}
@@ -153,7 +153,7 @@ class VariantsManager {
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {
-		List<Node> childrenOf = TaraPsiImplUtil.getComponentsOf(node);
+		List<Node> childrenOf = TaraPsiUtil.getComponentsOf(node);
 		if (node == null || node.type() == null) return;
 		if (path.isEmpty()) variants.add(node);
 		else if (path.get(0).getText().equals(node.name()))

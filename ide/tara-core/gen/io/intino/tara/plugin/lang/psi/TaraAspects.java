@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraFacets extends TaraPsiElement {
+public interface TaraAspects extends TaraPsiElement {
 
   @NotNull
-  List<TaraFacetApply> getFacetApplyList();
+  List<TaraAspectApply> getAspectApplyList();
 
 }

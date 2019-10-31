@@ -86,8 +86,8 @@ public class OneOf implements Constraint.OneOf {
 	}
 
 	private static boolean checkFacets(Node node, String type) {
-		for (io.intino.tara.lang.model.Facet facet : node.facets())
-			if (facet.type().equals(Resolver.shortType(type))) return true;
+		for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects())
+			if (aspect.type().equals(Resolver.shortType(type))) return true;
 		return false;
 	}
 

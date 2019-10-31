@@ -14,7 +14,7 @@ import io.intino.tara.plugin.lang.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerByType;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	private static final String ANONYMOUS = "Anonymous";
@@ -43,7 +43,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public String getType(@NotNull PsiElement element) {
 		if (getContainerByType(element, Variable.class) != null) return "variable";
 		else if (getContainerByType(element, Parameter.class) != null) return "parameter";
-		else if (element.getParent() instanceof Signature) return getContainerByType(element, TaraNode.class).simpleType();
+		else if (element.getParent() instanceof Signature) return getContainerByType(element, TaraNode.class).type();
 		return "reference";
 	}
 

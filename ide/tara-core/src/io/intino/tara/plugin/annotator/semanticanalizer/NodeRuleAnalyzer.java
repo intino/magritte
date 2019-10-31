@@ -5,7 +5,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
@@ -15,7 +14,7 @@ import io.intino.tara.plugin.annotator.fix.CreateNodeRuleClassIntention;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.Rule;
 import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.messages.MessageProvider;
 import io.intino.tara.plugin.project.IntinoModuleType;
@@ -33,7 +32,7 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 	private final Node node;
 
 	public NodeRuleAnalyzer(TaraRuleContainer ruleContainer) {
-		this.node = TaraPsiImplUtil.getContainerByType(ruleContainer, Node.class);
+		this.node = TaraPsiUtil.getContainerByType(ruleContainer, Node.class);
 		this.rule = ruleContainer.getRule();
 		rulesPackage = (IntinoModuleType.isIntino(module()) ? TaraUtil.graphPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
 	}
@@ -49,8 +48,8 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 		}
 		final Module module = module();
 		if (rule.isLambda()) {
-			if (node.type().startsWith(ProteoConstants.FACET + Proteo.FACET_SEPARATOR))
-				facetError();
+			if (node.type().equalsIgnoreCase(ProteoConstants.ASPECT) || node.type().equalsIgnoreCase(ProteoConstants.META_ASPECT))
+				aspectError();
 			return;
 		} else if (module == null) return;
 
@@ -58,8 +57,8 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 		if (aClass == null && !isProvided()) error();
 	}
 
-	private void facetError() {
-		results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("reject.facet.with.size.constraint")));
+	private void aspectError() {
+		results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("reject.aspect.with.size.constraint")));
 	}
 
 	private void instanceError() {

@@ -31,9 +31,9 @@ public abstract class TaraElementFactory {
 
 	public abstract TaraVariable createVariable(String name, Primitive type);
 
-	public abstract TaraFacetApply createFacet(String type);
+	public abstract TaraAspectApply createFacet(String type);
 
-	public abstract TaraFacets createFacets(String type);
+	public abstract TaraAspects createAspects(String type);
 
 	public abstract TaraImports createImport(String reference);
 

@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
-  public TaraSignatureImpl(ASTNode node) {
+  public TaraSignatureImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -27,14 +27,14 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
   @Override
   @Nullable
-  public TaraFacetTarget getFacetTarget() {
-    return findChildByClass(TaraFacetTarget.class);
+  public TaraAspects getAspects() {
+    return findChildByClass(TaraAspects.class);
   }
 
   @Override
   @Nullable
-  public TaraFacets getFacets() {
-    return findChildByClass(TaraFacets.class);
+  public TaraConstraint getConstraint() {
+    return findChildByClass(TaraConstraint.class);
   }
 
   @Override

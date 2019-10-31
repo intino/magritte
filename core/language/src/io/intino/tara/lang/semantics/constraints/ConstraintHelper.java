@@ -1,6 +1,5 @@
 package io.intino.tara.lang.semantics.constraints;
 
-import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.semantics.Constraint;
 
 import java.util.*;
@@ -15,9 +14,9 @@ public class ConstraintHelper {
 		types.addAll(components(constraints));
 		for (List<Constraint.Component> components : componentsOfOneOf(constraints))
 			types.addAll(components.stream().map(Constraint.Component::type).collect(Collectors.toList()));
-		for (Constraint.Facet facet : constraints.stream().filter(c -> c instanceof Constraint.Facet).map(c -> (Constraint.Facet) c).collect(Collectors.toList())) {
-			types.addAll(facetComponents(facet.type(), facet.constraints()));
-			for (List<Constraint.Component> components : componentsOfOneOf(facet.constraints())) types.addAll(typesOf((components)));
+		for (Constraint.Aspect aspect : constraints.stream().filter(c -> c instanceof Constraint.Aspect).map(c -> (Constraint.Aspect) c).collect(Collectors.toList())) {
+			types.addAll(aspectComponents(aspect.constraints()));
+			for (List<Constraint.Component> components : componentsOfOneOf(aspect.constraints())) types.addAll(typesOf((components)));
 		}
 		return new ArrayList<>(types);
 	}
@@ -30,8 +29,8 @@ public class ConstraintHelper {
 		return constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().isEmpty()).map(c -> ((Constraint.Component) c).type()).collect(Collectors.toList());
 	}
 
-	private static List<String> facetComponents(String facet, List<Constraint> constraints) {
-		return constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().isEmpty()).map(c -> facet + ProteoConstants.FACET_SEPARATOR + ((Constraint.Component) c).type()).collect(Collectors.toList());
+	private static List<String> aspectComponents(List<Constraint> constraints) {
+		return constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().isEmpty()).map(c -> ((Constraint.Component) c).type()).collect(Collectors.toList());
 	}
 
 	private static List<String> typesOf(List<Constraint.Component> constraints) {
@@ -40,8 +39,8 @@ public class ConstraintHelper {
 
 	public static List<Constraint.Parameter> parameterConstrains(List<Constraint> constraints) {
 		final List<Constraint.Parameter> parameters = filterParameters(constraints);
-		for (Constraint.Facet facet : facetConstrains(constraints))
-			parameters.addAll(filterParameters(facet.constraints()));
+		for (Constraint.Aspect aspect : facetConstrains(constraints))
+			parameters.addAll(filterParameters(aspect.constraints()));
 		return parameters;
 	}
 
@@ -49,7 +48,7 @@ public class ConstraintHelper {
 		return constraints.stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
 	}
 
-	public static List<Constraint.Facet> facetConstrains(List<Constraint> constraints) {
-		return constraints.stream().filter(c -> c instanceof Constraint.Facet).map(c -> (Constraint.Facet) c).collect(Collectors.toList());
+	public static List<Constraint.Aspect> facetConstrains(List<Constraint> constraints) {
+		return constraints.stream().filter(c -> c instanceof Constraint.Aspect).map(c -> (Constraint.Aspect) c).collect(Collectors.toList());
 	}
 }

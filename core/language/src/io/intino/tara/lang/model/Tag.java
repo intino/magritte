@@ -6,6 +6,7 @@ public enum Tag {
 	Component,
 	Feature,
 	Enclosed,
+	Divine,
 	Private,
 	Final,
 	Reactive,
@@ -16,6 +17,6 @@ public enum Tag {
 
 	Terminal,
 	Instance,
-	FacetInstance,
-	Facet,
+	AspectInstance,
+	Aspect,
 }

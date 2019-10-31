@@ -35,11 +35,6 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default String cleanQn() {
-		return "";
-	}
-
-	@Override
 	default Node container() {
 		return null;
 	}
@@ -55,7 +50,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default boolean isFacet() {
+	default boolean isAspect() {
 		return false;
 	}
 
@@ -95,12 +90,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default void addFlags(List<Tag> flags) {
-
-	}
-
-	@Override
-	default void addFlag(Tag flags) {
+	default void addFlags(Tag... flags) {
 
 	}
 
@@ -131,6 +121,11 @@ public interface NodeRoot extends Node, Element {
 
 	@Override
 	default void type(String type) {
+
+	}
+
+	@Override
+	default void stashNodeName(String name) {
 
 	}
 
@@ -170,7 +165,7 @@ public interface NodeRoot extends Node, Element {
 	}
 
 	@Override
-	default List<Facet> facets() {
+	default List<Aspect> appliedAspects() {
 		return Collections.emptyList();
 	}
 
@@ -178,5 +173,4 @@ public interface NodeRoot extends Node, Element {
 	default List<Parameter> parameters() {
 		return Collections.emptyList();
 	}
-
 }

@@ -16,7 +16,7 @@ import io.intino.tara.lang.model.Variable;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.lang.psi.TaraRule;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class CreateVariableRuleClassIntention extends ClassCreationIntention {
 
 	public CreateVariableRuleClassIntention(Rule rule) {
 		this.rule = rule;
-		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
+		this.variable = TaraPsiUtil.getContainerByType((TaraRule) rule, Variable.class);
 		if (variable != null) this.rulesPath = TaraUtil.graphPackage((PsiElement) variable).toLowerCase() + RULES_PACKAGE;
 	}
 

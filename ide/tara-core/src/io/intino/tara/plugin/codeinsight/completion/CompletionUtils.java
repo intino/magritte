@@ -8,7 +8,6 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.FakePsiElement;
 import io.intino.tara.Language;
-import io.intino.tara.lang.model.Facet;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Parameter;
@@ -26,7 +25,7 @@ import java.util.Set;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerNodeOf;
 import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.parameterConstraintsOf;
 import static java.util.stream.Collectors.toList;
 
@@ -49,7 +48,7 @@ public class CompletionUtils {
 		final List<Constraint> nodeConstraints = language.constraints(container == null ? "" : container.resolve().type());
 		if (nodeConstraints == null) return;
 		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
-		if (container != null) constraints.addAll(constraintsOf(facetConstraints(nodeConstraints, container.facets())));
+		if (container != null) constraints.addAll(constraintsOf(facetConstraints(nodeConstraints, container.appliedAspects())));
 		List<Constraint.Component> components = constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(toList());
 		components = components.stream().filter(c -> isSizeAccepted(c, container)).collect(toList());
 		if (components.isEmpty()) return;
@@ -60,7 +59,7 @@ public class CompletionUtils {
 
 	private List<Constraint> constraintsOf(List<Constraint> constraints) {
 		List<Constraint> list = new ArrayList<>();
-		constraints.stream().map(constraint -> ((Constraint.Facet) constraint).constraints()).forEach(list::addAll);
+		constraints.stream().map(constraint -> ((Constraint.Aspect) constraint).constraints()).forEach(list::addAll);
 		return list;
 	}
 
@@ -105,12 +104,13 @@ public class CompletionUtils {
 		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
-	private List<Constraint> facetConstraints(List<Constraint> nodeConstraints, List<Facet> facets) {
-		List<String> facetTypes = facets.stream().map(Facet::type).collect(toList());
+	private List<Constraint> facetConstraints(List<Constraint> nodeConstraints, List<io.intino.tara.lang.model.Aspect> aspects) {
+		List<String> facetTypes = aspects.stream().map(io.intino.tara.lang.model.Aspect::type).collect(toList());
 		List<Constraint> list = new ArrayList<>();
 		if (nodeConstraints == null) return list;
 		for (Constraint constraint : nodeConstraints)
-			if (constraint instanceof Constraint.Facet && facetTypes.contains(((Constraint.Facet) constraint).type())) list.add(constraint);
+			if (constraint instanceof Constraint.Aspect && facetTypes.contains(((Constraint.Aspect) constraint).type()))
+				list.add(constraint);
 		return list;
 	}
 
@@ -127,13 +127,13 @@ public class CompletionUtils {
 	private List<LookupElementBuilder> buildCompletionForFacets(String fileName, List<Constraint> constraints, Node node) {
 		Set<String> added = new HashSet<>();
 		return constraints.stream().
-				filter(c -> c instanceof Constraint.Facet && !hasFacet(node, (Constraint.Facet) c)).
-				map(c -> createElement(fileName, (Constraint.Facet) c, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
+				filter(c -> c instanceof Constraint.Aspect && !hasFacet(node, (Constraint.Aspect) c)).
+				map(c -> createElement(fileName, (Constraint.Aspect) c, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
 				collect(toList());
 	}
 
-	private boolean hasFacet(Node node, Constraint.Facet c) {
-		for (Facet facet : node.facets()) if (facet.type().equals(c.type())) return true;
+	private boolean hasFacet(Node node, Constraint.Aspect c) {
+		for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects()) if (aspect.type().equals(c.type())) return true;
 		return false;
 	}
 
@@ -151,7 +151,7 @@ public class CompletionUtils {
 		return type.contains(".") ? type.substring(type.lastIndexOf('.') + 1, type.length()) : type;
 	}
 
-	private LookupElementBuilder createElement(String language, Constraint.Facet allow, NodeContainer container) {
+	private LookupElementBuilder createElement(String language, Constraint.Aspect allow, NodeContainer container) {
 		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_16).withCaseSensitivity(true).withTypeText(language);
 	}
 

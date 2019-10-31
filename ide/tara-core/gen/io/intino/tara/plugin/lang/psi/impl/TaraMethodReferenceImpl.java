@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraMethodReferenceImpl extends ASTWrapperPsiElement implements TaraMethodReference {
 
-  public TaraMethodReferenceImpl(ASTNode node) {
+  public TaraMethodReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 

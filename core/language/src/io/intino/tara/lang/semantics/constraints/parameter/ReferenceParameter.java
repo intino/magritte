@@ -50,7 +50,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 		if (checkAsReference(parameter.values())) {
 			parameter.name(name());
 			parameter.type(type());
-			parameter.facet(this.facet);
+			parameter.aspect(this.facet);
 			parameter.flags(flags);
 			parameter.rule(rule);
 			parameter.scope(scope);
@@ -68,7 +68,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 	}
 
 	@Override
-	public String facet() {
+	public String aspect() {
 		return this.facet;
 	}
 

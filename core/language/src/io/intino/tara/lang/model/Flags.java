@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.intino.tara.lang.model.Tag.*;
-import static io.intino.tara.lang.model.Tag.Facet;
+import static io.intino.tara.lang.model.Tag.Aspect;
 
 public class Flags {
 
@@ -36,6 +36,6 @@ public class Flags {
 	}
 
 	public static List<Tag> internalTags() {
-		return Arrays.asList(Instance, Facet, FacetInstance, Terminal);
+		return Arrays.asList(Instance, Aspect, AspectInstance, Terminal);
 	}
 }

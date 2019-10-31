@@ -13,7 +13,7 @@ import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import io.intino.tara.plugin.codeinsight.languageinjection.imports.Imports;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.plugin.project.module.ModuleProvider;
@@ -32,7 +32,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
+		final PsiClass psiClass = TaraPsiUtil.getContainerByType(element, PsiClass.class);
 		if (psiClass == null) return false;
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		final Valued valued = valued(destiny);
@@ -43,7 +43,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
+		PsiClass psiClass = TaraPsiUtil.getContainerByType(element, PsiClass.class);
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		Valued valued = valued(destiny);
 		if (valued == null) {
@@ -105,7 +105,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 
 
 	private Valued findValuedScope(PsiElement element) {
-		return TaraPsiImplUtil.getContainerByType(element, Valued.class);
+		return TaraPsiUtil.getContainerByType(element, Valued.class);
 	}
 
 	@Nls

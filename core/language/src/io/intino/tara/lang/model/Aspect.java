@@ -1,8 +1,12 @@
 package io.intino.tara.lang.model;
 
-public interface Facet extends Element {
+public interface Aspect extends Element {
 
 	String type();
+
+	void fullType(String s);
+
+	String fullType();
 
 	Node container();
 

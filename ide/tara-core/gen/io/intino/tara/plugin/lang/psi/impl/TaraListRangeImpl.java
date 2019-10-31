@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraListRangeImpl extends ASTWrapperPsiElement implements TaraListRange {
 
-  public TaraListRangeImpl(ASTNode node) {
+  public TaraListRangeImpl(@NotNull ASTNode node) {
     super(node);
   }
 

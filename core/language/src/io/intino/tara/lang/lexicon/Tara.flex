@@ -88,7 +88,6 @@ VAR                 = "var"
 USE                 = "use"
 DSL                 = "dsl"
 WITH                = "with"
-ANY                 = "any"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
@@ -101,6 +100,7 @@ COMPONENT           = "component"
 TERMINAL            = "terminal"
 PRIVATE             = "private"
 FEATURE             = "feature"
+DIVINE              = "divine"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 REACTIVE            = "reactive"
@@ -185,9 +185,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{AS}                            {   return TaraTypes.AS; }
 	{IS}                            {   return TaraTypes.IS; }
 	{INTO}                          {   return TaraTypes.INTO; }
-	{ON}                            {   return TaraTypes.ON; }
 	{WITH}                          {   return TaraTypes.WITH; }
-	{ANY}                           {   return TaraTypes.ANY; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
@@ -207,6 +205,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
+	{DIVINE}                        {   return TaraTypes.DIVINE; }
 	{FINAL}                         {   return TaraTypes.FINAL; }
 	{VOLATILE}                      {   return TaraTypes.VOLATILE; }
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }

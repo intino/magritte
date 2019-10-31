@@ -6,6 +6,7 @@ import io.intino.itrules.FrameBuilderContext;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
+import io.intino.tara.compiler.codegeneration.magritte.stash.StashHelper;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
@@ -19,11 +20,11 @@ import io.intino.tara.lang.semantics.Assumption;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Context;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.Format.capitalize;
-import static io.intino.tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
 import static io.intino.tara.compiler.shared.Configuration.Level.Product;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
@@ -118,7 +119,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private void addDoc(Node node, FrameBuilder frame) {
 		frame.add(DOC, new FrameBuilder(DOC).
 				add(LAYER, findLayer(node)).
-				add(FILE, node.file().replace("\\", "\\\\")).
+				add(FILE, new File(node.file()).getName().replace("\\", "\\\\")).
 				add(LINE, node.line()).
 				add(DOC, node.doc() != null ? format(node) : "").
 				toFrame());
@@ -144,6 +145,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		if (typesFrameBuilder.slots() > 0) builder.add(NODE_TYPE, typesFrameBuilder.toFrame());
 	}
 
+
 	private Collection<String> getLanguageTypes(Node node) {
 		return language.types(node.type());
 	}
@@ -162,12 +164,11 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private void addContextConstraints(Node node, FrameBuilder constraints) {
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
-			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
+			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.ASPECT) ? node.name() : "", constraints,
 					LanguageParameterAdapter.terminalParameters(language, node) + terminalParameterIndex(constraints.toFrame()));
 		}
-		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
-			addMetaFacetConstraints(node, constraints);
-		addFacetConstraints(node, constraints);
+		addMetaAspectConstraints(node, constraints);
+		addAspectConstraints(node, constraints);
 	}
 
 	private int terminalParameterIndex(Frame constraints) {
@@ -177,12 +178,12 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return index;
 	}
 
-	private void addParameterConstraints(List<Variable> variables, String facet, FrameBuilder constrainsFrame, int parentIndex) {
+	private void addParameterConstraints(List<Variable> variables, String aspect, FrameBuilder constrainsFrame, int parentIndex) {
 		int privateVariables = 0;
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addParameterConstraint(constrainsFrame, aspect, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}
@@ -191,45 +192,34 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return variable.isFinal() && !variable.values().isEmpty();
 	}
 
-	private void addMetaFacetConstraints(Node node, FrameBuilder constraints) {
-		final FacetTarget facetTarget = node.facetTarget();
-		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract())
-			return;
-		final Node target = facetTarget.targetNode();
-		if (target.isAbstract())
-			for (Node child : target.children())
-				createMetaFacetConstraint(child, facetTarget.constraints(), constraints);
-		else createMetaFacetConstraint(target, facetTarget.constraints(), constraints);
+	private void addMetaAspectConstraints(Node node, FrameBuilder constraints) {
+		node.components().stream().filter(Node::isMetaAspect).forEach(aspectNode -> {
+			List<Node.AspectConstraint> with = aspectNode.aspectConstraints();
+			FrameBuilder builder = new FrameBuilder(CONSTRAINT, META_ASPECT).add(VALUE, aspectNode.qualifiedName());
+			if (with != null && !with.isEmpty()) builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
+			constraints.add(CONSTRAINT, builder.toFrame());
+		});
 	}
 
-	private void createMetaFacetConstraint(Node node, List<FacetTarget.Constraint> with, FrameBuilder constraints) {
-		FrameBuilder builder = new FrameBuilder(CONSTRAINT, METAFACET).add(VALUE, node.qualifiedName());
-		if (with != null && !with.isEmpty())
-			builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
-		constraints.add(CONSTRAINT, builder.toFrame());
-	}
-
-	private void addFacetConstraints(Node node, FrameBuilder constraintsBuilder) {
-		for (String facet : node.allowedFacets()) {
-			Node facetTargetNode = findFacetTargetNode(model, node, facet);
-			if (facetTargetNode == null || facetTargetNode.facetTarget() == null || facetTargetNode.isAbstract()) continue;
-			FrameBuilder builder = new FrameBuilder(CONSTRAINT, FACET).add(VALUE, facet);//TODO FULL FACET REFERENCE
-			final FacetTarget facetTarget = facetTargetNode.facetTarget();
-			builder.add(TERMINAL, facetTargetNode.isTerminal() + "");
-			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
-				for (FacetTarget.Constraint constraint : facetTarget.constraints())
-					builder.add(constraint.negated() ? WITHOUT : WITH, constraint.node().name());
-			if (facetTargetNode.flags().contains(Required)) builder.add("required", "true");
-			addParameterConstraints(facetTargetNode.variables(), facet, builder, 0);
-			addComponentsConstraints(builder, facetTargetNode);
-			addTerminalConstrains(facetTargetNode, builder);
+	private void addAspectConstraints(Node node, FrameBuilder constraintsBuilder) {
+		node.components().stream().filter(Node::isAspect).forEach(aspectNode -> {
+			if (aspectNode.isAbstract()) return;
+			FrameBuilder builder = new FrameBuilder(CONSTRAINT, ASPECT).add(VALUE, aspectNode.qualifiedName());
+			builder.add(TERMINAL, aspectNode.isTerminal() + "");
+			if (aspectNode.aspectConstraints() != null && !aspectNode.aspectConstraints().isEmpty())
+				for (Node.AspectConstraint constraint : aspectNode.aspectConstraints())
+					builder.add(WITH, constraint.node().name());
+			if (aspectNode.flags().contains(Required)) builder.add("required", "true");
+			addParameterConstraints(aspectNode.variables(), aspectNode.name(), builder, 0);
+			addComponentsConstraints(builder, aspectNode);
+			addTerminalConstrains(aspectNode, builder);
 			constraintsBuilder.add(CONSTRAINT, builder.toFrame());
-		}
-		addTerminalFacets(node, constraintsBuilder);
+		});
+		addTerminalAspects(node, constraintsBuilder);
 	}
 
-	private void addTerminalFacets(Node node, FrameBuilder context) {
-		final List<Constraint> facetAllows = language.constraints(node.type()).stream().filter(allow -> allow instanceof Constraint.Facet && ((Constraint.Facet) allow).terminal()).collect(toList());
+	private void addTerminalAspects(Node node, FrameBuilder context) {
+		final List<Constraint> facetAllows = language.constraints(node.type()).stream().filter(allow -> allow instanceof Constraint.Aspect && ((Constraint.Aspect) allow).terminal()).collect(toList());
 		new TerminalConstraintManager(language, node).addConstraints(facetAllows, context);
 	}
 
@@ -278,6 +268,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 
 	private FrameBuilder buildAssumptions(Node node) {
 		FrameBuilder assumptions = new FrameBuilder(ASSUMPTIONS);
+		assumptions.add(ASSUMPTION, new FrameBuilder("stashNodeName").add("value", StashHelper.name(node, workingPackage)));
 		addAnnotationAssumptions(node, assumptions);
 		return assumptions;
 	}
@@ -285,13 +276,13 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private void addAnnotationAssumptions(Node node, FrameBuilder assumptions) {
 		node.annotations().forEach(tag -> assumptions.add(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
-			if (tag.equals(Tag.Terminal)) assumptions.add(ASSUMPTION, Instance);
-			else if (tag.equals(Tag.Feature)) assumptions.add(ASSUMPTION, Feature);
+			if (tag.equals(Tag.Terminal)) assumptions.add(ASSUMPTION, Instance.name());
+			else if (tag.equals(Tag.Feature)) assumptions.add(ASSUMPTION, Feature.name());
 			else if (tag.equals(Tag.Component)) assumptions.add(ASSUMPTION, capitalize(Tag.Component.name()));
 			else if (tag.equals(Tag.Volatile)) assumptions.add(ASSUMPTION, capitalize(Tag.Volatile.name()));
 		}
-		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) assumptions.add(ASSUMPTION, Facet);
-		if (node.isFacet()) assumptions.add(ASSUMPTION, Terminal);
+		if (node.type().startsWith(ProteoConstants.META_ASPECT)) assumptions.add(ASSUMPTION, Aspect.name());
+		if (node.isAspect()) assumptions.add(ASSUMPTION, Terminal);
 	}
 
 	private FrameBuilder buildComponentConstraints(Node container) {
@@ -310,39 +301,30 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		node.components().stream().
 				filter(c -> componentCompliant(node, c)).
 				forEach(c -> {
-					if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
-						createMetaFacetComponentConstraint(frames, c);
+					if (c.isMetaAspect()) createMetaAspectComponentConstraint(frames, c);
 					else if (!c.isSub()) createComponentConstraint(frames, c);
 				});
-		if (node.facetTarget() != null && node.facetTarget().parent() != null)
-			node.facetTarget().parent().components().stream().
+		if ((node.isMetaAspect() || node.isAspect()) && node.parent() != null)
+			node.parent().components().stream().
 					filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
 					forEach(c -> {
-						if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator))
-							createMetaFacetComponentConstraint(frames, c);
+						if (c.isMetaAspect()) createMetaAspectComponentConstraint(frames, c);
 						else createComponentConstraint(frames, c);
 					});
 	}
 
 	private boolean componentCompliant(Node container, Node node) {
-		return !(container instanceof NodeRoot) || rootCompliant(node);
+		return !node.isAspect() && (!(container instanceof NodeRoot) || rootCompliant(node));
 	}
 
 	private boolean rootCompliant(Node c) {
-		return !c.is(Component) && !rootFacetOverComponentOrAbstract(c) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)));
+		return !c.is(Component) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)));
 	}
 
-	private boolean rootFacetOverComponentOrAbstract(Node node) {
-		final Node targetNode = node.facetTarget() != null ? node.facetTarget().targetNode() : null;
-		return node.type().startsWith(ProteoConstants.FACET + FacetSeparator) && targetNode != null &&
-				(targetNode.is(Component) || !(targetNode.container() instanceof NodeRoot) || targetNode.isAbstract());
-	}
 
-	private void createMetaFacetComponentConstraint(List<Frame> frames, Node node) {
-		final FacetTarget facetTarget = node.facetTarget();
-		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract())
-			return;
-		final Node target = facetTarget.targetNode();
+	private void createMetaAspectComponentConstraint(List<Frame> frames, Node node) {
+		if (!node.isMetaAspect() || node.isAbstract()) return;
+		final Node target = node.container();
 		if (target.isAbstract())
 			for (Node child : target.children()) {
 				FrameBuilder builder = new FrameBuilder(CONSTRAINT, COMPONENT).add(TYPE, node.name() + FacetSeparator + child.qualifiedName());
@@ -379,7 +361,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	}
 
 	private String name(Node node) {
-		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().qualifiedName() : node.qualifiedName();
+		return node instanceof NodeReference ? ((NodeReference) node).destination().qualifiedName() : node.qualifiedName();
 	}
 
 	private FrameBuilder createOneOf(Collection<Node> candidates, List<Rule> rules) {

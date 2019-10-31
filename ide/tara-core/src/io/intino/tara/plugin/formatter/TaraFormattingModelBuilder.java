@@ -9,7 +9,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import io.intino.tara.plugin.lang.TaraLanguage;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.lang.model.NodeContainer;
 
 public class TaraFormattingModelBuilder implements CustomFormattingModelBuilder {
@@ -41,7 +41,7 @@ public class TaraFormattingModelBuilder implements CustomFormattingModelBuilder 
 	@Nullable
 	@Override
 	public TextRange getRangeAffectingIndent(PsiFile file, int offset, ASTNode elementAtOffset) {
-		final NodeContainer containerByType = TaraPsiImplUtil.getContainerByType(elementAtOffset.getPsi(), NodeContainer.class);
+		final NodeContainer containerByType = TaraPsiUtil.getContainerByType(elementAtOffset.getPsi(), NodeContainer.class);
 		return containerByType != null ? ((PsiElement) containerByType).getTextRange() : null;
 	}
 }

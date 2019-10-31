@@ -58,10 +58,10 @@ public class Node extends Predicate {
 		return result;
 	}
 
-	public List<String> facetList() {
-		List<String> facetList = new ArrayList<>(typeNames);
-		Collections.reverse(facetList);
-		return facetList;
+	public List<String> layerList() {
+		List<String> aspectList = new ArrayList<>(typeNames);
+		Collections.reverse(aspectList);
+		return aspectList;
 	}
 
 	public Model model() {
@@ -197,15 +197,15 @@ public class Node extends Predicate {
 		layers.forEach(l -> l.removeNode$(node));
 	}
 
-	public <T extends Layer> T addFacet(Class<T> layerClass) {
-		return (T) addFacet(graph().concept(layerClass));
+	public <T extends Layer> T addAspect(Class<T> layerClass) {
+		return (T) addAspect(graph().concept(layerClass));
 	}
 
-	public Layer addFacet(String concept) {
-		return addFacet(graph().concept(concept));
+	public Layer addAspect(String concept) {
+		return addAspect(graph().concept(concept));
 	}
 
-	public Layer addFacet(Concept concept) {
+	public Layer addAspect(Concept concept) {
 		model().remove(this);
 		concept.prepareNode(this, this.graph());
 		model().add(this);
@@ -228,20 +228,20 @@ public class Node extends Predicate {
 		return this;
 	}
 
-	void removeFacets(List<Concept> concepts) {
-		concepts.forEach(this::removeFacet);
+	void removeAspects(List<Concept> concepts) {
+		concepts.forEach(this::removeAspect);
 	}
 
-	public void removeFacet(Class<? extends Layer> layerClass) {
-		removeFacet(graph().layerFactory.names(layerClass).get(0));
+	public void removeAspect(Class<? extends Layer> layerClass) {
+		removeAspect(graph().layerFactory.names(layerClass).get(0));
 	}
 
-	public void removeFacet(String concept) {
-		removeFacet(graph().concept(concept));
+	public void removeAspect(String concept) {
+		removeAspect(graph().concept(concept));
 	}
 
-	public void removeFacet(Concept concept) {
-		if (!is(concept.id()) || !concept.isFacet()) return;
+	public void removeAspect(Concept concept) {
+		if (!is(concept.id()) || !concept.isAspect()) return;
 		model().remove(this);
 		Set<Concept> toRemove = new HashSet<>(metaTypesOf(singletonList(concept)));
 		toRemove.addAll(concept.allChildren());

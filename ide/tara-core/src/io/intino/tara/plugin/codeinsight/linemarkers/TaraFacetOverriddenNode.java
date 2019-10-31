@@ -9,10 +9,10 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.plugin.lang.psi.TaraNode;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +48,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!Node.class.isInstance(element) || !(TaraPsiImplUtil.getContainerOf(element) instanceof Facet))
+		if (!Node.class.isInstance(element) || !(TaraPsiUtil.getContainerOf(element) instanceof Aspect))
 			return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
 		if (isOverridden(node)) {
@@ -60,7 +60,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 	}
 
 	private TaraNode getOverriddenNode(Node inner) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) inner);
+		Node container = TaraPsiUtil.getContainerNodeOf((PsiElement) inner);
 		if (container == null) return null;
 		for (Node containerNode : container.components())
 			if (isOverridden(inner, containerNode))

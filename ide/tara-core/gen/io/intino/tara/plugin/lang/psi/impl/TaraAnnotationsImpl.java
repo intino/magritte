@@ -12,7 +12,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraAnnotationsImpl extends AnnotationsMixin implements TaraAnnotations {
 
-  public TaraAnnotationsImpl(ASTNode node) {
+  public TaraAnnotationsImpl(@NotNull ASTNode node) {
     super(node);
   }
 

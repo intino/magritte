@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraEmptyFieldImpl extends ASTWrapperPsiElement implements TaraEmptyField {
 
-  public TaraEmptyFieldImpl(ASTNode node) {
+  public TaraEmptyFieldImpl(@NotNull ASTNode node) {
     super(node);
   }
 

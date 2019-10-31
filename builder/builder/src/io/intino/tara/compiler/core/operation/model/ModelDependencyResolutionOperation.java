@@ -33,7 +33,6 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			dependencyResolver.resolve();
 			notifyRulesNotLoaded(dependencyResolver);
 			new InheritanceResolver(model).resolve();
-			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, conf.level()).resolve();
 			new NativeResolver(model, conf.functionsDirectory()).resolve();
 		} catch (DependencyException e) {

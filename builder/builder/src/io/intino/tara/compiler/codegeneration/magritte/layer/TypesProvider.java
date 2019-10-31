@@ -51,18 +51,10 @@ public final class TypesProvider implements TemplateTags {
 		return false;
 	}
 
-	static String[] getTypes(Facet facet) {
+	static String[] getTypes(Aspect aspect) {
 		List<String> list = new ArrayList<>();
-		list.add(FACET);
-		list.add(facet.type());
-		return list.toArray(new String[0]);
-	}
-
-	static String[] getTypes(FacetTarget facetTarget) {
-		List<String> list = new ArrayList<>();
-		list.add(FACET_TARGET);
-		if (facetTarget.targetNode().qualifiedName() != null)
-			list.add(facetTarget.targetNode().qualifiedName());
+		list.add(ASPECT);
+		list.add(aspect.type());
 		return list.toArray(new String[0]);
 	}
 

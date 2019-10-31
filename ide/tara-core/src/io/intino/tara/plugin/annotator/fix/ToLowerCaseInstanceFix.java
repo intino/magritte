@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.TaraNode;
@@ -15,7 +15,7 @@ public class ToLowerCaseInstanceFix extends PsiElementBaseIntentionAction {
 	private final TaraNode node;
 
 	public ToLowerCaseInstanceFix(PsiElement element) {
-		this.node = TaraPsiImplUtil.getContainerByType(element, TaraNode.class);
+		this.node = TaraPsiUtil.getContainerByType(element, TaraNode.class);
 	}
 
 	@Override

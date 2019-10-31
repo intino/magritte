@@ -5,10 +5,10 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.TaraVariable;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.lang.model.Variable;
 
 public class LowerCaseVariableFix extends PsiElementBaseIntentionAction {
@@ -16,7 +16,7 @@ public class LowerCaseVariableFix extends PsiElementBaseIntentionAction {
 	private final Variable variable;
 
 	public LowerCaseVariableFix(PsiElement element) {
-		this.variable = TaraPsiImplUtil.getContainerByType(element, TaraVariable.class);
+		this.variable = TaraPsiUtil.getContainerByType(element, TaraVariable.class);
 	}
 
 	@Override

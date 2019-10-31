@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,24 +51,31 @@ public class NodeFragments extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!Node.class.isInstance(element)) return super.getLineMarkerInfo(element);
+		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
 		final List<NavigatablePsiElement> fragmentNodes = getFragmentNodes(node);
 		if (fragmentNodes.size() > 1) {
 			final Icon icon = AllIcons.Gutter.Unique;
 			final MarkerType type = markerType;
-            return new LineMarkerInfo(element, element.getTextRange(), icon, type.getTooltip(),
+			return new LineMarkerInfo(element, element.getTextRange(), icon, type.getTooltip(),
 					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
 
 	private List<NavigatablePsiElement> getFragmentNodes(Node node) {
 		if (node.isAnonymous()) return Collections.emptyList();
-		List<NavigatablePsiElement> fragments = new ArrayList<>();
 		NodeContainer container = node.container();
 		if (container == null) return Collections.emptyList();
-		fragments.addAll(container.component(node.name()).stream().filter(c -> !c.isReference()).map(c -> (NavigatablePsiElement) c).collect(Collectors.toList()));
-		return fragments;
+		return componentsWithSameSignature(container, node).stream().map(c -> (NavigatablePsiElement) c).collect(Collectors.toList());
+	}
+
+	private List<Node> componentsWithSameSignature(NodeContainer container, Node node) {
+		String name = name(node);
+		return container.components().stream().filter(c -> !c.isReference()).filter(component -> name.equals(name(component))).collect(Collectors.toList());
+	}
+
+	private String name(Node node) {
+		return node.name() + (node.isAspect() ? "Aspect" : "");
 	}
 
 	private static class DefaultPsiElementListCellRenderer extends PsiElementListCellRenderer {

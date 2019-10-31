@@ -57,10 +57,10 @@ public class StressTests {
 
     private List<Concept> concepts() {
         return asList(
-                newConcept("Member", false, true, true, "io.intino.tara.magritte.stresstests.layers.Member", null, list(), list(), list(), list(), list()),
-                newConcept("Fact", false, true, true, "io.intino.tara.magritte.stresstests.layers.Fact", null, list(), list(), list(), list(), list()),
-                newConcept("Car", false, false, true, "io.intino.tara.magritte.stresstests.layers.Car", null, list("Member"), list(), list(), list(), list()),
-                newConcept("CarFact", false, false, true, "io.intino.tara.magritte.stresstests.layers.CarFact", null, list("Fact"), list(), list(), list(), list())
+				newConcept("Member", false, true, false, true, "io.intino.tara.magritte.stresstests.layers.Member", null, list(), list(), list(), list(), list()),
+				newConcept("Fact", false, true, false, true, "io.intino.tara.magritte.stresstests.layers.Fact", null, list(), list(), list(), list(), list()),
+				newConcept("Car", false, false, false, true, "io.intino.tara.magritte.stresstests.layers.Car", null, list("Member"), list(), list(), list(), list()),
+				newConcept("CarFact", false, false, false, true, "io.intino.tara.magritte.stresstests.layers.CarFact", null, list("Fact"), list(), list(), list(), list())
         );
     }
 

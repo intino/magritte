@@ -56,14 +56,12 @@ HAS                 = "has"
 EXTENDS             = "extends"
 DSL                 = "dsl"
 AS                  = "as"
-ON                  = "on"
 IS                  = "is"
 INTO                = "into"
 VAR                 = "var"
 USE                 = "use"
 
 WITH                = "with"
-ANY                 = "any"
 
 //Tags
 ABSTRACT            = "abstract"
@@ -79,6 +77,7 @@ REACTIVE            = "reactive"
 VOLATILE            = "volatile"
 REQUIRED            = "required"
 DECORABLE           = "decorable"
+DIVINE              = "divine"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -163,11 +162,9 @@ NEWLINE             = [\n]+
 	{HAS}                           {   return TaraTypes.HAS; }
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{AS}                            {   return TaraTypes.AS; }
-	{ON}                            {   return TaraTypes.ON; }
 	{IS}                            {   return TaraTypes.IS; }
 	{INTO}                          {   return TaraTypes.INTO; }
 	{WITH}                          {   return TaraTypes.WITH; }
-	{ANY}                           {   return TaraTypes.ANY; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
@@ -189,6 +186,7 @@ NEWLINE             = [\n]+
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
     {FINAL}                         {   return TaraTypes.FINAL; }
     {VOLATILE}                      {   return TaraTypes.VOLATILE; }
+    {DIVINE}                        {   return TaraTypes.DIVINE; }
     {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {DECORABLE}                     {   return TaraTypes.DECORABLE; }
 

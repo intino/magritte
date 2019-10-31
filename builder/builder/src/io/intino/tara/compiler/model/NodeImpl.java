@@ -1,7 +1,7 @@
 package io.intino.tara.compiler.model;
 
 import io.intino.tara.dsl.ProteoConstants;
-import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.*;
 
 import java.util.*;
@@ -13,7 +13,6 @@ import static java.util.Collections.addAll;
 import static java.util.Collections.unmodifiableList;
 
 public class NodeImpl implements Node {
-
 	private String file;
 	private int line;
 	private Node container;
@@ -29,15 +28,15 @@ public class NodeImpl implements Node {
 	private Node parent;
 	private List<Parameter> parameters = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
-	private Set<String> allowedFacets = new HashSet<>();
-	private List<Facet> facets = new ArrayList<>();
-	private FacetTarget facetTarget;
+	private List<Aspect> aspects = new ArrayList<>();
+	private List<AspectConstraint> aspectConstraints;
 	private String language;
 	private String uid;
 	private List<Node> children = new ArrayList<>();
 	private List<String> context = new ArrayList<>();
 	private boolean dirty;
 	private boolean virtual;
+	private String stashNodeName;
 
 	@Override
 	public String name() {
@@ -132,8 +131,21 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isFacet() {
-		return type().startsWith(ProteoConstants.FACET + ":") || is(Tag.Facet);
+	public boolean isAspect() {
+		return ProteoConstants.ASPECT.equals(type()) || is(Tag.Aspect);
+	}
+
+	@Override
+	public boolean isMetaAspect() {
+		return ProteoConstants.META_ASPECT.equals(type());
+	}
+
+	public List<Node.AspectConstraint> aspectConstraints() {
+		return Collections.emptyList();
+	}
+
+	public void aspectConstraints(List<String> constraints) {
+		this.aspectConstraints = constraints.stream().map(AspectConstraint::new).collect(Collectors.toList());
 	}
 
 	public boolean is(Tag tag) {
@@ -159,12 +171,9 @@ public class NodeImpl implements Node {
 		addAll(this.annotations, annotations);
 	}
 
-	public void addFlags(List<Tag> flags) {
-		this.flags.addAll(flags);
-	}
 
-	public void addFlag(Tag flag) {
-		this.flags.add(flag);
+	public void addFlags(Tag... flags) {
+		Collections.addAll(this.flags, flags);
 	}
 
 	@Override
@@ -199,21 +208,20 @@ public class NodeImpl implements Node {
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + (facetTarget != null ? ":" + facetTarget.target().replace(".", ":") : ""));
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name);
 	}
 
-	@Override
-	public String cleanQn() {
-		String containerQN = container.cleanQn();
+	public String layerQualifiedName() {
+		String containerQn = container instanceof Model ? "" : ((NodeImpl) container).layerQualifiedName();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? newUUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
+		return (containerQn.isEmpty() ? "" : containerQn + "$") + (name == null ? newUUID() : name);
 	}
 
 	public String layerQn() {
-		String containerQN = container instanceof Model ? "" : ((NodeImpl) container).layerQn();
+		String containerQn = container instanceof Model ? "" : ((NodeImpl) container).layerQn();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
 		if (name != null && is(Decorable)) name = "Abstract" + name;
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? newUUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
+		return (containerQn.isEmpty() ? "" : containerQn + "$") + (name == null ? newUUID() : name);
 	}
 
 	private String shortType() {
@@ -222,15 +230,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public String type() {
-		return type + (type.contains(":") ? "" : facetTargetType());
-	}
-
-	private String facetTargetType() {
-		FacetTarget target = isSub() ? parent().facetTarget() : facetTarget;
-		if (target == null) return "";
-		if (target.targetNode() == null) return "";
-		final String type = target.targetNode().type();
-		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
+		return type;
 	}
 
 	@Override
@@ -243,14 +243,19 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<String> secondaryTypes() {
-		Set<String> types = facets().stream().map(io.intino.tara.lang.model.Facet::type).collect(Collectors.toSet());
+		Set<String> types = appliedAspects().stream().map(io.intino.tara.lang.model.Aspect::type).collect(Collectors.toSet());
 		if (parent != null) types.addAll(parent.types());
-		return unmodifiableList(new ArrayList(types));
+		return List.copyOf(types);
 	}
 
 	@Override
 	public void type(String type) {
 		this.type = type;
+	}
+
+	@Override
+	public void stashNodeName(String name) {
+		this.stashNodeName = name;
 	}
 
 	@Override
@@ -281,7 +286,7 @@ public class NodeImpl implements Node {
 	@Override
 	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
-		parameter.facet(facet);
+		parameter.aspect(facet);
 		parameter.file(file);
 		parameter.line(line);
 		parameter.column(column);
@@ -341,8 +346,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> referenceComponents() {
-		List<NodeReference> collect = components.keySet().stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
-		return unmodifiableList(collect);
+		return components.keySet().stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toUnmodifiableList());
 	}
 
 	@Override
@@ -361,33 +365,13 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<Facet> facets() {
-		return unmodifiableList(facets);
+	public List<Aspect> appliedAspects() {
+		return unmodifiableList(aspects);
 	}
 
 	@Override
-	public List<String> allowedFacets() {
-		return unmodifiableList(new ArrayList<>(allowedFacets));
-	}
-
-	@Override
-	public void addAllowedFacets(String... facet) {
-		addAll(allowedFacets, facet);
-	}
-
-	@Override
-	public void addFacets(Facet... facets) {
-		addAll(this.facets, facets);
-	}
-
-	@Override
-	public FacetTarget facetTarget() {
-		return facetTarget;
-	}
-
-	@Override
-	public void facetTarget(FacetTarget target) {
-		this.facetTarget = target;
+	public void applyAspects(io.intino.tara.lang.model.Aspect... aspects) {
+		Collections.addAll(this.aspects, aspects);
 	}
 
 	@Override
@@ -404,10 +388,10 @@ public class NodeImpl implements Node {
 		this.components.putAll(node.components);
 		this.variables.addAll(node.variables);
 		this.children.addAll(node.children);
+		for (Node child : node.children) ((NodeImpl) child).setParent(this);
 		this.annotations.addAll(node.annotations);
 		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Abstract)).collect(Collectors.toList()));
-		if (this.facetTarget() == null) this.facetTarget = node.facetTarget;
-		this.facets.addAll(node.facets);
+		this.aspects.addAll(node.aspects);
 		this.flags.remove(Tag.Abstract);
 	}
 
@@ -425,5 +409,36 @@ public class NodeImpl implements Node {
 
 	public void setVirtual(boolean virtual) {
 		this.virtual = virtual;
+	}
+
+	private static class AspectConstraint implements Node.AspectConstraint, Cloneable {
+		private Node node;
+		private boolean negated = false;
+		private String name;
+
+		AspectConstraint(String name) {
+			this.name = name;
+		}
+
+		public String name() {
+			return this.name;
+		}
+
+		public Node node() {
+			return this.node;
+		}
+
+		public void node(Node node) {
+			this.node = node;
+		}
+
+		@Override
+		public AspectConstraint clone() throws CloneNotSupportedException {
+			return (AspectConstraint) super.clone();
+		}
+
+		public String toString() {
+			return "with " + node().qualifiedName();
+		}
 	}
 }

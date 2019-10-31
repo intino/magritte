@@ -7,6 +7,7 @@ public class Concept {
 	public boolean isAbstract;
 	public boolean isMetaConcept;
 	public boolean isMain;
+	public boolean isAspect;
 	public String className;
 	public String name;
 	public String parent;

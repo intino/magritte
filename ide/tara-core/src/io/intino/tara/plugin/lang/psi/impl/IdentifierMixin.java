@@ -28,7 +28,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getIdentifier() {
-		return TaraPsiImplUtil.getIdentifier((Identifier) this);
+		return TaraPsiUtil.getIdentifier((Identifier) this);
 	}
 
 	@NotNull
@@ -114,10 +114,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return identifier;
 	}
 
-	public boolean isReferringTarget() {
-		final IdentifierReference containerByType = TaraPsiImplUtil.getContainerByType(this, IdentifierReference.class);
-		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.PLUS));
-	}
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
@@ -147,11 +143,11 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private boolean inReferenceValued() {
-		final Valued valued = TaraPsiImplUtil.contextOf(this, Valued.class);
+		final Valued valued = TaraPsiUtil.contextOf(this, Valued.class);
 		return valued == null || valued.type().equals(REFERENCE);
 	}
 
 	private boolean isMethodReference() {
-		return TaraPsiImplUtil.getContainerByType(this, TaraMethodReference.class) != null;
+		return TaraPsiUtil.getContainerByType(this, TaraMethodReference.class) != null;
 	}
 }

@@ -29,11 +29,12 @@ public class Helper {
         return stash;
     }
 
-    public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
+	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isAspect, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
 		Concept concept = new Concept();
 		concept.name = name;
 		concept.isAbstract = isAbstract;
 		concept.isMetaConcept = isMetaConcept;
+		concept.isAspect = isAspect;
 		concept.isMain = isMain;
 		concept.className = className;
 		concept.parent = parent;
@@ -45,10 +46,10 @@ public class Helper {
 		return concept;
 	}
 
-	public static Node newNode(String name, List<String> facets, List<? extends Variable> variables, List<Node> nodes) {
+	public static Node newNode(String name, List<String> layers, List<? extends Variable> variables, List<Node> nodes) {
 		Node node = new Node();
 		node.name = name;
-		node.facets.addAll(facets);
+		node.layers.addAll(layers);
 		node.variables.addAll(variables);
 		node.nodes.addAll(nodes);
 		return node;

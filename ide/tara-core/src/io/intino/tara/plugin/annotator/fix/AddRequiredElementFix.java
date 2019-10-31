@@ -13,7 +13,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.TaraElementFactory;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 	private final Node node;
 
 	public AddRequiredElementFix(PsiElement element) {
-		this.node = element instanceof Node ? (Node) element : TaraPsiImplUtil.getContainerNodeOf(element);
+		this.node = element instanceof Node ? (Node) element : TaraPsiUtil.getContainerNodeOf(element);
 	}
 
 	@Nls
@@ -99,7 +99,7 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 	}
 
 	private Template createTemplate(List<Constraint.Component> requires, PsiFile file) {
-		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires, TaraPsiImplUtil.getIndentation((PsiElement) node) + 1));
+		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires, TaraPsiUtil.getIndentation((PsiElement) node) + 1));
 		addComponents(template, requires);
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;

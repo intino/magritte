@@ -15,16 +15,9 @@ class StashReader {
     private static List<String> proteoTypes = new ArrayList<>(asList(
             "Concept",
             "MetaConcept",
-            "Facet",
-            "MetaFacet",
-            "Facet#MetaConcept",
-            "Facet#Concept",
-            "Facet#Facet",
-            "Facet#MetaFacet",
-            "MetaFacet#MetaConcept",
-            "MetaFacet#Concept",
-            "MetaFacet#Facet",
-            "MetaFacet#MetaFacet"));
+            "Aspect",
+			"Facet",
+            "MetaAspect"));
     private final Graph graph;
 
     StashReader(Graph graph) {
@@ -51,6 +44,7 @@ class StashReader {
         concept.concepts(metaTypesOf(concepts));
         concept.isAbstract = rawConcept.isAbstract;
         concept.isMetaConcept = rawConcept.isMetaConcept;
+		concept.isAspect = rawConcept.isAspect;
         concept.isMain = rawConcept.isMain;
         concept.layerClass = graph.layerFactory.layerClass(concept.id);
         concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(graph.concept$(c.type), c.min, c.max)).collect(toSet());
@@ -80,7 +74,7 @@ class StashReader {
     }
 
     private Node loadNode(Node node, io.intino.tara.io.Node rawNode) {
-        List<Concept> metaTypes = metaTypesOf(conceptsOf(rawNode.facets));
+        List<Concept> metaTypes = metaTypesOf(conceptsOf(rawNode.layers));
         addConcepts(node, metaTypes);
         loadNodes(node, rawNode.nodes);
         cloneNodes(node);
@@ -98,11 +92,11 @@ class StashReader {
         node.syncLayers();
     }
 
-    private List<Concept> conceptsOf(List<String> facets) {
+    private List<Concept> conceptsOf(List<String> layers) {
         List<Concept> result = new ArrayList<>();
-        for (String facet : facets) {
-            Concept concept = graph.concepts.get(facet);
-            if (concept == null) throw new MagritteException("Concept " + facet + " not found");
+        for (String layer : layers) {
+            Concept concept = graph.concepts.get(layer);
+            if (concept == null) throw new MagritteException("Concept " + layer + " not found");
             result.add(concept);
         }
         return result;

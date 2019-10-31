@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -25,7 +25,7 @@ class StashToTara {
 	static Path createTara(VirtualFile stash, File destiny) throws IOException {
 		destiny.deleteOnExit();
 		final String stashText = taraFrom(stashFrom(new File(stash.getPath())));
-		Files.write(destiny.toPath(), stashText.getBytes(Charset.forName("UTF-8")));
+		Files.write(destiny.toPath(), stashText.getBytes(StandardCharsets.UTF_8));
 		return destiny.toPath();
 	}
 
@@ -90,8 +90,8 @@ class StashToTara {
 	}
 
 	private String coreType(Concept concept) {
-		return concept.types.get(0).startsWith("MetaFacet") ? "MetaFacet" :
-				concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
+		return concept.types.get(0).startsWith("MetaAspect") ? "MetaAspect" :
+				concept.types.get(0).startsWith("Aspect") ? "Aspect" : simpleName(concept.types.get(0));
 	}
 
 	private void writeNodes(List<? extends Node> instances, int level) {
@@ -115,15 +115,15 @@ class StashToTara {
 	}
 
 	private void writeCore(Node node, int level) {
-		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
-		writeFacets(node);
+		write(simpleName(node.layers.get(0)), " ", simpleName(node.name));
+		writeAspects(node);
 		writeVariables(node.variables, level);
 		writeNodes(node.nodes, level);
 	}
 
-	private void writeFacets(Node node) {
-		if (node.facets.size() > 1) write(" as");
-		range(1, node.facets.size()).forEach(i -> write(" " + node.facets.get(i).split("#")[0]));
+	private void writeAspects(Node node) {
+		if (node.layers.size() > 1) write(" as");
+		node.layers.stream().filter(a -> a.contains("#")).map(facet -> " " + facet.split("#")[0]).forEach(this::write);
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {
@@ -146,6 +146,7 @@ class StashToTara {
 
 	private void write(Variable variable) {
 		if (variable instanceof Variable.Integer) format(variable);
+		else if (variable instanceof Variable.Long) format(variable);
 		else if (variable instanceof Variable.Double) format(variable);
 		else if (variable instanceof Variable.Boolean) format(variable);
 		else if (variable instanceof Variable.String) formatWithQuotes(variable);

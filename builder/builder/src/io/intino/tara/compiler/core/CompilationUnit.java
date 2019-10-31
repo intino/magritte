@@ -17,7 +17,11 @@ import io.intino.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import io.intino.tara.compiler.model.Model;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 public final class CompilationUnit extends ProcessingUnit {
 
@@ -30,7 +34,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		super(configuration, null);
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
-		Arrays.fill(this.phaseOperations, new LinkedList());
+		IntStream.range(0, phaseOperations.length).forEach(i -> phaseOperations[i] = new LinkedList<>());
 		addPhaseOperations();
 	}
 

@@ -4,7 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import io.intino.tara.plugin.annotator.semanticanalizer.ReferenceAnalyzer;
 import io.intino.tara.plugin.lang.psi.IdentifierReference;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.annotator.semanticanalizer.HeaderReferenceAnalyzer;
 import io.intino.tara.plugin.lang.psi.HeaderReference;
@@ -40,7 +40,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isRule(IdentifierReference reference) {
-		final Variable variable = TaraPsiImplUtil.getContainerByType(reference, Variable.class);
+		final Variable variable = TaraPsiUtil.getContainerByType(reference, Variable.class);
 		return reference.getParent() instanceof Rule && variable != null &&
 				!WORD.equals(variable.type()) &&
 				!FUNCTION.equals(variable.type()) &&

@@ -18,13 +18,10 @@ public class Model implements NodeRoot {
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
 	private File resourcesRoot;
+	private List<Node> facets;
 
 	public Model(String file) {
 		this.file = file;
-	}
-
-	public void setLanguage(Language language) {
-		this.language = language;
 	}
 
 	@Override
@@ -89,9 +86,36 @@ public class Model implements NodeRoot {
 		return language;
 	}
 
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
 	@Override
 	public String languageName() {
 		return language != null ? language.languageName() : "";
+	}
+
+	public List<Node> allFacets() {
+		if (this.facets == null) collectFacet();
+		return facets;
+	}
+
+	private void collectFacet() {
+		this.facets = new ArrayList<>();
+		for (Node node : components.keySet()) {
+			if (node.isAspect()) facets.add(node);
+			facets(node);
+		}
+	}
+
+	private List<Node> facets(Node node) {
+		List<Node> list = new ArrayList<>();
+		node.components().forEach(n -> {
+			if (n.isReference()) return;
+			if (n.isAspect()) list.add(n);
+			list.addAll(facets(n));
+		});
+		return list;
 	}
 
 	public void setUses(List<String> uses) {
@@ -102,7 +126,7 @@ public class Model implements NodeRoot {
 		this.rules = rules;
 	}
 
-	public Map<String, Class<?>> getRules() {
+	public Map<String, Class<?>> rules() {
 		return rules;
 	}
 
@@ -112,5 +136,15 @@ public class Model implements NodeRoot {
 
 	public File resourcesRoot() {
 		return resourcesRoot;
+	}
+
+	@Override
+	public boolean isMetaAspect() {
+		return false;
+	}
+
+	@Override
+	public void stashNodeName(String name) {
+
 	}
 }

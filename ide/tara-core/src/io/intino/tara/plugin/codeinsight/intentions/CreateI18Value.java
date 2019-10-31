@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.codeinsight.intentions.dialog.CreateStringValues;
 import io.intino.tara.plugin.lang.psi.StringValue;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ public class CreateI18Value extends PsiElementBaseIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final CreateStringValues dialog = new CreateStringValues(element, TaraPsiImplUtil.getContainerByType(element, StringValue.class).getValue());
+		final CreateStringValues dialog = new CreateStringValues(element, TaraPsiUtil.getContainerByType(element, StringValue.class).getValue());
 		dialog.pack();
 		dialog.setLocationRelativeTo(dialog.getParent());
 		if (ApplicationManager.getApplication().isDispatchThread()) dialog.setVisible(true);
@@ -25,7 +25,7 @@ public class CreateI18Value extends PsiElementBaseIntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final StringValue stringValue = TaraPsiImplUtil.getContainerByType(element, StringValue.class);
+		final StringValue stringValue = TaraPsiUtil.getContainerByType(element, StringValue.class);
 		return stringValue != null;
 	}
 

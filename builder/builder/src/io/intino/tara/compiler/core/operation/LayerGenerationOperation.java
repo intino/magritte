@@ -4,7 +4,6 @@ import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
 import io.intino.tara.compiler.codegeneration.Format;
-import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.codegeneration.magritte.layer.AbstractGraphCreator;
 import io.intino.tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
@@ -17,7 +16,6 @@ import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
-import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
 
@@ -112,36 +110,25 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return Format.customize(new GraphTemplate()).render(builder.toFrame());
 	}
 
-
 	private Map<String, Map<String, String>> createLayerClasses(Model model) {
 		Map<String, Map<String, String>> map = new HashMap();
 		for (Node node : model.components()) {
 			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) continue;
-			if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
-			else renderNode(map, node);
+			renderNode(map, model, node);
 		}
 		return map;
 	}
 
-	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
-		if (node.facetTarget() != null) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node.facetTarget(), node);
-			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-			map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
-			renderFrame(map, node, layerFrame);
-		}
-	}
-
-	private void renderNode(Map<String, Map<String, String>> map, Node node) {
-		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
+	private void renderNode(Map<String, Map<String, String>> map, Model model, Node node) {
+		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName(), model).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
-		renderFrame(map, node, layerFrame);
+		renderFrame(map, node, model, layerFrame);
 	}
 
-	private void renderFrame(Map<String, Map<String, String>> map, Node node, Map.Entry<String, Frame> layerFrame) {
+	private void renderFrame(Map<String, Map<String, String>> map, Node node, Model model, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
-			layerFrame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
+			layerFrame = new LayerFrameCreator(conf, node.languageName(), model).createDecorable(node);
 			map.get(node.file()).put(srcDestiny(layerFrame), render(layerFrame));
 		} else removeDecorable(layerFrame.getKey(), node.name());
 	}
@@ -200,18 +187,10 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return model.components().stream().filter(n -> !n.is(Tag.Instance) && !n.isAnonymous()).map(node -> new File(calculateLayerPath(node, base) + JAVA)).collect(Collectors.toList());
 	}
 
-	private String calculateLayerPath(Node node, File base) {
-		final String aPackage = packageOf(node);
-		return base.getPath() + File.separator + aPackage + javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
+	private String calculateLayerPath(Node node, File workingPackage) {
+		return workingPackage.getPath() + File.separator + javaValidName().format(node.name()).toString();
 	}
 
-	private String facetName(FacetTarget facetTarget) {
-		return facetTarget != null ? facetTarget.targetNode().name() : "";
-	}
-
-	private String packageOf(Node node) {
-		return node.facetTarget() != null ? NameFormatter.facetLayerPackage(node.facetTarget(), "").substring(1).replace(".", File.separator) : File.separator;
-	}
 
 	private List<File> collectAllLayers(File out) {
 		List<File> list = new ArrayList<>();

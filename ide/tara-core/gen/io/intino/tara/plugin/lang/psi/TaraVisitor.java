@@ -6,14 +6,13 @@ import com.intellij.psi.PsiElementVisitor;
 import  io.intino.tara.lang.model.Node;
 import  com.intellij.openapi.util.Iconable;
 import  com.intellij.pom.Navigatable;
-import  io.intino.tara.lang.model.FacetTarget;
+import  io.intino.tara.plugin.lang.psi.TaraPsiElement;
 import  io.intino.tara.lang.model.Variable;
 import  io.intino.tara.plugin.lang.psi.Valued;
 import  com.intellij.psi.PsiNamedElement;
 import  io.intino.tara.lang.model.Parameter;
-import  io.intino.tara.plugin.lang.psi.TaraPsiElement;
 import  io.intino.tara.plugin.lang.psi.Value;
-import  io.intino.tara.lang.model.Facet;
+import  io.intino.tara.lang.model.Aspect;
 
 public class TaraVisitor extends PsiElementVisitor {
 
@@ -27,6 +26,14 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitAnnotations(@NotNull TaraAnnotations o) {
     visitAnnotations(o);
+  }
+
+  public void visitAspectApply(@NotNull TaraAspectApply o) {
+    visitPsiElement(o);
+  }
+
+  public void visitAspects(@NotNull TaraAspects o) {
+    visitPsiElement(o);
   }
 
   public void visitBody(@NotNull TaraBody o) {
@@ -63,18 +70,6 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitExpression(@NotNull TaraExpression o) {
     visitExpression(o);
-  }
-
-  public void visitFacetApply(@NotNull TaraFacetApply o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFacetTarget(@NotNull TaraFacetTarget o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFacets(@NotNull TaraFacets o) {
-    visitPsiElement(o);
   }
 
   public void visitFlag(@NotNull TaraFlag o) {

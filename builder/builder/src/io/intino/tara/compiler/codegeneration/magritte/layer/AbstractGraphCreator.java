@@ -46,11 +46,12 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 		if (node.isTerminal()) builder.add(CONCEPT);
 		if (node.is(Instance)) builder.add(INSTANCE);
 		if (node.isAbstract()) builder.add(ABSTRACT);
-		builder.add(QN, getQn(node));
+		String qn = NameFormatter.getQn(node, workingPackage.toLowerCase());
+		builder.add(QN, qn);
+		builder.add(STASH_QN, qn);
 		builder.add(OUT_LANGUAGE, outDsl);
-		builder.add(STASH_QN, NameFormatter.stashQn(node, workingPackage.toLowerCase()).replace(":", ""));
 		addType(node, size, builder);
-		builder.add(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
+		builder.add(NAME, node.name());
 		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> builder.add(VARIABLE, frameOf(variable)));
 		addTerminalVariables(node, builder);
 		return builder.toFrame();
@@ -71,12 +72,6 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 				.put(Variable.class, new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage))
 				.append(variable)
 				.toFrame();
-	}
-
-	private String getQn(Node node) {
-		return node.facetTarget() != null ?
-				NameFormatter.getQn(node.facetTarget(), workingPackage.toLowerCase()).replace(":", "") :
-				NameFormatter.getQn(node, workingPackage.toLowerCase()).replace(":", "");
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {

@@ -12,12 +12,12 @@ import com.intellij.psi.impl.source.PsiPlainTextFileImpl;
 import io.intino.tara.Language;
 import io.intino.tara.dsl.Meta;
 import io.intino.tara.dsl.Proteo;
-import io.intino.tara.lang.model.Facet;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.semantics.Documentation;
 import io.intino.tara.plugin.codeinsight.completion.CompletionUtils.FakeElement;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -53,17 +53,17 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
 			if (facetOf(originalElement) != null) return TaraDocumentationFormatter.doc2Html(null, findDoc(facetOf(originalElement)));
-			else return TaraDocumentationFormatter.doc2Html(null, findDoc(TaraPsiImplUtil.getContainerByType(originalElement, Node.class)));
+			else return TaraDocumentationFormatter.doc2Html(null, findDoc(TaraPsiUtil.getContainerByType(originalElement, Node.class)));
 		if (element instanceof MetaIdentifier)
-			return TaraDocumentationFormatter.doc2Html(null, findDoc(TaraPsiImplUtil.getContainerByType(element, Node.class)));
+			return TaraDocumentationFormatter.doc2Html(null, findDoc(TaraPsiUtil.getContainerByType(element, Node.class)));
 		if (element instanceof Node) return ((Node) element).doc();
 		if (element instanceof FakeElement) return findDoc(((FakeElement) element).getType(), originalElement);
-		if (element instanceof Identifier && TaraPsiImplUtil.getContainerByType(element, IdentifierReference.class) != null) {
-			final Node resolve = resolveToNode(TaraPsiImplUtil.getContainerByType(element, IdentifierReference.class));
+		if (element instanceof Identifier && TaraPsiUtil.getContainerByType(element, IdentifierReference.class) != null) {
+			final Node resolve = resolveToNode(TaraPsiUtil.getContainerByType(element, IdentifierReference.class));
 			return resolve != null ? ((TaraNode) resolve).getSignature().getText() : "";
 		}
-		if (element instanceof Identifier && TaraPsiImplUtil.getContainerByType(element, TaraSignature.class) != null)
-			return TaraPsiImplUtil.getContainerByType(element, TaraSignature.class).getText();
+		if (element instanceof Identifier && TaraPsiUtil.getContainerByType(element, TaraSignature.class) != null)
+			return TaraPsiUtil.getContainerByType(element, TaraSignature.class).getText();
 		if (element instanceof PsiPlainTextFileImpl) return TaraDocumentationFormatter.doc2Html(element, html(table(element.getText())));
 		else return "**No documentation found for " + element.getText() + "**";
 	}
@@ -85,12 +85,12 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return findDoc(container.type(), (PsiElement) container);
 	}
 
-	private String findDoc(Facet facet) {
-		return findDoc(facet.type() + Proteo.FACET_SEPARATOR + TaraPsiImplUtil.getContainerNodeOf((PsiElement) facet).type(), (PsiElement) facet);
+	private String findDoc(Aspect aspect) {
+		return findDoc(aspect.type(), (PsiElement) aspect);
 	}
 
-	private Facet facetOf(PsiElement element) {
-		return TaraPsiImplUtil.getContainerByType(element, Facet.class);
+	private Aspect facetOf(PsiElement element) {
+		return TaraPsiUtil.getContainerByType(element, Aspect.class);
 	}
 
 	private String findDoc(String type, PsiElement anElement) {

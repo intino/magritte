@@ -12,8 +12,8 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer* parameters? IDENTIFIER facets*) |
-			(metaidentifier ruleContainer* parameters? IDENTIFIER? facets* parent?)) (facetTarget? tags);
+signature: ((SUB ruleContainer* parameters? IDENTIFIER aspects*) |
+			(metaidentifier ruleContainer* parameters? IDENTIFIER? aspects* parent?)) with? tags;
 
 parent : EXTENDS identifierReference;
 
@@ -21,10 +21,9 @@ parent : EXTENDS identifierReference;
 parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
 parameter: (IDENTIFIER EQUALS)? value;
 
-facets : AS facet+;
+aspects : AS aspect+;
 
-facet: metaidentifier parameters?;
-
+aspect: metaidentifier parameters?;
 
 value : identifierReference+
 		| stringValue+
@@ -38,7 +37,6 @@ value : identifierReference+
 		| EMPTY;
 body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DEDENT;
 
-facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer* identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? bodyValue?;
@@ -63,7 +61,7 @@ ruleContainer : COLON ruleValue;
 
 ruleValue    : (LEFT_CURLY (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | (identifierReference);
 
-range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
+range        : (doubleValue | integerValue | STAR) (DOT DOT (doubleValue | integerValue | STAR))?;
 
 size		 : LEFT_SQUARE sizeRange? RIGHT_SQUARE;
 sizeRange 	 : NATURAL_VALUE | listRange;
@@ -88,7 +86,7 @@ annotations: INTO annotation+;
 annotation: COMPONENT | FEATURE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE | DECORABLE | REQUIRED;
+flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE | DECORABLE | REQUIRED | DIVINE;
 
 varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 

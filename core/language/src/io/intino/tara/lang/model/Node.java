@@ -11,17 +11,23 @@ public interface Node extends Parametrized, NodeContainer {
 
 	void name(String name);
 
-	String qualifiedName();
+	String type();
 
-	String cleanQn();
+	String qualifiedName();
 
 	Node container();
 
 	boolean isSub();
 
-	List<Node> subs();
+	boolean isAspect();
 
-	boolean isFacet();
+	boolean isMetaAspect();
+
+	default List<AspectConstraint> aspectConstraints() {
+		return Collections.emptyList();
+	}
+
+	List<Aspect> appliedAspects();
 
 	boolean is(Tag tag);
 
@@ -37,9 +43,7 @@ public interface Node extends Parametrized, NodeContainer {
 
 	void addAnnotations(Tag... annotations);
 
-	void addFlags(List<Tag> flags);
-
-	void addFlag(Tag flags);
+	void addFlags(Tag... flags);
 
 	Node parent();
 
@@ -47,15 +51,13 @@ public interface Node extends Parametrized, NodeContainer {
 
 	boolean isAnonymous();
 
-	default String simpleType() {
-		return type();
-	}
-
 	List<String> types();
 
 	List<String> secondaryTypes();
 
 	void type(String type);
+
+	void stashNodeName(String name);
 
 	default List<String> metaTypes() {
 		return Collections.emptyList();
@@ -69,15 +71,13 @@ public interface Node extends Parametrized, NodeContainer {
 
 	boolean isReference();
 
-	List<Node> siblings();
-
 	List<Variable> variables();
-
-	List<Node> referenceComponents();
 
 	Node destinyOfReference();
 
 	List<Node> children();
+
+	List<Node> subs();
 
 	default void addUses(List<String> imports) {
 	}
@@ -85,27 +85,7 @@ public interface Node extends Parametrized, NodeContainer {
 	default <T extends Node> void addChild(T node) {
 	}
 
-	List<Facet> facets();
-
-	default List<String> allowedFacets() {
-		return Collections.emptyList();
-	}
-
-	default void addAllowedFacets(String... facet) {
-	}
-
-	default void addFacets(Facet... facets) {
-	}
-
-	default void addFacet(String type) {
-
-	}
-
-	default FacetTarget facetTarget() {
-		return null;
-	}
-
-	default void facetTarget(FacetTarget target) {
+	default void applyAspects(Aspect... aspects) {
 	}
 
 	@Override
@@ -116,4 +96,10 @@ public interface Node extends Parametrized, NodeContainer {
 
 	@Override
 	int hashCode();
+
+	interface AspectConstraint {
+		String name();
+
+		Node node();
+	}
 }

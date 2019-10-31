@@ -4,7 +4,6 @@ import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.lang.model.FacetTarget;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Primitive;
@@ -17,7 +16,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.FileSystemUtils.getNameWithoutExtension;
-import static io.intino.tara.dsl.ProteoConstants.FACET_SEPARATOR;
 
 public class ReferenceManager {
 
@@ -27,33 +25,14 @@ public class ReferenceManager {
 		this.model = model;
 	}
 
-	private static boolean areNamesake(String name, Node node) {
-		return name.equals(node.name());
-	}
-
-	private static void addNodeSiblings(String identifier, Node container, Set<Node> set) {
-		if (container == null) return;
-		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
-	}
-
-	private static void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
-		set.addAll(parent.components().stream().
-				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
-				collect(Collectors.toList()));
-	}
-
 	public NodeImpl resolve(NodeReference reference) {
 		return (NodeImpl) resolve(reference.getReference(), reference.container());
 	}
 
-	Node resolve(FacetTarget target, Node owner) {
-		Node result = resolve(target.target(), owner);
-		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
-	}
 
 	NodeImpl resolve(VariableReference variable, Node container) {
 		Node result = resolve(variable.destinyName(), container);
-		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
+		return result instanceof NodeReference ? ((NodeReference) result).destination() : (NodeImpl) result;
 	}
 
 	Node resolveParameterReference(Primitive.Reference value, Node node) {
@@ -68,12 +47,6 @@ public class ReferenceManager {
 		return selectFromOptions(node, path, roots);
 	}
 
-	Node resolveFacetConstraint(String facet, String target) {
-		for (Node node : model.components())
-			if (facet.equals(node.name()) && node.facetTarget() != null && target.equals(node.facetTarget().target()))
-				return node;
-		return null;
-	}
 
 	Node resolveParent(String reference, Node node) {
 		return resolve(reference.split("\\."), searchPossibleRoots(node, reference.split("\\.")[0], true));
@@ -115,7 +88,7 @@ public class ReferenceManager {
 		Node reference = null;
 		for (String name : path) {
 			if (reference == null) {
-				reference = areNamesake(name, node) ? node : null;
+				reference = areNamesake(node, name) ? node : null;
 				continue;
 			}
 			final List<Node> components = reference.component(name);
@@ -129,34 +102,22 @@ public class ReferenceManager {
 
 	private Collection<Node> searchPossibleRoots(Node node, String name, boolean parent) {
 		Set<Node> set = new LinkedHashSet<>();
-		final String[] names = name.split("\\" + FACET_SEPARATOR);//TODO Candidate to remove. Now all components are in the node body
-		namesake(names[0], set, node);
-		addInContext(names[0], set, node, parent);
-		addNodeSiblings(names[0], node, set);
-		addRoots(names[0], set);
-		return names.length == 1 || set.isEmpty() ? set : filterByFacet(set, names[1]);
-	}
-
-	private Collection<Node> filterByFacet(Set<Node> set, String name) {
-		return set.stream().filter(node -> {
-			final FacetTarget target = node.facetTarget() == null ? findTargetInParent(node) : node.facetTarget();
-			return target != null && (target.target().endsWith("." + name) || target.target().equals(name));
-		}).collect(Collectors.toSet());
-	}
-
-	private FacetTarget findTargetInParent(Node node) {
-		Node parent = node.parent();
-		while (parent != null) {
-			if (parent.facetTarget() != null) return parent.facetTarget();
-			else parent = parent.parent();
-		}
-		return null;
+		namesake(name, set, node);
+		addInContext(name, set, node, parent);
+		addNodeSiblings(name, node, set);
+		addRoots(name, set);
+		return set;
 	}
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().
-				filter(node -> areNamesake(name, node)).
+				filter(node -> areNamesake(node, name)).
 				collect(Collectors.toList()));
+	}
+
+	private void addNodeSiblings(String identifier, Node container, Set<Node> set) {
+		if (container == null) return;
+		set.addAll(container.components().stream().filter(node -> areNamesake(node, identifier)).collect(Collectors.toList()));
 	}
 
 	private void addInContext(String name, Set<Node> set, Node node, boolean parent) {
@@ -177,12 +138,17 @@ public class ReferenceManager {
 		for (Node sibling : container.siblings()) namesake(name, set, sibling);
 	}
 
+	private void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
+		set.addAll(parent.components().stream().
+				filter(sibling -> areNamesake(sibling, identifier) && !sibling.equals(container)).
+				collect(Collectors.toList()));
+	}
+
 	private void namesake(String name, Set<Node> set, NodeContainer container) {
-		if (container instanceof NodeImpl && namesake((Node) container, name)) set.add((Node) container);
+		if (container instanceof NodeImpl && areNamesake((Node) container, name)) set.add((Node) container);
 	}
 
-	private boolean namesake(Node node, String name) {
-		return areNamesake(name, node);
+	private boolean areNamesake(Node node, String name) {
+		return name.equals(node.name());
 	}
-
 }

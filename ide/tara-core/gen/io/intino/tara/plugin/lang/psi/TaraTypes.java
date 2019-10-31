@@ -12,6 +12,8 @@ public interface TaraTypes {
 	IElementType ANNOTATION = new TaraElementType("ANNOTATION");
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
+	IElementType ASPECTS = new TaraElementType("ASPECTS");
+	IElementType ASPECT_APPLY = new TaraElementType("ASPECT_APPLY");
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BODY_VALUE = new TaraElementType("BODY_VALUE");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
@@ -21,9 +23,6 @@ public interface TaraTypes {
 	IElementType DSL_DECLARATION = new TaraElementType("DSL_DECLARATION");
 	IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
 	IElementType EXPRESSION = new TaraElementType("EXPRESSION");
-	IElementType FACETS = new TaraElementType("FACETS");
-	IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
-	IElementType FACET_TARGET = new TaraElementType("FACET_TARGET");
 	IElementType FLAG = new TaraElementType("FLAG");
 	IElementType FLAGS = new TaraElementType("FLAGS");
 	IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
@@ -54,7 +53,6 @@ public interface TaraTypes {
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
 
 	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
-	IElementType ANY = new TaraTokenType("ANY");
 	IElementType AS = new TaraTokenType("AS");
 	IElementType AT = new TaraTokenType("AT");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
@@ -69,6 +67,7 @@ public interface TaraTypes {
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
 	IElementType DECORABLE = new TaraTokenType("DECORABLE");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
+	IElementType DIVINE = new TaraTokenType("DIVINE");
 	IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
 	IElementType DOT = new TaraTokenType("DOT");
 	IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
@@ -99,9 +98,8 @@ public interface TaraTypes {
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
-	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
+  IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType OBJECT_TYPE = new TaraTokenType("OBJECT_TYPE");
-	IElementType ON = new TaraTokenType("ON");
 	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
@@ -132,6 +130,10 @@ public interface TaraTypes {
 				return new TaraAnnotationsImpl(node);
 			} else if (type == AN_IMPORT) {
 				return new TaraAnImportImpl(node);
+			} else if (type == ASPECTS) {
+				return new TaraAspectsImpl(node);
+			} else if (type == ASPECT_APPLY) {
+				return new TaraAspectApplyImpl(node);
 			} else if (type == BODY) {
 				return new TaraBodyImpl(node);
 			} else if (type == BODY_VALUE) {
@@ -150,12 +152,6 @@ public interface TaraTypes {
 				return new TaraEmptyFieldImpl(node);
 			} else if (type == EXPRESSION) {
 				return new TaraExpressionImpl(node);
-			} else if (type == FACETS) {
-				return new TaraFacetsImpl(node);
-			} else if (type == FACET_APPLY) {
-				return new TaraFacetApplyImpl(node);
-			} else if (type == FACET_TARGET) {
-				return new TaraFacetTargetImpl(node);
 			} else if (type == FLAG) {
 				return new TaraFlagImpl(node);
 			} else if (type == FLAGS) {

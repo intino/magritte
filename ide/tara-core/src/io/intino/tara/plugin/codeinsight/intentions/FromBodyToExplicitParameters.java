@@ -14,7 +14,7 @@ import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Parametrized;
 import io.intino.tara.lang.semantics.Constraint;
 
-import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
+import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerByType;
 
 public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 
@@ -23,7 +23,7 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 		Parameter varInit = getContainerByType(element, TaraVarInit.class);
 		if (varInit == null || parameterExists(varInit) || varInit.name() == null || varInit.values() == null) return;
 		final NodeContainer container = varInit.container();
-		((Parametrized) container).addParameter(varInit.name(), varInit.facet(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values());
+		((Parametrized) container).addParameter(varInit.name(), varInit.aspect(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values());
 		((PsiElement) varInit).getPrevSibling().delete();
 		((PsiElement) varInit).delete();
 		removeEmptyBody(container);

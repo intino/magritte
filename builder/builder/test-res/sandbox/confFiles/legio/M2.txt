@@ -6,7 +6,7 @@ intino
 module
 legio
 semantic.lib
-/Users/oroncal/Library/Application Support/IntelliJIdea2019.1/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/intino/legio/gen
 final_outputpath
@@ -16,7 +16,7 @@ resources
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/intino/.tara
+/Users/oroncal/workspace/intino/.intino
 src.path
 /Users/oroncal/workspace/intino/legio/src
 /Users/oroncal/workspace/intino/legio/gen
@@ -32,7 +32,7 @@ io.intino.legio
 artifactId
 model
 version
-3.1.0
+3.2.0
 working.package
 io.intino.legio.graph
 make

@@ -28,7 +28,7 @@ import io.intino.tara.plugin.annotator.imports.TaraReferenceImporter;
 import io.intino.tara.plugin.codeinsight.languageinjection.CreateFunctionInterfaceIntention;
 import io.intino.tara.plugin.highlighting.TaraSyntaxHighlighter;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.MethodReferenceSolver;
 import io.intino.tara.plugin.lang.psi.resolve.OutDefinedReferenceSolver;
@@ -64,7 +64,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		if (resolve != null) return;
 		if (isInstanceReference() && aReference instanceof TaraNodeReferenceSolver)
 			results.put(reference, new AnnotateAndFix(INSTANCE, MessageProvider.message("node.reference")));
-		else if (TaraPsiImplUtil.contextOf(reference, TaraVariableType.class) == null || !isConceptReference())
+		else if (TaraPsiUtil.contextOf(reference, TaraVariableType.class) == null || !isConceptReference())
 			setError(aReference, element);
 	}
 
@@ -98,9 +98,9 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private void createOutDefinedReferenceError(Identifier element) {
-		Variable variable = TaraPsiImplUtil.getContainerByType(element, Variable.class);
+		Variable variable = TaraPsiUtil.getContainerByType(element, Variable.class);
 		if (variable == null) return;
-		Rule rule = TaraPsiImplUtil.getContainerByType(element, Rule.class);
+		Rule rule = TaraPsiUtil.getContainerByType(element, Rule.class);
 		if (rule == null)
 			results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS));
 		else
@@ -131,7 +131,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private List<CreateNodeQuickFix> createNewElementFix(Identifier element) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
+		Node node = TaraPsiUtil.getContainerNodeOf(element);
 		if (node != null)
 			return singletonList(new CreateNodeQuickFix(element.getText(), (TaraModel) element.getContainingFile()));
 		return Collections.emptyList();
@@ -139,7 +139,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 
 	private List<IntentionAction> createMethodFix(Identifier element) {
-		Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
+		Valued valued = TaraPsiUtil.getContainerByType(element, Valued.class);
 		if (valued != null) return getFix(element, valued);
 		return Collections.emptyList();
 	}
@@ -150,7 +150,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private List<AlternativesForReferenceFix> alternativesForReferenceFix(Identifier element) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
+		Node node = TaraPsiUtil.getContainerNodeOf(element);
 		return node != null ? singletonList(new AlternativesForReferenceFix(element)) : Collections.emptyList();
 	}
 

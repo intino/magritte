@@ -24,11 +24,12 @@ class LanguageCreator {
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
+		template.add("withDollar", Format.withDollar());
 		Iterator<Model> iterator = models.iterator();
 		FrameBuilder builder = createFrame(iterator.next());
 		iterator.forEachRemaining(m -> merge(builder, createFrame(m)));
 		Frame frame = builder.toFrame();
-		return template.render(frame).replace("$", "");
+		return template.render(frame);
 	}
 
 	private void merge(FrameBuilder main, FrameBuilder newBuilder) {

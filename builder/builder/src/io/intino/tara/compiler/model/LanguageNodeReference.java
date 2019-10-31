@@ -39,12 +39,6 @@ public class LanguageNodeReference implements Node {
 
 	@Override
 	public void name(String name) {
-
-	}
-
-	@Override
-	public String cleanQn() {
-		return null;
 	}
 
 	@Override
@@ -63,7 +57,12 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public boolean isFacet() {
+	public boolean isAspect() {
+		return false;
+	}
+
+	@Override
+	public boolean isMetaAspect() {
 		return false;
 	}
 
@@ -103,12 +102,7 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public void addFlags(List<Tag> flags) {
-
-	}
-
-	@Override
-	public void addFlag(Tag flags) {
+	public void addFlags(Tag... flags) {
 
 	}
 
@@ -139,6 +133,11 @@ public class LanguageNodeReference implements Node {
 
 	@Override
 	public void type(String type) {
+
+	}
+
+	@Override
+	public void stashNodeName(String name) {
 
 	}
 
@@ -178,7 +177,7 @@ public class LanguageNodeReference implements Node {
 	}
 
 	@Override
-	public List<Facet> facets() {
+	public List<Aspect> appliedAspects() {
 		return Collections.emptyList();
 	}
 

@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.7
+// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.7.2
 package io.intino.tara.lang.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -108,25 +108,25 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitParameter(TaraGrammar.ParameterContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#facets}.
+	 * Enter a parse tree produced by {@link TaraGrammar#aspects}.
 	 * @param ctx the parse tree
 	 */
-	void enterFacets(TaraGrammar.FacetsContext ctx);
+	void enterAspects(TaraGrammar.AspectsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#facets}.
+	 * Exit a parse tree produced by {@link TaraGrammar#aspects}.
 	 * @param ctx the parse tree
 	 */
-	void exitFacets(TaraGrammar.FacetsContext ctx);
+	void exitAspects(TaraGrammar.AspectsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#facet}.
+	 * Enter a parse tree produced by {@link TaraGrammar#aspect}.
 	 * @param ctx the parse tree
 	 */
-	void enterFacet(TaraGrammar.FacetContext ctx);
+	void enterAspect(TaraGrammar.AspectContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#facet}.
+	 * Exit a parse tree produced by {@link TaraGrammar#aspect}.
 	 * @param ctx the parse tree
 	 */
-	void exitFacet(TaraGrammar.FacetContext ctx);
+	void exitAspect(TaraGrammar.AspectContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#value}.
 	 * @param ctx the parse tree
@@ -147,16 +147,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBody(TaraGrammar.BodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#facetTarget}.
-	 * @param ctx the parse tree
-	 */
-	void enterFacetTarget(TaraGrammar.FacetTargetContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#facetTarget}.
-	 * @param ctx the parse tree
-	 */
-	void exitFacetTarget(TaraGrammar.FacetTargetContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#nodeReference}.
 	 * @param ctx the parse tree

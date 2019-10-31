@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.StringValue;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public class CreateI18Resource extends PsiElementBaseIntentionAction {
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-        final StringValue stringValue = TaraPsiImplUtil.getContainerByType(element, StringValue.class);
+		final StringValue stringValue = TaraPsiUtil.getContainerByType(element, StringValue.class);
         return stringValue != null;
     }
 

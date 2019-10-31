@@ -15,7 +15,7 @@ import com.intellij.util.messages.MessageBusConnection;
 import io.intino.tara.plugin.lang.file.TaraFileType;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 
 import java.util.Arrays;
@@ -67,7 +67,7 @@ public class ImportsSaverService implements ProjectComponent {
 		if (editor == null) return null;
 		final PsiElement elementAt = taraFile.findElementAt(((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset());
 		if (elementAt == null) return null;
-		return TaraPsiImplUtil.getContainerByType(elementAt, Valued.class);
+		return TaraPsiUtil.getContainerByType(elementAt, Valued.class);
 	}
 
 	private PsiFile findFile(VirtualFile[] file) {

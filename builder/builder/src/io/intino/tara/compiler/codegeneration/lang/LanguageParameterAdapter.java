@@ -72,10 +72,10 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		return false;
 	}
 
-	void addParameterConstraint(FrameBuilder frame, String facet, int position, Variable variable, String relation) {
+	void addParameterConstraint(FrameBuilder frame, String aspect, int position, Variable variable, String relation) {
 		if (variable instanceof VariableReference)
-			frame.add(relation, referenceParameter(position, facet, variable, relation));
-		else frame.add(relation, primitiveParameter(position, facet, variable, relation));
+			frame.add(relation, referenceParameter(position, aspect, variable, relation));
+		else frame.add(relation, primitiveParameter(position, aspect, variable, relation));
 	}
 
 	int addTerminalParameterConstraints(Node node, FrameBuilder constraintsFrame) {
@@ -102,7 +102,9 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		frame.add(TAGS, getFlags(variable));
 		frame.add(SCOPE, workingPackage);
 		frame.add(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().append(variable.size()).toFrame());
-		final Frame rule = (variable.rule() == null || (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null)) ? null : ruleToFrame(variable.rule()).toFrame();
+		final Frame rule = (variable.rule() == null || (variable.rule() instanceof VariableCustomRule && ((VariableCustomRule) variable.rule()).loadedClass() == null)) ?
+				null :
+				ruleToFrame(variable.rule()).toFrame();
 		if (rule != null) frame.add(RULE, rule);
 		else if (variable.flags().contains(Reactive)) {
 			final FrameBuilder ruleFrame = ruleToFrame(new NativeRule("", "", emptyList()));
@@ -120,19 +122,19 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		return new FrameBuilder().append(size).toFrame();
 	}
 
-	private Frame referenceParameter(int i, String facet, Variable variable, String relation) {
+	private Frame referenceParameter(int i, String aspect, Variable variable, String relation) {
 		FrameBuilder builder = new FrameBuilder(relation, PARAMETER, REFERENCE).
 				add(NAME, variable.name()).
-				add(FACET, facet).
+				add(ASPECT, aspect).
 				add(TYPE, variable.destinyOfReference().qualifiedName());
 		addDefaultInfo(i, variable, builder);
 		return builder.toFrame();
 	}
 
-	private Frame primitiveParameter(int i, String facet, Variable variable, String relation) {
+	private Frame primitiveParameter(int i, String aspect, Variable variable, String relation) {
 		FrameBuilder builder = new FrameBuilder(relation, PARAMETER).
 				add(NAME, variable.name()).
-				add(FACET, facet).
+				add(ASPECT, aspect).
 				add(TYPE, variable.type());
 		addDefaultInfo(i, variable, builder);
 		return builder.toFrame();
@@ -141,14 +143,14 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private Frame referenceParameter(ReferenceParameter parameter, int position, String type) {
 		FrameBuilder builder = new FrameBuilder(type, PARAMETER, REFERENCE).
 				add(NAME, parameter.name()).
-				add(FACET, parameter.facet());
+				add(ASPECT, parameter.aspect());
 		addDefaultInfo(parameter, builder, position);
 		return builder.toFrame();
 	}
 
 	private Frame primitiveParameter(Constraint.Parameter parameter, int position, String type) {
 		FrameBuilder builder = new FrameBuilder(type, PARAMETER).
-				add(FACET, parameter.facet()).
+				add(ASPECT, parameter.aspect()).
 				add(NAME, parameter.name()).
 				add(TYPE, parameter.type());
 		addDefaultInfo(parameter, builder, position);

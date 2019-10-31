@@ -12,7 +12,7 @@ import io.intino.tara.lang.model.*;
 import io.intino.tara.plugin.codeinsight.JavaHelper;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.*;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
@@ -104,11 +104,11 @@ public class ReferenceManager {
 	}
 
 	private static boolean isVariableReference(Identifier identifier) {
-		return TaraPsiImplUtil.getContainerByType(identifier, Variable.class) != null;
+		return TaraPsiUtil.getContainerByType(identifier, Variable.class) != null;
 	}
 
 	private static void addNodeSiblings(Identifier identifier, Set<Node> set) {
-		final NodeContainer container = TaraPsiImplUtil.getContainerOf(identifier);
+		final NodeContainer container = TaraPsiUtil.getContainerOf(identifier);
 		if (container == null) return;
 		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
@@ -127,7 +127,7 @@ public class ReferenceManager {
 	}
 
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(identifier);
+		Node container = TaraPsiUtil.getContainerNodeOf(identifier);
 		if (container != null && !isExtendsOrParameterReference(identifier) && areNamesake(identifier, container))
 			set.add(container);
 		if (container != null) {
@@ -140,7 +140,7 @@ public class ReferenceManager {
 	}
 
 	private static void collectParentComponents(Identifier identifier, Set<Node> set, Node parent) {
-		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
+		final Node containerNode = TaraPsiUtil.getContainerNodeOf(identifier);
 		set.addAll(parent.components().stream().
 				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
 				collect(Collectors.toList()));
@@ -148,7 +148,7 @@ public class ReferenceManager {
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
 		Node container = node;
-		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
+		final Node containerNode = TaraPsiUtil.getContainerNodeOf(identifier);
 		while (container != null) {
 			set.addAll(collectCandidates(container).stream().
 					filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
@@ -188,11 +188,7 @@ public class ReferenceManager {
 	}
 
 	private static Node findIn(Node node, Identifier identifier) {
-		return identifier.isReferringTarget() ? findTarget(node, identifier) : TaraUtil.findComponent(node, identifier.getText());
-	}
-
-	private static Node findTarget(Node container, Identifier identifier) {
-		return container != null && container.facetTarget() != null && container.facetTarget().target().equals(identifier.getName()) ? container : null;
+		return TaraUtil.findComponent(node, identifier.getText());
 	}
 
 	private static boolean isLast(Identifier identifier, List<Identifier> path) {
@@ -235,7 +231,7 @@ public class ReferenceManager {
 	}
 
 	private static boolean isNative(io.intino.tara.plugin.lang.psi.Rule rule) {
-		Variable variable = TaraPsiImplUtil.getContainerByType(rule, Variable.class);
+		Variable variable = TaraPsiUtil.getContainerByType(rule, Variable.class);
 		return variable != null && Primitive.FUNCTION.equals(variable.type());
 	}
 
@@ -273,7 +269,7 @@ public class ReferenceManager {
 		if (workingPackage.isEmpty())
 			workingPackage = ModuleProvider.moduleOf(valued).getName();
 		for (PsiClass aClass : getCandidates(valued, workingPackage.toLowerCase()))
-			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), io.intino.tara.plugin.lang.psi.Valued.class)))
+			if (valued.equals(TaraPsiUtil.getContainerByType(resolveJavaNativeImplementation(aClass), io.intino.tara.plugin.lang.psi.Valued.class)))
 				return aClass;
 		return null;
 	}

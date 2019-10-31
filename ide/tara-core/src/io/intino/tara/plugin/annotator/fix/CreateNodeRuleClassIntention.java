@@ -16,7 +16,7 @@ import io.intino.tara.lang.model.Rule;
 import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
 import io.intino.tara.plugin.lang.psi.TaraModel;
 import io.intino.tara.plugin.lang.psi.TaraRule;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class CreateNodeRuleClassIntention extends ClassCreationIntention {
 
 	public CreateNodeRuleClassIntention(Rule rule) {
 		this.rule = rule;
-		this.node = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Node.class);
+		this.node = TaraPsiUtil.getContainerByType((TaraRule) rule, Node.class);
 		if (node != null) this.rulesPath = TaraUtil.graphPackage((PsiElement) node).toLowerCase() + RULES_PACKAGE;
 	}
 

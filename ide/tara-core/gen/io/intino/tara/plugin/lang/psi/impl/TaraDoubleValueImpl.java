@@ -13,7 +13,7 @@ import io.intino.tara.plugin.lang.psi.*;
 
 public class TaraDoubleValueImpl extends ASTWrapperPsiElement implements TaraDoubleValue {
 
-  public TaraDoubleValueImpl(ASTNode node) {
+  public TaraDoubleValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 

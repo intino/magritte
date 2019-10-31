@@ -31,7 +31,7 @@ public class FixFactory {
 		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
 		fixes.put("warning.variable.name.starts.uppercase", new Class[]{LowerCaseVariableFix.class});
 		fixes.put("reject.number.parameter.with.erroneous.metric", new Class[]{AddMetricFix.class});
-		fixes.put("reject.node.with.required.facet.not.found", new Class[]{AddRequiredFacetFix.class});
+		fixes.put("reject.node.with.required.aspect.not.found", new Class[]{AddRequiredAspectFix.class});
 	}
 
 	private FixFactory() {

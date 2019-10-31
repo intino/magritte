@@ -54,7 +54,7 @@ public class Context {
 	private Context rejectOthers() {
 		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
 		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
-		this.constraints().add(rejectOtherFacets(facetConstrains(this.constraints())));
+		this.constraints().add(rejectOtherAspects(facetConstrains(this.constraints())));
 		return this;
 	}
 }

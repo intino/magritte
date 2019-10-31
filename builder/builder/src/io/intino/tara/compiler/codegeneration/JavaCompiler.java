@@ -20,9 +20,9 @@ public class JavaCompiler {
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Collections.singletonList(file.getAbsolutePath()));
 		final Collection<String> options = new ArrayList<>();
 		options.add("-source");
-		options.add("1.8");
+		options.add("11");
 		options.add("-target");
-		options.add("1.8");
+		options.add("11");
 		options.add("-d");
 		options.add(destiny.getAbsolutePath());
 		options.add("-classpath");
@@ -32,7 +32,7 @@ public class JavaCompiler {
 			StringBuilder message = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
 				message.append(diagnostic.getMessage(Locale.ENGLISH)).append(" in ").append(diagnostic.getLineNumber()).append(":").append(diagnostic.getColumnNumber()).append("\n");
-			throw new TaraException(message.substring(0, message.indexOf("\n")));
+			throw new TaraException(message.toString());
 		}
 		try {
 			fileManager.close();

@@ -6,10 +6,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.Signature;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import io.intino.tara.plugin.lang.psi.TaraSignature;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeRoot;
 
@@ -22,12 +22,12 @@ public class ExtractToRoot extends PsiElementBaseIntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		Node node = TaraPsiImplUtil.getContainerByType(element, Node.class);
+		Node node = TaraPsiUtil.getContainerByType(element, Node.class);
 		return element.isWritable() && isInSignature(element) && node != null && !(node.container() instanceof NodeRoot);
 	}
 
 	private boolean isInSignature(PsiElement element) {
-		return element instanceof Signature || TaraPsiImplUtil.getContainerByType(element, TaraSignature.class) != null;
+		return element instanceof Signature || TaraPsiUtil.getContainerByType(element, TaraSignature.class) != null;
 	}
 
 	@NotNull

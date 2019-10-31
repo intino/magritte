@@ -29,7 +29,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return TaraPsiImplUtil.getIdentifier((Node) this);
+		return TaraPsiUtil.getIdentifier((Node) this);
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
@@ -58,9 +58,9 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<TaraFacetApply> facets() {
-		if (((TaraSignature) this).getFacets() == null) return Collections.emptyList();
-		return ((TaraSignature) this).getFacets().getFacetApplyList();
+	public List<TaraAspectApply> appliedAspects() {
+		if (((TaraSignature) this).getAspects() == null) return Collections.emptyList();
+		return ((TaraSignature) this).getAspects().getAspectApplyList();
 	}
 
 	public Flags getFlags() {

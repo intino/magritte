@@ -27,8 +27,8 @@ public class TerminalResolver {
 			if (component instanceof NodeReference) continue;
 			if (component.isTerminal()) propagateTerminalToInside(component);
 			else if (Product.compareLevelWith(level) > 0) resolveTerminals(component);
-			else if (level.compareLevelWith(Product) == 0) {
-				component.addFlag(Tag.Terminal);
+			else if (level.equals(Product)) {
+				component.addFlags(Tag.Terminal);
 				propagateTerminalToInside(component);
 			}
 		}
@@ -37,7 +37,7 @@ public class TerminalResolver {
 	private void propagateTerminalToInside(Node node) {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
-			if (!component.isTerminal()) component.addFlag(Tag.Terminal);
+			if (!component.isTerminal()) component.addFlags(Tag.Terminal);
 			propagateTerminalToInside(component);
 		}
 		propagateTerminalToVariables(node);
@@ -45,7 +45,7 @@ public class TerminalResolver {
 
 	private void propagateTerminalToVariables(Node node) {
 		node.variables().stream().
-			filter(variable -> !variable.isTerminal()).
-			forEach(variable -> variable.addFlags(Tag.Terminal));
+				filter(variable -> !variable.isTerminal()).
+				forEach(variable -> variable.addFlags(Tag.Terminal));
 	}
 }

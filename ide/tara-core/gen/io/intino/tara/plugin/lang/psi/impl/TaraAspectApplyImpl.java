@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
 import io.intino.tara.plugin.lang.psi.*;
 
-public class TaraFacetApplyImpl extends FacetApplyMixin implements TaraFacetApply {
+public class TaraAspectApplyImpl extends AspectApplyMixin implements TaraAspectApply {
 
-  public TaraFacetApplyImpl(ASTNode node) {
+  public TaraAspectApplyImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TaraVisitor visitor) {
-    visitor.visitFacetApply(this);
+    visitor.visitAspectApply(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -36,5 +36,6 @@ public class TaraFacetApplyImpl extends FacetApplyMixin implements TaraFacetAppl
   public TaraParameters getParameters() {
     return findChildByClass(TaraParameters.class);
   }
+
 
 }

@@ -20,7 +20,7 @@ public class InstanceMarker {
 	private void asInstance(Node node) {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
-			if (!component.is(Tag.Instance)) component.addFlag(Tag.Instance);
+			if (!component.is(Tag.Instance)) component.addFlags(Tag.Instance);
 			asInstance(component);
 		}
 	}

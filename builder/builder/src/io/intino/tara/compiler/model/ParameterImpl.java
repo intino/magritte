@@ -13,7 +13,7 @@ public class ParameterImpl implements Parameter {
 	private final List<Object> originalValues = new ArrayList<>();
 	private String name;
 	private int position;
-	private String facet = "";
+	private String aspect = "";
 	private String scope;
 	private String file;
 	private int line;
@@ -61,13 +61,13 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public String facet() {
-		return facet;
+	public String aspect() {
+		return aspect;
 	}
 
 	@Override
-	public void facet(String facet) {
-		this.facet = facet;
+	public void aspect(String aspect) {
+		this.aspect = aspect;
 	}
 
 	@Override

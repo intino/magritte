@@ -6,8 +6,8 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Parameter;
@@ -20,13 +20,13 @@ import java.util.Map;
 public class ToBodyParameters extends ParametersIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final List<Constraint> allowsOf = TaraUtil.getConstraintsOf(TaraPsiImplUtil.getContainerNodeOf(element));
+		final List<Constraint> allowsOf = TaraUtil.getConstraintsOf(TaraPsiUtil.getContainerNodeOf(element));
 		if (allowsOf == null) return;
 		Parameters parameters = getParametersScope(element);
 		Map<String, String> parametersData = extractParametersData(parameters.getParameters());
-		TaraParameter parameter = TaraPsiImplUtil.getContainerByType(element, TaraParameter.class);
+		TaraParameter parameter = TaraPsiUtil.getContainerByType(element, TaraParameter.class);
 		if (parameter == null || parameter.name() == null) return;
-		NodeContainer container = TaraPsiImplUtil.getContainerByType(parameter, NodeContainer.class);
+		NodeContainer container = TaraPsiUtil.getContainerByType(parameter, NodeContainer.class);
 		if (container == null) return;
 		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 		parametersData.remove(parameter.name());
@@ -57,11 +57,11 @@ public class ToBodyParameters extends ParametersIntentionAction {
 	}
 
 	private void addNewLine(PsiElement node) {
-		node.add(TaraElementFactory.getInstance(node.getProject()).createBodyNewLine(TaraPsiImplUtil.getIndentation(node) + 1));
+		node.add(TaraElementFactory.getInstance(node.getProject()).createBodyNewLine(TaraPsiUtil.getIndentation(node) + 1));
 	}
 
 	private void addNewLineIndent(PsiElement container) {
-		container.add(TaraElementFactory.getInstance(container.getProject()).createNewLineIndent(TaraPsiImplUtil.getIndentation(container) + 1));
+		container.add(TaraElementFactory.getInstance(container.getProject()).createNewLineIndent(TaraPsiUtil.getIndentation(container) + 1));
 	}
 
 	@Override
