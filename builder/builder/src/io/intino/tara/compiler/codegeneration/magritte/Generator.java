@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
+import static io.intino.tara.lang.model.Tag.Final;
 import static io.intino.tara.lang.model.Tag.Terminal;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -55,7 +56,7 @@ public abstract class Generator implements TemplateTags {
 		String parentQN = cleanQn(getQn(parent, workingPackage));
 		context.add(PARENT, parentQN);
 		if (context.contains(CREATE) || context.contains(NODE)) context.add(PARENT_SUPER, true).add("parentName", parentQN);
-		if ((context.contains(NODE)) && !node.parent().components().isEmpty()
+		if ((context.contains(NODE)) && hasLists(node.parent())
 				|| (parent.isAspect() && parent.container().components().stream().anyMatch(c -> !c.isAspect() && !c.isMetaAspect()) && hasLists(parent.container())))
 			context.add("parentClearName", parentQN);
 	}
@@ -229,7 +230,7 @@ public abstract class Generator implements TemplateTags {
 //}
 //
 	private boolean hasLists(Node node) {
-		return node.components().stream().filter(c -> !c.isAspect() && !c.isMetaAspect()).anyMatch(c -> !node.sizeOf(c).isSingle());
+		return node.components().stream().filter(c -> !c.isAspect() && !c.isMetaAspect()).anyMatch(c -> !node.sizeOf(c).isSingle() && !c.is(Final));
 	}
 
 }
