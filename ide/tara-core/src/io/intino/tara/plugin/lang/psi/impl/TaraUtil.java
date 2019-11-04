@@ -14,7 +14,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.plugin.lang.LanguageManager;
@@ -95,7 +95,7 @@ public class TaraUtil {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";
 		final Configuration conf = configurationOf(element);
 		if (conf == null) return "";
-		final Configuration.LanguageLibrary lib = conf.languages().get(0);
+		final Configuration.Model.ModelLanguage lib = conf.model().language();
 		if (lib == null) return null;
 		return lib.generationPackage();
 	}
@@ -108,7 +108,7 @@ public class TaraUtil {
 
 	public static Level level(@NotNull PsiElement element) {
 		final Configuration configuration = configurationOf(element);
-		return configuration == null ? null : configuration.level();
+		return configuration == null ? null : configuration.model().level();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {
@@ -258,7 +258,7 @@ public class TaraUtil {
 		Set<Node> all = new HashSet<>();
 		final Node[] rootNodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
 		if (rootNodes == null) return Collections.emptyList();
-		final List<Node> nodes = Arrays.asList(rootNodes);
+		final Node[] nodes = rootNodes;
 		for (Node include : nodes) all.addAll(include.subs());
 		for (Node root : nodes) getRecursiveComponentsOf(root, all);
 		return new ArrayList<>(all);

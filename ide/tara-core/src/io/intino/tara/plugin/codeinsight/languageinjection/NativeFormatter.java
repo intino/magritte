@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Tag.Feature;
 import static io.intino.tara.lang.model.Tag.Instance;
@@ -54,7 +53,7 @@ public class NativeFormatter implements TemplateTags {
 		allImports = new Imports(module.getProject());
 		this.language = language;
 		final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-		this.m0 = facetConfiguration != null && Solution.equals(facetConfiguration.level());
+		this.m0 = facetConfiguration != null && facetConfiguration.model().level().isSolution();
 	}
 
 	private static String getLanguageScope(Parameter parameter, Language language) {

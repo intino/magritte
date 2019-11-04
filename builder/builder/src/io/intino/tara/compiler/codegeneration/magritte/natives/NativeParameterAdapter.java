@@ -6,14 +6,15 @@ import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
 
 import java.io.File;
 import java.util.Arrays;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Solution;
+
 
 class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 

@@ -56,7 +56,7 @@ public class LanguageManager {
 			final Configuration configuration = TaraUtil.configurationOf(file);
 			final String dslName = ((TaraModel) file).dsl();
 			if (dslName == null) return null;
-			final String version = configuration == null || configuration.language(d -> dslName.equalsIgnoreCase(d.name())) == null ? LATEST : configuration.language(d -> dslName.equalsIgnoreCase(d.name())).version();
+			final String version = configuration == null || configuration.model().language() == null ? LATEST : configuration.model().language().version();
 			return getLanguage(file.getProject(), dslName, version);
 		} else return null;
 	}
@@ -157,7 +157,7 @@ public class LanguageManager {
 	}
 
 	public static File getTaraLocalDirectory(Project project) {
-        final VirtualFile baseDir = VfsUtil.findFileByIoFile(new File(project.getBasePath()), true);
+		final VirtualFile baseDir = VfsUtil.findFileByIoFile(new File(project.getBasePath()), true);
 		final VirtualFile tara = baseDir.findChild(TARA_LOCAL);
 		return tara == null ? createTaraDirectory(baseDir) : new File(tara.getPath());
 	}

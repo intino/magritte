@@ -1,13 +1,14 @@
 package io.intino.tara.compiler.model;
 
 import io.intino.tara.Language;
-import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.model.Rule;
 
 import java.io.File;
 import java.util.*;
+
+import static io.intino.tara.compiler.shared.Configuration.Model.Level;
 
 public class Model implements NodeRoot {
 

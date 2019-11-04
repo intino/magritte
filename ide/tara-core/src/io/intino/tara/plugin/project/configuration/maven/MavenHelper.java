@@ -275,7 +275,7 @@ public class MavenHelper implements MavenTags {
 	private Module parentModule(Module module, String dsl) {
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(aModule);
-			if (conf != null && (dsl.equals(conf.outLanguage())))
+			if (conf != null && (dsl.equals(conf.model().outLanguage())))
 				return aModule;
 		}
 		return null;

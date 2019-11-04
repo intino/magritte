@@ -2,9 +2,9 @@ package io.intino.tara.compiler.codegeneration.magritte.layer;
 
 import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.VariableReference;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Assumption;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Product;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Product;
 
 public final class TypesProvider implements TemplateTags {
 
@@ -36,8 +36,8 @@ public final class TypesProvider implements TemplateTags {
 
 	private static boolean isOverriding(Node node) {
 		return node.parent() != null &&
-			((node.container() instanceof NodeImpl &&
-				node.parent().container().equals(node.container().parent())) || node.container().parent() != null && containerContainsParent(node));
+				((node.container() instanceof NodeImpl &&
+						node.parent().container().equals(node.container().parent())) || node.container().parent() != null && containerContainsParent(node));
 	}
 
 	private static boolean containerContainsParent(Node node) {
@@ -69,7 +69,7 @@ public final class TypesProvider implements TemplateTags {
 		return annotations;
 	}
 
-	public static Set<String> getTypes(Variable variable, CompilerConfiguration.Level type) {
+	public static Set<String> getTypes(Variable variable, Level type) {
 		Set<String> types = new HashSet<>();
 		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))

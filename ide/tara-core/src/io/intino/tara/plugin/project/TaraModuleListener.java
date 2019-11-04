@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.List;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 
 public class TaraModuleListener implements BaseComponent {
 
@@ -56,9 +55,8 @@ public class TaraModuleListener implements BaseComponent {
 	private void addDSLNameToDictionary() {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(module);
-			if (conf != null) for (Configuration.LanguageLibrary lang : conf.languages())
-				if (lang.name() != null && !lang.name().isEmpty())
-					SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(lang.name(), project);
+			if (conf != null)
+				SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(conf.model().language().name(), project);
 		}
 	}
 
@@ -95,8 +93,8 @@ public class TaraModuleListener implements BaseComponent {
 			@Override
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
-					final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-					if (facetConfiguration != null && (Solution.equals(facetConfiguration.level())))
+					final Configuration taraConfiguration = TaraUtil.configurationOf(module);
+					if (taraConfiguration != null && (taraConfiguration.model().level().isSolution()))
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");
@@ -126,7 +124,7 @@ public class TaraModuleListener implements BaseComponent {
 			refactoring.doRefactoring(refactoring.findUsages());
 		}
 		final File miscDirectory = LanguageManager.getTaraLocalDirectory(project);
-		if (miscDirectory == null || !miscDirectory.exists()) return;
+		if (!miscDirectory.exists()) return;
 		final File[] files = miscDirectory.listFiles();
 		if (files == null) return;
 		for (File file : files)

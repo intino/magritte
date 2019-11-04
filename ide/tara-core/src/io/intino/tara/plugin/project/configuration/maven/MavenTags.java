@@ -20,5 +20,5 @@ public interface MavenTags {
 	String OUT_DSL = "tara.out.dsl";
 	String WORKING_PACKAGE = "tara.working.package";
 	String INTERFACE_VERSION = "tara.interface.version";
-	String BEHAVIOR_VERSION = "tara.behavior.version";
+	String INTERFACE_NAME = "tara.interface.name";
 }

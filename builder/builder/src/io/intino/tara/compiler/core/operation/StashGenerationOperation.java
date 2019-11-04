@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Solution;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class StashGenerationOperation extends ModelOperation {
@@ -41,11 +41,11 @@ public class StashGenerationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) {
-		this.outDSL = conf.level().equals(Solution) ? conf.getModule() : conf.outLanguage();
+		this.outDSL = conf.model().level().isSolution() ? conf.getModule() : conf.model().outLanguage();
 		try {
 			if (conf.isVerbose())
-				conf.out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outLanguage() + "]" + " Generating Stashes...");
-			if ((conf.isTest() || conf.level().equals(Solution)) && !conf.isStashGeneration()) createSeparatedStashes(model);
+				conf.out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outLanguage() + "]" + " Generating Stashes...");
+			if ((conf.isTest() || conf.model().level().equals(Solution)) && !conf.isStashGeneration()) createSeparatedStashes(model);
 			else createFullStash(model);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
@@ -90,9 +90,9 @@ public class StashGenerationOperation extends ModelOperation {
 	private File stashDestiny(File taraFile) {
 		final File destiny = conf.resourcesDirectory();
 		destiny.mkdirs();
-		return conf.isTest() || conf.level().equals(Solution) ?
+		return conf.isTest() || conf.model().level().isSolution() ?
 				new File(destiny, taraFile.getName().split("\\.")[0] + STASH) :
-				new File(destiny, Format.firstUpperCase().format(conf.outLanguage()).toString() + STASH);
+				new File(destiny, Format.firstUpperCase().format(conf.model().outLanguage()).toString() + STASH);
 	}
 
 	private List<List<Node>> pack(Model model) {
@@ -108,5 +108,4 @@ public class StashGenerationOperation extends ModelOperation {
 	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
 		return new ArrayList<>(nodes.values());
 	}
-
 }

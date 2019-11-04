@@ -86,7 +86,7 @@ public class TaraCompilerListener implements ProjectComponent {
             Module module = ApplicationManager.getApplication().runReadAction((Computable<Module>) () -> ModuleManager.getInstance(project).findModuleByName(moduleName));
 			final Configuration configuration = TaraUtil.configurationOf(module);
 			if (configuration != null) {
-                LanguageManager.reloadLanguage(project, configuration.outLanguage(), configuration.outLanguageVersion());
+				LanguageManager.reloadLanguage(project, configuration.model().outLanguage(), configuration.model().outLanguageVersion());
 			}
 		}
 

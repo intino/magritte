@@ -2,7 +2,6 @@ package io.intino.tara.compiler.core.operation.model;
 
 import io.intino.tara.compiler.codegeneration.lang.LanguageSerializer;
 import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.Phases;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
@@ -25,9 +24,9 @@ public class GenerateLanguageOperation extends ModelCollectionOperation {
 	@Override
 	public void call(Collection<Model> models) {
 		try {
-			if (unit.configuration().level().equals(CompilerConfiguration.Level.Solution)) return;
+			if (unit.configuration().model().level().isSolution()) return;
 			if (unit.configuration().isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + unit.configuration().getModule() + " - " + unit.configuration().outLanguage() + "] Generating language...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + unit.configuration().getModule() + " - " + unit.configuration().model().outLanguage() + "] Generating language...");
 			new LanguageSerializer(unit.configuration(), models).write();
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {

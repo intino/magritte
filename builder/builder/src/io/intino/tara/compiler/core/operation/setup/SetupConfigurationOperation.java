@@ -9,8 +9,7 @@ import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.errorcollection.message.Message;
-import io.intino.tara.compiler.shared.Configuration;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.io.Stash;
 import io.intino.tara.io.StashDeserializer;
 import io.intino.tara.magritte.Graph;
@@ -74,12 +73,12 @@ public class SetupConfigurationOperation extends SetupOperation {
 	}
 
 	private void checkConfiguration() throws TaraException {
-		if (configuration.languages().isEmpty())
+		if (configuration.model().language() == null)
 			throw new TaraException("Language not defined or not found.");
 		if (configuration.artifactId() == null || configuration.artifactId().isEmpty())
 			throw new TaraException("Project name not found. Reload configuration");
-		else if (configuration.languages().get(0).get() == null)
-			throw new TaraException("Language not defined or not found: " + configuration.languages().get(0).name() + "-" + configuration.languages().get(0).version());
+		else if (configuration.model().language().get() == null)
+			throw new TaraException("Language not defined or not found: " + configuration.model().language().name() + "-" + configuration.model().language().version());
 	}
 
 	private void extractConfiguration(LegioGraph legio) {
@@ -88,7 +87,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 		final Level level = Level.valueOf(artifact.core$().conceptList().stream().filter(c -> c.id().contains("$")).map(c -> c.id().split("\\$")[1]).findFirst().orElse("Platform"));
 		if (artifact.isLevel()) {
 			String outDSL = artifact.asLevel().model().outLanguage();
-			configuration.outDSL(outDSL == null ? snakeCaseToCamelCase(artifact.name$()) : outDSL);
+			configuration.model().outLanguage(outDSL == null ? snakeCaseToCamelCase(artifact.name$()) : outDSL);
 		}
 		final String workingPackage = code != null && code.targetPackage() != null ? code.targetPackage() : artifact.groupId() + "." + Format.reference().format(artifact.name$()).toString().toLowerCase();
 		configuration.workingPackage((configuration.isTest() ? workingPackage + ".test" : workingPackage) + ".graph");
@@ -103,11 +102,11 @@ public class SetupConfigurationOperation extends SetupOperation {
 			if (artifact.isLevel())
 				language = artifact.asLevel().model().outLanguage() != null ? artifact.asLevel().model().outLanguage() : artifact.name$();
 			configuration.addLanguage(language, artifact.version());
-			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
+			configuration.model().level(Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else if (artifact.isLevel()) {
 			final Artifact.Level.Model model = artifact.asLevel().model();
 			configuration.addLanguage(model.language(), model.effectiveVersion().isEmpty() ? model.version() : model.effectiveVersion());
-			configuration.level(level);
+			configuration.model().level(level);
 		}
 	}
 

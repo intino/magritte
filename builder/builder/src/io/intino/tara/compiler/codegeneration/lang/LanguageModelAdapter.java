@@ -11,7 +11,7 @@ import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.Format.capitalize;
-import static io.intino.tara.compiler.shared.Configuration.Level.Product;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Product;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
 

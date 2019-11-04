@@ -30,26 +30,10 @@ public interface Configuration {
 
 	String nativeLanguage();
 
-	Level level();
+	Model model();
 
-	List<? extends LanguageLibrary> languages();
+	Box box();
 
-	default LanguageLibrary language(java.util.function.Predicate<LanguageLibrary> predicate) {
-		return languages().stream().filter(predicate).findFirst().orElse(null);
-	}
-
-	@Deprecated
-	default String outDSL() {
-		return outLanguage();
-	}
-
-	String outLanguage();
-
-	String outLanguageVersion();
-
-	String boxVersion();
-
-	String boxPackage();
 
 	default Map<String, String> releaseRepositories() {
 		return Collections.emptyMap();
@@ -75,32 +59,8 @@ public interface Configuration {
 		return Collections.emptyList();
 	}
 
-	enum Level {
-		Solution, Product, Platform;
-
-		public int compareLevelWith(Level type) {
-			return type.ordinal() - this.ordinal();
-		}
-
-		public boolean is(Level type, int level) {
-			return type.ordinal() == level;
-		}
-	}
-
-	interface LanguageLibrary {
-
-		String name();
-
-		String version();
-
-		String effectiveVersion();
-
-		void version(String version);
-
-		String generationPackage();
-	}
-
 	interface DeployConfiguration {
+
 		String name();
 
 		boolean pro();
@@ -108,10 +68,69 @@ public interface Configuration {
 		List<Parameter> parameters();
 
 		interface Parameter {
+
 			String name();
 
 			String value();
+
 		}
 	}
 
+	interface Model {
+
+		ModelLanguage language();
+
+		String outLanguage();
+
+		String outLanguageVersion();
+
+		Level level();
+
+		interface ModelLanguage {
+
+			String name();
+
+			String version();
+
+			String effectiveVersion();
+
+			void version(String version);
+
+			String generationPackage();
+		}
+
+		enum Level {
+			Solution, Product, Platform;
+
+			public int compareLevelWith(Level type) {
+				return type.ordinal() - this.ordinal();
+			}
+
+			public boolean is(Level type, int level) {
+				return type.ordinal() == level;
+			}
+
+			public boolean isSolution() {
+				return Solution.equals(this);
+			}
+
+			public boolean isProduct() {
+				return Solution.equals(this);
+			}
+
+			public boolean isPlatform() {
+				return Solution.equals(this);
+			}
+		}
+	}
+
+	interface Box {
+		String language();
+
+		String version();
+
+		String effectiveVersion();
+
+		String targetPackage();
+	}
 }

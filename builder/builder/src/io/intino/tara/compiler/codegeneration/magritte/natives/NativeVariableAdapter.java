@@ -11,7 +11,8 @@ import io.intino.tara.lang.model.Variable;
 
 import java.io.File;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Platform;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Platform;
+
 
 class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 

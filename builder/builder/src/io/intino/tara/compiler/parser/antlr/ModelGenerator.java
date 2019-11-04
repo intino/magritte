@@ -32,12 +32,12 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final Deque<Node> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
-	private List<CompilerConfiguration.DSL> languages;
+	private CompilerConfiguration.DSL language;
 	private List<SyntaxException> errors = new ArrayList<>();
 
-	public ModelGenerator(String file, List<CompilerConfiguration.DSL> languages, String outDsl) {
+	public ModelGenerator(String file, CompilerConfiguration.DSL language, String outDsl) {
 		this.file = file;
-		this.languages = languages;
+		this.language = language;
 		this.outDsl = outDsl;
 		deque.add(model = new Model(file));
 	}
@@ -51,8 +51,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterDslDeclaration(TaraGrammar.DslDeclarationContext ctx) {
 		if (ctx.headerReference() != null) {
 			final String langName = ctx.headerReference().getText();
-			for (CompilerConfiguration.DSL language : languages)
-				if (language.name().equalsIgnoreCase(langName)) model.setLanguage(language.get());
+			model.setLanguage(language.get());
 			if (model.languageName().isEmpty()) addError("Language " + langName + " not found", ctx);
 		} else addError("Language not found", ctx);
 	}
