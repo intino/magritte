@@ -56,7 +56,7 @@ public class LanguageManager {
 			final Configuration configuration = TaraUtil.configurationOf(file);
 			final String dslName = ((TaraModel) file).dsl();
 			if (dslName == null) return null;
-			final String version = configuration == null || configuration.model().language() == null ? LATEST : configuration.model().language().version();
+			final String version = configuration == null || configuration.model() == null || configuration.model().language() == null ? LATEST : configuration.model().language().version();
 			return getLanguage(file.getProject(), dslName, version);
 		} else return null;
 	}

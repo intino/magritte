@@ -108,7 +108,7 @@ public class TaraUtil {
 
 	public static Level level(@NotNull PsiElement element) {
 		final Configuration configuration = configurationOf(element);
-		return configuration == null ? null : configuration.model().level();
+		return configuration == null || configuration.model() == null ? null : configuration.model().level();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {
@@ -235,24 +235,24 @@ public class TaraUtil {
 	}
 
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {
-        return filesOf(module, TaraFileType.instance());
+		return filesOf(module, TaraFileType.instance());
 	}
 
-    public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
-        return filesOf(module, fileType);
-    }
+	public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
+		return filesOf(module, fileType);
+	}
 
-    @NotNull
-    private static List<TaraModel> filesOf(Module module, FileType fileType) {
-        List<TaraModel> taraFiles = new ArrayList<>();
-        if (module == null) return taraFiles;
-        Collection<VirtualFile> files = FileTypeIndex.getFiles(fileType, GlobalSearchScope.moduleScope(module));
-        files.stream().filter(Objects::nonNull).forEach(file -> {
-            TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
-            if (taraFile != null) taraFiles.add(taraFile);
-        });
-        return taraFiles;
-    }
+	@NotNull
+	private static List<TaraModel> filesOf(Module module, FileType fileType) {
+		List<TaraModel> taraFiles = new ArrayList<>();
+		if (module == null) return taraFiles;
+		Collection<VirtualFile> files = FileTypeIndex.getFiles(fileType, GlobalSearchScope.moduleScope(module));
+		files.stream().filter(Objects::nonNull).forEach(file -> {
+			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
+			if (taraFile != null) taraFiles.add(taraFile);
+		});
+		return taraFiles;
+	}
 
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
