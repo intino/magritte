@@ -27,7 +27,7 @@ public class GenerateLanguageOperation extends ModelCollectionOperation {
 			if (unit.configuration().model().level().isSolution()) return;
 			if (unit.configuration().isVerbose())
 				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + unit.configuration().getModule() + " - " + unit.configuration().model().outLanguage() + "] Generating language...");
-			new LanguageSerializer(unit.configuration(), models).write();
+			new LanguageSerializer(unit.configuration(), models).serialize();
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
 			LOG.log(SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);
