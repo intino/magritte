@@ -115,11 +115,11 @@ public interface Configuration {
 			}
 
 			public boolean isProduct() {
-				return Solution.equals(this);
+				return Product.equals(this);
 			}
 
 			public boolean isPlatform() {
-				return Solution.equals(this);
+				return Platform.equals(this);
 			}
 		}
 	}

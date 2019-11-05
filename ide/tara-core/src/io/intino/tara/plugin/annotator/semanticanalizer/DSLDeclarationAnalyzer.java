@@ -35,20 +35,10 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	private void checkDslExistence(String dslName) {
 		if (dslName != null && !dslName.isEmpty()) {
 			Language dsl = TaraUtil.getLanguage(file);
-			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.dsl()))) {
-				new Thread(() -> {
-					final String languageVersion = tryToImport(dslName);
-					if (languageVersion == null) results.put(file, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), FixFactory.get(MESSAGE, file)));
-				}).start();
-
+			if (dsl == null && !PROTEO.equals(dslName) || !dslName.equals(file.dsl())) {
+				results.put(file, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), FixFactory.get(MESSAGE, file)));
 			}
 		}
-	}
-
-	private String tryToImport(String dslName) {
-//		LanguageImporter importer = new LanguageImporter(ModuleProvider.moduleOf(file));
-//		return importer.importLanguage(dslName, "LATEST");
-		return "dslName";
 	}
 
 	private void findDuplicates() {
