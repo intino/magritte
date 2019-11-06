@@ -94,12 +94,12 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
-		Constraint.Parameter parameterAllow = TaraUtil.parameterConstraintOf(parameter);
-		if (parameterAllow == null) return null;
-		if (parameterAllow.type().equals(REFERENCE))
+		Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(parameter);
+		if (constraint == null) return null;
+		if (constraint.type().equals(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange());
-		if (parameterAllow.type().equals(WORD) || !Primitive.isPrimitive(parameterAllow.type().getName()))
-			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
+		if (constraint.type().equals(WORD) || !Primitive.isPrimitive(constraint.type().getName()))
+			return new TaraWordReferenceSolver(this, getRange(), constraint);
 		return null;
 	}
 

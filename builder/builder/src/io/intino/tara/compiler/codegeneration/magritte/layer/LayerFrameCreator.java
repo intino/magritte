@@ -7,10 +7,10 @@ import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.model.Tag;
 import io.intino.tara.lang.model.Variable;
 
@@ -64,7 +64,7 @@ public class LayerFrameCreator implements TemplateTags {
 		final FrameBuilder builder = new FrameBuilder(LAYER, DECORABLE);
 		final String aPackage = addWorkingPackage(builder);
 		builder.add(NAME, node.name());
-		builder.add(CONTAINER, ((NodeImpl) node).layerQn());
+		if (!(node.container() instanceof NodeRoot)) builder.add(CONTAINER, node.container().qualifiedName());
 		if (node.isAbstract()) builder.add(ABSTRACT, true);
 		return new SimpleEntry<>(calculateDecorablePath(node, aPackage), builder.toFrame());
 	}

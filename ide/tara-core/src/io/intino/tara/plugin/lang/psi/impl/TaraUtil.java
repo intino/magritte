@@ -140,15 +140,15 @@ public class TaraUtil {
 		if (nodeConstraints == null) return Collections.emptyList();
 		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		List<Constraint.Parameter> parameters = new ArrayList<>();
-		for (Constraint constraint : constraints)
+		for (Constraint constraint : nodeConstraints)
 			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
-			else if (constraint instanceof Constraint.Aspect && hasFacet(node, (Constraint.Aspect) constraint))
+			else if (constraint instanceof Constraint.Aspect && hasAspect(node, (Constraint.Aspect) constraint))
 				parameters.addAll(((Constraint.Aspect) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
 	}
 
-	private static boolean hasFacet(Node node, Constraint.Aspect constraint) {
-		return node.appliedAspects().stream().anyMatch(facet -> facet.type().equalsIgnoreCase(constraint.type()));
+	private static boolean hasAspect(Node node, Constraint.Aspect constraint) {
+		return node.appliedAspects().stream().anyMatch(facet -> facet.fullType().equalsIgnoreCase(constraint.type()));
 	}
 
 	@Nullable

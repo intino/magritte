@@ -77,7 +77,7 @@ public class ReferenceManager {
 		List<Identifier> subPath = path.subList(0, path.indexOf(identifier) + 1);
 		PsiElement element = (PsiElement) tryToResolveInBox((TaraModel) identifier.getContainingFile(), subPath);
 		if (element != null) return element;
-		element = tryToResolveOnImportedBoxes(subPath);
+		element = tryToResolveOnImportedModels(subPath);
 		if (element != null) return element;
 		return tryToResolveAsQN(subPath);
 	}
@@ -203,7 +203,7 @@ public class ReferenceManager {
 		return null;
 	}
 
-	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {
+	private static PsiElement tryToResolveOnImportedModels(List<Identifier> path) {
 		TaraModel context = (TaraModel) path.get(0).getContainingFile();
 		Collection<Import> imports = context.getImports();
 		return (PsiElement) searchInImport(path, imports);

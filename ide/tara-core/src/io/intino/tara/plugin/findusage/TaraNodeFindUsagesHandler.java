@@ -50,7 +50,7 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 		}
 		for (Map.Entry<Module, List<TaraModel>> moduleEntry : childModules.entrySet())
 			conceptList.addAll(collectChildConceptsByType(moduleEntry.getValue()));
-		return conceptList.toArray(new PsiElement[conceptList.size()]);
+		return conceptList.toArray(new PsiElement[0]);
 	}
 
 	private Collection collectChildConceptsByType(List<TaraModel> files) {
