@@ -26,7 +26,6 @@ public class SemanticAnalyzer {
 	public void analyze() throws SemanticFatalException {
 		resolveTypes(root);
 		checkNode(root);
-		check(root);
 		if (!notifications.isEmpty()) throw new SemanticFatalException(notifications);
 	}
 
