@@ -83,6 +83,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void contratacionM2() {
+		main(new String[]{home + "sandbox/confFiles/cfe/contratacion.txt"});
+	}
+
+	@Test
 	public void MonetSampleM2() {
 		main(new String[]{home + "sandbox/confFiles/monet/M2Sample.txt"});
 	}

@@ -23,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -129,8 +130,24 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void renderFrame(Map<String, Map<String, String>> map, Node node, Model model, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
 			layerFrame = new LayerFrameCreator(conf, node.languageName(), model).createDecorable(node);
-			map.get(node.file()).put(srcDestiny(layerFrame), render(layerFrame));
+			String file = srcDestiny(layerFrame);
+			if (new File(file).exists() && node.isAbstract()) {
+				checkAbstractDecorable(new File(file));
+			}
+			map.get(node.file()).put(file, render(layerFrame));
 		} else removeDecorable(layerFrame.getKey(), node.name());
+	}
+
+	private void checkAbstractDecorable(File file) {
+		try {
+			String text = Files.readString(file.toPath());
+			if (text.contains("public class")) {
+				text = text.replaceFirst("public class", "public abstract class");
+				Files.writeString(file.toPath(), text);
+			}
+		} catch (IOException e) {
+			LOG.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
+		}
 	}
 
 	private void removeDecorable(String key, String name) {
