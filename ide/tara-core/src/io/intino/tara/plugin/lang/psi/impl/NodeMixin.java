@@ -250,8 +250,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isTerminal() {
-		final Configuration.Level type = TaraUtil.level(this);
-		return is(Terminal) || (type != null && type.equals(Configuration.Level.Product));
+		final Configuration.Model.Level level = TaraUtil.level(this);
+		return is(Terminal) || (level != null && level.isProduct());
 	}
 
 	public boolean is(Tag tag) {
@@ -309,7 +309,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> secondaryTypes() {
-		Set<String> types = appliedAspects().stream().map(f -> f.type() + ":" + this.type()).collect(Collectors.toSet());
+		Set<String> types = appliedAspects().stream().map(f -> f.fullType() + ":" + this.type()).collect(Collectors.toSet());
 		if (parent() != null && !parent().equals(this)) types.addAll(parent().types());
 		return new ArrayList<>(types);
 	}

@@ -11,7 +11,7 @@ import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.tara.compiler.codegeneration.Format.capitalize;
-import static io.intino.tara.compiler.shared.Configuration.Level.Product;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Product;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
 
@@ -204,6 +204,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private void addAspectConstraints(Node node, FrameBuilder constraintsBuilder) {
 		node.components().stream().filter(Node::isAspect).forEach(aspectNode -> {
 			if (aspectNode.isAbstract()) return;
+			if (aspectNode.isReference()) aspectNode = aspectNode.destinyOfReference();
 			FrameBuilder builder = new FrameBuilder(CONSTRAINT, ASPECT).add(VALUE, aspectNode.qualifiedName());
 			builder.add(TERMINAL, aspectNode.isTerminal() + "");
 			if (aspectNode.aspectConstraints() != null && !aspectNode.aspectConstraints().isEmpty())
@@ -342,10 +343,13 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		final List<Rule> allRules = component.container().rulesOf(component).stream().distinct().collect(toList());
 		if ((size.isSingle() || size.isRequired() || component.isReference()) && candidates.size() > 1) {
 			final FrameBuilder oneOfBuilder = createOneOf(candidates, allRules);
-			if (!component.isAbstract()) oneOfBuilder.add(CONSTRAINT, createComponentConstraint(component, allRules));
+			if (!component.isAbstract() && !candidates.contains(component))
+				oneOfBuilder.add(CONSTRAINT, createComponentConstraint(component, allRules));
 			if (!component.isSub()) frames.add(oneOfBuilder.toFrame());
-		} else frames.addAll(candidates.stream().filter(c -> componentCompliant(c.container(), c)).
-				map(c -> createComponentConstraint(c, allRules)).collect(toList()));
+		} else {
+			frames.addAll(candidates.stream().filter(c -> componentCompliant(c.container(), c)).
+					map(c -> createComponentConstraint(c, allRules)).collect(toList()));
+		}
 	}
 
 	private Frame createComponentConstraint(Node component, List<Rule> rules) {

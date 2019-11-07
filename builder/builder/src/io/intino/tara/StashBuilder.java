@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Solution;
 
 @SuppressWarnings("unused")
 public class StashBuilder {
@@ -78,14 +78,14 @@ public class StashBuilder {
 
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
-		configuration.level(Solution);
+		configuration.model().level(Solution);
 		configuration.setTaraDirectory(new File(new File(java.lang.System.getProperty("user.home")), ".m2"));
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);
 		configuration.setModule(module);
 		configuration.setExcludedPhases(Arrays.asList(1, 8, 10, 11));
 		configuration.setMake(true);
-		configuration.systemStashName(module);
+		configuration.model().outLanguage(module);
 		configuration.sourceEncoding(charset.name());
 		configuration.setStashGeneration();
 		configuration.out(this.stream);

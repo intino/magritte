@@ -4,7 +4,6 @@ import io.intino.tara.compiler.core.errorcollection.DependencyException;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.NodeReference;
-import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
@@ -58,7 +57,7 @@ public class InheritanceResolver {
 	}
 
 	private void mergeFragmentNodes() throws DependencyException {
-		if (model.level().equals(Configuration.Level.Solution)) return;
+		if (model.level().isSolution()) return;
 		for (List<Node> nodes : fragmentNodes().values()) merge(nodes);
 	}
 

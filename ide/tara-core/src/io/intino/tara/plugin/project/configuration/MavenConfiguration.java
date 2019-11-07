@@ -12,12 +12,10 @@ import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MavenConfiguration implements Configuration {
-
 	private final Module module;
 	private final MavenProject maven;
 	private final MavenHelper mavenHelper;
@@ -53,41 +51,6 @@ public class MavenConfiguration implements Configuration {
 		manager.forceUpdateProjects(Collections.singletonList(project));
 	}
 
-	@Override
-	public Level level() {
-		final String property = maven.getProperties().getProperty(MavenTags.LEVEL);
-		return property == null ? Level.Platform : Level.valueOf(property);
-	}
-
-	@Override
-	public List<LanguageLibrary> languages() {
-		return Collections.singletonList(new LanguageLibrary() {
-			@Override
-			public String name() {
-				return maven.getProperties().getProperty(MavenTags.DSL);
-			}
-
-			@Override
-			public String version() {
-				return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
-			}
-
-			@Override
-			public String effectiveVersion() {
-				return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
-			}
-
-			@Override
-			public void version(String version) {
-				new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, name()), version);//TODO
-			}
-
-			@Override
-			public String generationPackage() {
-				return name();
-			}
-		});
-	}
 
 	@Override
 	public String artifactId() {
@@ -102,12 +65,89 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String workingPackage() {
 		final String property = maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
-		return property == null ? outLanguage() : property;
+		return property == null ? model().outLanguage() : property;
 	}
 
 	@Override
 	public String nativeLanguage() {
 		return "java";
+	}
+
+	@Override
+	public Model model() {
+		return new Model() {
+			@Override
+			public ModelLanguage language() {
+				return new ModelLanguage() {
+					@Override
+					public String name() {
+						return maven.getProperties().getProperty(MavenTags.DSL);
+					}
+
+					@Override
+					public String version() {
+						return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
+					}
+
+					@Override
+					public String effectiveVersion() {
+						return maven == null ? "" : maven.getProperties().getProperty(MavenTags.DSL_VERSION);
+					}
+
+					@Override
+					public void version(String version) {
+						new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, name()), version);//TODO
+					}
+
+					@Override
+					public String generationPackage() {
+						return name();
+					}
+				};
+			}
+
+			@Override
+			public String outLanguage() {
+				final String outDSL = maven.getProperties().getProperty(MavenTags.OUT_DSL);
+				return outDSL != null ? outDSL : "";
+			}
+
+			@Override
+			public String outLanguageVersion() {
+				return version();
+			}
+
+			@Override
+			public Level level() {
+				final String property = maven.getProperties().getProperty(MavenTags.LEVEL);
+				return property == null ? Level.Platform : Level.valueOf(property);
+			}
+		};
+	}
+
+	@Override
+	public Box box() {
+		return new Box() {
+			@Override
+			public String language() {
+				return maven.getProperties().getProperty(MavenTags.INTERFACE_NAME);
+			}
+
+			@Override
+			public String version() {
+				return maven.getProperties().getProperty(MavenTags.INTERFACE_VERSION);
+			}
+
+			@Override
+			public String effectiveVersion() {
+				return version();
+			}
+
+			@Override
+			public String targetPackage() {
+				return "box";
+			}
+		};
 	}
 
 	@Override
@@ -133,17 +173,6 @@ public class MavenConfiguration implements Configuration {
 
 
 	@Override
-	public String outLanguage() {
-		final String outDSL = maven.getProperties().getProperty(MavenTags.OUT_DSL);
-		return outDSL != null ? outDSL : "";
-	}
-
-	@Override
-	public String outLanguageVersion() {
-		return version();
-	}
-
-	@Override
 	public String version() {
 		return maven.getMavenId().getVersion();
 	}
@@ -153,13 +182,4 @@ public class MavenConfiguration implements Configuration {
 		mavenHelper.version(newVersion);
 	}
 
-	@Override
-	public String boxVersion() {
-		return maven.getProperties().getProperty(MavenTags.INTERFACE_VERSION);
-	}
-
-	@Override
-	public String boxPackage() {
-		return "box";
-	}
 }

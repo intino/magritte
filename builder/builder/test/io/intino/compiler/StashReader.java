@@ -1,5 +1,6 @@
 package io.intino.compiler;
 
+import io.intino.tara.io.Concept;
 import io.intino.tara.io.Stash;
 import io.intino.tara.io.StashDeserializer;
 import org.junit.Ignore;
@@ -12,7 +13,8 @@ public class StashReader {
 
 	@Test
 	public void m3() throws Exception {
-		final Stash stash = StashDeserializer.stashFrom(new File("/Users/oroncal/workspace/sandbox/tafat/platform/res/Tafat.stash"));
+		final Stash stash = StashDeserializer.stashFrom(new File("/Users/oroncal/workspace/konos/toolbox/dsl/res/Konos.stash"));
+		Concept dataType = stash.concepts.stream().filter(c -> c.name.equals("Data$Type")).findFirst().orElse(null);
 		stash.nodes.get(0).nodes.get(0).name = "projects/drillwise#drillwise$drillwise:iointinodrillwise-solution100";
 	}
 

@@ -52,7 +52,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 			}
 			List<PsiElement> facetClasses = getFacetClasses(node);
 			if (facetClasses.isEmpty()) return;
-			String title = MessageProvider.message("facet.class.chooser", node.name(), facetClasses.size());
+			String title = MessageProvider.message("aspect.class.chooser", node.name(), facetClasses.size());
 			ClassCellRenderer renderer = new ClassCellRenderer(null);
 			PsiElementListNavigator.openTargets(e, facetClasses.toArray(toNavigatable(facetClasses)), title,
 					"Facet implementations of " + (node.name()), renderer);

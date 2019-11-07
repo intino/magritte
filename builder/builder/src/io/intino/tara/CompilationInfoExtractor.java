@@ -2,6 +2,7 @@ package io.intino.tara;
 
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.message.WarningMessage;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class CompilationInfoExtractor {
 				configuration.setModule(reader.readLine());
 				break;
 			case LEVEL:
-				configuration.level(CompilerConfiguration.Level.valueOf(reader.readLine()));
+				configuration.model().level(Level.valueOf(reader.readLine()));
 				break;
 			case EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
@@ -78,7 +79,7 @@ public class CompilationInfoExtractor {
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
 			case OUT_DSL:
-				configuration.outDSL(reader.readLine());
+				configuration.model().outLanguage(reader.readLine());
 				break;
 			case GROUP_ID:
 				configuration.groupId(reader.readLine());

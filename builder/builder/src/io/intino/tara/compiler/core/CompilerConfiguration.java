@@ -5,6 +5,7 @@ import io.intino.tara.compiler.codegeneration.FileSystemUtils;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.semantic.LanguageLoader;
 import io.intino.tara.compiler.shared.Configuration;
+import io.intino.tara.compiler.shared.Configuration.Model.ModelLanguage;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,12 +54,10 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
-	private List<DSL> languages = new ArrayList<>();
-	private String outDSL;
 	private String groupID;
 	private String artifactID;
 	private String version;
-	private Level level;
+	private ModelConfiguration model;
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
@@ -78,6 +77,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		encoding = System.getProperty("file.encoding", "UTF8");
 		encoding = System.getProperty("tara.source.encoding", encoding);
 		sourceEncoding(encoding);
+		this.model = new ModelConfiguration();
 		try {
 			tempDirectory = Files.createTempDirectory("_tara_").toFile();
 		} catch (IOException e) {
@@ -167,6 +167,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public void version(String version) {
 		this.version = version;
+		this.model.outLanguageVersion(version);
 	}
 
 	public void workingPackage(String workingPackage) {
@@ -174,7 +175,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	}
 
 	public String workingPackage() {
-		return workingPackage == null || workingPackage.isEmpty() ? outLanguage() : workingPackage;
+		return workingPackage == null || workingPackage.isEmpty() ? model.outLanguage() : workingPackage;
 	}
 
 	public String dslGroupId() {
@@ -213,54 +214,12 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.semanticRulesLib = semanticRulesURL;
 	}
 
-	public LanguageLibrary addLanguage(String name, String version) {
-		final LanguageLibrary language = this.languages.stream().filter(d -> d.name().equalsIgnoreCase(name)).findFirst().orElse(null);
-		if (language == null) {
-			final DSL dsl = new DSL(name, version);
-			languages.add(dsl);
-			return dsl;
-		}
-		return language;
+	public void addLanguage(String name, String version) {
+		model.language(new DSL(name, version));
 	}
 
 	public void addLanguage(Language taraLanguage) {
-		final LanguageLibrary language = this.languages.stream().filter(d -> d.name().equalsIgnoreCase(taraLanguage.languageName())).findFirst().orElse(null);
-		if (language == null) {
-			final DSL dsl = new DSL(taraLanguage);
-			languages.add(dsl);
-		}
-	}
-
-	public String outLanguage() {
-		return outDSL;
-	}
-
-	@Override
-	public String outLanguageVersion() {
-		return version;
-	}
-
-	public String outDSL(String outDSL) {
-		return this.outDSL = outDSL;
-	}
-
-	@Override
-	public String boxVersion() {
-		return "1.0.0";
-	}
-
-	@Override
-	public String boxPackage() {
-		return "box";
-	}
-
-	public void systemStashName(String name) {
-		outDSL = name;
-	}
-
-	@Override
-	public List<DSL> languages() {
-		return languages;
+		model.language(new DSL(taraLanguage));
 	}
 
 	private File languagesDirectory() {
@@ -271,16 +230,14 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return this.nativeLanguage;
 	}
 
-	public void nativeLanguage(String language) {
-		this.nativeLanguage = language;
+	@Override
+	public ModelConfiguration model() {
+		return model;
 	}
 
-	public Level level() {
-		return level;
-	}
-
-	public void level(Level level) {
-		this.level = level;
+	@Override
+	public Box box() {
+		return null;
 	}
 
 	List<Integer> getExcludedPhases() {
@@ -396,8 +353,52 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.out = out;
 	}
 
-	public class DSL implements LanguageLibrary {
-		io.intino.tara.Language language;
+
+	public class ModelConfiguration implements Model {
+		private DSL dsl;
+		private String outLanguageName;
+		private String outLanguageVersion;
+		private Level level;
+
+		@Override
+		public DSL language() {
+			return dsl;
+		}
+
+		public void language(DSL dsl) {
+			this.dsl = dsl;
+		}
+
+		public void outLanguage(String name) {
+			this.outLanguageName = name;
+		}
+
+		public void outLanguageVersion(String version) {
+			this.outLanguageVersion = version;
+		}
+
+		@Override
+		public String outLanguage() {
+			return outLanguageName;
+		}
+
+		@Override
+		public String outLanguageVersion() {
+			return outLanguageVersion;
+		}
+
+		public void level(Level level) {
+			this.level = level;
+		}
+
+		@Override
+		public Level level() {
+			return level;
+		}
+	}
+
+	public class DSL implements ModelLanguage {
+		Language language;
 		String name;
 		String version;
 		String effectiveVersion;
@@ -413,7 +414,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 			this.name = this.language.languageName();
 		}
 
-		public io.intino.tara.Language get() {
+		public Language get() {
 			return language == null ? (language = loadLanguage()) : language;
 		}
 
@@ -456,9 +457,9 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 			}
 		}
 
-		private io.intino.tara.Language loadLanguage() {
+		private Language loadLanguage() {
 			try {
-				final io.intino.tara.Language language = LanguageLoader.load(name, version, languagesDirectory().getAbsolutePath());
+				final Language language = LanguageLoader.load(name, version, languagesDirectory().getAbsolutePath());
 				generationPackage(getLanguagePath(name, version, languagesDirectory().getAbsolutePath()));
 				return language;
 			} catch (NoClassDefFoundError | TaraException e) {
@@ -466,5 +467,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 				return null;
 			}
 		}
+
 	}
 }

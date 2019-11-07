@@ -6,7 +6,7 @@ import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static io.intino.tara.compiler.shared.Configuration.Level.Product;
+import static io.intino.tara.compiler.shared.Configuration.Model.Level.Product;
 import static io.intino.tara.lang.model.Tag.Instance;
 import static io.intino.tara.lang.model.Tag.Reactive;
 import static java.util.Collections.emptyList;

@@ -45,6 +45,10 @@ public class NodeReference implements Node {
 		this.destination = destination;
 	}
 
+	public String layerQualifiedName() {
+		return ((NodeImpl) container).layerQualifiedName() + "$" + destination.name();
+	}
+
 	@Override
 	public String name() {
 		return destination != null ? destination.name() : "";

@@ -7,6 +7,7 @@ import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.io.Concept;
 import io.intino.tara.io.Node;
@@ -26,7 +27,6 @@ import static io.intino.tara.compiler.codegeneration.Format.noPackage;
 import static io.intino.tara.compiler.codegeneration.Format.withDollar;
 import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.DOT;
 import static io.intino.tara.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
-import static io.intino.tara.compiler.shared.Configuration.Level.Solution;
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.Collections.emptyList;
@@ -37,7 +37,7 @@ public class StashCreator {
 	private final List<io.intino.tara.lang.model.Node> nodes;
 	private final Language language;
 	private final File resourceFolder;
-	private final CompilerConfiguration.Level level;
+	private final Level level;
 	private final boolean test;
 	private final Stash stash = new Stash();
 	private final String outDSL;
@@ -50,7 +50,7 @@ public class StashCreator {
 		this.outDSL = Format.javaValidName().format(Format.firstUpperCase().format(outDSL)).toString();
 		this.workingPackage = conf.workingPackage();
 		this.resourceFolder = conf.resourcesDirectory();
-		this.level = conf.level();
+		this.level = conf.model().level();
 		this.test = conf.isTest();
 		this.stashGeneration = conf.isStashGeneration();
 		this.stash.language = language.languageName();
@@ -75,11 +75,11 @@ public class StashCreator {
 	}
 
 	private void createConcept(io.intino.tara.lang.model.Node node) {
-		if (node.isAspect()) stash.concepts.addAll(createFromAspect(node));
+		if (node.isAspect()) stash.concepts.addAll(createAspectConcept(node));
 		else {
 			List<io.intino.tara.lang.model.Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(StashHelper.name(node, workingPackage),
-					node.isAbstract() || node.isAspect(),
+					node.isAbstract(),
 					node.type().equals(ProteoConstants.META_CONCEPT),
 					node.isAspect() || node.isMetaAspect(),
 					node.container() instanceof Model && !node.is(Tag.Component),
@@ -95,25 +95,21 @@ public class StashCreator {
 		}
 	}
 
-	private List<Concept> createFromAspect(io.intino.tara.lang.model.Node aspectNode) {
-		List<io.intino.tara.lang.model.Node> components = collectTypeComponents(aspectNode.components());
+	private List<Concept> createAspectConcept(io.intino.tara.lang.model.Node aspectNode) {
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
 		concepts.add(concept);
 		concept.isMetaConcept = aspectNode.type().equals(ProteoConstants.META_CONCEPT);
 		concept.isAbstract = aspectNode.isAbstract();
+		concept.isAspect = true;
 		concept.name = StashHelper.name(aspectNode, workingPackage);
 		concept.className = aspectClassName(aspectNode);
 		concept.types = StashHelper.collectTypes(aspectNode, language);
 		concept.parent = calculateParent(aspectNode);
-		concept.contentRules = collectContents(components);
 		concept.variables = variablesOf(aspectNode);
 		concept.parameters = parametersOf(aspectNode);
+		concept.contentRules = collectContents(collectTypeComponents(aspectNode.components()));
 		for (io.intino.tara.lang.model.Node component : aspectNode.components()) create(component, concept);
-		io.intino.tara.lang.model.Node targetNode = aspectNode.container();
-		concepts.addAll(collectChildren(targetNode).stream().
-				map(node -> createChildAspectType(aspectNode, node, concept)).
-				collect(toList()));
 		return concepts;
 	}
 
@@ -301,7 +297,7 @@ public class StashCreator {
 	}
 
 	private String getStash(io.intino.tara.lang.model.Node node) {
-		return (test || level.compareLevelWith(Solution) == 0) && !stashGeneration ? getStashByNode(node) : outDSL;
+		return (test || level.compareLevelWith(Level.Solution) == 0) && !stashGeneration ? getStashByNode(node) : outDSL;
 	}
 
 	private String getStashByNode(io.intino.tara.lang.model.Node node) {

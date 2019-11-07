@@ -1,5 +1,6 @@
 package io.intino.tara.compiler.codegeneration.lang;
 
+import io.intino.itrules.FrameBuilder;
 import io.intino.tara.compiler.codegeneration.FileSystemUtils;
 import io.intino.tara.compiler.codegeneration.JavaCompiler;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -44,8 +45,8 @@ public class LanguageSerializer {
 		this.models = models;
 	}
 
-	public void write() throws TaraException {
-		write(new LanguageCreator(conf, models).create(), getDslDestiny(), collectRules(models));
+	public void serialize() throws TaraException {
+		serialize(new LanguageCreator(conf, models).create(), getDslDestiny(), collectRules(models));
 	}
 
 	private List<Class<?>> collectRules(Collection<Model> models) {
@@ -74,22 +75,28 @@ public class LanguageSerializer {
 
 	private File getDslDestiny() {
 		final File file = new File(conf.getTaraDirectory(), REPOSITORY + separator + conf.dslGroupId().replace(".", separator) + separator +
-				conf.outLanguage().toLowerCase() + separator + conf.version());
+				conf.model().outLanguage().toLowerCase() + separator + conf.version());
 		file.mkdirs();
-		return new File(file, reference().format(firstUpperCase().format(conf.outLanguage())) + JAVA);
+		return new File(file, reference().format(firstUpperCase().format(conf.model().outLanguage())) + JAVA);
 	}
 
-	private void write(String content, File javaFile, List<Class<?>> rules) throws TaraException {
+	private void serialize(String content, File javaFile, List<Class<?>> rules) throws TaraException {
 		try {
-			final File dslDestiny = javaFile.getParentFile();
-			if (dslDestiny.exists()) FileSystemUtils.removeDir(dslDestiny);
-			dslDestiny.mkdirs();
+			final File dslDirectory = javaFile.getParentFile();
+			if (dslDirectory.exists()) FileSystemUtils.removeDir(dslDirectory);
+			dslDirectory.mkdirs();
 			Files.write(javaFile.toPath(), content.getBytes());
 			JavaCompiler.compile(javaFile, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
-			jar(dslDestiny, rules.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).collect(Collectors.toList()));
+			jar(dslDirectory, rules.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).collect(Collectors.toList()));
+			createPOM(dslDirectory);
 		} catch (IOException e) {
 			throw new TaraException("Error creating languageName: " + e.getMessage(), e);
 		}
+	}
+
+	private void createPOM(File dslDirectory) throws IOException {
+		String text = new POMTemplate().render(new FrameBuilder().add("POM").add("name", conf.model().outLanguage()).add("version", conf.version()));
+		Files.write(new File(jarFile(dslDirectory).getAbsolutePath().replace(JAR, ".pom")).toPath(), text.getBytes());
 	}
 
 	private Collection<String> collectClassPath(Collection<Class<?>> values) throws IOException {
@@ -110,13 +117,17 @@ public class LanguageSerializer {
 		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
 		frameworkParameters(manifest);
 		manifest.getEntries().put("tara", createTaraProperties());
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.outLanguage() + "-" + conf.version() + JAR)), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile(dslDir)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
 		addInheritedRules(target);
 		target.close();
 		FileSystemUtils.removeDir(src);
+	}
+
+	private File jarFile(File dslDir) {
+		return new File(dslDir, conf.model().outLanguage() + "-" + conf.version() + JAR);
 	}
 
 	private void frameworkParameters(Manifest manifest) {
@@ -133,8 +144,8 @@ public class LanguageSerializer {
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outLanguage());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.level().name());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.model().outLanguage());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.model().level().name());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.version());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.WORKING_PACKAGE.replace(".", "-")), conf.workingPackage());
 		return taraAttributes;

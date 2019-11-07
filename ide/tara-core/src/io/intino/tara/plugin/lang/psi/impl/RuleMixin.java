@@ -21,6 +21,6 @@ public class RuleMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String toString() {
-		return "RuleMixin{}";
+		return getText();
 	}
 }

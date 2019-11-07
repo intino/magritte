@@ -14,7 +14,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
-import io.intino.tara.compiler.shared.Configuration.Level;
+import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.plugin.lang.LanguageManager;
@@ -95,7 +95,7 @@ public class TaraUtil {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";
 		final Configuration conf = configurationOf(element);
 		if (conf == null) return "";
-		final Configuration.LanguageLibrary lib = conf.languages().get(0);
+		final Configuration.Model.ModelLanguage lib = conf.model().language();
 		if (lib == null) return null;
 		return lib.generationPackage();
 	}
@@ -108,7 +108,7 @@ public class TaraUtil {
 
 	public static Level level(@NotNull PsiElement element) {
 		final Configuration configuration = configurationOf(element);
-		return configuration == null ? null : configuration.level();
+		return configuration == null || configuration.model() == null ? null : configuration.model().level();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {
@@ -140,15 +140,15 @@ public class TaraUtil {
 		if (nodeConstraints == null) return Collections.emptyList();
 		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		List<Constraint.Parameter> parameters = new ArrayList<>();
-		for (Constraint constraint : constraints)
+		for (Constraint constraint : nodeConstraints)
 			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
-			else if (constraint instanceof Constraint.Aspect && hasFacet(node, (Constraint.Aspect) constraint))
+			else if (constraint instanceof Constraint.Aspect && hasAspect(node, (Constraint.Aspect) constraint))
 				parameters.addAll(((Constraint.Aspect) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
 	}
 
-	private static boolean hasFacet(Node node, Constraint.Aspect constraint) {
-		return node.appliedAspects().stream().anyMatch(facet -> facet.type().equalsIgnoreCase(constraint.type()));
+	private static boolean hasAspect(Node node, Constraint.Aspect constraint) {
+		return node.appliedAspects().stream().anyMatch(facet -> facet.fullType().equalsIgnoreCase(constraint.type()));
 	}
 
 	@Nullable
@@ -235,30 +235,30 @@ public class TaraUtil {
 	}
 
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {
-        return filesOf(module, TaraFileType.instance());
+		return filesOf(module, TaraFileType.instance());
 	}
 
-    public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
-        return filesOf(module, fileType);
-    }
+	public static List<TaraModel> getFilesOfModuleByFileType(Module module, FileType fileType) {
+		return filesOf(module, fileType);
+	}
 
-    @NotNull
-    private static List<TaraModel> filesOf(Module module, FileType fileType) {
-        List<TaraModel> taraFiles = new ArrayList<>();
-        if (module == null) return taraFiles;
-        Collection<VirtualFile> files = FileTypeIndex.getFiles(fileType, GlobalSearchScope.moduleScope(module));
-        files.stream().filter(Objects::nonNull).forEach(file -> {
-            TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
-            if (taraFile != null) taraFiles.add(taraFile);
-        });
-        return taraFiles;
-    }
+	@NotNull
+	private static List<TaraModel> filesOf(Module module, FileType fileType) {
+		List<TaraModel> taraFiles = new ArrayList<>();
+		if (module == null) return taraFiles;
+		Collection<VirtualFile> files = FileTypeIndex.getFiles(fileType, GlobalSearchScope.moduleScope(module));
+		files.stream().filter(Objects::nonNull).forEach(file -> {
+			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
+			if (taraFile != null) taraFiles.add(taraFile);
+		});
+		return taraFiles;
+	}
 
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
 		final Node[] rootNodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
 		if (rootNodes == null) return Collections.emptyList();
-		final List<Node> nodes = Arrays.asList(rootNodes);
+		final Node[] nodes = rootNodes;
 		for (Node include : nodes) all.addAll(include.subs());
 		for (Node root : nodes) getRecursiveComponentsOf(root, all);
 		return new ArrayList<>(all);

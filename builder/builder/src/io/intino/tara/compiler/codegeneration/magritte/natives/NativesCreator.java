@@ -33,7 +33,7 @@ public class NativesCreator {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
-		outDSL = (conf.outLanguage() != null ? conf.outLanguage().toLowerCase() : conf.getModule());
+		outDSL = (conf.model().outLanguage() != null ? conf.model().outLanguage().toLowerCase() : conf.getModule());
 		nativesPackage = conf.workingPackage().toLowerCase().replace(".", separator) + separator + NATIVES + separator;
 		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}
@@ -62,7 +62,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.put(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.level(), conf.workingPackage(), conf.language(l -> l.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
+			builder.put(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.model().level(), conf.workingPackage(), conf.model().language().generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsFile()));
 			createNativeFrame(originToDestiny, expressionsTemplate, nativeCodes, calculateDestination(p), builder.append(p), p.type(), p.file());
 		});
 		return nativeCodes;
@@ -73,7 +73,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.put(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.language(d -> d.name().equals(model.languageName())).generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.put(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.model().language().generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			createNativeFrame(files, expressionsTemplate, nativeCodes, calculateDestination(variable), builder.append(variable), variable.type(), variable.file());
 		});
 		return nativeCodes;

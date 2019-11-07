@@ -57,6 +57,7 @@ public class MockLayer extends Layer implements Terminal {
 	@Override
 	protected void load$(String name, List<?> object) {
 		if (name.equals("mockLayer")) mockLayer = NodeLoader.load(object, MockLayer.class, this).get(0);
+		if (name.equals("varMockList")) varMockList = NodeLoader.load(object, MockLayer.class, this);
 	}
 
 	@Override

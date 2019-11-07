@@ -16,7 +16,6 @@ import java.util.*;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
-import static io.intino.tara.io.Helper.*;
 import static io.intino.tara.magritte.TestHelper.*;
 import static java.util.logging.Logger.getGlobal;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -351,6 +350,21 @@ public class GraphTest {
 		new Graph(mockStore()).loadStashes(missingReference).as(MockApplication.class);
 		handler.flush();
 		assertThat(outputStream.toString(), containsString("Dependant node is missingReference#x"));
+	}
+
+	@Test
+	public void should_load_a_big_list_of_dependencies() {
+		MockApplication application = new Graph(new MockStore() {
+			@Override
+			public Stash stashFrom(String stash) {
+				Stash result = super.stashFrom(stash);
+				if (result == null) result = referencedStash(stash);
+				return result;
+			}
+		}).loadStashes(manyReferences).as(MockApplication.class);
+		assertThat(application.mockLayerList().get(0).varMockList().size(), is(2000));
+		assertThat(application.mockLayerList().get(0).varMockList().get(0).varMockList().size(), is(1));
+		assertThat(application.mockLayerList().get(0).varMockList().get(0).varMockList().get(0).core$().id, is("stash1#x"));
 	}
 
 	@Test

@@ -15,7 +15,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,14 +26,14 @@ public class Parser {
 	private static final Logger LOG = Logger.getGlobal();
 
 	private final File file;
-	private final List<CompilerConfiguration.DSL> languages;
+	private final CompilerConfiguration.DSL language;
 	private final String outDsl;
 	private TaraGrammar grammar;
 	private TaraGrammar.RootContext rootContext;
 
-	public Parser(File file, List<CompilerConfiguration.DSL> languages, String sourceEncoding, String outDsl) throws IOException {
+	public Parser(File file, CompilerConfiguration.DSL language, String sourceEncoding, String outDsl) throws IOException {
 		this.file = file;
-		this.languages = languages;
+		this.language = language;
 		this.outDsl = outDsl;
 		TaraLexer lexer = new TaraLexer(fromString(new String(readAllBytes(file.toPath()), Charset.forName(sourceEncoding)).trim()));
 		lexer.reset();
@@ -56,7 +55,7 @@ public class Parser {
 	public Model convert() throws SyntaxException {
 		try {
 			ParseTreeWalker walker = new ParseTreeWalker();
-			ModelGenerator extractor = new ModelGenerator(file.getPath(), languages, outDsl);
+			ModelGenerator extractor = new ModelGenerator(file.getPath(), language, outDsl);
 			walker.walk(extractor, rootContext);
 			if (!extractor.getErrors().isEmpty())
 				throw extractor.getErrors().get(0);

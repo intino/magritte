@@ -1,7 +1,6 @@
 package io.intino.tara.io;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.serializers.DeflateSerializer;
 import com.esotericsoftware.minlog.Log;
@@ -39,6 +38,7 @@ public class StashDeserializer extends Deserializer {
 			kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
 			result = kryo.readObject(input, Stash.class);
 		} catch (Throwable e) {
+			Log.error(e.getMessage());
 		}
 		return result;
 	}

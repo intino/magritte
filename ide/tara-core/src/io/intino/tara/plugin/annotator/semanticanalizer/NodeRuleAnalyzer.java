@@ -17,7 +17,6 @@ import io.intino.tara.plugin.lang.psi.TaraRuleContainer;
 import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.messages.MessageProvider;
-import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
@@ -34,7 +33,7 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 	public NodeRuleAnalyzer(TaraRuleContainer ruleContainer) {
 		this.node = TaraPsiUtil.getContainerByType(ruleContainer, Node.class);
 		this.rule = ruleContainer.getRule();
-		rulesPackage = (IntinoModuleType.isIntino(module()) ? TaraUtil.graphPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
+		rulesPackage = TaraUtil.graphPackage(ruleContainer).toLowerCase() + RULES_PACKAGE;
 	}
 
 	@Override

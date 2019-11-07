@@ -50,6 +50,16 @@ def type(Variable & multiple & final) type(target | metaType) !type(owner | conc
 	}
 end
 
+def type(Variable & reference) type(target | metaType) attribute(name) type(multiple) trigger(getter)
+	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	}
+
+	public $type+reference $name+FirstLowerCase+javaValidName(int index) {
+		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
+	}
+end
+
 def type(Variable) !type(owner | concept) type(target | metaType) attribute(name) type(multiple) trigger(getter)
 	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
 		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();

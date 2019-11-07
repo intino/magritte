@@ -20,7 +20,6 @@ import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.lang.psi.resolve.ReferenceManager;
 import io.intino.tara.plugin.messages.MessageProvider;
-import io.intino.tara.plugin.project.IntinoModuleType;
 import io.intino.tara.plugin.project.module.ModuleProvider;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
@@ -38,7 +37,7 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 	public VariableRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.variable = TaraPsiUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
-		workingPackage = IntinoModuleType.isIntino(module()) ? TaraUtil.graphPackage(ruleContainer) : "";
+		workingPackage = TaraUtil.graphPackage(ruleContainer);
 		rulesPackage = workingPackage.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}
 
