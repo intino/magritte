@@ -84,7 +84,7 @@ public class StashCreator {
 					node.isAspect() || node.isMetaAspect(),
 					node.container() instanceof Model && !node.is(Tag.Component),
 					className(node),
-					node.parent() != null ? Format.qualifiedName().format(((NodeImpl) node.parent()).layerQn()).toString() : null,
+					node.parent() != null ? Format.qualifiedName().format(((NodeImpl) node.parent()).layerQualifiedName()).toString() : null,
 					StashHelper.collectTypes(node, this.language),
 					collectContents(nodeList),
 					variablesOf(node),
