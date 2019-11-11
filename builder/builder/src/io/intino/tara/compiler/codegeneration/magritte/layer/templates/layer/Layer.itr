@@ -73,7 +73,7 @@ end
 def type(node & owner) trigger(clear)
 end
 
-def type(availableAspect) attribute(variable) trigger(availableAspect)
+def type(availableAspect) !type(abstract) attribute(variable) trigger(availableAspect)
 	public $qn as$name+FirstUpperCase() {
 		return a$$($qn+reference.class);
 	}

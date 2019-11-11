@@ -164,6 +164,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 		allowedAspects(node).forEach(aspect -> {
 			FrameBuilder builder = new FrameBuilder(AVAILABLE_ASPECT);
 			builder.add(NAME, aspect.name());
+			if (aspect.isAbstract()) builder.add(ABSTRACT);
 			if (node.isAbstract()) builder.add(ABSTRACT, "null");
 			String qn = cleanQn(getQn(aspect, workingPackage));
 			builder.add(QN, qn);
@@ -177,7 +178,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 
 	private Collection<Node> allowedAspects(Node node) {
 		Set<Node> nodes = new HashSet<>();
-		for (Node aspectNode : node.components().stream().filter(n -> n.isAspect() && !n.isAbstract()).collect(Collectors.toList())) {
+		for (Node aspectNode : node.components().stream().filter(Node::isAspect).collect(Collectors.toList())) {
 			if (aspectNode.isReference()) continue;
 			nodes.add(aspectNode);
 			nodes.addAll(collectChildren(aspectNode));
