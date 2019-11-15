@@ -187,7 +187,7 @@ public class GlobalConstraints {
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		else if (WORD.equals(variable.type()) && variable.name().equals(variable.container().name()))
 			error("reject.invalid.word.name", variable, singletonList((variable.rule()).errorParameters()));
-		else if (WORD.equals(variable.type()) && !(variable.rule() instanceof WordRule) || ((WordRule) variable.rule()).words().isEmpty())
+		else if (WORD.equals(variable.type()) && (!(variable.rule() instanceof WordRule) || ((WordRule) variable.rule()).words().isEmpty()))
 			error("reject.invalid.word.names", variable, Collections.emptyList());
 		else if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
 			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
