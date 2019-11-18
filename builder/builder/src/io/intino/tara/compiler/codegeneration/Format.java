@@ -42,7 +42,7 @@ public class Format {
 	public static Formatter reference() {
 		return value -> {
 			String val = value.toString();
-			return !val.contains(DOT) ? referenceFormat(val) : firstLowerCase(javaValidName().format(val).toString()).replace(":", "").replace("#", "");
+			return !val.contains(DOT) ? referenceFormat(val) : firstLowerCase(javaValidName().format(val).toString()).replace(":", "").replace("#", "").replace("$", ".");
 		};
 	}
 

@@ -86,7 +86,10 @@ def attribute(this:Resource) trigger(javaType)
 	java.net.URL
 end
 
-
 def attribute(this:resource) trigger(javaType)
 	java.net.URL
+end
+
+def trigger(javatype)
+	$this+reference
 end
