@@ -167,6 +167,7 @@ public class GlobalConstraints {
 	}
 
 	private void checkDuplicatesBetween(List<Node> components, List<Variable> variables) throws SemanticException {
+		if (variables == null) return;
 		for (Variable var : variables) {
 			if (components.stream().anyMatch(c -> var.name().equals(c.name())))
 				error("reject.duplicated.name.between.variables.and.components", var, Collections.singletonList(var.name()));

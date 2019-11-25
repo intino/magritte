@@ -69,7 +69,7 @@ public class TaraUtil {
 		return conf.workingPackage() + (isTest(element.getContainingFile(), module) ? ".test" : "") + ".graph";
 	}
 
-	public static boolean isTest(PsiElement dir, Module module) {
+	private static boolean isTest(PsiElement dir, Module module) {
 		final List<VirtualFile> roots = testContentRoot(module);
 		for (VirtualFile root : roots) if (isIn(root, dir)) return true;
 		return false;
@@ -138,12 +138,25 @@ public class TaraUtil {
 		if (language == null) return Collections.emptyList();
 		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
 		if (nodeConstraints == null) return Collections.emptyList();
-		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		List<Constraint.Parameter> parameters = new ArrayList<>();
 		for (Constraint constraint : nodeConstraints)
 			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
 			else if (constraint instanceof Constraint.Aspect && hasAspect(node, (Constraint.Aspect) constraint))
 				parameters.addAll(((Constraint.Aspect) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+		return parameters;
+	}
+
+	@NotNull
+	public static List<Constraint.Parameter> aspectParameterConstraintsOf(Node node) {
+		Language language = getLanguage((PsiElement) node);
+		if (language == null) return Collections.emptyList();
+		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
+		if (nodeConstraints == null) return Collections.emptyList();
+		List<Constraint.Parameter> parameters = new ArrayList<>();
+		nodeConstraints.stream().
+				filter(constraint -> constraint instanceof Constraint.Aspect && hasAspect(node, (Constraint.Aspect) constraint)).
+				map(constraint -> ((Constraint.Aspect) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).
+						collect(Collectors.toList())).forEach(parameters::addAll);
 		return parameters;
 	}
 
@@ -156,10 +169,10 @@ public class TaraUtil {
 		final Node nodeOf = TaraPsiUtil.getContainerNodeOf((PsiElement) aspect);
 		final List<Constraint> allowsOf = getConstraintsOf(nodeOf);
 		if (allowsOf == null || allowsOf.isEmpty()) return Collections.emptyList();
-		return collectFacetConstrains(aspect, allowsOf);
+		return collectAspectConstrains(aspect, allowsOf);
 	}
 
-	private static List<Constraint> collectFacetConstrains(Aspect aspect, List<Constraint> constraints) {
+	private static List<Constraint> collectAspectConstrains(Aspect aspect, List<Constraint> constraints) {
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Aspect && ((Constraint.Aspect) constraint).type().equals(aspect.type()))
 				return ((Constraint.Aspect) constraint).constraints();
@@ -201,7 +214,6 @@ public class TaraUtil {
 	private static int getIndexInParent(Parameter parameter) {
 		return parameter.position();
 	}
-
 
 	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
 		for (Constraint.Parameter variable : parameters)
@@ -258,9 +270,8 @@ public class TaraUtil {
 		Set<Node> all = new HashSet<>();
 		final Node[] rootNodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
 		if (rootNodes == null) return Collections.emptyList();
-		final Node[] nodes = rootNodes;
-		for (Node include : nodes) all.addAll(include.subs());
-		for (Node root : nodes) getRecursiveComponentsOf(root, all);
+		for (Node include : rootNodes) all.addAll(include.subs());
+		for (Node root : rootNodes) getRecursiveComponentsOf(root, all);
 		return new ArrayList<>(all);
 	}
 

@@ -8,6 +8,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.FakePsiElement;
 import io.intino.tara.Language;
+import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Parameter;
@@ -15,6 +16,7 @@ import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.Documentation;
 import io.intino.tara.plugin.lang.TaraIcons;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 
 import java.io.File;
@@ -26,6 +28,7 @@ import java.util.Set;
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
 import static io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil.getContainerNodeOf;
+import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.aspectParameterConstraintsOf;
 import static io.intino.tara.plugin.lang.psi.impl.TaraUtil.parameterConstraintsOf;
 import static java.util.stream.Collectors.toList;
 
@@ -48,7 +51,7 @@ public class CompletionUtils {
 		final List<Constraint> nodeConstraints = language.constraints(container == null ? "" : container.resolve().type());
 		if (nodeConstraints == null) return;
 		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
-		if (container != null) constraints.addAll(constraintsOf(facetConstraints(nodeConstraints, container.appliedAspects())));
+		if (container != null) constraints.addAll(constraintsOf(aspectConstraints(nodeConstraints, container.appliedAspects())));
 		List<Constraint.Component> components = constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(toList());
 		components = components.stream().filter(c -> isSizeAccepted(c, container)).collect(toList());
 		if (components.isEmpty()) return;
@@ -70,7 +73,7 @@ public class CompletionUtils {
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
 		if (constraints == null || node == null || node.type() == null) return;
 		final String fileName = language.doc(node.type()) != null ? getNameWithoutExtension(new File(language.doc(node.type()).file())) : "";
-		List<LookupElementBuilder> elementBuilders = buildCompletionForFacets(fileName, constraints, node);
+		List<LookupElementBuilder> elementBuilders = buildCompletionForAspects(fileName, constraints, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -88,11 +91,15 @@ public class CompletionUtils {
 		if (language == null) return;
 		Node node = getContainerNodeOf(parameters.getPosition());
 		if (node == null) return;
-		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(parameterConstraintsOf(node), node.parameters());
+		List<Constraint.Parameter> constraints = isInAspect() ? aspectParameterConstraintsOf(node) : parameterConstraintsOf(node);
+		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(constraints, node.parameters());
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
+	private boolean isInAspect() {
+		return TaraPsiUtil.contextOf(parameters.getPosition(), Aspect.class) != null;
+	}
 
 	private boolean isSizeAccepted(Constraint.Component component, Node container) {
 		return component.rules().stream().filter(r -> r instanceof Size).allMatch(r -> ((Size) r).max() > container.components().stream().filter(c -> component.type().equals(c.type())).collect(toList()).size());
@@ -104,7 +111,7 @@ public class CompletionUtils {
 		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
-	private List<Constraint> facetConstraints(List<Constraint> nodeConstraints, List<io.intino.tara.lang.model.Aspect> aspects) {
+	private List<Constraint> aspectConstraints(List<Constraint> nodeConstraints, List<io.intino.tara.lang.model.Aspect> aspects) {
 		List<String> facetTypes = aspects.stream().map(io.intino.tara.lang.model.Aspect::type).collect(toList());
 		List<Constraint> list = new ArrayList<>();
 		if (nodeConstraints == null) return list;
@@ -124,15 +131,15 @@ public class CompletionUtils {
 		return builders.stream().filter(c -> added.add(c.getLookupString())).collect(toList());
 	}
 
-	private List<LookupElementBuilder> buildCompletionForFacets(String fileName, List<Constraint> constraints, Node node) {
+	private List<LookupElementBuilder> buildCompletionForAspects(String fileName, List<Constraint> constraints, Node node) {
 		Set<String> added = new HashSet<>();
 		return constraints.stream().
-				filter(c -> c instanceof Constraint.Aspect && !hasFacet(node, (Constraint.Aspect) c)).
+				filter(c -> c instanceof Constraint.Aspect && !hasAspect(node, (Constraint.Aspect) c)).
 				map(c -> createElement(fileName, (Constraint.Aspect) c, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
 				collect(toList());
 	}
 
-	private boolean hasFacet(Node node, Constraint.Aspect c) {
+	private boolean hasAspect(Node node, Constraint.Aspect c) {
 		for (io.intino.tara.lang.model.Aspect aspect : node.appliedAspects()) if (aspect.type().equals(c.type())) return true;
 		return false;
 	}
@@ -151,21 +158,20 @@ public class CompletionUtils {
 		return type.contains(".") ? type.substring(type.lastIndexOf('.') + 1, type.length()) : type;
 	}
 
-	private LookupElementBuilder createElement(String language, Constraint.Aspect allow, NodeContainer container) {
-		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_16).withCaseSensitivity(true).withTypeText(language);
+	private LookupElementBuilder createElement(String language, Constraint.Aspect aspect, NodeContainer container) {
+		return create(new FakeElement(aspect.type(), (PsiElement) container), lastTypeOf(aspect.type()) + " ").withIcon(TaraIcons.ICON_16).withCaseSensitivity(true).withTypeText(language);
 	}
 
 	private List<LookupElementBuilder> buildCompletionForParameters(List<Constraint.Parameter> constraints, List<Parameter> parameterList) {
 		Set<String> added = new HashSet<>();
 		return constraints.stream().
 				filter(c -> c != null && !contains(parameterList, c.name())).
-				map(c -> createElement(c)).filter(l -> added.add(l.getLookupString())).
+				map(this::createElement).filter(l -> added.add(l.getLookupString())).
 				collect(toList());
 	}
 
 	private boolean contains(List<Parameter> parameters, String name) {
-		for (Parameter parameter : parameters) if (name.equals(parameter.name())) return true;
-		return false;
+		return parameters.stream().anyMatch(parameter -> name.equals(parameter.name()));
 	}
 
 	private LookupElementBuilder createElement(Constraint.Parameter allow) {

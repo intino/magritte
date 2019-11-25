@@ -66,7 +66,7 @@ public class CreateNodeRuleClassIntention extends ClassCreationIntention {
 
 	public PsiClass createRuleClass(PsiFile file, PsiDirectoryImpl srcPsiDirectory) {
 		PsiClass aClass;
-		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, rulesPath);
+		PsiDirectory destiny = findDestination(file, srcPsiDirectory, rulesPath);
 		aClass = createClass(destiny, ((TaraRule) rule).getText());
 		return aClass;
 	}

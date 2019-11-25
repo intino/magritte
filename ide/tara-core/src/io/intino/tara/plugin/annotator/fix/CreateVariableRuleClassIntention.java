@@ -65,17 +65,17 @@ public class CreateVariableRuleClassIntention extends ClassCreationIntention {
 	}
 
 	public PsiClass createRuleClass(PsiFile file, PsiDirectoryImpl srcPsiDirectory) {
-		return createClass(findDestiny(file, srcPsiDirectory, rulesPath), ((TaraRule) rule).getText());
+		return createClass(findDestination(file, srcPsiDirectory, rulesPath), ((TaraRule) rule).getText());
 	}
 
-	public PsiClass createClass(PsiDirectory destiny, String className) {
-		PsiFile file = destiny.findFile(className + ".java");
+	public PsiClass createClass(PsiDirectory destination, String className) {
+		PsiFile file = destination.findFile(className + ".java");
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
 		additionalProperties.put("TYPE", getRuleType());
 		Application application = ApplicationManager.getApplication();
-		if (application.isWriteAccessAllowed()) return createClass(destiny, className, additionalProperties);
-		return application.runWriteAction((Computable<PsiClass>) () -> createClass(destiny, className, additionalProperties));
+		if (application.isWriteAccessAllowed()) return createClass(destination, className, additionalProperties);
+		return application.runWriteAction((Computable<PsiClass>) () -> createClass(destination, className, additionalProperties));
 	}
 
 	private PsiClass createClass(PsiDirectory destiny, String className, Map<String, String> additionalProperties) {
