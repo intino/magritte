@@ -30,8 +30,10 @@ class GraphHelper {
 		Set<String> set = new HashSet(asList(paths));
 		Map<String, List<Node>> pathNodes = new HashMap<>();
 		set.forEach(p -> pathNodes.put(p, new ArrayList<>()));
-		for (Node node : graph.model.graph.rootList())
+		for (Node node : graph.model.graph.rootList()) {
+			if (node == null) continue;
 			if (set.contains(node.stash())) pathNodes.get(node.stash()).add(node);
+		}
 		save(graph, pathNodes);
 	}
 
@@ -39,6 +41,7 @@ class GraphHelper {
 		Set<String> set = new HashSet(asList(excludedPaths));
 		Map<String, List<Node>> pathNodes = new HashMap<>();
 		for (Node node : graph.model.graph.rootList()) {
+			if (node == null) continue;
 			if (set.contains(node.stash())) continue;
 			if (!pathNodes.containsKey(node.stash())) pathNodes.put(node.stash(), new ArrayList<>());
 			pathNodes.get(node.stash()).add(node);
