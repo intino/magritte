@@ -7,6 +7,7 @@ import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
+import io.intino.tara.lang.model.rules.variable.WordRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import io.intino.tara.lang.semantics.constraints.flags.FlagChecker;
@@ -166,6 +167,7 @@ public class GlobalConstraints {
 	}
 
 	private void checkDuplicatesBetween(List<Node> components, List<Variable> variables) throws SemanticException {
+		if (variables == null) return;
 		for (Variable var : variables) {
 			if (components.stream().anyMatch(c -> var.name().equals(c.name())))
 				error("reject.duplicated.name.between.variables.and.components", var, Collections.singletonList(var.name()));
@@ -186,6 +188,8 @@ public class GlobalConstraints {
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		else if (WORD.equals(variable.type()) && variable.name().equals(variable.container().name()))
 			error("reject.invalid.word.name", variable, singletonList((variable.rule()).errorParameters()));
+		else if (WORD.equals(variable.type()) && variable.rule() instanceof WordRule && ((WordRule) variable.rule()).words().isEmpty())
+			error("reject.invalid.word.names", variable, Collections.emptyList());
 		else if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
 			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)

@@ -36,7 +36,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	@Override
 	protected List<PsiElement> doMultiResolve() {
-		if (outputDsl == null) return Collections.emptyList();
+		if (outputDsl == null || module == null) return Collections.emptyList();
 		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(reference(), GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module)));
 	}
 

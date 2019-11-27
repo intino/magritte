@@ -20,7 +20,7 @@ public abstract class ClassCreationIntention extends PsiElementBaseIntentionActi
 	protected static final String SLASH = "/";
 
 
-	PsiDirectory findDestiny(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
+	PsiDirectory findDestination(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
 		PsiDirectory subdirectory = srcDirectory.findSubdirectory(destinyName);
 		if (subdirectory != null) return subdirectory;
 		final PsiDirectory[] destiny = createPath(file, srcDirectory, destinyName);

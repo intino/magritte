@@ -7,15 +7,15 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
-import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
-import io.intino.tara.plugin.lang.psi.TaraModel;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraRule;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Rule;
 import io.intino.tara.lang.model.Variable;
+import io.intino.tara.plugin.codeinsight.languageinjection.helpers.Format;
+import io.intino.tara.plugin.lang.psi.TaraModel;
+import io.intino.tara.plugin.lang.psi.TaraRule;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +61,7 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 
 	private PsiClass createRuleClass(PsiFile file, PsiDirectoryImpl srcPsiDirectory) {
 		PsiClass aClass;
-		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, rulesPath);
+		PsiDirectory destiny = findDestination(file, srcPsiDirectory, rulesPath);
 		aClass = createClass(destiny, ((TaraRule) rule).getText());
 		return aClass;
 	}

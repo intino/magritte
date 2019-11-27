@@ -18,7 +18,8 @@ public class ExpressionsTemplate extends Template {
 				rule().condition((attribute("", "time")), (trigger("javatype"))).output(literal("java.time.LocalTime")),
 				rule().condition((attribute("", "Time")), (trigger("javatype"))).output(literal("java.time.LocalTime")),
 				rule().condition((attribute("", "Resource")), (trigger("javatype"))).output(literal("java.net.URL")),
-				rule().condition((attribute("", "resource")), (trigger("javatype"))).output(literal("java.net.URL"))
+				rule().condition((attribute("", "resource")), (trigger("javatype"))).output(literal("java.net.URL")),
+				rule().condition((trigger("javatype"))).output(mark("", "reference"))
 		);
 	}
 }

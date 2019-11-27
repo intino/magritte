@@ -15,7 +15,10 @@ import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -75,7 +78,7 @@ class VariantsManager {
 
 	private Constraint.Parameter findParameter(List<Constraint> constraints, Parameter parameter) {
 		return (Constraint.Parameter) constraints.stream().
-			filter(c -> c instanceof ReferenceParameter && isConstraintOf(parameter, c)).findFirst().orElse(null);
+				filter(c -> c instanceof ReferenceParameter && isConstraintOf(parameter, c)).findFirst().orElse(null);
 	}
 
 	private boolean isConstraintOf(Parameter parameter, Constraint constraint) {
@@ -97,11 +100,11 @@ class VariantsManager {
 
 	private List<Node> collectUnacceptableNodes(List<String> expectedTypes) {
 		if (expectedTypes.isEmpty()) return emptyList();
-		List<Node> unacceptable = new ArrayList<>();
-		unacceptable.addAll(variants.stream().
-			filter(variant -> variant.type() != null && !expectedTypes.contains(variant.type())).
-			collect(Collectors.toList()));
-		return unacceptable;
+		return variants.stream().
+				filter(variant -> {
+					variant.resolve();
+					return variant.type() != null && variant.types().stream().noneMatch(t -> expectedTypes.contains(t.split(":")[0]));
+				}).collect(Collectors.toList());
 	}
 
 	private boolean hasContext() {
@@ -127,7 +130,7 @@ class VariantsManager {
 		if (model == null) return;
 		model.components().stream().
 				filter(node -> !node.equals(TaraPsiUtil.getContainerNodeOf(myElement))).
-			forEach(node -> resolvePathFor(node, context));
+				forEach(node -> resolvePathFor(node, context));
 		addMainConcepts(model);
 	}
 
@@ -148,8 +151,8 @@ class VariantsManager {
 
 	private void addMainConcepts(TaraModel model) {
 		TaraUtil.getAllNodesOfFile(model).stream().
-			filter(node -> !variants.contains(node) && !node.is(Tag.Component) && !node.is(Tag.Feature)).
-			forEach(node -> resolvePathFor(node, context));
+				filter(node -> !variants.contains(node) && !node.is(Tag.Component) && !node.is(Tag.Feature)).
+				forEach(node -> resolvePathFor(node, context));
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {

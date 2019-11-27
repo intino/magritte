@@ -55,7 +55,7 @@ public class TaraModuleListener implements BaseComponent {
 	private void addDSLNameToDictionary() {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(module);
-			if (conf != null)
+			if (conf != null && conf.model() != null && conf.model().language() != null && conf.model().language().name() != null)
 				SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(conf.model().language().name(), project);
 		}
 	}
@@ -93,8 +93,8 @@ public class TaraModuleListener implements BaseComponent {
 			@Override
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
-					final Configuration taraConfiguration = TaraUtil.configurationOf(module);
-					if (taraConfiguration != null && (taraConfiguration.model().level().isSolution()))
+					final Configuration conf = TaraUtil.configurationOf(module);
+					if (conf != null && conf.model() != null && conf.model().level().isSolution())
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");

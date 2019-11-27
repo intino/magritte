@@ -75,12 +75,14 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	private List<Constraint> findConstraints() {
 		final Node node = (Node) this.parametrized;
 		final List<Constraint> constraintsOf = new ArrayList<>(TaraUtil.getConstraintsOf(node));
-		List<Constraint> facetConstraints = new ArrayList<>();
-		final List<String> facets = facetTypes(node);
-		constraintsOf.stream().
-				filter(c -> c instanceof Constraint.Aspect && facets.contains(((Constraint.Aspect) c).type())).
-				forEach(c -> facetConstraints.addAll(((Constraint.Aspect) c).constraints()));
-		constraintsOf.addAll(facetConstraints);
+		List<Constraint> aspectConstraints = new ArrayList<>();
+		final List<String> aspects = aspectTypes(node);
+		for (Constraint c : constraintsOf) {
+			if (c instanceof Constraint.Aspect && aspects.contains(((Constraint.Aspect) c).type())) {
+				aspectConstraints.addAll(((Constraint.Aspect) c).constraints());
+			}
+		}
+		constraintsOf.addAll(aspectConstraints);
 		return constraintsOf;
 	}
 
@@ -93,8 +95,8 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 //
 //	}
 
-	private List<String> facetTypes(Node node) {
-		return node.appliedAspects().stream().map(io.intino.tara.lang.model.Aspect::type).collect(Collectors.toList());
+	private List<String> aspectTypes(Node node) {
+		return node.resolve().secondaryTypes().stream().map(s -> s.substring(0, s.indexOf(":"))).collect(Collectors.toList());
 	}
 
 	private void createLiveTemplateFor(List<Constraint.Parameter> requires, PsiFile file, Editor editor) {
@@ -111,7 +113,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	}
 
 	private PsiElement findAnchor(List<Constraint.Parameter> requires) {
-		return requires.get(0).aspect().isEmpty() ? findAnchor((TaraNode) parametrized) : findAnchor((TaraAspectApply) ((Node) parametrized).appliedAspects().stream().filter(f -> f.type().equals(requires.get(0).aspect())).findFirst().get());
+		return requires.isEmpty() || requires.get(0).aspect().isEmpty() ? findAnchor((TaraNode) parametrized) : findAnchor((TaraAspectApply) ((Node) parametrized).appliedAspects().stream().filter(f -> f.type().equals(requires.get(0).aspect())).findFirst().get());
 	}
 
 	private PsiElement findAnchor(TaraNode node) {
@@ -132,6 +134,7 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 
 	private PsiElement findAnchor(TaraAspectApply apply) {
 		if (!hasParameters(apply)) {
+			if (apply.getParameters().getParameters().isEmpty()) return apply.getParameters().getFirstChild();
 			final PsiElement emptyParameters = TaraElementFactory.getInstance(apply.getProject()).createEmptyParameters();
 			return apply.addAfter(emptyParameters, apply.getMetaIdentifier()).getFirstChild();
 		} else {
@@ -141,8 +144,8 @@ class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAc
 	}
 
 	private boolean hasParameters(PsiElement element) {
-		final TaraAspectApply facet = TaraPsiUtil.getContainerByType(element, TaraAspectApply.class);
-		return facet != null ? hasParameters(facet) : hasParameters(TaraPsiUtil.getContainerByType(element, TaraNode.class));
+		final TaraAspectApply aspectApply = TaraPsiUtil.getContainerByType(element, TaraAspectApply.class);
+		return aspectApply != null ? hasParameters(aspectApply) : hasParameters(TaraPsiUtil.getContainerByType(element, TaraNode.class));
 	}
 
 	private boolean hasParameters(TaraAspectApply apply) {

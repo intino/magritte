@@ -7,66 +7,70 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
-import io.intino.tara.plugin.lang.TaraLanguage;
-import io.intino.tara.plugin.lang.psi.StringValue;
-import io.intino.tara.plugin.lang.psi.Valued;
-import io.intino.tara.plugin.lang.psi.impl.PsiCustomWordRule;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.plugin.lang.psi.TaraTypes;
-import io.intino.tara.plugin.lang.psi.TaraVariableType;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Parameter;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Variable;
+import io.intino.tara.lang.model.rules.Suggestion;
 import io.intino.tara.lang.model.rules.variable.WordRule;
+import io.intino.tara.plugin.lang.TaraLanguage;
+import io.intino.tara.plugin.lang.psi.StringValue;
+import io.intino.tara.plugin.lang.psi.TaraTypes;
+import io.intino.tara.plugin.lang.psi.TaraVariableType;
+import io.intino.tara.plugin.lang.psi.Valued;
+import io.intino.tara.plugin.lang.psi.impl.PsiCustomWordRule;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiUtil;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static io.intino.tara.lang.model.Primitive.*;
 
 
 public class TaraVariableCompletionContributor extends CompletionContributor {
 
 	private PsiElementPattern.Capture<PsiElement> afterVar = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterVarFitFilter()));
+			.withLanguage(TaraLanguage.INSTANCE)
+			.and(new FilterPattern(new AfterVarFitFilter()));
 
 	public TaraVariableCompletionContributor() {
 		extend(CompletionType.BASIC, afterVar,
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-										   ProcessingContext context,
-										   @NotNull CompletionResultSet resultSet) {
-					for (Primitive primitive : Primitive.getPrimitives())
-						resultSet.addElement(create(primitive.getName().toLowerCase() + (mustHaveContract(primitive) ? ":" :
-							" ")).withTypeText(Primitive.class.getSimpleName()));
+				new CompletionProvider<>() {
+					public void addCompletions(@NotNull CompletionParameters parameters,
+											   ProcessingContext context,
+											   @NotNull CompletionResultSet resultSet) {
+						for (Primitive primitive : Primitive.getPrimitives())
+							resultSet.addElement(create(primitive.getName().toLowerCase() + (mustHaveContract(primitive) ? ":" :
+									" ")).withTypeText(Primitive.class.getSimpleName()));
+					}
 				}
-			}
 		);
 
 		extend(CompletionType.BASIC, TaraFilters.afterEquals,
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-										   ProcessingContext context,
-										   @NotNull CompletionResultSet resultSet) {
-					final Valued valued = TaraPsiUtil.contextOf(parameters.getPosition(), Valued.class);
-					if (valued == null) return;
-					if (valued instanceof Variable && Primitive.WORD.equals(valued.type())) {
-						if (valued.rule() instanceof WordRule) ((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
-						else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
-					} else if (valued instanceof Parameter && Primitive.REFERENCE.equals(valued.type()) && !(parameters.getPosition().getParent() instanceof StringValue))
-						resultSet.addElement(create("empty"));
-					else if (Primitive.BOOLEAN.equals(valued.type())) {
-						resultSet.addElement(create("true"));
-						resultSet.addElement(create("false"));
+				new CompletionProvider<>() {
+					public void addCompletions(@NotNull CompletionParameters parameters,
+											   ProcessingContext context,
+											   @NotNull CompletionResultSet resultSet) {
+						final Valued valued = TaraPsiUtil.contextOf(parameters.getOriginalPosition(), Valued.class);
+						if (valued == null) return;
+						if (valued instanceof Variable && WORD.equals(valued.type())) {
+							if (valued.rule() instanceof WordRule)
+								((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
+							else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
+						} else if (valued instanceof Parameter && REFERENCE.equals(valued.type()) && !(parameters.getPosition().getParent() instanceof StringValue))
+							resultSet.addElement(create("empty"));
+						else if (BOOLEAN.equals(valued.type())) {
+							resultSet.addElement(create("true"));
+							resultSet.addElement(create("false"));
+						} else if (STRING.equals(valued.type()) && valued.rule() instanceof Suggestion)
+							((Suggestion) valued.rule()).suggestedValues().forEach(v -> resultSet.addElement(create("\"" + v + "\"")));
 					}
 				}
-			}
 		);
 	}
 
 	private boolean mustHaveContract(Primitive primitive) {
-		return Primitive.FUNCTION.equals(primitive);
+		return FUNCTION.equals(primitive);
 	}
 
 	private static class AfterVarFitFilter implements ElementFilter {
