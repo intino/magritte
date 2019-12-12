@@ -169,7 +169,7 @@ public class StashCreator {
 	private List<Concept.Content> collectContents(List<io.intino.tara.lang.model.Node> nodes) {
 		return nodes.stream().
 				filter(node -> !node.isAspect() && !node.is(Instance)).
-				map(n -> new Concept.Content(n.isReference() ? ((NodeImpl) n.destinyOfReference()).layerQn() : ((NodeImpl) n).layerQn(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
+				map(n -> new Concept.Content(n.isReference() ? ((NodeImpl) n.destinyOfReference()).layerQualifiedName() : ((NodeImpl) n).layerQualifiedName(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
 	}
 
 	private List<Node> createNodes(List<io.intino.tara.lang.model.Node> nodes) {
