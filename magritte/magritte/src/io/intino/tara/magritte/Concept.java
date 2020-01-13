@@ -151,7 +151,7 @@ public class Concept extends Predicate {
 	}
 
 	private boolean ownerContainsComponent(Node owner, String name) {
-		return owner.componentList().stream().map(Predicate::name).collect(toSet()).contains(name);
+		return owner.graph().load(owner.id() + "$" + name, false) != null;
 	}
 
 	public Node createNode(Node owner) {

@@ -44,12 +44,20 @@ public class Graph {
 	}
 
 	public Graph loadStashes(String... stashes) {
-		if (stashes.length == 0) return this;
-		doLoadStashes(stashes);
-		return this;
+		return loadStashes(true, stashes);
 	}
 
 	public Graph loadStashes(Stash... stashes) {
+		return loadStashes(true, stashes);
+	}
+
+	public Graph loadStashes(boolean logFail, String... stashes) {
+		if (stashes.length == 0) return this;
+		doLoadStashes(logFail, stashes);
+		return this;
+	}
+
+	public Graph loadStashes(boolean logFail, Stash... stashes) {
 		doLoadStashes(stashes);
 		return this;
 	}
@@ -259,9 +267,9 @@ public class Graph {
 		return newNode;
 	}
 
-	private void doLoadStashes(String... stashes) {
+	private void doLoadStashes(boolean logFail, String... stashes) {
 		stream(stashes).forEach(s -> {
-			Stash stash = stashOf(stashWithExtension(s));
+			Stash stash = stashOf(stashWithExtension(s), logFail);
 			doLoadStashes(stash);
 			if(stash != null && !stash.concepts.isEmpty()) this.languages.add(s);
 		});
