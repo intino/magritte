@@ -1,6 +1,6 @@
-package io.intino.tara.lang.model.rules;
+package io.intino.tara.lang.model.rules.variable;
 
-import io.intino.tara.lang.model.rules.variable.NativeRule;
+import io.intino.tara.lang.model.rules.CustomRule;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +43,7 @@ public class NativeCustomWordRule extends NativeRule implements CustomRule {
 	}
 
 	@Override
-	public String getExternalWordClass() {
+	public String externalClass() {
 		return externalWordClass;
 	}
 }

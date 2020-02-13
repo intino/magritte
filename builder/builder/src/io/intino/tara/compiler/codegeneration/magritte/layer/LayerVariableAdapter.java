@@ -14,11 +14,7 @@ import io.intino.tara.lang.model.EmptyNode;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Variable;
-import io.intino.tara.lang.model.rules.NativeCustomWordRule;
-import io.intino.tara.lang.model.rules.NativeWordRule;
-import io.intino.tara.lang.model.rules.variable.NativeRule;
-import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
-import io.intino.tara.lang.model.rules.variable.WordRule;
+import io.intino.tara.lang.model.rules.variable.*;
 
 import java.util.ArrayList;
 import java.util.List;

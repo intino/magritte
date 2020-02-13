@@ -73,7 +73,7 @@ public abstract class Generator implements TemplateTags {
 			return cleanQn(getQn(((VariableReference) variable).getDestiny(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getExternalWordClass()) :
+					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).externalClass()) :
 					Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().javaName();
@@ -87,6 +87,7 @@ public abstract class Generator implements TemplateTags {
 		if (rule instanceof VariableCustomRule) {
 			FrameBuilder frameBuilder = new FrameBuilder("customRule");
 			frameBuilder.add(QN, cleanQn(((VariableCustomRule) rule).qualifiedName()));
+			frameBuilder.add("aClass", cleanQn(((VariableCustomRule) rule).externalClass()));
 			if (((VariableCustomRule) rule).isMetric()) {
 				frameBuilder.add(METRIC);
 				frameBuilder.add(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
@@ -186,7 +187,7 @@ public abstract class Generator implements TemplateTags {
 			final List<String> words = rule.words();
 			if (rule.isCustom()) {
 				builder.add(OUTDEFINED);
-				builder.add(EXTERNAL_CLASS, cleanQn(rule.externalWordClass()));
+				builder.add(EXTERNAL_CLASS, cleanQn(rule.externalClass()));
 			}
 			builder.add(WORD_VALUES, (Object[]) words.toArray(new Object[0]));
 		}

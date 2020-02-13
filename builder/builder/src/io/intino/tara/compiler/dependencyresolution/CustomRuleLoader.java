@@ -1,7 +1,7 @@
 package io.intino.tara.compiler.dependencyresolution;
 
-import io.intino.tara.compiler.codegeneration.JavaCompiler;
 import io.intino.tara.compiler.codegeneration.Format;
+import io.intino.tara.compiler.codegeneration.JavaCompiler;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.lang.model.rules.CustomRule;
 import io.intino.tara.lang.model.rules.custom.Url;
@@ -23,14 +23,14 @@ class CustomRuleLoader {
 	}
 
 	static Class<?> compileAndLoad(CustomRule rule, String workingPackage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
-		final File source = new File(rulesDirectory, rule.getExternalWordClass() + ".java");
+		final File source = new File(rulesDirectory, rule.externalClass() + ".java");
 		if (source.exists()) return compileAndLoadRules(rule, workingPackage, classPath, tempDirectory, source);
 		else return tryAsProvided(rule);
 	}
 
 	private static Class<?> tryAsProvided(CustomRule rule) {
 		try {
-			return Class.forName(Url.class.getPackage().getName() + "." + Format.firstUpperCase().format(rule.getExternalWordClass()));
+			return Class.forName(Url.class.getPackage().getName() + "." + Format.firstUpperCase().format(rule.externalClass()));
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
@@ -38,7 +38,7 @@ class CustomRuleLoader {
 
 	private static Class<?> compileAndLoadRules(CustomRule rule, String workingPackage, File classPath, File temp, File source) throws TaraException {
 		compile(source, classPath, temp);
-		return load(rule.getExternalWordClass(), workingPackage, temp, classPath);
+		return load(rule.externalClass(), workingPackage, temp, classPath);
 	}
 
 	private static File compile(File source, File classPath, File compilationDirectory) throws TaraException {

@@ -145,18 +145,18 @@ public class DependencyResolver {
 
 	private void loadCustomRule(Variable variable) {
 		final VariableCustomRule rule = (VariableCustomRule) variable.rule();
-		final String source = rule.getExternalWordClass();
+		final String source = rule.externalClass();
 		Class<?> aClass = null;
 		try {
 			aClass = loadedRules.containsKey(source) ?
 					loadedRules.get(source) :
 					CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
-			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass(), e.getMessage()));
-			rule.qualifiedName(CustomRuleLoader.composeQualifiedName(workingPackage, rule.getExternalWordClass()));
+			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.externalClass(), e.getMessage()));
+			rule.qualifiedName(CustomRuleLoader.composeQualifiedName(workingPackage, rule.externalClass()));
 		}
 		if (aClass == null) {
-			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.getExternalWordClass()));
+			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.externalClass()));
 			return;
 		} else loadedRules.put(source, aClass);
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
@@ -164,16 +164,16 @@ public class DependencyResolver {
 	}
 
 	private void loadCustomRule(Node node, CustomRule rule) throws DependencyException {
-		final String source = rule.getExternalWordClass();
+		final String source = rule.externalClass();
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
 					loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
-			throw new DependencyException("impossible.load.rule.class", node, rule.getExternalWordClass(), e.getMessage().split("\n")[0]);
+			throw new DependencyException("impossible.load.rule.class", node, rule.externalClass(), e.getMessage().split("\n")[0]);
 		}
 		if (aClass != null) loadedRules.put(source, aClass);
-		else throw new DependencyException("impossible.load.rule.class", node, rule.getExternalWordClass());
+		else throw new DependencyException("impossible.load.rule.class", node, rule.externalClass());
 		rule.setLoadedClass(aClass);
 	}
 

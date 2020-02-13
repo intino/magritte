@@ -1,6 +1,4 @@
-package io.intino.tara.lang.model.rules;
-
-import io.intino.tara.lang.model.rules.variable.NativeRule;
+package io.intino.tara.lang.model.rules.variable;
 
 import java.util.Collections;
 import java.util.List;

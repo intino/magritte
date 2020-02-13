@@ -2,7 +2,6 @@ package io.intino.tara.lang.model.rules.variable;
 
 import io.intino.tara.lang.model.Primitive;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,19 +9,19 @@ public class WordRule implements VariableRule<List<Primitive.Reference>> {
 
 	private static final String REJECT_INVALID_WORD_VALUES = "reject.invalid.word.values";
 	private List<Object> parameters;
-	private List<String> words = new ArrayList<>();
-	private String externalWordClass;
+	private List<String> words;
+	private String aClass;
 	private String message = REJECT_INVALID_WORD_VALUES;
 
 	public WordRule(List<String> words) {
 		this.words = words;
-		this.externalWordClass = null;
+		this.aClass = null;
 		parameters = Collections.singletonList(String.join(", ", words));
 	}
 
 	public WordRule(List<String> words, String externalWordClass) {
 		this.words = words;
-		this.externalWordClass = externalWordClass;
+		this.aClass = externalWordClass;
 		parameters = Collections.singletonList(String.join(", ", words));
 	}
 
@@ -31,11 +30,11 @@ public class WordRule implements VariableRule<List<Primitive.Reference>> {
 	}
 
 	public boolean isCustom() {
-		return externalWordClass != null;
+		return aClass != null;
 	}
 
-	public String externalWordClass() {
-		return externalWordClass;
+	public String externalClass() {
+		return aClass;
 	}
 
 	@Override

@@ -228,13 +228,13 @@ def type(variable & word) !type(outDefined | inherited | overriden | reactive) t
 end
 
 def type(variable & reactive & multiple) !type(inherited | overriden) trigger(getter)
-	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$type+fullType+reference> $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName.value();
 	}
 end
 
 def type(variable & reactive) !type(inherited | overriden) trigger(getter)
-	public $type+reference $name+FirstLowerCase+javaValidName() {
+	public $type+fullType+reference $name+FirstLowerCase+javaValidName() {
 		return $name+FirstLowerCase+javaValidName.value();
 	}
 end

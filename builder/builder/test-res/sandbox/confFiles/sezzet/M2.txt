@@ -1,12 +1,12 @@
 def.file
-/Users/oroncal/workspace/sezzet/setql/src/io/intino/sezzet/setql/setql.tara#true
+/Users/oroncal/workspace/sezzet/setql/src/io/intino/sezzet/setql/SetQL.tara#true
 
 project
 sezzet
 module
 setql
 semantic.lib
-/Users/oroncal/Library/Application Support/IntelliJIdea2018.2/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/Library/Application Support/IntelliJIdea2019.3/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/sezzet/setql/gen
 final_outputpath
@@ -16,7 +16,7 @@ resources
 tara.path
 /Users/oroncal/.m2
 tara.project.path
-/Users/oroncal/workspace/sezzet/.tara
+/Users/oroncal/workspace/sezzet/.intino
 src.path
 /Users/oroncal/workspace/sezzet/setql/src
 

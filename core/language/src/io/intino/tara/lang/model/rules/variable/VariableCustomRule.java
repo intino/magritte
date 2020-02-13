@@ -70,7 +70,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 		}
 	}
 
-	public String getExternalWordClass() {
+	public String externalClass() {
 		return aClass;
 	}
 

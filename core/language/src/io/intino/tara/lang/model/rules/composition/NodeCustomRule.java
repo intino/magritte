@@ -31,7 +31,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 		return loadedClass;
 	}
 
-	public String getExternalWordClass() {
+	public String externalClass() {
 		return aClass;
 	}
 

@@ -31,9 +31,9 @@ public class HelpersTemplate extends Template {
 				rule().condition((attribute("", "type")), (trigger("fulltype"))).output(literal("Concept")),
 				rule().condition((trigger("quoted"))).output(literal("\"")).output(mark("")).output(literal("\"")),
 				rule().condition((type("nativerule")), (trigger("interfaceclass"))).output(mark("interfaceClass", "javaValidName")),
-				rule().condition((type("wordrule")), (trigger("externalwordclass"))).output(mark("externalWordClass", "javaValidName")),
+				rule().condition((type("wordrule")), (trigger("externalwordclass"))).output(mark("aClass", "javaValidName")),
 				rule().condition((type("nativeCustomWordRule")), (trigger("externalwordclass"))).output(mark("source", "javaValidName")),
-				rule().condition((type("variablecustomrule")), (trigger("externalwordclass"))).output(mark("aClass", "javaValidName")),
+				rule().condition((anyTypes("variablecustomrule", "customrule")), (trigger("externalwordclass"))).output(mark("aClass", "javaValidName")),
 				rule().condition((type("customrule")), (trigger("name"))).output(mark("aClass", "javaValidName"))
 		);
 	}

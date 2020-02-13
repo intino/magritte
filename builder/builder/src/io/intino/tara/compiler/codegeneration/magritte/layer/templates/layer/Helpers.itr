@@ -95,14 +95,14 @@ def type(nativerule) trigger(interfaceClass)
 end
 
 def type(wordrule) trigger(externalWordClass)
-	$externalWordClass+javaValidName
+	$aClass+javaValidName
 end
 
 def type(nativeCustomWordRule) trigger(externalWordClass)
 	$source+javaValidName
 end
 
-def type(variablecustomrule) trigger(externalWordClass)
+def type(variablecustomrule | customrule) trigger(externalWordClass)
 	$aClass+javaValidName
 end
 
