@@ -1,6 +1,5 @@
 // Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.7.2
 package io.intino.tara.lang.grammar;
-
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -18,27 +17,27 @@ public class TaraGrammar extends Parser {
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
-		new PredictionContextCache();
+			new PredictionContextCache();
 	public static final int
 			SUB = 1, USE = 2, DSL = 3, VAR = 4, AS = 5, HAS = 6, IS = 7, INTO = 8, WITH = 9, ANY = 10,
 			EXTENDS = 11, CONCEPT = 12, ABSTRACT = 13, TERMINAL = 14, COMPONENT = 15, FEATURE = 16,
 			DIVINE = 17, REQUIRED = 18, FINAL = 19, ENCLOSED = 20, PRIVATE = 21, REACTIVE = 22,
-		VOLATILE=23, DECORABLE=24, LEFT_PARENTHESIS=25, RIGHT_PARENTHESIS=26, 
-		LEFT_SQUARE=27, RIGHT_SQUARE=28, LEFT_CURLY=29, RIGHT_CURLY=30, INLINE=31, 
-		CLOSE_INLINE=32, AT=33, HASHTAG=34, COLON=35, COMMA=36, DOT=37, EQUALS=38, 
-		STAR=39, LIST=40, SEMICOLON=41, PLUS=42, WORD=43, RESOURCE=44, INT_TYPE=45, 
-		FUNCTION_TYPE=46, OBJECT_TYPE=47, DOUBLE_TYPE=48, LONG_TYPE=49, STRING_TYPE=50, 
-		BOOLEAN_TYPE=51, DATE_TYPE=52, INSTANT_TYPE=53, TIME_TYPE=54, EMPTY=55, 
-		BLOCK_COMMENT=56, LINE_COMMENT=57, SCIENCE_NOT=58, BOOLEAN_VALUE=59, NATURAL_VALUE=60, 
-		NEGATIVE_VALUE=61, DOUBLE_VALUE=62, STRING=63, STRING_MULTILINE=64, SINGLE_QUOTE=65, 
-		EXPRESSION_MULTILINE=66, CLASS_TYPE=67, IDENTIFIER=68, MEASURE_VALUE=69, 
-		NEWLINE=70, SPACES=71, DOC=72, SP=73, NL=74, NEW_LINE_INDENT=75, DEDENT=76, 
-		UNKNOWN_TOKEN=77, ME_STRING_MULTILINE=78, ME_CHARACTER=79, E_QUOTE=80, 
-		E_SLASH_Q=81, E_SLASH=82, E_CHARACTER=83, QUOTE_BEGIN=84, QUOTE_END=85, 
-		EXPRESSION_BEGIN=86, EXPRESSION_END=87, CHARACTER=88;
+			VOLATILE = 23, DECORABLE = 24, LEFT_PARENTHESIS = 25, RIGHT_PARENTHESIS = 26,
+			LEFT_SQUARE = 27, RIGHT_SQUARE = 28, LEFT_CURLY = 29, RIGHT_CURLY = 30, INLINE = 31,
+			CLOSE_INLINE = 32, AT = 33, HASHTAG = 34, COLON = 35, COMMA = 36, DOT = 37, EQUALS = 38,
+			STAR = 39, LIST = 40, SEMICOLON = 41, PLUS = 42, WORD = 43, RESOURCE = 44, INT_TYPE = 45,
+			FUNCTION_TYPE = 46, OBJECT_TYPE = 47, DOUBLE_TYPE = 48, LONG_TYPE = 49, STRING_TYPE = 50,
+			BOOLEAN_TYPE = 51, DATE_TYPE = 52, INSTANT_TYPE = 53, TIME_TYPE = 54, EMPTY = 55,
+			BLOCK_COMMENT = 56, LINE_COMMENT = 57, SCIENCE_NOT = 58, BOOLEAN_VALUE = 59, NATURAL_VALUE = 60,
+			NEGATIVE_VALUE = 61, DOUBLE_VALUE = 62, STRING = 63, STRING_MULTILINE = 64, SINGLE_QUOTE = 65,
+			EXPRESSION_MULTILINE = 66, CLASS_TYPE = 67, IDENTIFIER = 68, MEASURE_VALUE = 69,
+			NEWLINE = 70, SPACES = 71, DOC = 72, SP = 73, NL = 74, NEW_LINE_INDENT = 75, DEDENT = 76,
+			UNKNOWN_TOKEN = 77, ME_STRING_MULTILINE = 78, ME_CHARACTER = 79, E_QUOTE = 80,
+			E_SLASH_Q = 81, E_SLASH = 82, E_CHARACTER = 83, QUOTE_BEGIN = 84, QUOTE_END = 85,
+			EXPRESSION_BEGIN = 86, EXPRESSION_END = 87, CHARACTER = 88;
 	public static final int
-		RULE_root = 0, RULE_dslDeclaration = 1, RULE_imports = 2, RULE_anImport = 3, 
-		RULE_doc = 4, RULE_node = 5, RULE_signature = 6, RULE_parent = 7, RULE_parameters = 8,
+			RULE_root = 0, RULE_dslDeclaration = 1, RULE_imports = 2, RULE_anImport = 3,
+			RULE_doc = 4, RULE_node = 5, RULE_signature = 6, RULE_parent = 7, RULE_parameters = 8,
 			RULE_parameter = 9, RULE_aspects = 10, RULE_aspect = 11, RULE_value = 12,
 			RULE_body = 13, RULE_nodeReference = 14, RULE_with = 15, RULE_variable = 16,
 			RULE_bodyValue = 17, RULE_variableType = 18, RULE_ruleContainer = 19,
@@ -49,6 +48,7 @@ public class TaraGrammar extends Parser {
 			RULE_annotations = 34, RULE_annotation = 35, RULE_flags = 36, RULE_flag = 37,
 			RULE_varInit = 38, RULE_headerReference = 39, RULE_identifierReference = 40,
 			RULE_hierarchy = 41, RULE_metaidentifier = 42;
+
 	private static String[] makeRuleNames() {
 		return new String[]{
 				"root", "dslDeclaration", "imports", "anImport", "doc", "node", "signature",
@@ -190,69 +190,69 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(89);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==NEWLINE) {
-				{
-				{
-					setState(86);
-				match(NEWLINE);
-				}
-				}
-				setState(91);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
-				setState(93);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==DSL) {
-				{
-					setState(92);
-				dslDeclaration();
-				}
-			}
-
-				setState(96);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==USE) {
-				{
-					setState(95);
-				imports();
-				}
-			}
-
-				setState(107);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==SUB || _la==IDENTIFIER || _la==DOC) {
-				{
-				{
-					setState(98);
-				node();
-					setState(102);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==NEWLINE) {
+				while (_la == NEWLINE) {
 					{
-					{
-						setState(99);
-					match(NEWLINE);
+						{
+							setState(86);
+							match(NEWLINE);
+						}
 					}
-					}
-					setState(104);
+					setState(91);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				}
-				}
-				setState(109);
+				setState(93);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
+				if (_la == DSL) {
+					{
+						setState(92);
+						dslDeclaration();
+					}
+				}
+
+				setState(96);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == USE) {
+					{
+						setState(95);
+						imports();
+					}
+				}
+
+				setState(107);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la == SUB || _la == IDENTIFIER || _la == DOC) {
+					{
+						{
+							setState(98);
+							node();
+							setState(102);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							while (_la == NEWLINE) {
+								{
+									{
+										setState(99);
+										match(NEWLINE);
+									}
+								}
+								setState(104);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+							}
+						}
+					}
+					setState(109);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
 				setState(110);
-			match(EOF);
+				match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -297,23 +297,23 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(112);
-			match(DSL);
+				match(DSL);
 				setState(113);
-			headerReference();
+				headerReference();
 				setState(117);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==NEWLINE) {
-				{
-				{
-					setState(114);
-				match(NEWLINE);
-				}
-				}
-				setState(119);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
+				while (_la == NEWLINE) {
+					{
+						{
+							setState(114);
+							match(NEWLINE);
+						}
+					}
+					setState(119);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -356,19 +356,19 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(121);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-					setState(120);
-				anImport();
-				}
-				}
-				setState(123); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==USE );
+				do {
+					{
+						{
+							setState(120);
+							anImport();
+						}
+					}
+					setState(123);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while (_la == USE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -413,23 +413,23 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(125);
-			match(USE);
+				match(USE);
 				setState(126);
-			headerReference();
+				headerReference();
 				setState(128);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-					setState(127);
-				match(NEWLINE);
-				}
-				}
-				setState(130); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==NEWLINE );
+				do {
+					{
+						{
+							setState(127);
+							match(NEWLINE);
+						}
+					}
+					setState(130);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while (_la == NEWLINE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -470,19 +470,19 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(133);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-					setState(132);
-				match(DOC);
-				}
-				}
-				setState(135); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==DOC );
+				do {
+					{
+						{
+							setState(132);
+							match(DOC);
+						}
+					}
+					setState(135);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while (_la == DOC);
 			}
 		}
 		catch (RecognitionException re) {
@@ -528,26 +528,26 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(138);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==DOC) {
-				{
-					setState(137);
-				doc();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == DOC) {
+					{
+						setState(137);
+						doc();
+					}
 				}
-			}
 
 				setState(140);
-			signature();
+				signature();
 				setState(142);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==NEW_LINE_INDENT) {
-				{
-					setState(141);
-				body();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == NEW_LINE_INDENT) {
+					{
+						setState(141);
+						body();
+					}
 				}
-			}
 
 			}
 		}
@@ -566,7 +566,6 @@ public class TaraGrammar extends Parser {
 		public TagsContext tags() {
 			return getRuleContext(TagsContext.class,0);
 		}
-
 		public WithContext with() {
 			return getRuleContext(WithContext.class, 0);
 		}
@@ -584,11 +583,9 @@ public class TaraGrammar extends Parser {
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
-
 		public List<AspectsContext> aspects() {
 			return getRuleContexts(AspectsContext.class);
 		}
-
 		public AspectsContext aspects(int i) {
 			return getRuleContext(AspectsContext.class, i);
 		}
@@ -617,137 +614,134 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(183);
-			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case SUB:
-				{
-				{
-					setState(144);
-				match(SUB);
-					setState(148);
 				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==COLON) {
-					{
-					{
-						setState(145);
-					ruleContainer();
-					}
-					}
-					setState(150);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-					setState(152);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if (_la==LEFT_PARENTHESIS) {
-					{
-						setState(151);
-					parameters();
-					}
-				}
+				switch (_input.LA(1)) {
+					case SUB: {
+						{
+							setState(144);
+							match(SUB);
+							setState(148);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							while (_la == COLON) {
+								{
+									{
+										setState(145);
+										ruleContainer();
+									}
+								}
+								setState(150);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+							}
+							setState(152);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							if (_la == LEFT_PARENTHESIS) {
+								{
+									setState(151);
+									parameters();
+								}
+							}
 
-					setState(154);
-				match(IDENTIFIER);
-					setState(158);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==AS) {
-					{
-					{
-						setState(155);
-						aspects();
-					}
-					}
-					setState(160);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-				}
-				}
-				break;
-			case IDENTIFIER:
-				{
-				{
-					setState(161);
-				metaidentifier();
-					setState(165);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==COLON) {
-					{
-					{
-						setState(162);
-					ruleContainer();
-					}
-					}
-					setState(167);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-					setState(169);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if (_la==LEFT_PARENTHESIS) {
-					{
-						setState(168);
-					parameters();
-					}
-				}
-
-					setState(172);
-				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
-				case 1:
-					{
-						setState(171);
-					match(IDENTIFIER);
+							setState(154);
+							match(IDENTIFIER);
+							setState(158);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							while (_la == AS) {
+								{
+									{
+										setState(155);
+										aspects();
+									}
+								}
+								setState(160);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+							}
+						}
 					}
 					break;
-				}
-					setState(177);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==AS) {
-					{
-					{
-						setState(174);
-						aspects();
-					}
-					}
-					setState(179);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-					setState(181);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if (_la==EXTENDS) {
-					{
-						setState(180);
-					parent();
-					}
-				}
+					case IDENTIFIER: {
+						{
+							setState(161);
+							metaidentifier();
+							setState(165);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							while (_la == COLON) {
+								{
+									{
+										setState(162);
+										ruleContainer();
+									}
+								}
+								setState(167);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+							}
+							setState(169);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							if (_la == LEFT_PARENTHESIS) {
+								{
+									setState(168);
+									parameters();
+								}
+							}
 
+							setState(172);
+							_errHandler.sync(this);
+							switch (getInterpreter().adaptivePredict(_input, 16, _ctx)) {
+								case 1: {
+									setState(171);
+									match(IDENTIFIER);
+								}
+								break;
+							}
+							setState(177);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							while (_la == AS) {
+								{
+									{
+										setState(174);
+										aspects();
+									}
+								}
+								setState(179);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+							}
+							setState(181);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							if (_la == EXTENDS) {
+								{
+									setState(180);
+									parent();
+								}
+							}
+
+						}
+					}
+					break;
+					default:
+						throw new NoViableAltException(this);
 				}
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
 				setState(186);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 				if (_la == WITH) {
-				{
-					setState(185);
-					with();
+					{
+						setState(185);
+						with();
+					}
 				}
-			}
 
 				setState(188);
-			tags();
+				tags();
 			}
 		}
 		catch (RecognitionException re) {
@@ -787,9 +781,9 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(190);
-			match(EXTENDS);
+				match(EXTENDS);
 				setState(191);
-			identifierReference();
+				identifierReference();
 			}
 		}
 		catch (RecognitionException re) {
@@ -838,35 +832,35 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(193);
-			match(LEFT_PARENTHESIS);
+				match(LEFT_PARENTHESIS);
 				setState(202);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (((((_la - 33)) & ~0x3f) == 0 && ((1L << (_la - 33)) & ((1L << (AT - 33)) | (1L << (EMPTY - 33)) | (1L << (BOOLEAN_VALUE - 33)) | (1L << (NATURAL_VALUE - 33)) | (1L << (NEGATIVE_VALUE - 33)) | (1L << (DOUBLE_VALUE - 33)) | (1L << (STRING - 33)) | (1L << (IDENTIFIER - 33)) | (1L << (NEWLINE - 33)) | (1L << (EXPRESSION_BEGIN - 33)))) != 0)) {
-				{
-					setState(194);
-				parameter();
-					setState(199);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (_la==COMMA) {
+				if (((((_la - 33)) & ~0x3f) == 0 && ((1L << (_la - 33)) & ((1L << (AT - 33)) | (1L << (EMPTY - 33)) | (1L << (BOOLEAN_VALUE - 33)) | (1L << (NATURAL_VALUE - 33)) | (1L << (NEGATIVE_VALUE - 33)) | (1L << (DOUBLE_VALUE - 33)) | (1L << (STRING - 33)) | (1L << (IDENTIFIER - 33)) | (1L << (NEWLINE - 33)) | (1L << (EXPRESSION_BEGIN - 33)))) != 0)) {
 					{
-					{
-						setState(195);
-					match(COMMA);
-						setState(196);
-					parameter();
+						setState(194);
+						parameter();
+						setState(199);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+						while (_la == COMMA) {
+							{
+								{
+									setState(195);
+									match(COMMA);
+									setState(196);
+									parameter();
+								}
+							}
+							setState(201);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+						}
 					}
-					}
-					setState(201);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
 				}
-				}
-			}
 
 				setState(204);
-			match(RIGHT_PARENTHESIS);
+				match(RIGHT_PARENTHESIS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -907,19 +901,18 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(208);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
-			case 1:
-				{
-					setState(206);
-				match(IDENTIFIER);
-					setState(207);
-				match(EQUALS);
+				_errHandler.sync(this);
+				switch (getInterpreter().adaptivePredict(_input, 23, _ctx)) {
+					case 1: {
+						setState(206);
+						match(IDENTIFIER);
+						setState(207);
+						match(EQUALS);
+					}
+					break;
 				}
-				break;
-			}
 				setState(210);
-			value();
+				value();
 			}
 		}
 		catch (RecognitionException re) {
@@ -934,7 +927,9 @@ public class TaraGrammar extends Parser {
 	}
 
 	public static class AspectsContext extends ParserRuleContext {
-		public TerminalNode AS() { return getToken(TaraGrammar.AS, 0); }
+		public TerminalNode AS() {
+			return getToken(TaraGrammar.AS, 0);
+		}
 
 		public List<AspectContext> aspect() {
 			return getRuleContexts(AspectContext.class);
@@ -952,10 +947,12 @@ public class TaraGrammar extends Parser {
 		public int getRuleIndex() {
 			return RULE_aspects;
 		}
+
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterAspects(this);
 		}
+
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitAspects(this);
@@ -972,25 +969,24 @@ public class TaraGrammar extends Parser {
 				setState(212);
 				match(AS);
 				setState(214);
-			_errHandler.sync(this);
-			_alt = 1;
-			do {
-				switch (_alt) {
-				case 1:
-					{
-					{
-						setState(213);
-						aspect();
-					}
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
-				}
-				setState(216); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,24,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				_alt = 1;
+				do {
+					switch (_alt) {
+						case 1: {
+							{
+								setState(213);
+								aspect();
+							}
+						}
+						break;
+						default:
+							throw new NoViableAltException(this);
+					}
+					setState(216);
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input, 24, _ctx);
+				} while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1006,10 +1002,11 @@ public class TaraGrammar extends Parser {
 
 	public static class AspectContext extends ParserRuleContext {
 		public MetaidentifierContext metaidentifier() {
-			return getRuleContext(MetaidentifierContext.class,0);
+			return getRuleContext(MetaidentifierContext.class, 0);
 		}
+
 		public ParametersContext parameters() {
-			return getRuleContext(ParametersContext.class,0);
+			return getRuleContext(ParametersContext.class, 0);
 		}
 
 		public AspectContext(ParserRuleContext parent, int invokingState) {
@@ -1020,10 +1017,12 @@ public class TaraGrammar extends Parser {
 		public int getRuleIndex() {
 			return RULE_aspect;
 		}
+
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterAspect(this);
 		}
+
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitAspect(this);
@@ -1038,16 +1037,16 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(218);
-			metaidentifier();
+				metaidentifier();
 				setState(220);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==LEFT_PARENTHESIS) {
-				{
-					setState(219);
-				parameters();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == LEFT_PARENTHESIS) {
+					{
+						setState(219);
+						parameters();
+					}
 				}
-			}
 
 			}
 		}
@@ -1138,232 +1137,225 @@ public class TaraGrammar extends Parser {
 			setState(274);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,37,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+				case 1:
+					enterOuterAlt(_localctx, 1);
 				{
 					setState(223);
-				_errHandler.sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-							setState(222);
-						identifierReference();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					setState(225); 
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+					_alt = 1;
+					do {
+						switch (_alt) {
+							case 1: {
+								{
+									setState(222);
+									identifierReference();
+								}
+							}
+							break;
+							default:
+								throw new NoViableAltException(this);
+						}
+						setState(225);
+						_errHandler.sync(this);
+						_alt = getInterpreter().adaptivePredict(_input, 26, _ctx);
+					} while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
 				}
 				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
+				case 2:
+					enterOuterAlt(_localctx, 2);
 				{
 					setState(228);
-				_errHandler.sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-							setState(227);
-						stringValue();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					setState(230); 
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+					_alt = 1;
+					do {
+						switch (_alt) {
+							case 1: {
+								{
+									setState(227);
+									stringValue();
+								}
+							}
+							break;
+							default:
+								throw new NoViableAltException(this);
+						}
+						setState(230);
+						_errHandler.sync(this);
+						_alt = getInterpreter().adaptivePredict(_input, 27, _ctx);
+					} while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
 				}
 				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
+				case 3:
+					enterOuterAlt(_localctx, 3);
 				{
 					setState(233);
-				_errHandler.sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-							setState(232);
-						tupleValue();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					setState(235); 
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,28,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+					_alt = 1;
+					do {
+						switch (_alt) {
+							case 1: {
+								{
+									setState(232);
+									tupleValue();
+								}
+							}
+							break;
+							default:
+								throw new NoViableAltException(this);
+						}
+						setState(235);
+						_errHandler.sync(this);
+						_alt = getInterpreter().adaptivePredict(_input, 28, _ctx);
+					} while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
 				}
 				break;
-			case 4:
-				enterOuterAlt(_localctx, 4);
+				case 4:
+					enterOuterAlt(_localctx, 4);
 				{
 					setState(238);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				do {
-					{
-					{
-						setState(237);
-					booleanValue();
-					}
-					}
-					setState(240); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-				} while ( _la==BOOLEAN_VALUE );
+					do {
+						{
+							{
+								setState(237);
+								booleanValue();
+							}
+						}
+						setState(240);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					} while (_la == BOOLEAN_VALUE);
 				}
 				break;
-			case 5:
-				enterOuterAlt(_localctx, 5);
+				case 5:
+					enterOuterAlt(_localctx, 5);
 				{
 					setState(243);
-				_errHandler.sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-							setState(242);
-						identifierReference();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					setState(245); 
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,30,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+					_alt = 1;
+					do {
+						switch (_alt) {
+							case 1: {
+								{
+									setState(242);
+									identifierReference();
+								}
+							}
+							break;
+							default:
+								throw new NoViableAltException(this);
+						}
+						setState(245);
+						_errHandler.sync(this);
+						_alt = getInterpreter().adaptivePredict(_input, 30, _ctx);
+					} while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
 				}
 				break;
-			case 6:
-				enterOuterAlt(_localctx, 6);
+				case 6:
+					enterOuterAlt(_localctx, 6);
 				{
 					setState(248);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				do {
-					{
-					{
-						setState(247);
-					integerValue();
-					}
-					}
-					setState(250); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-				} while ( _la==NATURAL_VALUE || _la==NEGATIVE_VALUE );
-					setState(253);
-				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,32,_ctx) ) {
-				case 1:
-					{
-						setState(252);
-					metric();
-					}
-					break;
-				}
-				}
-				break;
-			case 7:
-				enterOuterAlt(_localctx, 7);
-				{
-					setState(256);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				do {
-					{
-					{
-						setState(255);
-					doubleValue();
-					}
-					}
-					setState(258); 
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NATURAL_VALUE) | (1L << NEGATIVE_VALUE) | (1L << DOUBLE_VALUE))) != 0) );
-					setState(261);
-				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,34,_ctx) ) {
-				case 1:
-					{
-						setState(260);
-					metric();
-					}
-					break;
-				}
-				}
-				break;
-			case 8:
-				enterOuterAlt(_localctx, 8);
-				{
-					setState(264);
-				_errHandler.sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
+					do {
 						{
-						{
-							setState(263);
-						expression();
+							{
+								setState(247);
+								integerValue();
+							}
 						}
+						setState(250);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					} while (_la == NATURAL_VALUE || _la == NEGATIVE_VALUE);
+					setState(253);
+					_errHandler.sync(this);
+					switch (getInterpreter().adaptivePredict(_input, 32, _ctx)) {
+						case 1: {
+							setState(252);
+							metric();
 						}
 						break;
-					default:
-						throw new NoViableAltException(this);
 					}
-					setState(266); 
-					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,35,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
 				}
 				break;
-			case 9:
-				enterOuterAlt(_localctx, 9);
+				case 7:
+					enterOuterAlt(_localctx, 7);
 				{
-					setState(269);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				do {
-					{
-					{
-						setState(268);
-					methodReference();
-					}
-					}
-					setState(271); 
+					setState(256);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-				} while ( _la==AT );
+					do {
+						{
+							{
+								setState(255);
+								doubleValue();
+							}
+						}
+						setState(258);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					} while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NATURAL_VALUE) | (1L << NEGATIVE_VALUE) | (1L << DOUBLE_VALUE))) != 0));
+					setState(261);
+					_errHandler.sync(this);
+					switch (getInterpreter().adaptivePredict(_input, 34, _ctx)) {
+						case 1: {
+							setState(260);
+							metric();
+						}
+						break;
+					}
 				}
 				break;
-			case 10:
-				enterOuterAlt(_localctx, 10);
+				case 8:
+					enterOuterAlt(_localctx, 8);
+				{
+					setState(264);
+					_errHandler.sync(this);
+					_alt = 1;
+					do {
+						switch (_alt) {
+							case 1: {
+								{
+									setState(263);
+									expression();
+								}
+							}
+							break;
+							default:
+								throw new NoViableAltException(this);
+						}
+						setState(266);
+						_errHandler.sync(this);
+						_alt = getInterpreter().adaptivePredict(_input, 35, _ctx);
+					} while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
+				}
+				break;
+				case 9:
+					enterOuterAlt(_localctx, 9);
+				{
+					setState(269);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+					do {
+						{
+							{
+								setState(268);
+								methodReference();
+							}
+						}
+						setState(271);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					} while (_la == AT);
+				}
+				break;
+				case 10:
+					enterOuterAlt(_localctx, 10);
 				{
 					setState(273);
-				match(EMPTY);
+					match(EMPTY);
 				}
 				break;
 			}
@@ -1432,63 +1424,59 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(276);
-			match(NEW_LINE_INDENT);
+				match(NEW_LINE_INDENT);
 				setState(288);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-					setState(281);
-				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,38,_ctx) ) {
-				case 1:
-					{
-						setState(277);
-					variable();
-					}
-					break;
-				case 2:
-					{
-						setState(278);
-					node();
-					}
-					break;
-				case 3:
-					{
-						setState(279);
-					varInit();
-					}
-					break;
-				case 4:
-					{
-						setState(280);
-					nodeReference();
-					}
-					break;
-				}
-					setState(284);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
-					{
-						setState(283);
-					match(NEWLINE);
+						{
+							setState(281);
+							_errHandler.sync(this);
+							switch (getInterpreter().adaptivePredict(_input, 38, _ctx)) {
+								case 1: {
+									setState(277);
+									variable();
+								}
+								break;
+								case 2: {
+									setState(278);
+									node();
+								}
+								break;
+								case 3: {
+									setState(279);
+									varInit();
+								}
+								break;
+								case 4: {
+									setState(280);
+									nodeReference();
+								}
+								break;
+							}
+							setState(284);
+							_errHandler.sync(this);
+							_la = _input.LA(1);
+							do {
+								{
+									{
+										setState(283);
+										match(NEWLINE);
+									}
+								}
+								setState(286);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+							} while (_la == NEWLINE);
+						}
 					}
-					}
-					setState(286); 
+					setState(290);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-				} while ( _la==NEWLINE );
-				}
-				}
-				setState(290); 
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << VAR) | (1L << HAS))) != 0) || _la==IDENTIFIER || _la==DOC );
+				} while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << VAR) | (1L << HAS))) != 0) || _la == IDENTIFIER || _la == DOC);
 				setState(292);
-			match(DEDENT);
+				match(DEDENT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1538,25 +1526,25 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(294);
-			match(HAS);
+				match(HAS);
 				setState(298);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==COLON) {
-				{
-				{
-					setState(295);
-				ruleContainer();
-				}
-				}
-				setState(300);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
+				while (_la == COLON) {
+					{
+						{
+							setState(295);
+							ruleContainer();
+						}
+					}
+					setState(300);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
 				setState(301);
-			identifierReference();
+				identifierReference();
 				setState(302);
-			tags();
+				tags();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1604,25 +1592,25 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(304);
-			match(WITH);
+				match(WITH);
 				setState(305);
-			identifierReference();
-				setState(310);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==COMMA) {
-				{
-				{
-					setState(306);
-				match(COMMA);
-					setState(307);
 				identifierReference();
-				}
-				}
-				setState(312);
+				setState(310);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
+				while (_la == COMMA) {
+					{
+						{
+							setState(306);
+							match(COMMA);
+							setState(307);
+							identifierReference();
+						}
+					}
+					setState(312);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1686,82 +1674,82 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(314);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==DOC) {
-				{
-					setState(313);
-				doc();
-				}
-			}
-
-				setState(316);
-			match(VAR);
-				setState(317);
-			variableType();
-				setState(319);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==LEFT_SQUARE) {
-				{
-					setState(318);
-				size();
-				}
-			}
-
-				setState(322);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==COLON) {
-				{
-					setState(321);
-				ruleContainer();
-				}
-			}
-
-				setState(324);
-			match(IDENTIFIER);
-				setState(330);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==EQUALS) {
-				{
-					setState(325);
-				match(EQUALS);
-					setState(326);
-				value();
-					setState(328);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (_la==IDENTIFIER || _la==MEASURE_VALUE) {
+				if (_la == DOC) {
 					{
-						setState(327);
-					metric();
+						setState(313);
+						doc();
 					}
 				}
 
+				setState(316);
+				match(VAR);
+				setState(317);
+				variableType();
+				setState(319);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == LEFT_SQUARE) {
+					{
+						setState(318);
+						size();
+					}
 				}
-			}
+
+				setState(322);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == COLON) {
+					{
+						setState(321);
+						ruleContainer();
+					}
+				}
+
+				setState(324);
+				match(IDENTIFIER);
+				setState(330);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == EQUALS) {
+					{
+						setState(325);
+						match(EQUALS);
+						setState(326);
+						value();
+						setState(328);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+						if (_la == IDENTIFIER || _la == MEASURE_VALUE) {
+							{
+								setState(327);
+								metric();
+							}
+						}
+
+					}
+				}
 
 				setState(333);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==IS) {
-				{
-					setState(332);
-				flags();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == IS) {
+					{
+						setState(332);
+						flags();
+					}
 				}
-			}
 
 				setState(336);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==NEW_LINE_INDENT) {
-				{
-					setState(335);
-				bodyValue();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == NEW_LINE_INDENT) {
+					{
+						setState(335);
+						bodyValue();
+					}
 				}
-			}
 
 			}
 		}
@@ -1808,35 +1796,33 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(338);
-			match(NEW_LINE_INDENT);
+				match(NEW_LINE_INDENT);
 				setState(341);
-			_errHandler.sync(this);
+				_errHandler.sync(this);
 				switch (getInterpreter().adaptivePredict(_input, 50, _ctx)) {
-			case 1:
-				{
-					setState(339);
-				stringValue();
+					case 1: {
+						setState(339);
+						stringValue();
+					}
+					break;
+					case 2: {
+						setState(340);
+						expression();
+					}
+					break;
 				}
-				break;
-			case 2:
-				{
-					setState(340);
-				expression();
-				}
-				break;
-			}
 				setState(344);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==NEWLINE) {
-				{
-					setState(343);
-				match(NEWLINE);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == NEWLINE) {
+					{
+						setState(343);
+						match(NEWLINE);
+					}
 				}
-			}
 
 				setState(346);
-			match(DEDENT);
+				match(DEDENT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1887,99 +1873,99 @@ public class TaraGrammar extends Parser {
 			setState(361);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case INT_TYPE:
-				enterOuterAlt(_localctx, 1);
+				case INT_TYPE:
+					enterOuterAlt(_localctx, 1);
 				{
 					setState(348);
-				match(INT_TYPE);
+					match(INT_TYPE);
 				}
 				break;
-			case LONG_TYPE:
-				enterOuterAlt(_localctx, 2);
+				case LONG_TYPE:
+					enterOuterAlt(_localctx, 2);
 				{
 					setState(349);
-				match(LONG_TYPE);
+					match(LONG_TYPE);
 				}
 				break;
-			case DOUBLE_TYPE:
-				enterOuterAlt(_localctx, 3);
+				case DOUBLE_TYPE:
+					enterOuterAlt(_localctx, 3);
 				{
 					setState(350);
-				match(DOUBLE_TYPE);
+					match(DOUBLE_TYPE);
 				}
 				break;
-			case BOOLEAN_TYPE:
-				enterOuterAlt(_localctx, 4);
+				case BOOLEAN_TYPE:
+					enterOuterAlt(_localctx, 4);
 				{
 					setState(351);
-				match(BOOLEAN_TYPE);
+					match(BOOLEAN_TYPE);
 				}
 				break;
-			case STRING_TYPE:
-				enterOuterAlt(_localctx, 5);
+				case STRING_TYPE:
+					enterOuterAlt(_localctx, 5);
 				{
 					setState(352);
-				match(STRING_TYPE);
+					match(STRING_TYPE);
 				}
 				break;
-			case FUNCTION_TYPE:
-				enterOuterAlt(_localctx, 6);
+				case FUNCTION_TYPE:
+					enterOuterAlt(_localctx, 6);
 				{
 					setState(353);
-				match(FUNCTION_TYPE);
+					match(FUNCTION_TYPE);
 				}
 				break;
-			case OBJECT_TYPE:
-				enterOuterAlt(_localctx, 7);
+				case OBJECT_TYPE:
+					enterOuterAlt(_localctx, 7);
 				{
 					setState(354);
-				match(OBJECT_TYPE);
+					match(OBJECT_TYPE);
 				}
 				break;
-			case WORD:
-				enterOuterAlt(_localctx, 8);
+				case WORD:
+					enterOuterAlt(_localctx, 8);
 				{
 					setState(355);
-				match(WORD);
+					match(WORD);
 				}
 				break;
-			case DATE_TYPE:
-				enterOuterAlt(_localctx, 9);
+				case DATE_TYPE:
+					enterOuterAlt(_localctx, 9);
 				{
 					setState(356);
-				match(DATE_TYPE);
+					match(DATE_TYPE);
 				}
 				break;
-			case INSTANT_TYPE:
-				enterOuterAlt(_localctx, 10);
+				case INSTANT_TYPE:
+					enterOuterAlt(_localctx, 10);
 				{
 					setState(357);
-				match(INSTANT_TYPE);
+					match(INSTANT_TYPE);
 				}
 				break;
-			case TIME_TYPE:
-				enterOuterAlt(_localctx, 11);
+				case TIME_TYPE:
+					enterOuterAlt(_localctx, 11);
 				{
 					setState(358);
-				match(TIME_TYPE);
+					match(TIME_TYPE);
 				}
 				break;
-			case RESOURCE:
-				enterOuterAlt(_localctx, 12);
+				case RESOURCE:
+					enterOuterAlt(_localctx, 12);
 				{
 					setState(359);
-				match(RESOURCE);
+					match(RESOURCE);
 				}
 				break;
-			case IDENTIFIER:
-				enterOuterAlt(_localctx, 13);
+				case IDENTIFIER:
+					enterOuterAlt(_localctx, 13);
 				{
 					setState(360);
-				identifierReference();
+					identifierReference();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+				default:
+					throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2019,9 +2005,9 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(363);
-			match(COLON);
+				match(COLON);
 				setState(364);
-			ruleValue();
+				ruleValue();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2076,85 +2062,80 @@ public class TaraGrammar extends Parser {
 			setState(384);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case LEFT_CURLY:
-				enterOuterAlt(_localctx, 1);
+				case LEFT_CURLY:
+					enterOuterAlt(_localctx, 1);
 				{
-				{
-					setState(366);
-				match(LEFT_CURLY);
-					setState(380);
-				_errHandler.sync(this);
-					switch (getInterpreter().adaptivePredict(_input, 56, _ctx)) {
-				case 1:
 					{
-						setState(368);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					do {
-						{
-						{
-							setState(367);
-						match(IDENTIFIER);
-						}
-						}
-						setState(370); 
+						setState(366);
+						match(LEFT_CURLY);
+						setState(380);
 						_errHandler.sync(this);
-						_la = _input.LA(1);
-					} while ( _la==IDENTIFIER );
-					}
-					break;
-						case 2:
-					{
-					{
-						setState(374);
-					_errHandler.sync(this);
-					switch (_input.LA(1)) {
-					case STAR:
-					case NATURAL_VALUE:
-					case NEGATIVE_VALUE:
-					case DOUBLE_VALUE:
-						{
-							setState(372);
-						range();
-						}
-						break;
-					case STRING:
-					case NEWLINE:
-						{
-							setState(373);
-						stringValue();
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-						setState(377);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==IDENTIFIER || _la==MEASURE_VALUE) {
-						{
-							setState(376);
-						metric();
-						}
-					}
+						switch (getInterpreter().adaptivePredict(_input, 56, _ctx)) {
+							case 1: {
+								setState(368);
+								_errHandler.sync(this);
+								_la = _input.LA(1);
+								do {
+									{
+										{
+											setState(367);
+											match(IDENTIFIER);
+										}
+									}
+									setState(370);
+									_errHandler.sync(this);
+									_la = _input.LA(1);
+								} while (_la == IDENTIFIER);
+							}
+							break;
+							case 2: {
+								{
+									setState(374);
+									_errHandler.sync(this);
+									switch (_input.LA(1)) {
+										case STAR:
+										case NATURAL_VALUE:
+										case NEGATIVE_VALUE:
+										case DOUBLE_VALUE: {
+											setState(372);
+											range();
+										}
+										break;
+										case STRING:
+										case NEWLINE: {
+											setState(373);
+											stringValue();
+										}
+										break;
+										default:
+											throw new NoViableAltException(this);
+									}
+									setState(377);
+									_errHandler.sync(this);
+									_la = _input.LA(1);
+									if (_la == IDENTIFIER || _la == MEASURE_VALUE) {
+										{
+											setState(376);
+											metric();
+										}
+									}
 
+								}
+							}
+							break;
+							case 3: {
+								setState(379);
+								metric();
+							}
+							break;
+						}
+						setState(382);
+						match(RIGHT_CURLY);
 					}
-					}
-					break;
-						case 3:
-					{
-						setState(379);
-					metric();
-					}
-					break;
-				}
-					setState(382);
-				match(RIGHT_CURLY);
-				}
 				}
 				break;
-			case IDENTIFIER:
-				enterOuterAlt(_localctx, 2);
+				case IDENTIFIER:
+					enterOuterAlt(_localctx, 2);
 				{
 					{
 						setState(383);
@@ -2162,8 +2143,8 @@ public class TaraGrammar extends Parser {
 					}
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+				default:
+					throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2182,15 +2163,21 @@ public class TaraGrammar extends Parser {
 			return getRuleContexts(DoubleValueContext.class);
 		}
 		public DoubleValueContext doubleValue(int i) {
-			return getRuleContext(DoubleValueContext.class,i);
+			return getRuleContext(DoubleValueContext.class, i);
 		}
+
 		public List<IntegerValueContext> integerValue() {
 			return getRuleContexts(IntegerValueContext.class);
 		}
+
 		public IntegerValueContext integerValue(int i) {
-			return getRuleContext(IntegerValueContext.class,i);
+			return getRuleContext(IntegerValueContext.class, i);
 		}
-		public List<TerminalNode> STAR() { return getTokens(TaraGrammar.STAR); }
+
+		public List<TerminalNode> STAR() {
+			return getTokens(TaraGrammar.STAR);
+		}
+
 		public TerminalNode STAR(int i) {
 			return getToken(TaraGrammar.STAR, i);
 		}
@@ -2198,20 +2185,28 @@ public class TaraGrammar extends Parser {
 		public List<TerminalNode> DOT() {
 			return getTokens(TaraGrammar.DOT);
 		}
+
 		public TerminalNode DOT(int i) {
 			return getToken(TaraGrammar.DOT, i);
 		}
+
 		public RangeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_range; }
+
+		@Override
+		public int getRuleIndex() {
+			return RULE_range;
+		}
+
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TaraGrammarListener ) ((TaraGrammarListener)listener).enterRange(this);
+			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterRange(this);
 		}
+
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TaraGrammarListener ) ((TaraGrammarListener)listener).exitRange(this);
+			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitRange(this);
 		}
 	}
 
@@ -2223,27 +2218,24 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(389);
-			_errHandler.sync(this);
+				_errHandler.sync(this);
 				switch (getInterpreter().adaptivePredict(_input, 58, _ctx)) {
-			case 1:
-				{
-					setState(386);
-				doubleValue();
+					case 1: {
+						setState(386);
+						doubleValue();
+					}
+					break;
+					case 2: {
+						setState(387);
+						integerValue();
+					}
+					break;
+					case 3: {
+						setState(388);
+						match(STAR);
+					}
+					break;
 				}
-				break;
-			case 2:
-				{
-					setState(387);
-				integerValue();
-				}
-				break;
-			case 3:
-				{
-					setState(388);
-				match(STAR);
-				}
-				break;
-			}
 				setState(398);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -2316,19 +2308,19 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(400);
-			match(LEFT_SQUARE);
+				match(LEFT_SQUARE);
 				setState(402);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==STAR || _la==NATURAL_VALUE) {
-				{
-					setState(401);
-				sizeRange();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == STAR || _la == NATURAL_VALUE) {
+					{
+						setState(401);
+						sizeRange();
+					}
 				}
-			}
 
 				setState(404);
-			match(RIGHT_SQUARE);
+				match(RIGHT_SQUARE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2368,18 +2360,18 @@ public class TaraGrammar extends Parser {
 			setState(408);
 			_errHandler.sync(this);
 			switch (getInterpreter().adaptivePredict(_input, 62, _ctx)) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+				case 1:
+					enterOuterAlt(_localctx, 1);
 				{
 					setState(406);
-				match(NATURAL_VALUE);
+					match(NATURAL_VALUE);
 				}
 				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
+				case 2:
+					enterOuterAlt(_localctx, 2);
 				{
 					setState(407);
-				listRange();
+					listRange();
 				}
 				break;
 			}
@@ -2430,29 +2422,27 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(410);
-			_la = _input.LA(1);
-			if ( !(_la==STAR || _la==NATURAL_VALUE) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+				_la = _input.LA(1);
+				if (!(_la == STAR || _la == NATURAL_VALUE)) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 				setState(411);
-			match(DOT);
+				match(DOT);
 				setState(412);
-			match(DOT);
+				match(DOT);
 				setState(413);
-			_la = _input.LA(1);
-			if ( !(_la==STAR || _la==NATURAL_VALUE) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+				_la = _input.LA(1);
+				if (!(_la == STAR || _la == NATURAL_VALUE)) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2492,9 +2482,9 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(415);
-			match(AT);
+				match(AT);
 				setState(416);
-			identifierReference();
+				identifierReference();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2533,19 +2523,19 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(419);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==NEWLINE) {
-				{
-					setState(418);
-				match(NEWLINE);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == NEWLINE) {
+					{
+						setState(418);
+						match(NEWLINE);
+					}
 				}
-			}
 
-			{
-				setState(421);
-			match(STRING);
-			}
+				{
+					setState(421);
+					match(STRING);
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2582,7 +2572,7 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(423);
-			match(BOOLEAN_VALUE);
+				match(BOOLEAN_VALUE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2625,11 +2615,11 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(425);
-			stringValue();
+				stringValue();
 				setState(426);
-			match(COLON);
+				match(COLON);
 				setState(427);
-			doubleValue();
+				doubleValue();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2668,15 +2658,14 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(429);
-			_la = _input.LA(1);
-			if ( !(_la==NATURAL_VALUE || _la==NEGATIVE_VALUE) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+				_la = _input.LA(1);
+				if (!(_la == NATURAL_VALUE || _la == NEGATIVE_VALUE)) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2717,24 +2706,23 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(431);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NATURAL_VALUE) | (1L << NEGATIVE_VALUE) | (1L << DOUBLE_VALUE))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
-				setState(433);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==SCIENCE_NOT) {
-				{
-					setState(432);
-				match(SCIENCE_NOT);
+				_la = _input.LA(1);
+				if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NATURAL_VALUE) | (1L << NEGATIVE_VALUE) | (1L << DOUBLE_VALUE))) != 0))) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
 				}
-			}
+				setState(433);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == SCIENCE_NOT) {
+					{
+						setState(432);
+						match(SCIENCE_NOT);
+					}
+				}
 
 			}
 		}
@@ -2774,15 +2762,14 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(435);
-			_la = _input.LA(1);
-			if ( !(_la==IDENTIFIER || _la==MEASURE_VALUE) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+				_la = _input.LA(1);
+				if (!(_la == IDENTIFIER || _la == MEASURE_VALUE)) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2826,35 +2813,35 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(438);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==NEWLINE) {
-				{
-					setState(437);
-				match(NEWLINE);
-				}
-			}
-
-			{
-				setState(440);
-			match(EXPRESSION_BEGIN);
-				setState(444);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==CHARACTER) {
-				{
-				{
-					setState(441);
-				match(CHARACTER);
-				}
-				}
-				setState(446);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
-				setState(447);
-			match(EXPRESSION_END);
-			}
+				if (_la == NEWLINE) {
+					{
+						setState(437);
+						match(NEWLINE);
+					}
+				}
+
+				{
+					setState(440);
+					match(EXPRESSION_BEGIN);
+					setState(444);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+					while (_la == CHARACTER) {
+						{
+							{
+								setState(441);
+								match(CHARACTER);
+							}
+						}
+						setState(446);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					}
+					setState(447);
+					match(EXPRESSION_END);
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -2897,24 +2884,24 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(450);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==IS) {
-				{
-					setState(449);
-				flags();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == IS) {
+					{
+						setState(449);
+						flags();
+					}
 				}
-			}
 
 				setState(453);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==INTO) {
-				{
-					setState(452);
-				annotations();
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la == INTO) {
+					{
+						setState(452);
+						annotations();
+					}
 				}
-			}
 
 			}
 		}
@@ -2959,21 +2946,21 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(455);
-			match(INTO);
+				match(INTO);
 				setState(457);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-					setState(456);
-				annotation();
-				}
-				}
-				setState(459); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMPONENT) | (1L << FEATURE) | (1L << ENCLOSED))) != 0) );
+				do {
+					{
+						{
+							setState(456);
+							annotation();
+						}
+					}
+					setState(459);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMPONENT) | (1L << FEATURE) | (1L << ENCLOSED))) != 0));
 			}
 		}
 		catch (RecognitionException re) {
@@ -3013,15 +3000,14 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(461);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMPONENT) | (1L << FEATURE) | (1L << ENCLOSED))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+				_la = _input.LA(1);
+				if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMPONENT) | (1L << FEATURE) | (1L << ENCLOSED))) != 0))) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3065,21 +3051,21 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(463);
-			match(IS);
+				match(IS);
 				setState(465);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-					setState(464);
-				flag();
-				}
-				}
-				setState(467); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << DIVINE) | (1L << REQUIRED) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << DECORABLE))) != 0));
+				do {
+					{
+						{
+							setState(464);
+							flag();
+						}
+					}
+					setState(467);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << DIVINE) | (1L << REQUIRED) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << DECORABLE))) != 0));
 			}
 		}
 		catch (RecognitionException re) {
@@ -3094,33 +3080,75 @@ public class TaraGrammar extends Parser {
 	}
 
 	public static class FlagContext extends ParserRuleContext {
-		public TerminalNode ABSTRACT() { return getToken(TaraGrammar.ABSTRACT, 0); }
-		public TerminalNode TERMINAL() { return getToken(TaraGrammar.TERMINAL, 0); }
-		public TerminalNode COMPONENT() { return getToken(TaraGrammar.COMPONENT, 0); }
-		public TerminalNode PRIVATE() { return getToken(TaraGrammar.PRIVATE, 0); }
-		public TerminalNode FEATURE() { return getToken(TaraGrammar.FEATURE, 0); }
-		public TerminalNode ENCLOSED() { return getToken(TaraGrammar.ENCLOSED, 0); }
-		public TerminalNode FINAL() { return getToken(TaraGrammar.FINAL, 0); }
-		public TerminalNode CONCEPT() { return getToken(TaraGrammar.CONCEPT, 0); }
-		public TerminalNode REACTIVE() { return getToken(TaraGrammar.REACTIVE, 0); }
-		public TerminalNode VOLATILE() { return getToken(TaraGrammar.VOLATILE, 0); }
-		public TerminalNode DECORABLE() { return getToken(TaraGrammar.DECORABLE, 0); }
-		public TerminalNode REQUIRED() { return getToken(TaraGrammar.REQUIRED, 0); }
+		public TerminalNode ABSTRACT() {
+			return getToken(TaraGrammar.ABSTRACT, 0);
+		}
+
+		public TerminalNode TERMINAL() {
+			return getToken(TaraGrammar.TERMINAL, 0);
+		}
+
+		public TerminalNode COMPONENT() {
+			return getToken(TaraGrammar.COMPONENT, 0);
+		}
+
+		public TerminalNode PRIVATE() {
+			return getToken(TaraGrammar.PRIVATE, 0);
+		}
+
+		public TerminalNode FEATURE() {
+			return getToken(TaraGrammar.FEATURE, 0);
+		}
+
+		public TerminalNode ENCLOSED() {
+			return getToken(TaraGrammar.ENCLOSED, 0);
+		}
+
+		public TerminalNode FINAL() {
+			return getToken(TaraGrammar.FINAL, 0);
+		}
+
+		public TerminalNode CONCEPT() {
+			return getToken(TaraGrammar.CONCEPT, 0);
+		}
+
+		public TerminalNode REACTIVE() {
+			return getToken(TaraGrammar.REACTIVE, 0);
+		}
+
+		public TerminalNode VOLATILE() {
+			return getToken(TaraGrammar.VOLATILE, 0);
+		}
+
+		public TerminalNode DECORABLE() {
+			return getToken(TaraGrammar.DECORABLE, 0);
+		}
+
+		public TerminalNode REQUIRED() {
+			return getToken(TaraGrammar.REQUIRED, 0);
+		}
 
 		public TerminalNode DIVINE() {
 			return getToken(TaraGrammar.DIVINE, 0);
 		}
+
 		public FlagContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_flag; }
+
+		@Override
+		public int getRuleIndex() {
+			return RULE_flag;
+		}
+
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TaraGrammarListener ) ((TaraGrammarListener)listener).enterFlag(this);
+			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterFlag(this);
 		}
+
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TaraGrammarListener ) ((TaraGrammarListener)listener).exitFlag(this);
+			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitFlag(this);
 		}
 	}
 
@@ -3132,15 +3160,14 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(469);
-			_la = _input.LA(1);
+				_la = _input.LA(1);
 				if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << FEATURE) | (1L << DIVINE) | (1L << REQUIRED) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE) | (1L << VOLATILE) | (1L << DECORABLE))) != 0))) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3184,29 +3211,27 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(471);
-			match(IDENTIFIER);
+				match(IDENTIFIER);
 				setState(475);
-			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case EQUALS:
-				{
-				{
-					setState(472);
-				match(EQUALS);
-					setState(473);
-				value();
+				_errHandler.sync(this);
+				switch (_input.LA(1)) {
+					case EQUALS: {
+						{
+							setState(472);
+							match(EQUALS);
+							setState(473);
+							value();
+						}
+					}
+					break;
+					case NEW_LINE_INDENT: {
+						setState(474);
+						bodyValue();
+					}
+					break;
+					default:
+						throw new NoViableAltException(this);
 				}
-				}
-				break;
-			case NEW_LINE_INDENT:
-				{
-					setState(474);
-				bodyValue();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3250,23 +3275,23 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(480);
-			_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input, 72, _ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					{
-					{
-						setState(477);
-					hierarchy();
-					}
-					} 
-				}
-				setState(482);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input, 72, _ctx);
-			}
+				while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+					if (_alt == 1) {
+						{
+							{
+								setState(477);
+								hierarchy();
+							}
+						}
+					}
+					setState(482);
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input, 72, _ctx);
+				}
 				setState(483);
-			match(IDENTIFIER);
+				match(IDENTIFIER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3310,23 +3335,23 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(488);
-			_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input, 73, _ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					{
-					{
-						setState(485);
-					hierarchy();
-					}
-					} 
-				}
-				setState(490);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input, 73, _ctx);
-			}
+				while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+					if (_alt == 1) {
+						{
+							{
+								setState(485);
+								hierarchy();
+							}
+						}
+					}
+					setState(490);
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input, 73, _ctx);
+				}
 				setState(491);
-			match(IDENTIFIER);
+				match(IDENTIFIER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3366,17 +3391,16 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(493);
-			match(IDENTIFIER);
+				match(IDENTIFIER);
 				setState(494);
-			_la = _input.LA(1);
-			if ( !(_la==DOT || _la==PLUS) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+				_la = _input.LA(1);
+				if (!(_la == DOT || _la == PLUS)) {
+					_errHandler.recoverInline(this);
+				} else {
+					if (_input.LA(1) == Token.EOF) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
 			}
 		}
 		catch (RecognitionException re) {
@@ -3413,7 +3437,7 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 				setState(496);
-			match(IDENTIFIER);
+				match(IDENTIFIER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3429,11 +3453,11 @@ public class TaraGrammar extends Parser {
 
 	public static final String _serializedATN =
 			"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3Z\u01f5\4\2\t\2\4" +
-		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
-		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
-		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
-		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!"+
-		"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4"+
+					"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t" +
+					"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22" +
+					"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31" +
+					"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!" +
+					"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4" +
 					",\t,\3\2\7\2Z\n\2\f\2\16\2]\13\2\3\2\5\2`\n\2\3\2\5\2c\n\2\3\2\3\2\7\2" +
 					"g\n\2\f\2\16\2j\13\2\7\2l\n\2\f\2\16\2o\13\2\3\2\3\2\3\3\3\3\3\3\7\3v" +
 					"\n\3\f\3\16\3y\13\3\3\4\6\4|\n\4\r\4\16\4}\3\5\3\5\3\5\6\5\u0083\n\5\r" +
@@ -3622,7 +3646,7 @@ public class TaraGrammar extends Parser {
 					"\u018e\u0190\u0194\u019a\u01a5\u01b3\u01b8\u01be\u01c4\u01c7\u01cd\u01d5" +
 					"\u01dd\u01e2\u01ea";
 	public static final ATN _ATN =
-		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+			new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
 		_decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
 		for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {

@@ -6,7 +6,7 @@ ness
 module
 data-hub
 semantic.lib
-/Users/oroncal/Library/Application Support/IdeaIC2019.2/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/ness/data-hub/gen
 final_outputpath

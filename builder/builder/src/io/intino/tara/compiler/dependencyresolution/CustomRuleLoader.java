@@ -22,13 +22,20 @@ class CustomRuleLoader {
 	private CustomRuleLoader() {
 	}
 
-	static Class<?> compileAndLoad(CustomRule rule, String workingPackage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
+
+	static File compile(CustomRule rule, String workingPackage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
 		final File source = new File(rulesDirectory, rule.externalClass() + ".java");
-		if (source.exists()) return compileAndLoadRules(rule, workingPackage, classPath, tempDirectory, source);
-		else return tryAsProvided(rule);
+		if (source.exists()) {
+			compile(source, classPath, tempDirectory);
+			return new File(tempDirectory, composeQualifiedName(workingPackage, rule.externalClass()).replace(".", File.separator) + ".class");
+		} else return null;
 	}
 
-	private static Class<?> tryAsProvided(CustomRule rule) {
+	static Class<?> load(CustomRule rule, String workingPackage, File classPath, File tempDirectory) throws TaraException {
+		return load(rule.externalClass(), workingPackage, tempDirectory, classPath);
+	}
+
+	static Class<?> tryAsProvided(CustomRule rule) {
 		try {
 			return Class.forName(Url.class.getPackage().getName() + "." + Format.firstUpperCase().format(rule.externalClass()));
 		} catch (ClassNotFoundException e) {

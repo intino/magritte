@@ -1,12 +1,12 @@
 def.file
-/Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Ontology.tara#true
+/Users/oroncal/workspace/cesar/cesar/src/io/intino/cesar/Model.tara#true
 
 project
 cesar
 module
 cesar
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/language-1.2.0.jar
 outputpath
 /Users/oroncal/workspace/cesar/cesar/gen
 final_outputpath
@@ -15,15 +15,25 @@ resources
 /Users/oroncal/workspace/cesar/cesar/res
 tara.path
 /Users/oroncal/.m2
-tara.project.path
+intino.project.path
 /Users/oroncal/workspace/cesar/.intino
 src.path
 /Users/oroncal/workspace/cesar/cesar/src
 
+level
+Product
+language
+Proteo:3.0.0
+out.language
+Cesar
+groupId
+io.intino
+artifactId
+Cesar
 version
-1.0.0
-working.package
-.graph
+3.0.0
+generation.package
+io.intino.cesar.graph
 make
 false
 test.module

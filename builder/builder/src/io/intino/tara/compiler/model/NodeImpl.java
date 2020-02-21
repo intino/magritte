@@ -34,6 +34,7 @@ public class NodeImpl implements Node {
 	private String uid;
 	private List<Node> children = new ArrayList<>();
 	private List<String> context = new ArrayList<>();
+	private boolean anonymous = true;
 	private boolean dirty;
 	private boolean virtual;
 	private String stashNodeName;
@@ -46,6 +47,7 @@ public class NodeImpl implements Node {
 	@Override
 	public void name(String name) {
 		this.name = name;
+		this.anonymous = false;
 	}
 
 	@Override
@@ -201,7 +203,12 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isAnonymous() {
-		return name == null || name.isEmpty();
+		return anonymous;
+	}
+
+	public NodeImpl isAnonymous(boolean anonymous) {
+		this.anonymous = anonymous;
+		return this;
 	}
 
 	@Override

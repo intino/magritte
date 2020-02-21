@@ -1,5 +1,6 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
+import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.itrules.Adapter;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
@@ -9,12 +10,15 @@ import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.model.NodeReference;
-import io.intino.tara.compiler.shared.Configuration.Model.Level;
 import io.intino.tara.lang.model.EmptyNode;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
 import io.intino.tara.lang.model.Variable;
-import io.intino.tara.lang.model.rules.variable.*;
+import io.intino.tara.lang.model.rules.NativeCustomWordRule;
+import io.intino.tara.lang.model.rules.variable.NativeRule;
+import io.intino.tara.lang.model.rules.variable.NativeWordRule;
+import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
+import io.intino.tara.lang.model.rules.variable.WordRule;
 
 import java.util.ArrayList;
 import java.util.List;

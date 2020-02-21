@@ -33,7 +33,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.configuration().model().outLanguage() + "]" + " Analyzing semantic...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.configuration().model().outDsl() + "]" + " Analyzing semantic...");
 			if (model.language() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model).analyze();
 		} catch (TaraException e) {

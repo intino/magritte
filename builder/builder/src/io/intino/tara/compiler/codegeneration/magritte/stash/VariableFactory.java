@@ -3,6 +3,7 @@ package io.intino.tara.compiler.codegeneration.magritte.stash;
 import io.intino.tara.io.Variable;
 import io.intino.tara.lang.model.Primitive;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +29,8 @@ class VariableFactory {
 
 	public static Variable get(Primitive primitive) {
 		try {
-			return variableMap.get(primitive).newInstance();
-		} catch (InstantiationException | IllegalAccessException ignored) {
+			return variableMap.get(primitive).getConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
 		}
 		return null;
 	}

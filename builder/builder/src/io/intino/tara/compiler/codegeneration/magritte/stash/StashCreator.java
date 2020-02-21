@@ -7,7 +7,7 @@ import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeImpl;
-import io.intino.tara.compiler.shared.Configuration.Model.Level;
+import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.io.Concept;
 import io.intino.tara.io.Node;

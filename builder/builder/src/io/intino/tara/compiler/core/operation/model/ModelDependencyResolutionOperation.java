@@ -28,7 +28,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			final CompilerConfiguration conf = unit.configuration();
 			if (conf.isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outLanguage() + "]" + " Resolving dependencies...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]" + " Resolving dependencies...");
 			final DependencyResolver dependencyResolver = new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory());
 			dependencyResolver.resolve();
 			notifyRulesNotLoaded(dependencyResolver);

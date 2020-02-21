@@ -6,6 +6,7 @@ import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.Primitive.Expression;
 import io.intino.tara.lang.model.Primitive.MethodReference;
+import io.intino.tara.lang.model.rules.NativeCustomWordRule;
 import io.intino.tara.lang.model.rules.variable.*;
 
 import java.io.File;

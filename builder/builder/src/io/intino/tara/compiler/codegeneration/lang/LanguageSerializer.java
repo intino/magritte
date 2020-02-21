@@ -49,19 +49,23 @@ public class LanguageSerializer {
 		serialize(new LanguageCreator(conf, models).create(), getDslDestiny(), collectRules(models));
 	}
 
-	private List<Class<?>> collectRules(Collection<Model> models) {
-		Set<Class<?>> classes = new HashSet<>();
+	private List<File> collectRules(Collection<Model> models) {
+		Set<File> classes = new HashSet<>();
 		for (Model model : models) {
-			classes.addAll(model.rules().values());
+			classes.addAll(filesOf(model));
 			classes.addAll(collectLanguageRules(model));
 		}
 		return new ArrayList<>(classes);
 	}
 
-	private List<Class<?>> collectLanguageRules(Model model) {
-		List<Class<?>> classes = new ArrayList<>();
+	private Collection<File> filesOf(Model model) {
+		return model.rules().values();
+	}
+
+	private List<File> collectLanguageRules(Model model) {
+		List<File> classes = new ArrayList<>();
 		for (Context context : model.language().catalog().values())
-			classes.addAll(getRulesOfNode(context));
+			classes.addAll(getRulesOfNode(context).stream().map(c -> new File(c.getProtectionDomain().getCodeSource().getLocation().getPath())).distinct().collect(Collectors.toList()));
 		return classes;
 	}
 
@@ -75,12 +79,12 @@ public class LanguageSerializer {
 
 	private File getDslDestiny() {
 		final File file = new File(conf.getTaraDirectory(), REPOSITORY + separator + conf.dslGroupId().replace(".", separator) + separator +
-				conf.model().outLanguage().toLowerCase() + separator + conf.version());
+				conf.model().outDsl().toLowerCase() + separator + conf.version());
 		file.mkdirs();
-		return new File(file, reference().format(firstUpperCase().format(conf.model().outLanguage())) + JAVA);
+		return new File(file, reference().format(firstUpperCase().format(conf.model().outDsl())) + JAVA);
 	}
 
-	private void serialize(String content, File javaFile, List<Class<?>> rules) throws TaraException {
+	private void serialize(String content, File javaFile, List<File> rules) throws TaraException {
 		try {
 			final File dslDirectory = javaFile.getParentFile();
 			if (dslDirectory.exists()) FileSystemUtils.removeDir(dslDirectory);
@@ -95,11 +99,11 @@ public class LanguageSerializer {
 	}
 
 	private void createPOM(File dslDirectory) throws IOException {
-		String text = new POMTemplate().render(new FrameBuilder().add("POM").add("name", conf.model().outLanguage()).add("version", conf.version()));
+		String text = new POMTemplate().render(new FrameBuilder().add("POM").add("name", conf.model().outDsl()).add("version", conf.version()));
 		Files.write(new File(jarFile(dslDirectory).getAbsolutePath().replace(JAR, ".pom")).toPath(), text.getBytes());
 	}
 
-	private Collection<String> collectClassPath(Collection<Class<?>> values) throws IOException {
+	private Collection<String> collectClassPath(Collection<File> values) throws IOException {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
 		for (Model model : models)
@@ -107,11 +111,11 @@ public class LanguageSerializer {
 				dependencies.add(Paths.get(model.language().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " "));
 			} catch (URISyntaxException ignored) {
 			}
-		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
+		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).map(File::getPath).collect(Collectors.toList()));
 		return dependencies;
 	}
 
-	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
+	private void jar(File dslDir, List<File> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
@@ -127,7 +131,7 @@ public class LanguageSerializer {
 	}
 
 	private File jarFile(File dslDir) {
-		return new File(dslDir, conf.model().outLanguage() + "-" + conf.version() + JAR);
+		return new File(dslDir, conf.model().outDsl() + "-" + conf.version() + JAR);
 	}
 
 	private void frameworkParameters(Manifest manifest) {
@@ -144,10 +148,10 @@ public class LanguageSerializer {
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactId());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.model().outLanguage());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.model().outDsl());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.model().level().name());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.version());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.WORKING_PACKAGE.replace(".", "-")), conf.workingPackage());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GENERATION_PACKAGE.replace(".", "-")), conf.workingPackage());
 		return taraAttributes;
 	}
 
@@ -174,13 +178,12 @@ public class LanguageSerializer {
 		return tempDirectory.listFiles(file -> file.isDirectory() && !file.getName().equals("META-INF") && !file.getName().equals("tara"));
 	}
 
-	private void addRules(List<Class<?>> rules, JarOutputStream target) throws IOException {
+	private void addRules(List<File> rules, JarOutputStream target) throws IOException {
 		HashMap<File, String> ruleFiles = new HashMap<>();
-		for (Class<?> rule : rules) {
-			final String base = rule.getProtectionDomain().getCodeSource().getLocation().getPath();
+		for (File rule : rules) {
 			List<File> files = new ArrayList<>();
-			FileSystemUtils.getAllFiles(new File(base), files);
-			for (File file : files) ruleFiles.put(file, base);
+			FileSystemUtils.getAllFiles(rule, files);
+			for (File file : files) ruleFiles.put(file, rule.getAbsolutePath());
 		}
 		for (Map.Entry<File, String> entry : ruleFiles.entrySet())
 			add(new File(entry.getValue()), entry.getKey(), target);

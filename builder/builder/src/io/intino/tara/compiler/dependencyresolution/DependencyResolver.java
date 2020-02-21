@@ -27,14 +27,13 @@ public class DependencyResolver {
 	private String workingPackage;
 	private List<DependencyException> rulesNotLoaded = new ArrayList<>();
 
-	public DependencyResolver(Model model, String workingPackage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
+	public DependencyResolver(Model model, String workingPackage, File rulesDirectory, File semanticLib, File tempDirectory) {
 		this.model = model;
 		this.workingPackage = workingPackage;
 		this.rulesDirectory = rulesDirectory;
 		this.semanticLib = semanticLib;
 		this.tempDirectory = tempDirectory;
 		this.manager = new ReferenceManager(this.model);
-		model.setRules(loadedRules);
 	}
 
 	public void resolve() throws DependencyException {
@@ -146,11 +145,14 @@ public class DependencyResolver {
 	private void loadCustomRule(Variable variable) {
 		final VariableCustomRule rule = (VariableCustomRule) variable.rule();
 		final String source = rule.externalClass();
+		File classFile = null;
 		Class<?> aClass = null;
 		try {
-			aClass = loadedRules.containsKey(source) ?
-					loadedRules.get(source) :
-					CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
+			if (loadedRules.containsKey(source)) aClass = loadedRules.get(source);
+			else {
+				classFile = CustomRuleLoader.compile(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
+				aClass = classFile != null ? CustomRuleLoader.load(rule, workingPackage, semanticLib, tempDirectory) : CustomRuleLoader.tryAsProvided(rule);
+			}
 		} catch (TaraException e) {
 			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.externalClass(), e.getMessage()));
 			rule.qualifiedName(CustomRuleLoader.composeQualifiedName(workingPackage, rule.externalClass()));
@@ -158,26 +160,39 @@ public class DependencyResolver {
 		if (aClass == null) {
 			rulesNotLoaded.add(new DependencyException("impossible.load.rule.class", variable, rule.externalClass()));
 			return;
-		} else loadedRules.put(source, aClass);
-		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
-		else rule.setLoadedClass(aClass);
+		} else {
+			loadedRules.put(source, aClass);
+			if (classFile != null) model.addRule(source, tempDirectory);
+		}
+		if (variable.type().equals(Primitive.WORD)) updateRule(variable, aClass);
+		else {
+			rule.setLoadedClass(aClass);
+			rule.classFile(classFile);
+		}
 	}
 
 	private void loadCustomRule(Node node, CustomRule rule) throws DependencyException {
 		final String source = rule.externalClass();
-		final Class<?> aClass;
+		File classFile = null;
+		Class<?> aClass;
 		try {
-			aClass = loadedRules.containsKey(source) ?
-					loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
+			if (loadedRules.containsKey(source)) aClass = loadedRules.get(source);
+			else {
+				classFile = CustomRuleLoader.compile(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
+				aClass = classFile != null ? CustomRuleLoader.load(rule, workingPackage, semanticLib, tempDirectory) : CustomRuleLoader.tryAsProvided(rule);
+			}
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", node, rule.externalClass(), e.getMessage().split("\n")[0]);
 		}
-		if (aClass != null) loadedRules.put(source, aClass);
-		else throw new DependencyException("impossible.load.rule.class", node, rule.externalClass());
+		if (aClass != null) {
+			loadedRules.put(source, aClass);
+			if (classFile != null) model.addRule(source, tempDirectory);
+		} else throw new DependencyException("impossible.load.rule.class", node, rule.externalClass());
 		rule.setLoadedClass(aClass);
+		rule.classFile(classFile);
 	}
 
-	private void updateRule(Class<?> aClass, Variable variable) {
+	private void updateRule(Variable variable, Class<?> aClass) {
 		if (aClass != null)
 			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
 	}

@@ -31,7 +31,7 @@ public class ASTMerger {
 		Model model = new Model(getName());
 		model.setLanguage(language);
 		model.setResourcesRoot(conf.resourcesDirectory());
-		model.setLevel(conf.model().level());
+		model.level(conf.model().level());
 		for (SourceUnit unit : sourceUnits) {
 			List<Node> components = unit.getModel().components();
 			components.forEach(c -> {
@@ -56,7 +56,7 @@ public class ASTMerger {
 	}
 
 	private String getName() {
-		return conf.getProject() != null ? conf.getProject() + "." + conf.model().outLanguage() :
+		return conf.getProject() != null ? conf.getProject() + "." + conf.model().outDsl() :
 				getPresentableName();
 	}
 

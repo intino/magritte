@@ -1,5 +1,6 @@
 package io.intino.tara;
 
+import io.intino.Configuration;
 import io.intino.tara.compiler.TaraCompiler;
 import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
@@ -12,7 +13,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
-import static io.intino.tara.compiler.shared.Configuration.Model;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraCompilerRunner {
@@ -83,12 +83,12 @@ class TaraCompilerRunner {
 		CompilerConfiguration testConf = config.clone();
 		testConf.setTest(true);
 		testConf.workingPackage(testConf.workingPackage() + ".test");
-		if (config.model().outLanguage() != null) testConf.addLanguage(config.model().outLanguage(), config.version());
+		if (config.model().outDsl() != null) testConf.addLanguage(config.model().outDsl(), config.version());
 		if (config.model().level() != null)
-			testConf.model().level(Model.Level.values()[config.model().level().ordinal() == 0 ? 0 : config.model().level().ordinal() - 1]);
+			testConf.model().level(Configuration.Artifact.Model.Level.values()[config.model().level().ordinal() == 0 ? 0 : config.model().level().ordinal() - 1]);
 		List<TaraCompiler.OutputItem> outputs = new ArrayList<>();
 		for (File file : testFiles.keySet()) {
-			testConf.model().outLanguage(file.getName());
+			testConf.model().outDsl(file.getName());
 			final CompilationUnit unit = new CompilationUnit(testConf);
 			addSources(Collections.singletonMap(file, true), unit);
 			outputs.addAll(new TaraCompiler(compilerMessages).compile(unit));

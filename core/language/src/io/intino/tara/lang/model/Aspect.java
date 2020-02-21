@@ -1,5 +1,7 @@
 package io.intino.tara.lang.model;
 
+import java.util.List;
+
 public interface Aspect extends Element {
 
 	String type();
@@ -7,6 +9,8 @@ public interface Aspect extends Element {
 	void fullType(String s);
 
 	String fullType();
+
+	List<Parameter> parameters();
 
 	Node container();
 

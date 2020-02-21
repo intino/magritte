@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,10 +33,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final Deque<Node> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
-	private CompilerConfiguration.DSL language;
+	private CompilerConfiguration.Language language;
 	private List<SyntaxException> errors = new ArrayList<>();
 
-	public ModelGenerator(String file, CompilerConfiguration.DSL language, String outDsl) {
+	public ModelGenerator(String file, CompilerConfiguration.Language language, String outDsl) {
 		this.file = file;
 		this.language = language;
 		this.outDsl = outDsl;
@@ -63,6 +64,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		node.languageName(model.languageName());
 		node.setSub(ctx.signature().SUB() != null);
 		if (ctx.signature().IDENTIFIER() != null) node.name(ctx.signature().IDENTIFIER().getText());
+		else node.name(calculateName(ctx));
 		Node container = resolveContainer(node);
 		node.type(node.isSub() ? deque.peek().type() : ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
@@ -75,6 +77,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, node);
 		node.addUses(new ArrayList<>(uses));
 		deque.push(node);
+	}
+
+	private String calculateName(NodeContext ctx) {
+		int hashCode = ctx.getText().replace(" ", "").hashCode();
+		return "tara_" +
+				new File(file).getName().replace(".tara", "") + "_" +
+				ctx.getStart().getLine() + "_" + ctx.getStart().getCharPositionInLine() + "_" +
+				(hashCode > 0 ? "0" + hashCode : "1" + Math.abs(hashCode));
 	}
 
 	private List<RuleContainerContext> compositionRules(List<RuleContainerContext> container) {

@@ -13,9 +13,9 @@ module
 Platform
 level
 Platform
-dsl
+language
 Verso
-out.dsl
+out.language
 Monet
 working.package
 monet

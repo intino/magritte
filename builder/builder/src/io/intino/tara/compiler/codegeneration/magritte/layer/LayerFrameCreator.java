@@ -8,7 +8,7 @@ import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeReference;
-import io.intino.tara.compiler.shared.Configuration.Model.Level;
+import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.model.Tag;
@@ -41,7 +41,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf, String language, Model model) {
-		this(conf.model().outLanguage(), model, conf.model().language().get(), conf.model().level(), conf.workingPackage(), conf.model().language().generationPackage());
+		this(conf.model().outDsl(), model, conf.model().language().get(), conf.model().level(), conf.workingPackage(), conf.model().language().generationPackage());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {

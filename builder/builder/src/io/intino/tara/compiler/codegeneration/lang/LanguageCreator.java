@@ -38,8 +38,8 @@ class LanguageCreator {
 
 	private FrameBuilder createFrame(final Model model) {
 		final FrameBuilder builder = new FrameBuilder();
-		final CompilerConfiguration.DSL dsl = conf.model().language();
-		builder.put(Model.class, new LanguageModelAdapter(conf.model().outLanguage(), conf.getLocale(), model.language(), conf.model().level(), conf.workingPackage(), dsl.generationPackage()));
+		final CompilerConfiguration.Language language = conf.model().language();
+		builder.put(Model.class, new LanguageModelAdapter(conf.model().outDsl(), conf.getLocale(), model.language(), conf.model().level(), conf.workingPackage(), language.generationPackage()));
 		return builder.append(model);
 	}
 }

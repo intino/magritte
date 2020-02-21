@@ -23,7 +23,7 @@ src.path
 
 level
 Solution
-dsl
+language
 Legio:3.2.0
 groupId
 io.intino.legio

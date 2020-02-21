@@ -1,8 +1,8 @@
 package io.intino.tara;
 
+import io.intino.Configuration;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.core.errorcollection.message.WarningMessage;
-import io.intino.tara.compiler.shared.Configuration.Model.Level;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class CompilationInfoExtractor {
 				configuration.setModule(reader.readLine());
 				break;
 			case LEVEL:
-				configuration.model().level(Level.valueOf(reader.readLine()));
+				configuration.model().level(Configuration.Artifact.Model.Level.valueOf(reader.readLine()));
 				break;
 			case EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
@@ -79,7 +79,7 @@ public class CompilationInfoExtractor {
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
 			case OUT_DSL:
-				configuration.model().outLanguage(reader.readLine());
+				configuration.model().outDsl(reader.readLine());
 				break;
 			case GROUP_ID:
 				configuration.groupId(reader.readLine());
@@ -96,19 +96,19 @@ public class CompilationInfoExtractor {
 			case TEST:
 				configuration.setTest(Boolean.parseBoolean(reader.readLine()));
 				break;
-			case WORKING_PACKAGE:
+			case GENERATION_PACKAGE:
 				configuration.workingPackage(reader.readLine());
 				break;
 			case SRC_PATH:
 				readSrcPaths(configuration.sourceDirectories(), reader);
 				break;
-			case TARA_PROJECT_PATH:
+			case INTINO_PROJECT_PATH:
 				configuration.intinoProjectDirectory(new File(reader.readLine()));
 				break;
 			case TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;
-			case DSL:
+			case LANGUAGE:
 				final String[] dsl = reader.readLine().trim().split(":");
 				configuration.addLanguage(dsl[0], dsl[1]);
 				break;
@@ -117,14 +117,13 @@ public class CompilationInfoExtractor {
 		}
 	}
 
-	private static String readSrcPaths(List<File> srcPaths, BufferedReader reader) throws IOException {
+	private static void readSrcPaths(List<File> srcPaths, BufferedReader reader) throws IOException {
 		String line;
 		while (!"".equals(line = reader.readLine()))
 			srcPaths.add(new File(line));
-		return line;
 	}
 
-	private static List<Integer> parseToInt(String[] phases) throws IOException {
+	private static List<Integer> parseToInt(String[] phases) {
 		List<Integer> list = new ArrayList<>();
 		for (String phase : phases) list.add(Integer.parseInt(phase));
 		return list;

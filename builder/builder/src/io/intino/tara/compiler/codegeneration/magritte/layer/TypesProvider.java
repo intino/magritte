@@ -4,7 +4,7 @@ import io.intino.tara.Language;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.NodeImpl;
 import io.intino.tara.compiler.model.VariableReference;
-import io.intino.tara.compiler.shared.Configuration.Model.Level;
+import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.tara.lang.model.*;
 import io.intino.tara.lang.model.rules.Size;
 import io.intino.tara.lang.semantics.Assumption;
@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static io.intino.tara.compiler.shared.Configuration.Model.Level.Product;
 
 public final class TypesProvider implements TemplateTags {
 
@@ -75,7 +73,7 @@ public final class TypesProvider implements TemplateTags {
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
 			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
-		if (type.equals(Product)) types.add(TERMINAL);
+		if (type.equals(Level.Product)) types.add(TERMINAL);
 		types.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			types.add(REFERENCE);

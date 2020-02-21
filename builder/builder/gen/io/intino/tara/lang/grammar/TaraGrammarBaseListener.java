@@ -118,19 +118,28 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameters(TaraGrammar.ParametersContext ctx) { }
+	@Override
+	public void exitParameters(TaraGrammar.ParametersContext ctx) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameter(TaraGrammar.ParameterContext ctx) { }
+	@Override
+	public void enterParameter(TaraGrammar.ParameterContext ctx) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameter(TaraGrammar.ParameterContext ctx) { }
+	@Override
+	public void exitParameter(TaraGrammar.ParameterContext ctx) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -139,6 +148,7 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	@Override
 	public void enterAspects(TaraGrammar.AspectsContext ctx) {
 	}
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -147,6 +157,7 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	@Override
 	public void exitAspects(TaraGrammar.AspectsContext ctx) {
 	}
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -155,6 +166,7 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	@Override
 	public void enterAspect(TaraGrammar.AspectContext ctx) {
 	}
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -163,24 +175,34 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	@Override
 	public void exitAspect(TaraGrammar.AspectContext ctx) {
 	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValue(TaraGrammar.ValueContext ctx) { }
+	@Override
+	public void enterValue(TaraGrammar.ValueContext ctx) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValue(TaraGrammar.ValueContext ctx) { }
+	@Override
+	public void exitValue(TaraGrammar.ValueContext ctx) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBody(TaraGrammar.BodyContext ctx) { }
+	@Override
+	public void enterBody(TaraGrammar.BodyContext ctx) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *

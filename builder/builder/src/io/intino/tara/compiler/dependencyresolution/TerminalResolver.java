@@ -2,19 +2,19 @@ package io.intino.tara.compiler.dependencyresolution;
 
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeReference;
-import io.intino.tara.compiler.shared.Configuration;
+import io.intino.Configuration;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Tag;
 
-import static io.intino.tara.compiler.shared.Configuration.Model.Level.Product;
+import static io.intino.Configuration.Artifact.Model.Level.Product;
 
 
 public class TerminalResolver {
 
 	private final Model model;
-	private final Configuration.Model.Level level;
+	private final Configuration.Artifact.Model.Level level;
 
-	public TerminalResolver(Model model, Configuration.Model.Level level) {
+	public TerminalResolver(Model model, Configuration.Artifact.Model.Level level) {
 		this.model = model;
 		this.level = level;
 	}

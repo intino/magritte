@@ -4,6 +4,7 @@ import io.intino.tara.lang.model.Metric;
 import io.intino.tara.lang.model.Rule;
 import io.intino.tara.lang.model.rules.CustomRule;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 	private Class<?> loadedClass;
 	private VariableRule object;
 	private String qualifiedName;
+	private File classFile;
 
 	public VariableCustomRule(String aClass) {
 		this.aClass = aClass;
@@ -68,6 +70,16 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 			this.object = (VariableRule) this.loadedClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException ignored) {
 		}
+	}
+
+	@Override
+	public void classFile(File file) {
+		this.classFile = file;
+	}
+
+	@Override
+	public File classFile() {
+		return this.classFile;
 	}
 
 	public String externalClass() {

@@ -22,7 +22,7 @@ src.path
 
 level
 Solution
-dsl
+language
 Konos:1.0.0
 groupId
 io.intino.konos

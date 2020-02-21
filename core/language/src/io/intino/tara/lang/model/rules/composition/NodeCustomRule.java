@@ -4,6 +4,7 @@ import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.rules.CustomRule;
 import io.intino.tara.lang.model.rules.NodeRule;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +13,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 	private final String aClass;
 	private Class<?> loadedClass;
 	private Object nodeRule;
+	private File classFile;
 
 	public NodeCustomRule(String aClass) {
 		this.aClass = aClass;
@@ -31,6 +33,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 		return loadedClass;
 	}
 
+	@Override
 	public String externalClass() {
 		return aClass;
 	}
@@ -42,6 +45,16 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void classFile(File file) {
+		this.classFile = file;
+	}
+
+	@Override
+	public File classFile() {
+		return classFile;
 	}
 
 	@Override

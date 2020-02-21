@@ -23,9 +23,9 @@ src.path
 
 level
 Product
-dsl
+language
 Proteo:1.0.0
-out.dsl
+out.language
 Legio
 groupId
 io.intino.legio
@@ -33,7 +33,7 @@ artifactId
 model
 version
 3.2.0
-working.package
+generation.package
 io.intino.legio.graph
 make
 false

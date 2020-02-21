@@ -1,6 +1,7 @@
 package io.intino.tara.compiler.model;
 
 import io.intino.tara.Language;
+import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeRoot;
 import io.intino.tara.lang.model.Rule;
@@ -8,7 +9,6 @@ import io.intino.tara.lang.model.Rule;
 import java.io.File;
 import java.util.*;
 
-import static io.intino.tara.compiler.shared.Configuration.Model.Level;
 
 public class Model implements NodeRoot {
 
@@ -17,7 +17,7 @@ public class Model implements NodeRoot {
 	private Level level;
 	private Map<Node, List<Rule>> components = new LinkedHashMap<>();
 	private List<String> uses;
-	private Map<String, Class<?>> rules;
+	private Map<String, File> rules = new HashMap<>();
 	private File resourcesRoot;
 	private List<Node> facets;
 
@@ -44,7 +44,7 @@ public class Model implements NodeRoot {
 		return level;
 	}
 
-	public void setLevel(Level level) {
+	public void level(Level level) {
 		this.level = level;
 	}
 
@@ -123,11 +123,11 @@ public class Model implements NodeRoot {
 		this.uses = uses;
 	}
 
-	public void setRules(Map<String, Class<?>> rules) {
-		this.rules = rules;
+	public void addRule(String name, File rule) {
+		this.rules.put(name, rule);
 	}
 
-	public Map<String, Class<?>> rules() {
+	public Map<String, File> rules() {
 		return rules;
 	}
 

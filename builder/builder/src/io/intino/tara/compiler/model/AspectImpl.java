@@ -3,6 +3,10 @@ package io.intino.tara.compiler.model;
 
 import io.intino.tara.lang.model.Aspect;
 import io.intino.tara.lang.model.Node;
+import io.intino.tara.lang.model.Parameter;
+
+import java.util.Collections;
+import java.util.List;
 
 public class AspectImpl implements Aspect {
 	private String file;
@@ -39,6 +43,11 @@ public class AspectImpl implements Aspect {
 	@Override
 	public String fullType() {
 		return fullType;
+	}
+
+	@Override
+	public List<Parameter> parameters() {
+		return Collections.emptyList();
 	}
 
 	@Override

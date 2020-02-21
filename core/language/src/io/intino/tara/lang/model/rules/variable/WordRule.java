@@ -19,9 +19,9 @@ public class WordRule implements VariableRule<List<Primitive.Reference>> {
 		parameters = Collections.singletonList(String.join(", ", words));
 	}
 
-	public WordRule(List<String> words, String externalWordClass) {
+	public WordRule(List<String> words, String aClass) {
 		this.words = words;
-		this.aClass = externalWordClass;
+		this.aClass = aClass;
 		parameters = Collections.singletonList(String.join(", ", words));
 	}
 

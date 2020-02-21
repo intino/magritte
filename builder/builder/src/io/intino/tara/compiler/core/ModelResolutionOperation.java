@@ -3,8 +3,7 @@ package io.intino.tara.compiler.core;
 import io.intino.tara.compiler.core.operation.model.ModelOperation;
 import io.intino.tara.compiler.dependencyresolution.InstanceMarker;
 import io.intino.tara.compiler.model.Model;
-
-import static io.intino.tara.compiler.shared.Configuration.Model.Level;
+import io.intino.Configuration.Artifact.Model.Level;
 
 class ModelResolutionOperation extends ModelOperation {
 

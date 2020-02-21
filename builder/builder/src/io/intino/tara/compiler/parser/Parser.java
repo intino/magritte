@@ -26,12 +26,12 @@ public class Parser {
 	private static final Logger LOG = Logger.getGlobal();
 
 	private final File file;
-	private final CompilerConfiguration.DSL language;
+	private final CompilerConfiguration.Language language;
 	private final String outDsl;
 	private TaraGrammar grammar;
 	private TaraGrammar.RootContext rootContext;
 
-	public Parser(File file, CompilerConfiguration.DSL language, String sourceEncoding, String outDsl) throws IOException {
+	public Parser(File file, CompilerConfiguration.Language language, String sourceEncoding, String outDsl) throws IOException {
 		this.file = file;
 		this.language = language;
 		this.outDsl = outDsl;
