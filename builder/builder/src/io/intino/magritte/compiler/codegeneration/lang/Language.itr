@@ -1,17 +1,17 @@
 def type(Model)
 	package tara.dsl;
 
-	import io.intino.tara.lang.model.Tag;
-	import io.intino.tara.lang.model.Primitive;
-	import io.intino.tara.lang.model.rules.Size;
-	import io.intino.tara.lang.model.rules.variable.*;
+	import io.intino.magritte.lang.model.Tag;
+	import io.intino.magritte.lang.model.Primitive;
+	import io.intino.magritte.lang.model.rules.Size;
+	import io.intino.magritte.lang.model.rules.variable.*;
 
 	import java.util.Arrays;
 	import java.util.Locale;
 
-	import static io.intino.tara.lang.semantics.constraints.RuleFactory.*;
+	import static io.intino.magritte.lang.semantics.constraints.RuleFactory.*;
 
-	public class $name+reference+FirstUpperCase extends io.intino.tara.dsl.Tara {
+	public class $name+reference+FirstUpperCase extends io.intino.magritte.dsl.Tara {
 		public $name+reference+FirstUpperCase() {
 			$node+super...[$NL]
 			$root+call...[$NL]
@@ -118,7 +118,7 @@ def type(customRule & metric) trigger(rule)
 end
 
 def type(nativecustomwordrule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.WordRule(Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
+	new io.intino.magritte.lang.model.rules.variable.WordRule(Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(customrule) trigger(rule)
@@ -138,47 +138,47 @@ def type(rule & size) trigger(rule)
 end
 
 def type(nativeObjectRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.NativeObjectRule("$type")
+	new io.intino.magritte.lang.model.rules.variable.NativeObjectRule("$type")
 end
 
 def type(nativeReferenceRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.NativeReferenceRule(Arrays.asList($allowedReferences+quoted...[, ]))
+	new io.intino.magritte.lang.model.rules.variable.NativeReferenceRule(Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
 def type(nativerule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.NativeRule("$interfaceClass", "$signature", Arrays.asList($imports+quoted...[, ]))
+	new io.intino.magritte.lang.model.rules.variable.NativeRule("$interfaceClass", "$signature", Arrays.asList($imports+quoted...[, ]))
 end
 
 def type(wordrule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.WordRule(Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
+	new io.intino.magritte.lang.model.rules.variable.WordRule(Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(referenceRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.ReferenceRule(Arrays.asList($allowedReferences+quoted...[, ]))
+	new io.intino.magritte.lang.model.rules.variable.ReferenceRule(Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
 def type(doubleRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.DoubleRule($min+cast, $max+cast, "$metric")
+	new io.intino.magritte.lang.model.rules.variable.DoubleRule($min+cast, $max+cast, "$metric")
 end
 
 def type(integerRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.IntegerRule($min, $max, "$metric")
+	new io.intino.magritte.lang.model.rules.variable.IntegerRule($min, $max, "$metric")
 end
 
 def type(dateRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.DateRule([$parameters+quoted,])
+	new io.intino.magritte.lang.model.rules.variable.DateRule([$parameters+quoted,])
 end
 
 def type(instantRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.InstantRule([$parameters+quoted,])
+	new io.intino.magritte.lang.model.rules.variable.InstantRule([$parameters+quoted,])
 end
 
 def type(fileRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.FileRule(Arrays.asList($extensions+quoted...[, ]))
+	new io.intino.magritte.lang.model.rules.variable.FileRule(Arrays.asList($extensions+quoted...[, ]))
 end
 
 def type(stringRule) trigger(rule)
-	new io.intino.tara.lang.model.rules.variable.StringRule($regex+quoted)
+	new io.intino.magritte.lang.model.rules.variable.StringRule($regex+quoted)
 end
 
 def trigger(rule)
