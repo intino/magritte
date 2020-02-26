@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/ness/service/test/io/intino/ness/triton/box/ConfigurationTest.tara#true
+$WORKSPACE/ness/data-hub-test/src/solution.tara#true
 
 project
 ness
 module
-service
+data-hub-test
 semantic.lib
-/Users/oroncal/Library/Application Support/IntelliJIdea2019.1/tara-plugin/lib/tara-plugin.jar
+$HOME/Library/Application Support/IdeaIC2019.2/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/ness/service/test-gen
+$WORKSPACE/ness/data-hub-test/gen
 final_outputpath
-/Users/oroncal/workspace/ness/out/test/service/
+$WORKSPACE/ness/out/production/data-hub-test/
 resources
-/Users/oroncal/workspace/ness/service/test-res
+$WORKSPACE/ness/data-hub-test/res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/workspace/ness/.tara
+$WORKSPACE/ness/.intino
 src.path
-/Users/oroncal/workspace/ness/service/test
+$WORKSPACE/ness/data-hub-test/src
 
 version
 1.0.0
@@ -27,6 +27,6 @@ working.package
 make
 false
 test.module
-true
+false
 encoding
 UTF-8

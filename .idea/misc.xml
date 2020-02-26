@@ -48,11 +48,10 @@
         <option value="$PROJECT_DIR$/ide/pandora/application/pom.xml" />
         <option value="$PROJECT_DIR$/ide/legio/legio/pom.xml" />
         <option value="$PROJECT_DIR$/ide/pandora/pandora-plugin-core/pom.xml" />
-        <option value="$PROJECT_DIR$/ide/tara-core/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="IDEA Konos" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="11.0.5" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

@@ -1,13 +1,13 @@
 package io.intino.compiler;
 
+import io.intino.magritte.compiler.codegeneration.FileSystemUtils;
+import io.intino.magritte.compiler.core.CompilationUnit;
+import io.intino.magritte.compiler.core.CompilerConfiguration;
+import io.intino.magritte.compiler.core.SourceUnit;
+import io.intino.magritte.compiler.core.operation.sourceunit.ParseOperation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import io.intino.tara.compiler.codegeneration.FileSystemUtils;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.CompilerConfiguration;
-import io.intino.tara.compiler.core.SourceUnit;
-import io.intino.tara.compiler.core.operation.sourceunit.ParseOperation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.intino.magritte.CompilationInfoExtractor.getInfoFromArgsFile;
 import static org.junit.Assert.assertFalse;
-import static io.intino.tara.CompilationInfoExtractor.getInfoFromArgsFile;
 
 @Ignore
 public class BuildPhasesTest {

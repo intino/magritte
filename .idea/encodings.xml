@@ -3,9 +3,15 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/builder/builder" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/builder/builder-constants" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder-constants/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/io" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/io/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/language" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/magritte/magritte" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/language/res" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/language/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework/src" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

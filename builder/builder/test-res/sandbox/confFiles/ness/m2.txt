@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/ness/datalake-jms/src/io/intino/ness/Model.tara#true
+$WORKSPACE/ness/data-hub/src/io/intino/datahub/graph/Model.tara#true
 
 project
 ness
 module
-datalake-jms
+data-hub
 semantic.lib
-/Users/oroncal/Library/Application Support/IntelliJIdea2018.1/tara-plugin/lib/tara-plugin.jar
+$WORKSPACE/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/ness/datalake-jms/gen
+$WORKSPACE/ness/data-hub/gen
 final_outputpath
-/Users/oroncal/workspace/ness/out/production/datalake-jms/
+$WORKSPACE/ness/out/production/data-hub/
 resources
-/Users/oroncal/workspace/ness/datalake-jms/res
+$WORKSPACE/ness/data-hub/res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/workspace/ness/.tara
+$WORKSPACE/ness/.intino
 src.path
-/Users/oroncal/workspace/ness/datalake-jms/src
+$WORKSPACE/ness/data-hub/src
 
 version
 1.0.0

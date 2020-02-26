@@ -2,7 +2,7 @@
   <artifact type="jar" name="proteo-lang:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/proteo_lang_jar</output-path>
     <root id="archive" name="Proteo.jar">
-      <element id="module-output" name="magritte" />
+      <element id="module-output" name="framework" />
     </root>
   </artifact>
 </component>

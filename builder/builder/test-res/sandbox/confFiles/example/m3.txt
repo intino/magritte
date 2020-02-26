@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/IdeaProjects/example/m3/src/m3/model.tara#true
+$HOME/IdeaProjects/example/m3/src/m3/model.tara#true
 
 project
 example
 module
 m3
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+$WORKSPACE/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/IdeaProjects/example/m3/gen
+$HOME/IdeaProjects/example/m3/gen
 final_outputpath
-/Users/oroncal/IdeaProjects/example/out/production/m3/
+$HOME/IdeaProjects/example/out/production/m3/
 resources
-/Users/oroncal/IdeaProjects/example/m3/res
+$HOME/IdeaProjects/example/m3/res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/IdeaProjects/example/.tara
+$HOME/IdeaProjects/example/.tara
 src.path
-/Users/oroncal/IdeaProjects/example/m3/src
+$HOME/IdeaProjects/example/m3/src
 
 version
 1.0.0
