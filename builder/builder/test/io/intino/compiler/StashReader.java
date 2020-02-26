@@ -1,8 +1,8 @@
 package io.intino.compiler;
 
-import io.intino.tara.io.Concept;
-import io.intino.tara.io.Stash;
-import io.intino.tara.io.StashDeserializer;
+import io.intino.magritte.io.Concept;
+import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.StashDeserializer;
 import org.junit.Ignore;
 import org.junit.Test;
 

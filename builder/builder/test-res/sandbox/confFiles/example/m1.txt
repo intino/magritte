@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/sandbox/tara-problems/m1/src/m1.tara#true
+$WORKSPACE/sandbox/tara-problems/m1/src/m1.tara#true
 
 project
 tara-problems
 module
 m1
 semantic.lib
-/Users/oroncal/Library/Application Support/IntelliJIdea2019.2/tara-plugin/lib/tara-plugin.jar
+$HOME/Library/Application Support/IntelliJIdea2019.2/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/tara-problems/m1/gen
+$WORKSPACE/sandbox/tara-problems/m1/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/tara-problems/out/production/m1/
+$WORKSPACE/sandbox/tara-problems/out/production/m1/
 resources
-/Users/oroncal/workspace/sandbox/tara-problems/m1/res
+$WORKSPACE/sandbox/tara-problems/m1/res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/workspace/sandbox/tara-problems/.intino
+$WORKSPACE/sandbox/tara-problems/.intino
 src.path
-/Users/oroncal/workspace/sandbox/tara-problems/m1/src
+$WORKSPACE/sandbox/tara-problems/m1/src
 
 version
 1.0.0

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.intino.tara</groupId>
+    <groupId>io.intino.magritte</groupId>
     <artifactId>builder-constants</artifactId>
     <version>3.0.0</version>
 

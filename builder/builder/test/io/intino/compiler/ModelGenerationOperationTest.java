@@ -1,13 +1,13 @@
 package io.intino.compiler;
 
+import io.intino.magritte.CompilationInfoExtractor;
+import io.intino.magritte.compiler.core.CompilationUnit;
+import io.intino.magritte.compiler.core.CompilerConfiguration;
+import io.intino.magritte.compiler.core.SourceUnit;
+import io.intino.magritte.compiler.core.operation.sourceunit.ParseOperation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import io.intino.tara.CompilationInfoExtractor;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.CompilerConfiguration;
-import io.intino.tara.compiler.core.SourceUnit;
-import io.intino.tara.compiler.core.operation.sourceunit.ParseOperation;
 
 import java.io.File;
 import java.util.LinkedHashMap;

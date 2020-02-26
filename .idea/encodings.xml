@@ -10,8 +10,8 @@
     <file url="file://$PROJECT_DIR$/core/language" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/language/res" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/language/src" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/magritte/magritte" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/magritte/magritte/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework/src" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

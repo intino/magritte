@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/cesar/consul/consul-server/src/io/intino/consul/Model.tara#true
+$WORKSPACE/cesar/consul/consul-server/src/io/intino/consul/Model.tara#true
 
 project
 cesar
 module
 consul-server
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+$WORKSPACE/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/cesar/consul/consul-server/gen
+$WORKSPACE/cesar/consul/consul-server/gen
 final_outputpath
-/Users/oroncal/workspace/cesar/out/production/consul-server/
+$WORKSPACE/cesar/out/production/consul-server/
 resources
-/Users/oroncal/workspace/cesar/consul/consul-server/res
+$WORKSPACE/cesar/consul/consul-server/res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/workspace/cesar/.tara
+$WORKSPACE/cesar/.tara
 src.path
-/Users/oroncal/workspace/cesar/consul/consul-server/src
+$WORKSPACE/cesar/consul/consul-server/src
 
 version
 1.0.0

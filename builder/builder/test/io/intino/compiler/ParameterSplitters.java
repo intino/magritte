@@ -1,8 +1,8 @@
 package io.intino.compiler;
 
+import io.intino.magritte.compiler.codegeneration.Format;
 import org.junit.Ignore;
 import org.junit.Test;
-import io.intino.tara.compiler.codegeneration.Format;
 
 import static org.junit.Assert.assertEquals;
 

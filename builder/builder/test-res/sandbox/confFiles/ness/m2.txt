@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/ness/data-hub/src/io/intino/datahub/graph/Model.tara#true
+$WORKSPACE/ness/data-hub/src/io/intino/datahub/graph/Model.tara#true
 
 project
 ness
 module
 data-hub
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+$WORKSPACE/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/ness/data-hub/gen
+$WORKSPACE/ness/data-hub/gen
 final_outputpath
-/Users/oroncal/workspace/ness/out/production/data-hub/
+$WORKSPACE/ness/out/production/data-hub/
 resources
-/Users/oroncal/workspace/ness/data-hub/res
+$WORKSPACE/ness/data-hub/res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/workspace/ness/.intino
+$WORKSPACE/ness/.intino
 src.path
-/Users/oroncal/workspace/ness/data-hub/src
+$WORKSPACE/ness/data-hub/src
 
 version
 1.0.0

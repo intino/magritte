@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/konos/toolbox/test/test/ui/components.tara#true
+$WORKSPACE/konos/toolbox/test/test/ui/components.tara#true
 
 project
 konos
 module
 test
 semantic.lib
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+$WORKSPACE/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/konos/toolbox/test/test-gen
+$WORKSPACE/konos/toolbox/test/test-gen
 final_outputpath
-/Users/oroncal/workspace/konos/out/test/builder-test/
+$WORKSPACE/konos/out/test/builder-test/
 resources
-/Users/oroncal/workspace/konos/toolbox/test/test-res
+$WORKSPACE/konos/toolbox/test/test-res
 tara.path
-/Users/oroncal/.m2
+$HOME/.m2
 tara.project.path
-/Users/oroncal/workspace/konos/.intino
+$WORKSPACE/konos/.intino
 src.path
-/Users/oroncal/workspace/konos/toolbox/test/test
+$WORKSPACE/konos/toolbox/test/test
 
 level
 Solution
