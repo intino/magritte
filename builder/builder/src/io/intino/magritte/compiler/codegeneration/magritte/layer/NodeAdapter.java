@@ -14,6 +14,7 @@ import io.intino.magritte.compiler.model.NodeReference;
 import io.intino.magritte.dsl.Meta;
 import io.intino.magritte.dsl.Proteo;
 import io.intino.magritte.lang.model.Node;
+import io.intino.magritte.lang.model.NodeRoot;
 import io.intino.magritte.lang.model.Variable;
 import io.intino.magritte.lang.model.rules.Size;
 import io.intino.magritte.lang.semantics.Constraint.Component;
@@ -103,12 +104,21 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 		if (node.container() != null) context.add(CONTAINER_NAME, node.container().name());
 		addType(context, node);
 		addName(this.context, node);
-		if (node.isAbstract() || node.is(Decorable)) context.add(ABSTRACT, true);
-		if (node.is(Decorable)) context.add(DECORABLE, true);
+		boolean decorable = node.is(Decorable) || isInDecorable(node);
+		if (node.isAbstract() || decorable) context.add(ABSTRACT, true);
+		if (decorable) context.add(DECORABLE, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> context.add(FLAG, tag));
 		if (node.parent() != null) context.add(CHILD);
 		if (node.components().stream().anyMatch(c -> c.is(Instance)))
 			context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
+	}
+
+	private boolean isInDecorable(Node node) {
+		Node container = node.container();
+		if (container instanceof NodeRoot) return false;
+		while (!(container.container() instanceof NodeRoot))
+			container = container.container();
+		return container.is(Decorable);
 	}
 
 	private void addNonAbstractCreates(Node node, FrameBuilderContext context) {
@@ -201,7 +211,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			final FrameBuilder builder = FrameBuilder.from(this.context)
 					.add(OWNER)
 					.append(v)
-					.add(CONTAINER, node.name());
+					.add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name());
 			context.add(VARIABLE, builder.toFrame());
 		});
 		if (node.isAspect()) {
@@ -215,6 +225,10 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 		addTerminalVariables(node, context);
 	}
 
+	private String completeName(Node node) {
+		return node.qualifiedName();
+	}
+
 	private boolean isOverriden(Node node, Variable variable) {
 		return node.variables().stream().anyMatch(var -> var.name().equals(variable.name()));
 	}
@@ -222,7 +236,6 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private boolean isOverriden(Node targetNodeComponent, Node aspectNode) {
 		return aspectNode.components().stream().anyMatch(component -> component.name() != null && component.name().equals(targetNodeComponent.name()));
 	}
-
 
 	private void addAspectConstrains(Node node, FrameBuilderContext context) {
 		node.aspectConstraints()
