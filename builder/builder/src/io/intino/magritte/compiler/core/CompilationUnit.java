@@ -1,6 +1,7 @@
 package io.intino.magritte.compiler.core;
 
 import io.intino.magritte.Language;
+import io.intino.magritte.compiler.DifferentialCache;
 import io.intino.magritte.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.magritte.compiler.core.operation.LayerGenerationOperation;
 import io.intino.magritte.compiler.core.operation.Operation;
@@ -25,17 +26,26 @@ import java.util.stream.IntStream;
 
 public final class CompilationUnit extends ProcessingUnit {
 
+	private final DifferentialCache differentialCache;
 	private Map<String, SourceUnit> sourceUnits;
 	private Map<Language, Model> models = new HashMap<>();
 	private List<Operation>[] phaseOperations;
 	private Map<String, List<String>> outputItems = new HashMap<>();
 
+
 	public CompilationUnit(CompilerConfiguration configuration) {
 		super(configuration, null);
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
+		differentialCache = new DifferentialCache(new File(configuration.intinoProjectDirectory(), "model" + File.separator + configuration.getModule()));
 		IntStream.range(0, phaseOperations.length).forEach(i -> phaseOperations[i] = new LinkedList<>());
 		addPhaseOperations();
+	}
+
+	public static void cleanOut(CompilerConfiguration configuration) {
+		final String generationPackage = (configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage()).replace(".", File.separator);
+		File out = new File(configuration.getOutDirectory(), generationPackage.toLowerCase());
+//		if (out.exists()) FileSystemUtils.removeDir(out); TODO
 	}
 
 	private void addPhaseOperations() {
@@ -81,12 +91,6 @@ public final class CompilationUnit extends ProcessingUnit {
 
 	public void compile() throws CompilationFailedException {
 		compile(Phases.ALL);
-	}
-
-	public static void cleanOut(CompilerConfiguration configuration) {
-		final String generationPackage = (configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage()).replace(".", File.separator);
-		File out = new File(configuration.getOutDirectory(), generationPackage.toLowerCase());
-//		if (out.exists()) FileSystemUtils.removeDir(out); TODO
 	}
 
 	private void compile(int throughPhase) throws CompilationFailedException {
@@ -140,4 +144,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		return outputItems;
 	}
 
+	public DifferentialCache compilationDifferentialCache() {
+		return differentialCache;
+	}
 }

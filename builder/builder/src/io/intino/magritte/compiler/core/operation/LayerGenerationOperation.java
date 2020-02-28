@@ -65,6 +65,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			if (!model.level().equals(Solution)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
+			compilationUnit.compilationDifferentialCache().saveCache(model.components().stream().map(c -> ((NodeImpl) c).getHashCode()).collect(Collectors.toList()));
 		} catch (Throwable e) {
 			LOG.log(java.util.logging.Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -123,16 +124,21 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void renderNode(Map<String, Map<String, String>> map, Model model, Node node) {
 		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName(), model).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-		map.get(node.file()).put(destiny(layerFrame), render(layerFrame));
+		String destination = destination(layerFrame);
+		map.get(node.file()).put(destination, !isModified(node) && new File(destination).exists() ? "" : render(layerFrame));
 		renderFrame(map, node, model, layerFrame);
+	}
+
+	private boolean isModified(Node node) {
+		return compilationUnit.compilationDifferentialCache().isModified((NodeImpl) node);
 	}
 
 	private void renderFrame(Map<String, Map<String, String>> map, Node node, Model model, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
-			layerFrame = new LayerFrameCreator(conf, node.languageName(), model).createDecorable(node);
-			String file = srcDestiny(layerFrame);
-			if (new File(file).exists() && node.isAbstract()) checkAbstractDecorable(new File(file));
-			map.get(node.file()).put(file, render(layerFrame));
+			Map.Entry<String, Frame> frame = new LayerFrameCreator(conf, node.languageName(), model).createDecorable(node);
+			File file = new File(srcDestiny(frame));
+			if (file.exists() && node.isAbstract()) checkAbstractDecorable(file);
+			map.get(node.file()).put(file.getAbsolutePath(), file.exists() ? "" : render(frame));
 		} else removeDecorable(layerFrame.getKey(), node.name());
 	}
 
@@ -154,7 +160,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		if (file.exists()) file.delete();
 	}
 
-	private String destiny(Map.Entry<String, Frame> layerFrameMap) {
+	private String destination(Map.Entry<String, Frame> layerFrameMap) {
 		return new File(outFolder, layerFrameMap.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
@@ -165,7 +171,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void writeLayers(Map<String, String> layersMap) {
 		for (Map.Entry<String, String> entry : layersMap.entrySet()) {
 			File file = new File(entry.getKey());
-			if (isUnderSource(file) && file.exists()) continue;
+			if (entry.getValue().isEmpty() || isUnderSource(file) && file.exists()) continue;
 			file.getParentFile().mkdirs();
 			write(file, entry.getValue());
 		}

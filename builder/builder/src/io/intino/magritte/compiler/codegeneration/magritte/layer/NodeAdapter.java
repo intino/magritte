@@ -14,7 +14,6 @@ import io.intino.magritte.compiler.model.NodeReference;
 import io.intino.magritte.dsl.Meta;
 import io.intino.magritte.dsl.Proteo;
 import io.intino.magritte.lang.model.Node;
-import io.intino.magritte.lang.model.NodeRoot;
 import io.intino.magritte.lang.model.Variable;
 import io.intino.magritte.lang.model.rules.Size;
 import io.intino.magritte.lang.semantics.Constraint.Component;
@@ -113,13 +112,6 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 	}
 
-	private boolean isInDecorable(Node node) {
-		Node container = node.container();
-		if (container instanceof NodeRoot) return false;
-		while (!(container.container() instanceof NodeRoot))
-			container = container.container();
-		return container.is(Decorable);
-	}
 
 	private void addNonAbstractCreates(Node node, FrameBuilderContext context) {
 		if (node instanceof NodeReference) return;
@@ -180,7 +172,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			builder.add(QN, qn);
 			builder.add(STASH_QN, qn);
 			aspect.variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> builder.add(VARIABLE,
-					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, node.name()).toFrame()));
+					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name()).toFrame()));
 			context.add(AVAILABLE_ASPECT, builder.toFrame());
 		});
 	}
@@ -217,10 +209,16 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 		if (node.isAspect()) {
 			node.container().variables().stream().
 					filter(variable -> !variable.isInherited() && !isOverriden(node, variable)).
-					forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(TARGET).add(CONTAINER, node.name()).toFrame()));
+					forEach(variable -> context.add(VARIABLE,
+							FrameBuilder.from(context).append(variable).add(TARGET).
+									add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name()).
+									toFrame()));
 			node.aspectConstraints().forEach(c ->
 					c.node().variables().forEach(v ->
-							context.add(VARIABLE, FrameBuilder.from(context).append(v).add(TARGET).add(CONTAINER, node.name()).toFrame())));
+							context.add(VARIABLE,
+									FrameBuilder.from(context).append(v).add(TARGET).
+											add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name()).
+											toFrame())));
 		}
 		addTerminalVariables(node, context);
 	}

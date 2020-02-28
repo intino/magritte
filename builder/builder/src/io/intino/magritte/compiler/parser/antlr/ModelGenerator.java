@@ -63,8 +63,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl node = new NodeImpl();
 		node.languageName(model.languageName());
 		node.setSub(ctx.signature().SUB() != null);
+		String hashCodeName = calculateName(ctx);
 		if (ctx.signature().IDENTIFIER() != null) node.name(ctx.signature().IDENTIFIER().getText());
-		else node.name(calculateName(ctx));
+		else node.name(hashCodeName);
+		node.setHashCode(hashCodeName);
 		Node container = resolveContainer(node);
 		node.type(node.isSub() ? deque.peek().type() : ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);

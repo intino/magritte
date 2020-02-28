@@ -1,3 +1,26 @@
+def type(Layer & decorable)
+	package $package+javaValidName+lowercase[.$container+lowercase];
+
+	public [$abstract] class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
+		public $name+javaValidName+FirstUpperCase(io.intino.magritte.framework.Node node) {
+			super(node);
+		}
+
+		[$decorableNode...[$NL$NL]]
+	}
+end
+
+
+def trigger(decorableNode)
+	public static [$abstract] class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
+		public $name+javaValidName+FirstUpperCase(io.intino.magritte.framework.Node node) {
+			super(node);
+		}
+
+		[$decorableNode...[$NL$NL]]
+	}
+end
+
 def type(Layer)
 	package $package+javaValidName+lowercase;
 
