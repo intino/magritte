@@ -329,14 +329,6 @@ public class CompilerConfiguration implements Cloneable {
 		this.packageParameters = packageParameters;
 	}
 
-	public void setStashGeneration() {
-		this.stashGeneration = true;
-	}
-
-	public boolean isStashGeneration() {
-		return this.stashGeneration;
-	}
-
 	public PrintStream out() {
 		return out;
 	}
