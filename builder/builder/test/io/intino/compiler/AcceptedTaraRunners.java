@@ -72,6 +72,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void example_m2_2() {
+		main(new String[]{temp(home + "sandbox/confFiles/example/m2_2.txt")});
+	}
+
+
+	@Test
 	public void ness_m2() {
 		main(new String[]{temp(home + "sandbox/confFiles/ness/m2.txt")});
 	}
@@ -79,6 +85,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void ness_m1() {
 		main(new String[]{temp(home + "sandbox/confFiles/ness/m1.txt")});
+	}
+
+	@Test
+	public void ness_m2_2() {
+		main(new String[]{temp(home + "sandbox/confFiles/ness/m2_2.txt")});
 	}
 
 	@Test

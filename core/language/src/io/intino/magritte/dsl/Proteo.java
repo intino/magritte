@@ -11,8 +11,6 @@ import static io.intino.magritte.lang.semantics.constraints.RuleFactory.*;
 public class Proteo extends Tara {
 
 	private static Size MULTIPLE = new Size(0, Integer.MAX_VALUE);
-	public static final String GROUP_ID = "io.intino.tara";
-	public static final String ARTIFACT_ID = "magritte";
 
 	public Proteo() {
 		def(Tara.Root).with(context(Tara.Root).has(

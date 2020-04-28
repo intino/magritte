@@ -38,6 +38,7 @@ public class NodeImpl implements Node {
 	private boolean dirty;
 	private boolean virtual;
 	private String stashNodeName;
+	private String hashCode;
 
 	@Override
 	public String name() {
@@ -416,6 +417,14 @@ public class NodeImpl implements Node {
 
 	public void setVirtual(boolean virtual) {
 		this.virtual = virtual;
+	}
+
+	public void setHashCode(String hashCode) {
+		this.hashCode = hashCode;
+	}
+
+	public String getHashCode() {
+		return hashCode;
 	}
 
 	private static class AspectConstraint implements Node.AspectConstraint, Cloneable {

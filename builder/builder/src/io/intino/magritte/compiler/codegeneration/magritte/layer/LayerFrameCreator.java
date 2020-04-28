@@ -66,7 +66,15 @@ public class LayerFrameCreator implements TemplateTags {
 		builder.add(NAME, node.name());
 		if (!(node.container() instanceof NodeRoot)) builder.add(CONTAINER, node.container().qualifiedName());
 		if (node.isAbstract()) builder.add(ABSTRACT, true);
+		builder.add("decorableNode", node.components().stream().filter(c -> !c.isReference()).map(this::createDecorableFrame).toArray(Frame[]::new));
 		return new SimpleEntry<>(calculateDecorablePath(node, aPackage), builder.toFrame());
+	}
+
+	private Frame createDecorableFrame(Node node) {
+		FrameBuilder builder = new FrameBuilder("decorableNode").add("name", node.name());
+		if (node.isAbstract()) builder.add("abstract", "abstract");
+		builder.add("decorableNode", node.components().stream().filter(c -> !c.isReference()).map(this::createDecorableFrame).toArray(Frame[]::new));
+		return builder.toFrame();
 	}
 
 	private String calculateLayerPath(Node node, String aPackage) {

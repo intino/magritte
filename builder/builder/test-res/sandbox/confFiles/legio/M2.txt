@@ -6,7 +6,7 @@ intino
 module
 legio
 semantic.lib
-$WORKSPACE/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+$HOME/.m2/repository/io/intino/magritte/language/1.3.0/language-1.3.0.jar
 outputpath
 $WORKSPACE/intino/legio/gen
 final_outputpath

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import static io.intino.magritte.Resolver.shortType;
 
 public abstract class Tara implements Language {
+	public static final String GROUP_ID = "io.intino.magritte";
+	public static final String ARTIFACT_ID = "framework";
 	static final String Root = "";
 	private Map<String, Context> rulesCatalog = new HashMap<>();
 	private Map<String, InstanceContext> declarationsCatalog = new HashMap<>();

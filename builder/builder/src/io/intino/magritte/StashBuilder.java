@@ -21,12 +21,12 @@ import java.util.Map;
 public class StashBuilder {
 
 	private final String dsl;
-	private PrintStream stream;
 	private final String dslVersion;
 	private final String module;
 	private final List<File> files;
 	private final Language language;
 	private final Charset charset;
+	private PrintStream stream;
 	private File workingDirectory;
 
 	public StashBuilder(List<File> files, String dsl, String dslVersion, String module, PrintStream stream) {
@@ -57,23 +57,21 @@ public class StashBuilder {
 		}
 	}
 
-	public Stash build() {
+	public Stash[] build() {
 		try {
 			new TaraCompilerRunner(true).run(createConfiguration(), files);
-			final File createdStash = findCreatedStash();
-			if (createdStash == null || !createdStash.exists()) return null;
-			final Stash stash = StashDeserializer.stashFrom(createdStash);
-			createdStash.delete();
+			final File[] createdStashes = findCreatedStashes();
+			if (createdStashes.length == 0) return null;
+			final Stash[] stash = Arrays.stream(createdStashes).map(StashDeserializer::stashFrom).toArray(Stash[]::new);
+			for (File createdStash : createdStashes) createdStash.delete();
 			return stash;
 		} catch (Throwable e) {
 			return null;
 		}
 	}
 
-	private File findCreatedStash() {
-		final File[] list = workingDirectory.listFiles((dir, name) -> name.endsWith(".stash"));
-		if (list == null || list.length == 0) return null;
-		return Arrays.asList(list).get(0);
+	private File[] findCreatedStashes() {
+		return workingDirectory.listFiles((dir, name) -> name.endsWith(".stash"));
 	}
 
 	private CompilerConfiguration createConfiguration() {
@@ -87,7 +85,6 @@ public class StashBuilder {
 		configuration.setMake(true);
 		configuration.model().outDsl(module);
 		configuration.sourceEncoding(charset.name());
-		configuration.setStashGeneration();
 		configuration.out(this.stream);
 		if (language == null) configuration.addLanguage(dsl, dslVersion);
 		else configuration.addLanguage(language);

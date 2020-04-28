@@ -18,15 +18,14 @@ import io.intino.magritte.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.intino.magritte.compiler.codegeneration.Format.noPackage;
 import static io.intino.magritte.compiler.codegeneration.Format.withDollar;
 import static io.intino.magritte.compiler.codegeneration.magritte.NameFormatter.DOT;
 import static io.intino.magritte.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
+import static io.intino.magritte.compiler.core.operation.StashGenerationOperation.STASH;
 import static io.intino.magritte.lang.model.Primitive.*;
 import static io.intino.magritte.lang.model.Tag.*;
 import static java.util.Collections.emptyList;
@@ -42,7 +41,6 @@ public class StashCreator {
 	private final Stash stash = new Stash();
 	private final String outDSL;
 	private final String workingPackage;
-	private final boolean stashGeneration;
 
 	public StashCreator(List<io.intino.magritte.lang.model.Node> nodes, Language language, String outDSL, CompilerConfiguration conf) {
 		this.nodes = nodes;
@@ -52,8 +50,8 @@ public class StashCreator {
 		this.resourceFolder = conf.resourcesDirectory();
 		this.level = conf.model().level();
 		this.test = conf.isTest();
-		this.stashGeneration = conf.isStashGeneration();
 		this.stash.language = language.languageName();
+		this.stash.path = new File(nodes.get(0).file()).getName().split("\\.")[0] + STASH;
 	}
 
 	private static String toSystemIndependentName(String fileName) {
@@ -114,35 +112,11 @@ public class StashCreator {
 	}
 
 	private String className(io.intino.magritte.lang.model.Node node) {
-		return workingPackage + DOT + withDollar().format(noPackage().format(isInDecorable(node) ?
-				NameFormatter.decorableInnerClassQn(node, workingPackage) :
-				NameFormatter.getQn(node, workingPackage))).toString();
+		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(node, workingPackage))).toString();
 	}
 
 	private String aspectClassName(io.intino.magritte.lang.model.Node aspectNode) {
-		return workingPackage + DOT + withDollar().format(noPackage().format(
-				aspectNode.container().is(Decorable) ?
-						NameFormatter.decorableInnerClassQn(aspectNode, workingPackage) :
-						NameFormatter.getQn(aspectNode, workingPackage)).toString());
-	}
-
-	private boolean isInDecorable(io.intino.magritte.lang.model.Node node) {
-		io.intino.magritte.lang.model.Node aNode = node.container();
-		while (!(aNode instanceof Model)) {
-			if (aNode.is(Decorable)) return true;
-			aNode = aNode.container();
-		}
-		return false;
-	}
-
-
-	private List<io.intino.magritte.lang.model.Node> collectChildren(io.intino.magritte.lang.model.Node parent) {
-		Set<io.intino.magritte.lang.model.Node> set = new HashSet<>();
-		for (io.intino.magritte.lang.model.Node child : parent.children()) {
-			set.add(child);
-			set.addAll(collectChildren(child));
-		}
-		return new ArrayList<>(set);
+		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(aspectNode, workingPackage)).toString());
 	}
 
 	private String calculateParent(io.intino.magritte.lang.model.Node node) {
@@ -297,7 +271,7 @@ public class StashCreator {
 	}
 
 	private String getStash(io.intino.magritte.lang.model.Node node) {
-		return (test || level.compareLevelWith(Level.Solution) == 0) && !stashGeneration ? getStashByNode(node) : outDSL;
+		return test || level.compareLevelWith(Level.Solution) == 0 ? getStashByNode(node) : outDSL;
 	}
 
 	private String getStashByNode(io.intino.magritte.lang.model.Node node) {

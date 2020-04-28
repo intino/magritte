@@ -35,7 +35,7 @@ doc ::= (DOC_LINE NEWLINE?)+ {
 node ::= doc? signature body? {
 	pin = 2
 	mixin= 'io.intino.magritte.plugin.lang.psi.impl.NodeMixin'
-	implements='io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
+	implements='io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.magritte.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
 signature::= (subNode | (metaIdentifier ruleContainer* parameters? identifier? aspects? parent?)) (constraint? tags?)  {
@@ -59,7 +59,7 @@ parameters ::= LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESI
 parameter ::= (identifier EQUALS)? value {
     pin = 2
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.ParameterMixin'
-	implements = 'io.intino.magritte.plugin.lang.psi.Valued, io.intino.tara.lang.model.Parameter, com.intellij.pom.Navigatable'
+	implements = 'io.intino.magritte.plugin.lang.psi.Valued, io.intino.magritte.lang.model.Parameter, com.intellij.pom.Navigatable'
 }
 
 aspects ::= AS aspectApply+
@@ -67,7 +67,7 @@ aspects ::= AS aspectApply+
 
 aspectApply ::= metaIdentifier parameters? {
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.AspectApplyMixin'
-    implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Aspect, com.intellij.pom.Navigatable'
+    implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.magritte.lang.model.Aspect, com.intellij.pom.Navigatable'
 }
 
 body ::= (NEW_LINE_INDENT NEWLINE? | INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
@@ -81,17 +81,17 @@ private nodeConstituents ::= varInit | variable | node | nodeReference
 nodeReference ::= HAS ruleContainer* identifierReference tags? {
 	pin = 1
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.NodeReferenceMixin'
-	implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Node, com.intellij.pom.Navigatable'
+	implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.magritte.lang.model.Node, com.intellij.pom.Navigatable'
 }
 
 variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? bodyValue? {
 	pin = 2
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.VariableMixin'
-	implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.tara.lang.model.Variable, io.intino.tara.plugin.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
+	implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.magritte.lang.model.Variable, io.intino.plugin.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }
 bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT {
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.ValueMixin'
-    implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.tara.plugin.lang.psi.Value'
+    implements = 'io.intino.magritte.plugin.lang.psi.TaraPsiElement, io.intino.plugin.lang.psi.Value'
 }
 
 variableType::= FUNCTION_TYPE
@@ -118,7 +118,7 @@ ruleContainer ::= COLON rule
 
 rule ::= (LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | (identifierReference CLASS_TYPE?){
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.RuleMixin'
-	implements = 'io.intino.magritte.plugin.lang.psi.Rule, io.intino.tara.plugin.lang.psi.TaraPsiElement'
+	implements = 'io.intino.magritte.plugin.lang.psi.Rule, io.intino.plugin.lang.psi.TaraPsiElement'
 }
 
 range ::= (doubleValue | integerValue | STAR) (DOT DOT (doubleValue | integerValue | STAR))?
@@ -134,7 +134,7 @@ value ::= stringValue+
         | methodReference+
 {
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.ValueMixin'
-    implements = 'io.intino.magritte.plugin.lang.psi.Value, io.intino.tara.plugin.lang.psi.TaraPsiElement'
+    implements = 'io.intino.magritte.plugin.lang.psi.Value, io.intino.plugin.lang.psi.TaraPsiElement'
 }
 
 methodReference ::= AT identifierReference
@@ -142,12 +142,12 @@ methodReference ::= AT identifierReference
 
 stringValue ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) {
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.StringMixin'
-    implements = 'io.intino.magritte.plugin.lang.psi.StringValue, io.intino.tara.plugin.lang.psi.TaraPsiElement'
+    implements = 'io.intino.magritte.plugin.lang.psi.StringValue, io.intino.plugin.lang.psi.TaraPsiElement'
 }
 
 expression  ::= (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.ExpressionMixin'
-    implements = 'io.intino.magritte.plugin.lang.psi.Expression, io.intino.tara.plugin.lang.psi.TaraPsiElement'
+    implements = 'io.intino.magritte.plugin.lang.psi.Expression, io.intino.plugin.lang.psi.TaraPsiElement'
 }
 
 booleanValue    ::= BOOLEAN_VALUE_KEY
@@ -191,7 +191,7 @@ annotation ::= COMPONENT | FEATURE | ENCLOSED {
 varInit ::= identifier ((EQUALS value) | bodyValue) {
     pin = 2
 	mixin = 'io.intino.magritte.plugin.lang.psi.impl.VarInitMixin'
-	implements = 'io.intino.magritte.plugin.lang.psi.Valued, io.intino.tara.lang.model.Parameter'
+	implements = 'io.intino.magritte.plugin.lang.psi.Valued, io.intino.magritte.lang.model.Parameter'
 }
 
 emptyField ::= EMPTY_REF

@@ -103,13 +103,15 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 		if (node.container() != null) context.add(CONTAINER_NAME, node.container().name());
 		addType(context, node);
 		addName(this.context, node);
-		if (node.isAbstract() || node.is(Decorable)) context.add(ABSTRACT, true);
-		if (node.is(Decorable)) context.add(DECORABLE, true);
+		boolean decorable = node.is(Decorable) || isInDecorable(node);
+		if (node.isAbstract() || decorable) context.add(ABSTRACT, true);
+		if (decorable) context.add(DECORABLE, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> context.add(FLAG, tag));
 		if (node.parent() != null) context.add(CHILD);
 		if (node.components().stream().anyMatch(c -> c.is(Instance)))
 			context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 	}
+
 
 	private void addNonAbstractCreates(Node node, FrameBuilderContext context) {
 		if (node instanceof NodeReference) return;
@@ -170,7 +172,7 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			builder.add(QN, qn);
 			builder.add(STASH_QN, qn);
 			aspect.variables().stream().filter(v -> v.size().isRequired()).forEach(variable -> builder.add(VARIABLE,
-					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, node.name()).toFrame()));
+					FrameBuilder.from(context).append(variable).add(REQUIRED).add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name()).toFrame()));
 			context.add(AVAILABLE_ASPECT, builder.toFrame());
 		});
 	}
@@ -201,18 +203,28 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 			final FrameBuilder builder = FrameBuilder.from(this.context)
 					.add(OWNER)
 					.append(v)
-					.add(CONTAINER, node.name());
+					.add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name());
 			context.add(VARIABLE, builder.toFrame());
 		});
 		if (node.isAspect()) {
 			node.container().variables().stream().
 					filter(variable -> !variable.isInherited() && !isOverriden(node, variable)).
-					forEach(variable -> context.add(VARIABLE, FrameBuilder.from(context).append(variable).add(TARGET).add(CONTAINER, node.name()).toFrame()));
+					forEach(variable -> context.add(VARIABLE,
+							FrameBuilder.from(context).append(variable).add(TARGET).
+									add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name()).
+									toFrame()));
 			node.aspectConstraints().forEach(c ->
 					c.node().variables().forEach(v ->
-							context.add(VARIABLE, FrameBuilder.from(context).append(v).add(TARGET).add(CONTAINER, node.name()).toFrame())));
+							context.add(VARIABLE,
+									FrameBuilder.from(context).append(v).add(TARGET).
+											add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name()).
+											toFrame())));
 		}
 		addTerminalVariables(node, context);
+	}
+
+	private String completeName(Node node) {
+		return node.qualifiedName();
 	}
 
 	private boolean isOverriden(Node node, Variable variable) {
@@ -222,7 +234,6 @@ class NodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private boolean isOverriden(Node targetNodeComponent, Node aspectNode) {
 		return aspectNode.components().stream().anyMatch(component -> component.name() != null && component.name().equals(targetNodeComponent.name()));
 	}
-
 
 	private void addAspectConstrains(Node node, FrameBuilderContext context) {
 		node.aspectConstraints()

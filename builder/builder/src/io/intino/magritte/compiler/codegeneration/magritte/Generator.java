@@ -9,6 +9,7 @@ import io.intino.magritte.compiler.codegeneration.magritte.layer.TypesProvider;
 import io.intino.magritte.compiler.codegeneration.magritte.natives.NativeExtractor;
 import io.intino.magritte.compiler.model.NodeReference;
 import io.intino.magritte.compiler.model.VariableReference;
+import io.intino.magritte.lang.model.Aspect;
 import io.intino.magritte.lang.model.*;
 import io.intino.magritte.lang.model.rules.variable.NativeObjectRule;
 import io.intino.magritte.lang.model.rules.variable.NativeRule;
@@ -24,8 +25,7 @@ import java.util.stream.Collectors;
 import static io.intino.magritte.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.magritte.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.magritte.lang.model.Primitive.OBJECT;
-import static io.intino.magritte.lang.model.Tag.Final;
-import static io.intino.magritte.lang.model.Tag.Terminal;
+import static io.intino.magritte.lang.model.Tag.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -41,6 +41,14 @@ public abstract class Generator implements TemplateTags {
 		this.outDsl = outDsl;
 		this.workingPackage = workingPackage;
 		this.languageWorkingPackage = languageWorkingPackage;
+	}
+
+	public static boolean isInDecorable(Node node) {
+		Node container = node.container();
+		if (container instanceof NodeRoot) return false;
+		while (!(container.container() instanceof NodeRoot))
+			container = container.container();
+		return container.is(Decorable);
 	}
 
 	public Set<String> getImports() {
@@ -110,7 +118,7 @@ public abstract class Generator implements TemplateTags {
 		}
 		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), context, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		addAspectVariables(node, context);
-		if (!context.contains(CONTAINER)) context.add(CONTAINER, node.name());
+		if (!context.contains(CONTAINER)) context.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
 	}
 
 	private boolean isRequired(Node node, Constraint.Parameter allow) {
@@ -155,7 +163,7 @@ public abstract class Generator implements TemplateTags {
 
 	private void addTerminalVariable(Node node, String type, FrameBuilderContext context, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
 		FrameBuilder varBuilder = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
-		if (!varBuilder.contains(CONTAINER)) varBuilder.add(CONTAINER, node.name());
+		if (!varBuilder.contains(CONTAINER)) varBuilder.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
 		context.add(VARIABLE, varBuilder.toFrame());
 	}
 

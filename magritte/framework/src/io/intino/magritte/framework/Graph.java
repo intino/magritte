@@ -384,6 +384,7 @@ public class Graph {
 
 	private Node loadFromLoaders(String id) {
 		Node result = null;
+		List<NodeLoader> loaders = new ArrayList<>(this.loaders);
 		for (NodeLoader loader : loaders) {
 			result = loader.loadNode(id);
 			if (result != null) break;

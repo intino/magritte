@@ -27,8 +27,8 @@ import static io.intino.Configuration.Artifact.Model.Level.Solution;
 import static io.intino.magritte.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class StashGenerationOperation extends ModelOperation {
+	public static final String STASH = ".stash";
 	private static final Logger LOG = Logger.getLogger(StashGenerationOperation.class.getName());
-	private static final String STASH = ".stash";
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private String outDSL;
@@ -45,7 +45,7 @@ public class StashGenerationOperation extends ModelOperation {
 		try {
 			if (conf.isVerbose())
 				conf.out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]" + " Generating Stashes...");
-			if ((conf.isTest() || conf.model().level().equals(Solution)) && !conf.isStashGeneration()) createSeparatedStashes(model);
+			if ((conf.isTest() || conf.model().level().equals(Solution))) createSeparatedStashes(model);
 			else createFullStash(model);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
