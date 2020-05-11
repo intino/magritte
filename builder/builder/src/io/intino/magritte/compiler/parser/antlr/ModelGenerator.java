@@ -181,7 +181,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		AspectImpl aspect = new AspectImpl(ctx.metaidentifier().getText());
 		addHeaderInformation(ctx, aspect);
 		if (deque.peek() == null) {
-			addError("Unavailable component facet apply in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
+			addError("Unavailable component aspect apply in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
 			return;
 		}
 		Node current = deque.peek();
