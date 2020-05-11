@@ -16,6 +16,10 @@ public class Resolver {
 		this.language = language;
 	}
 
+	public static String shortType(String absoluteType) {
+		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;
+	}
+
 	public void resolve(Node node) {
 		if (context(node) == null) return;
 		resolveNode(node);
@@ -64,7 +68,7 @@ public class Resolver {
 	private List<Constraint> findInAspects(Node node) {
 		final Node context = context(node);
 		for (Aspect aspect : context.appliedAspects()) {
-			List<Constraint> constraints = language.constraints(context.type() + "." + aspect.type());
+			List<Constraint> constraints = language.constraints(aspect.fullType());
 			if (constraints != null && isComponent(constraints, node)) return constraints;
 		}
 		return null;
@@ -88,7 +92,6 @@ public class Resolver {
 		if (constraint instanceof OneOf) return checkAllowOneOf(node, constraint);
 		return checkAsComponent(node, (Constraint.Component) constraint);
 	}
-
 
 	private void checkMetaAspectConstraint(Node node, Constraint.MetaAspect constraint) {
 		if (node.type() != null && shortType(node.type()).equals(shortType(constraint.type()))) node.type(constraint.type());
@@ -121,10 +124,5 @@ public class Resolver {
 	public Node context(Node node) {
 		if (node == null) return null;
 		return node.container();
-	}
-
-
-	public static String shortType(String absoluteType) {
-		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;
 	}
 }
