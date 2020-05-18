@@ -252,11 +252,13 @@ public class RuleFactory {
 		};
 	}
 
-	private static void propagateFlags(Node node, Tag flag) {
+	private static void propagateFlags(Node node, Tag tag) {
 		for (Node component : node.components()) {
 			if (component.isReference()) continue;
-			if (!component.flags().contains(flag)) component.addFlags(flag);
-			if (!component.equals(node)) propagateFlags(component, flag);
+			if (!component.flags().contains(tag)) {
+				component.addFlags(tag);
+				if (!component.equals(node)) propagateFlags(component, tag);
+			}
 		}
 	}
 

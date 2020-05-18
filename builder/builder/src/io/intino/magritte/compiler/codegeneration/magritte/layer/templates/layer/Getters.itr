@@ -352,6 +352,10 @@ def type(Node & owner & final) !type(single | inherited | overriden) trigger(get
 	public java.util.List<$qn+reference> $name+toCamelCase+FirstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
 		return $name+toCamelCase+FirstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
+
+	public $qn+reference $name+toCamelCase+FirstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
+		return $name+toCamelCase+FirstLowerCase~List().stream().filter(predicate).findFirst().orElse(null);
+	}
 end
 
 def type(Node & owner) !type(single | inherited | overriden) trigger(getter)
@@ -365,5 +369,9 @@ def type(Node & owner) !type(single | inherited | overriden) trigger(getter)
 
 	public java.util.List<$qn+reference> $name+toCamelCase+FirstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
 		return $name+toCamelCase+FirstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public $qn+reference $name+toCamelCase+FirstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
+		return $name+toCamelCase+FirstLowerCase~List().stream().filter(predicate).findFirst().orElse(null);
 	}
 end
