@@ -1,5 +1,5 @@
 def.file
-$WORKSPACE/intino/legio/src/io/intino/legio/Main.tara#true
+$WORKSPACE/intino/legio/src/io/intino/legio/graph/Main.tara#true
 
 project
 intino
@@ -32,7 +32,7 @@ io.intino.legio
 artifactId
 model
 version
-3.2.0
+4.0.0
 generation.package
 io.intino.legio.graph
 make

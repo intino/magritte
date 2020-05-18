@@ -25,6 +25,7 @@ public class AcceptedTaraRunners {
 			String text = Files.readString(file.toPath()).replace("$WORKSPACE", home + File.separator + "workspace").replace("$HOME", home);
 			Path temporalFile = Files.createTempFile(file.getName(), ".txt");
 			Files.writeString(temporalFile, text, StandardOpenOption.TRUNCATE_EXISTING);
+			temporalFile.toFile().deleteOnExit();
 			return temporalFile.toFile().getAbsolutePath();
 		} catch (IOException e) {
 			return null;
@@ -75,7 +76,6 @@ public class AcceptedTaraRunners {
 	public void example_m2_2() {
 		main(new String[]{temp(home + "sandbox/confFiles/example/m2_2.txt")});
 	}
-
 
 	@Test
 	public void ness_m2() {
