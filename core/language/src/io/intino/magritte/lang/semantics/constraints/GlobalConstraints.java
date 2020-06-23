@@ -168,10 +168,9 @@ public class GlobalConstraints {
 
 	private void checkDuplicatesBetween(List<Node> components, List<Variable> variables) throws SemanticException {
 		if (variables == null) return;
-		for (Variable var : variables) {
-			if (components.stream().anyMatch(c -> var.name().equals(c.name())))
+		for (Variable var : variables)
+			if (components.stream().anyMatch(c -> var.name() != null && var.name().equals(c.name())))
 				error("reject.duplicated.name.between.variables.and.components", var, Collections.singletonList(var.name()));
-		}
 	}
 
 	private void checkDuplicates(List<? extends Valued> values) throws SemanticException {
@@ -215,7 +214,7 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectInstantValues(Variable variable) {
-		return variable.values().stream().filter(v -> !(v instanceof Primitive.Expression)).noneMatch(o -> o.toString().isEmpty());
+		return variable.values().stream().filter(v -> v != null && !(v instanceof Primitive.Expression)).noneMatch(o -> o.toString().isEmpty());
 	}
 
 	private boolean isRedefiningTerminal(Variable variable) {
