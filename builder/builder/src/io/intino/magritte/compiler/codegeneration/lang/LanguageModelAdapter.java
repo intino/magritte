@@ -305,13 +305,6 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 					if (c.isMetaAspect()) createMetaAspectComponentConstraint(frames, c);
 					else if (!c.isSub()) createComponentConstraint(frames, c);
 				});
-		if ((node.isMetaAspect() || node.isAspect()) && node.parent() != null)
-			node.parent().components().stream().
-					filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
-					forEach(c -> {
-						if (c.isMetaAspect()) createMetaAspectComponentConstraint(frames, c);
-						else createComponentConstraint(frames, c);
-					});
 	}
 
 	private boolean componentCompliant(Node container, Node node) {

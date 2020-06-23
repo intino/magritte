@@ -11,14 +11,16 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 public class StashDeserializer extends Deserializer {
-
+	private static final Kryo kryo = new Kryo();
 
 	static {
 		Log.ERROR();
+		kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+		kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
+		kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
 	}
 
 	private StashDeserializer() {
-
 	}
 
 	public static Stash stashFrom(File file) {
@@ -32,10 +34,6 @@ public class StashDeserializer extends Deserializer {
 	public static Stash stashFrom(byte[] bytes) {
 		Stash result = null;
 		try (Input input = new Input(bytes)) {
-			final Kryo kryo = new Kryo();
-			kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
-			kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
 			result = kryo.readObject(input, Stash.class);
 		} catch (Throwable e) {
 			Log.error(e.getMessage());
