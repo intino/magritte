@@ -72,7 +72,7 @@ public abstract class Generator implements TemplateTags {
 	protected void addComponents(Node node, FrameBuilderContext context) {
 		if (node instanceof NodeReference) return;
 		node.components().stream().
-				filter(c -> !c.isAspect() && !c.isAnonymous() && (!c.isReference() || (((NodeReference) c).isHas()))).
+				filter(c -> !c.is(Instance) && !c.isAspect() && !c.isAnonymous() && (!c.isReference() || (((NodeReference) c).isHas()))).
 				forEach(c -> context.add(NODE, FrameBuilder.from(context).append(c).add(OWNER).toFrame()));
 	}
 
