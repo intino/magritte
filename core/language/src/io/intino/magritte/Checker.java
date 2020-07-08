@@ -45,7 +45,7 @@ public class Checker {
 
 	private boolean isParameterNotFoundRecoverable(Element element, String name, String type) {
 		final Node node = (Node) element;
-		if (language == null || node == null) return false;
+		if (language == null || node == null || node.type() == null) return false;
 		final List<Constraint.Aspect> aspects = language.constraints(node.type()).stream().filter(c -> sameAspect(node, c)).map(c -> (Constraint.Aspect) c).collect(toList());
 		for (Constraint.Aspect aspect : aspects)
 			for (Constraint.Parameter c : aspect.constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(p -> (Constraint.Parameter) p).collect(toList()))
