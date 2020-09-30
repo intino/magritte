@@ -47,15 +47,15 @@ public class CompilerConfiguration implements Cloneable {
 	private String module;
 	private File outDirectory;
 	private boolean debug;
-	private Locale languageForCodeGeneration = Locale.ENGLISH;
-	private List<File> sourceDirectories = new ArrayList<>();
+	private final Locale languageForCodeGeneration = Locale.ENGLISH;
+	private final List<File> sourceDirectories = new ArrayList<>();
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
 	private String groupID;
 	private String artifactID;
 	private String version;
-	private ModelConfiguration model;
+	private final ModelConfiguration model;
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
@@ -63,9 +63,8 @@ public class CompilerConfiguration implements Cloneable {
 	private File taraDirectory;
 	private boolean test;
 	private String workingPackage;
-	private String nativeLanguage = "java";
+	private final String nativeLanguage = "java";
 	private Map<String, String> packageParameters;
-	private boolean stashGeneration = false;
 	private PrintStream out = System.out;
 
 	public CompilerConfiguration() {
@@ -336,7 +335,6 @@ public class CompilerConfiguration implements Cloneable {
 	public void out(PrintStream out) {
 		this.out = out;
 	}
-
 
 	public class ModelConfiguration {
 		private Language language;

@@ -2,6 +2,7 @@ package io.intino.magritte;
 
 import io.intino.Configuration;
 import io.intino.magritte.compiler.TaraCompiler;
+import io.intino.magritte.compiler.codegeneration.FileSystemUtils;
 import io.intino.magritte.compiler.core.CompilationUnit;
 import io.intino.magritte.compiler.core.CompilerConfiguration;
 import io.intino.magritte.compiler.core.CompilerMessage;
@@ -23,24 +24,24 @@ class TaraCompilerRunner {
 		this.verbose = verbose;
 	}
 
-	boolean run(File argsFile) {
+	void run(File argsFile) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		final Map<File, Boolean> sources = new LinkedHashMap<>();
 		CompilationInfoExtractor.getInfoFromArgsFile(argsFile, config, sources);
 		config.setVerbose(verbose);
 		config.out(System.out);
 		this.out = config.out();
-		if (sources.isEmpty()) return true;
+		if (sources.isEmpty()) return;
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final List<CompilerMessage> messages = new ArrayList<>();
 		List<TaraCompiler.OutputItem> compiled = compile(config, sources, messages);
 		if (verbose) report(sources, compiled);
 		processErrors(messages);
-		return false;
+		FileSystemUtils.removeDir(config.getTempDirectory());
 	}
 
 
-	boolean run(CompilerConfiguration config, List<File> files) {
+	void run(CompilerConfiguration config, List<File> files) {
 		config.setVerbose(verbose);
 		this.out = config.out();
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
@@ -50,7 +51,7 @@ class TaraCompilerRunner {
 		List<TaraCompiler.OutputItem> compiled = compile(config, sources, messages);
 		if (verbose) report(sources, compiled);
 		processErrors(messages);
-		return false;
+		FileSystemUtils.removeDir(config.getTempDirectory());
 	}
 
 

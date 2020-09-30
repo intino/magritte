@@ -1,6 +1,7 @@
 package io.intino.magritte;
 
 import io.intino.Configuration;
+import io.intino.magritte.compiler.codegeneration.FileSystemUtils;
 import io.intino.magritte.compiler.core.CompilerConfiguration;
 import io.intino.magritte.io.Stash;
 import io.intino.magritte.io.StashDeserializer;
@@ -64,6 +65,7 @@ public class StashBuilder {
 			if (createdStashes.length == 0) return null;
 			final Stash[] stash = Arrays.stream(createdStashes).map(StashDeserializer::stashFrom).toArray(Stash[]::new);
 			for (File createdStash : createdStashes) createdStash.delete();
+			FileSystemUtils.removeDir(workingDirectory);
 			return stash;
 		} catch (Throwable e) {
 			return null;
