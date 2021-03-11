@@ -26,8 +26,10 @@ public class ThreadSafeStashSerializer {
 
 	private static byte[] doSerialize(Stash stash) throws IOException {
 		String thread = Thread.currentThread().getName();
-		if (kryos.size() > 1000) kryos.clear();
-		if (!kryos.containsKey(thread)) kryos.put(thread, newDeserializer());
+		if (!kryos.containsKey(thread)) {
+			if (kryos.size() > 1000) kryos.clear();
+			kryos.put(thread, newDeserializer());
+		}
 		Kryo kryo = kryos.get(thread);
 		try (Output output = new Output(4096, -1)) {
 			kryo.writeObject(output, stash);

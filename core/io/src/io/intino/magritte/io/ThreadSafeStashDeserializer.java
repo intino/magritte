@@ -32,8 +32,10 @@ public class ThreadSafeStashDeserializer extends Deserializer {
 
 	public static Stash stashFrom(byte[] bytes) {
 		String thread = Thread.currentThread().getName();
-		if (kryos.size() > 1000) kryos.clear();
-		if (!kryos.containsKey(thread)) kryos.put(thread, newDeserializer());
+		if (!kryos.containsKey(thread)) {
+			if (kryos.size() > 1000) kryos.clear();
+			kryos.put(thread, newDeserializer());
+		}
 		Kryo kryo = kryos.get(thread);
 		Stash result = null;
 		try (Input input = new Input(bytes)) {
