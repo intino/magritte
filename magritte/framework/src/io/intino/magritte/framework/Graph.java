@@ -40,7 +40,12 @@ public class Graph {
 
 	public Graph(Store store) {
 		this.store = store;
-		model = new Model(this, wrappers);
+		this.model = new Model(this, wrappers);
+	}
+
+	public Graph(Store store, boolean indexedModel) {
+		this.store = store;
+		this.model = indexedModel ? new Model(this, wrappers) : new Model.NoIndexedModel(this, wrappers);
 	}
 
 	public Graph loadStashes(String... stashes) {

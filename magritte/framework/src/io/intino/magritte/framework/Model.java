@@ -2,12 +2,12 @@ package io.intino.magritte.framework;
 
 import java.util.Map;
 
-class Model extends Node {
+public class Model extends Node {
 
 	Graph graph;
-	private Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers;
+	private final Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers;
 
-	Model(Graph graph, Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers) {
+	public Model(Graph graph, Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers) {
 		this.graph = graph;
 		this.wrappers = wrappers;
 		addLayer(M1.class);
@@ -31,5 +31,20 @@ class Model extends Node {
 	protected void remove(Node node) {
 		super.remove(node);
 		wrappers.values().forEach(wrapper -> wrapper.removeNode$(node));
+	}
+
+	public static class NoIndexedModel extends Model{
+
+		public NoIndexedModel(Graph graph, Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers) {
+			super(graph, wrappers);
+		}
+
+		@Override
+		public void add(Node node) {
+		}
+
+		@Override
+		protected void remove(Node node) {
+		}
 	}
 }
