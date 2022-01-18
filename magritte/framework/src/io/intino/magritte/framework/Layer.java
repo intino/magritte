@@ -59,6 +59,10 @@ public abstract class Layer {
 		node.delete();
 	}
 
+	public void deleteInMemory$() {
+		node.deleteInMemory();
+	}
+
 	public void save$() {
 		node.save();
 	}

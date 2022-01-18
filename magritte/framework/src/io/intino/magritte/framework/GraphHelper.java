@@ -5,8 +5,7 @@ import io.intino.magritte.framework.utils.StashHelper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static io.intino.magritte.framework.utils.StashHelper.canonicalPath;
-import static io.intino.magritte.framework.utils.StashHelper.stashWithExtension;
+import static io.intino.magritte.framework.utils.StashHelper.*;
 import static java.util.Arrays.asList;
 import static java.util.logging.Logger.getGlobal;
 
@@ -27,26 +26,28 @@ class GraphHelper {
 	}
 
 	static void saveStashes(Graph graph, String[] paths) {
-		Set<String> set = new HashSet(asList(paths));
 		Map<String, List<Node>> pathNodes = new HashMap<>();
-		set.forEach(p -> pathNodes.put(p, new ArrayList<>()));
-		for (Node node : graph.model.graph.rootList()) {
-			if (node == null) continue;
-			if (set.contains(node.stash())) pathNodes.get(node.stash()).add(node);
-		}
+		for (String path : paths) pathNodes.put(path, nodesOf(graph, path));
 		save(graph, pathNodes);
 	}
 
 	static void saveAll(Graph graph, String[] excludedPaths) {
-		Set<String> set = new HashSet(asList(excludedPaths));
+		Set<String> set = new HashSet<>(asList(excludedPaths));
 		Map<String, List<Node>> pathNodes = new HashMap<>();
-		for (Node node : graph.model.graph.rootList()) {
-			if (node == null) continue;
-			if (set.contains(node.stash())) continue;
-			if (!pathNodes.containsKey(node.stash())) pathNodes.put(node.stash(), new ArrayList<>());
-			pathNodes.get(node.stash()).add(node);
+		for (String path : graph.openedStashes) {
+			path = stashWithoutExtension(path);
+			if (set.contains(path)) continue;
+			pathNodes.put(path, nodesOf(graph, path));
 		}
 		save(graph, pathNodes);
+	}
+
+	private static List<Node> nodesOf(Graph graph, String stash) {
+		Map<String, Node> stashMap = graph.nodes.get(stash);
+		if(stashMap == null) return Collections.emptyList();
+		List<Node> nodes = new ArrayList<>();
+		for (Node value : stashMap.values()) if (value.isRoot()) nodes.add(value);
+		return nodes;
 	}
 
 	private static void save(Graph graph, Map<String, List<Node>> pathNodes) {
@@ -65,7 +66,7 @@ class GraphHelper {
 		}
 		path = path == null || path.isEmpty() ? "Misc" : path;
 		graph.doLoadStashes(graph.stashOf(StashHelper.stashWithExtension(path), false));
-		if (name != null && graph.nodes.containsKey(path + "#" + name)) {
+		if (name != null && graph.node(path + "#" + name) != null) {
 			getGlobal().warning("Node with id " + path + "#" + name + " already exists");
 			return null;
 		}

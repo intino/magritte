@@ -13,6 +13,10 @@ public class StashHelper {
 		return canonicalPath(id.contains("#") ? pathOf(id) + STASH_EXT : id + STASH_EXT);
 	}
 
+	public static String stashWithoutExtension(String id) {
+		return id.replace(STASH_EXT, "");
+	}
+
 	public static String canonicalPath(String path) {
 		return path.replace("\\", "/");
 	}

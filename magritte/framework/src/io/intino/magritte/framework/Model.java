@@ -28,7 +28,7 @@ public class Model extends Node {
 	}
 
 	@Override
-	protected void remove(Node node) {
+	public void remove(Node node) {
 		super.remove(node);
 		wrappers.values().forEach(wrapper -> wrapper.removeNode$(node));
 	}
@@ -44,7 +44,7 @@ public class Model extends Node {
 		}
 
 		@Override
-		protected void remove(Node node) {
+		public void remove(Node node) {
 		}
 	}
 }

@@ -156,6 +156,10 @@ public class Node extends Predicate {
 		graph().remove(this);
 	}
 
+	public void deleteInMemory() {
+		graph().removeInMemory(this);
+	}
+
 	public boolean is(String concept) {
 		return typeNames.contains(concept);
 	}
@@ -193,7 +197,7 @@ public class Node extends Predicate {
 		if (toRemove != null) layers.remove(toRemove);
 	}
 
-	protected void remove(Node node) {
+	public void remove(Node node) {
 		layers.forEach(l -> l.removeNode$(node));
 	}
 
@@ -206,10 +210,14 @@ public class Node extends Predicate {
 	}
 
 	public Layer addAspect(Concept concept) {
-		model().remove(this);
+		if(isRoot()) model().remove(this);
 		concept.prepareNode(this, this.graph());
-		model().add(this);
+		if(isRoot()) model().add(this);
 		return as(concept);
+	}
+
+	public boolean isRoot() {
+		return rootNodeId().equals(id);
 	}
 
 	void addLayers(List<Concept> concepts) {

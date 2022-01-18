@@ -161,7 +161,7 @@ public class GraphTest {
 		Set<String> openedStashes = new HashSet<>(graph.openedStashes);
 		Set<String> languages = new HashSet<>(graph.languages);
 		Map<String, Concept> concepts = new HashMap<>(graph.concepts);
-		Map<String, Node> nodes = new HashMap<>(graph.nodes);
+		Map<String, Map<String, Node>> nodes = new HashMap<>(graph.nodes);
 		List<NodeLoader> loaders = new ArrayList<>(graph.loaders);
 		List<MockLayer> mockLayersInPlatform = new ArrayList<>(graph.as(MockPlatform.class).mockLayerList());
 		List<MockLayer> mockLayersInApplication = new ArrayList<>(graph.as(MockApplication.class).mockLayerList());

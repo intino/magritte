@@ -22,9 +22,21 @@ public abstract class Predicate {
 		return shortName;
 	}
 
+	public static String stashOf(String id) {
+		return id.substring(0, id.indexOf("#"));
+	}
+
+	public static String fullNameOf(String id) {
+		return id.substring(id.indexOf("#") + 1);
+	}
+
 	public String rootNodeId() {
 		int pos = id.indexOf("$");
 		return pos != -1 ? id.substring(0, pos) : id;
+	}
+
+	public String fullName() {
+		return fullNameOf(id);
 	}
 
 	public String id() {
