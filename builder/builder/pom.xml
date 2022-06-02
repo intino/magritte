@@ -17,7 +17,7 @@
         <repository>
             <id>intino-maven</id>
             <name>intino-maven</name>
-            <url>http://artifactory.intino.io/artifactory/releases/</url>
+            <url>https://artifactory.intino.io/artifactory/releases/</url>
         </repository>
     </repositories>
 
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>io.intino</groupId>
             <artifactId>configuration</artifactId>
-            <version>1.0.0</version>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>io.intino.itrules</groupId>
