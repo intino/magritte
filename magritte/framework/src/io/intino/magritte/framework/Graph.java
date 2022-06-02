@@ -24,7 +24,7 @@ public class Graph {
 	public static final String META = "Meta";
 	Model model;
 	Store store;
-	Map<String, Node> nodes = new HashMap<>();
+	Map<String, Map<String, Node>> nodes = new HashMap<>();
 	Map<String, Concept> concepts = new HashMap<>();
 	Map<Class<? extends GraphWrapper>, GraphWrapper> wrappers = new HashMap<>();
 	List<NodeLoader> loaders = new ArrayList<>();
@@ -40,7 +40,12 @@ public class Graph {
 
 	public Graph(Store store) {
 		this.store = store;
-		model = new Model(this, wrappers);
+		this.model = new Model(this, wrappers);
+	}
+
+	public Graph(Store store, boolean indexedModel) {
+		this.store = store;
+		this.model = indexedModel ? new Model(this, wrappers) : new Model.NoIndexedModel(this, wrappers);
 	}
 
 	public Graph loadStashes(String... stashes) {
@@ -68,7 +73,7 @@ public class Graph {
 
 	public Node load(String id, boolean logFail) {
 		Node node = loadFromLoaders(id);
-		if (node == null) node = nodes.get(id);
+		if (node == null) node = node(id);
 		if (node == null) node = loadFromStash(id, logFail);
 		if (node == null && logFail)
 			getGlobal().warning("A reference to a node named as " + id + " has not been found");
@@ -140,14 +145,25 @@ public class Graph {
 
 	public void remove(Node node) {
 		node.owner().remove(node);
-		nodes.remove(node.id);
+		doRemove(node);
 		save(node.stash());
+	}
+
+	private void doRemove(Node node) {
+		Map<String, Node> stashMap = nodes.get(node.stash());
+		if(stashMap == null) return;
+		stashMap.remove(node.fullName());
+	}
+
+	public void removeInMemory(Node node) {
+		node.owner().remove(node);
+		doRemove(node);
 	}
 
 	public void remove(String stash) {
 		nodesIn(stash).forEach(node -> {
 			node.owner().remove(node);
-			nodes.remove(node.id);
+			doRemove(node);
 		});
 		save(stash);
 	}
@@ -349,7 +365,8 @@ public class Graph {
 	}
 
 	protected Node node(String name) {
-		return nodes.get(name);
+		Map<String, Node> stashMap = nodes.get(Predicate.stashOf(name));
+		return stashMap != null ? stashMap.get(Predicate.fullNameOf(name)) : null;
 	}
 
 	protected Node loadFromStash(String id) {
@@ -397,7 +414,8 @@ public class Graph {
 	}
 
 	void register(Node node) {
-		nodes.put(node.id, node);
+		if(!nodes.containsKey(node.stash())) nodes.put(node.stash(), new LinkedHashMap<>());
+		nodes.get(node.stash()).put(node.fullName(), node);
 	}
 
 	private void commit(Node node) {

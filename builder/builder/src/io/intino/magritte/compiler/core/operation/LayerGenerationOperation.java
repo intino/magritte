@@ -44,9 +44,9 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private final File srcFolder;
-	private File outFolder;
-	private Template template;
-	private Map<String, List<String>> outMap = new LinkedHashMap<>();
+	private final File outFolder;
+	private final Template template;
+	private final Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
 		this.compilationUnit = compilationUnit;

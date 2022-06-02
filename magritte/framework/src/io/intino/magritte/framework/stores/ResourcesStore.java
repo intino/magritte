@@ -10,18 +10,30 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static java.util.Arrays.stream;
 import static java.util.logging.Logger.getGlobal;
 
 public class ResourcesStore implements Store {
 
+	Set<String> whileList = new HashSet<>();
+
 	@Override
 	public Stash stashFrom(String path) {
-		InputStream stream = ClassFinder.getResourceAsStream(getPath(path));
+		InputStream stream = shouldOpen(path) ? ClassFinder.getResourceAsStream(getPath(path)) : null;
 		if (stream == null) return null;
 		return StashDeserializer.stashFrom(stream);
+	}
+
+	public Store setWhiteList(Collection<String> whileList){
+		this.whileList.clear();
+		this.whileList.addAll(whileList);
+		return this;
+	}
+
+	private boolean shouldOpen(String path) {
+		return whileList.isEmpty() || whileList.contains(path);
 	}
 
 	@Override
