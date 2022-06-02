@@ -33,8 +33,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final Deque<Node> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
-	private CompilerConfiguration.Language language;
-	private List<SyntaxException> errors = new ArrayList<>();
+	private final CompilerConfiguration.Language language;
+	private final List<SyntaxException> errors = new ArrayList<>();
 
 	public ModelGenerator(String file, CompilerConfiguration.Language language, String outDsl) {
 		this.file = file;
