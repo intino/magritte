@@ -26,7 +26,6 @@ class ListProcessor {
 		try {
 			return FunctionLoader.link(NativeCodeLoader.nativeCodeOf(ClassFinder.find(item)), layer, Expression.class).value();
 		} catch (ClassNotFoundException e) {
-			getGlobal().warning(e.getMessage());
 			return TOKEN + item;
 		}
 	}
