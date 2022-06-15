@@ -129,9 +129,9 @@ public class DependencyResolver {
 
 	private void resolveNodeReference(NodeReference nodeReference) throws DependencyException {
 		if (nodeReference.destination() != null) return;
-		NodeImpl destiny = manager.resolve(nodeReference);
-		if (destiny == null) throw new DependencyException("reject.dependency.reference.node.not.found", nodeReference);
-		else nodeReference.destination(destiny);
+		NodeImpl destination = manager.resolve(nodeReference);
+		if (destination == null) throw new DependencyException("reject.dependency.reference.node.not.found", nodeReference);
+		else nodeReference.destination(destination);
 	}
 
 

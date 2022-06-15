@@ -203,7 +203,10 @@ public class GlobalConstraints {
 			error("reject.terminal.variable.redefinition", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
-		else if (!values.isEmpty() && !(values.get(0) instanceof EmptyNode) && variable.rule() != null && !(variable.rule() instanceof NativeRule) && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
+		else if (!values.isEmpty() &&
+				!(values.get(0) instanceof EmptyNode) && variable.rule() != null &&
+				!(variable.rule() instanceof NativeRule) && !hasExpressionValue(values) &&
+				!variable.rule().accept(values, variable.defaultMetric())) {
 			final String message = variable.rule().errorMessage();
 			error(message == null || message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
 		}
