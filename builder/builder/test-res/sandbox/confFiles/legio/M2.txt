@@ -1,25 +1,25 @@
 def.file
-$WORKSPACE/intino/legio/src/io/intino/legio/graph/Main.tara#true
+/Users/oroncal/workspace/intino-plugin/legio/src/io/intino/legio/model/Main.tara#true
 
 project
 intino
 module
 legio
 semantic.lib
-$HOME/.m2/repository/io/intino/magritte/language/1.3.0/language-1.3.0.jar
+/Users/oroncal/workspace/sandbox/intellijcommunity/plugins/intino-plugin/lib/language-1.3.2.jar
 outputpath
-$WORKSPACE/intino/legio/gen
+/Users/oroncal/workspace/intino-plugin/legio/gen
 final_outputpath
-$WORKSPACE/intino/out/production/legio/
+/Users/oroncal/workspace/intino-plugin/out/production/legio/
 resources
-$WORKSPACE/intino/legio/res
+/Users/oroncal/workspace/intino-plugin/legio/res
 tara.path
-$HOME/.m2
+/Users/oroncal/.m2
 tara.project.path
-$WORKSPACE/intino/.intino
+/Users/oroncal/workspace/intino-plugin/.intino
 src.path
-$WORKSPACE/intino/legio/src
-$WORKSPACE/intino/legio/gen
+/Users/oroncal/workspace/intino-plugin/legio/src
+/Users/oroncal/workspace/intino-plugin/legio/gen
 
 level
 Product
@@ -34,7 +34,7 @@ model
 version
 4.0.0
 generation.package
-io.intino.legio.graph
+io.intino.legio.model
 make
 false
 test.module

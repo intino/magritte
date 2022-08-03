@@ -1,7 +1,7 @@
 lexer grammar TaraLexer;
 @header{
 	import static io.intino.magritte.lang.grammar.TaraGrammar.CHARACTER;
-	import io.intino.magritte.compiler.parser.antlr.BlockManager;}
+	import io.intino.magritte.builder.compiler.parser.antlr.BlockManager;}
 @lexer::members {
     BlockManager blockManager = new BlockManager();
     private static java.util.Queue<Token> queue = new java.util.LinkedList<>();

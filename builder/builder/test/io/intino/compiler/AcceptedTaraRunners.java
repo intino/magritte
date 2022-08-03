@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 
-import static io.intino.magritte.TaracRunner.main;
+import static io.intino.magritte.builder.TaracRunner.main;
 
 @Ignore
 public class AcceptedTaraRunners {

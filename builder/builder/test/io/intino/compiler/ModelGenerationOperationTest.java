@@ -1,10 +1,10 @@
 package io.intino.compiler;
 
-import io.intino.magritte.CompilationInfoExtractor;
-import io.intino.magritte.compiler.core.CompilationUnit;
-import io.intino.magritte.compiler.core.CompilerConfiguration;
-import io.intino.magritte.compiler.core.SourceUnit;
-import io.intino.magritte.compiler.core.operation.sourceunit.ParseOperation;
+import io.intino.magritte.builder.CompilationInfoExtractor;
+import io.intino.magritte.builder.compiler.core.CompilationUnit;
+import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
+import io.intino.magritte.builder.compiler.core.SourceUnit;
+import io.intino.magritte.builder.compiler.core.operation.sourceunit.ParseOperation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

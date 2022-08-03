@@ -1,10 +1,10 @@
 package io.intino.compiler;
 
-import io.intino.magritte.compiler.codegeneration.FileSystemUtils;
-import io.intino.magritte.compiler.core.CompilationUnit;
-import io.intino.magritte.compiler.core.CompilerConfiguration;
-import io.intino.magritte.compiler.core.SourceUnit;
-import io.intino.magritte.compiler.core.operation.sourceunit.ParseOperation;
+import io.intino.magritte.builder.compiler.core.CompilationUnit;
+import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
+import io.intino.magritte.builder.compiler.core.SourceUnit;
+import io.intino.magritte.builder.compiler.core.operation.sourceunit.ParseOperation;
+import io.intino.magritte.builder.compiler.utils.FileSystemUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.intino.magritte.CompilationInfoExtractor.getInfoFromArgsFile;
+import static io.intino.magritte.builder.CompilationInfoExtractor.getInfoFromArgsFile;
 import static org.junit.Assert.assertFalse;
 
 @Ignore

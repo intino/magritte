@@ -1,6 +1,6 @@
 package io.intino.compiler;
 
-import io.intino.magritte.compiler.codegeneration.Format;
+import io.intino.magritte.builder.compiler.utils.Format;
 import org.junit.Ignore;
 import org.junit.Test;
 

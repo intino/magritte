@@ -1,16 +1,15 @@
 // Generated from /Users/oroncal/workspace/magritte/core/language/src/io/intino/magritte/lang/lexicon/TaraLexer.g4 by ANTLR 4.10.1
 package io.intino.magritte.lang.grammar;
 
-	import static io.intino.magritte.lang.grammar.TaraGrammar.CHARACTER;
-	import io.intino.magritte.compiler.parser.antlr.BlockManager;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
+import io.intino.magritte.builder.compiler.parser.antlr.BlockManager;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
+
+import static io.intino.magritte.lang.grammar.TaraGrammar.CHARACTER;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraLexer extends Lexer {
