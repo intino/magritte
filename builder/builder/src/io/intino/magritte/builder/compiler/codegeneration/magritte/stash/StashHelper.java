@@ -2,7 +2,7 @@ package io.intino.magritte.builder.compiler.codegeneration.magritte.stash;
 
 import io.intino.magritte.Language;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
-import io.intino.magritte.builder.compiler.model.Model;
+import io.intino.magritte.builder.model.Model;
 import io.intino.magritte.lang.model.Aspect;
 import io.intino.magritte.lang.model.Node;
 import io.intino.magritte.lang.model.Primitive;
@@ -15,8 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
-import static io.intino.magritte.builder.compiler.utils.Format.noPackage;
-import static io.intino.magritte.builder.compiler.utils.Format.withDollar;
+import static io.intino.magritte.builder.utils.Format.noPackage;
+import static io.intino.magritte.builder.utils.Format.withDollar;
 import static io.intino.magritte.lang.model.Primitive.*;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;

@@ -2,8 +2,8 @@ package io.intino.magritte.builder;
 
 import io.intino.Configuration;
 import io.intino.magritte.Language;
-import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
-import io.intino.magritte.builder.compiler.utils.FileSystemUtils;
+import io.intino.magritte.builder.core.CompilerConfiguration;
+import io.intino.magritte.builder.utils.FileSystemUtils;
 import io.intino.magritte.io.Stash;
 import io.intino.magritte.io.StashDeserializer;
 

@@ -9,7 +9,7 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.natives.NativeFormatter;
-import io.intino.magritte.builder.compiler.model.NodeReference;
+import io.intino.magritte.builder.model.NodeReference;
 import io.intino.magritte.lang.model.EmptyNode;
 import io.intino.magritte.lang.model.Node;
 import io.intino.magritte.lang.model.Primitive;

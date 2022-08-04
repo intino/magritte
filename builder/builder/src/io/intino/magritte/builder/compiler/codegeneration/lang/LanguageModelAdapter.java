@@ -8,10 +8,10 @@ import io.intino.magritte.Language;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashHelper;
-import io.intino.magritte.builder.compiler.model.Model;
-import io.intino.magritte.builder.compiler.model.NodeImpl;
-import io.intino.magritte.builder.compiler.model.NodeReference;
-import io.intino.magritte.builder.compiler.model.VariableReference;
+import io.intino.magritte.builder.model.Model;
+import io.intino.magritte.builder.model.NodeImpl;
+import io.intino.magritte.builder.model.NodeReference;
+import io.intino.magritte.builder.model.VariableReference;
 import io.intino.magritte.dsl.ProteoConstants;
 import io.intino.magritte.lang.model.*;
 import io.intino.magritte.lang.model.rules.Size;
@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.Configuration.Artifact.Model.Level.Product;
-import static io.intino.magritte.builder.compiler.utils.Format.capitalize;
+import static io.intino.magritte.builder.utils.Format.capitalize;
 import static io.intino.magritte.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
 

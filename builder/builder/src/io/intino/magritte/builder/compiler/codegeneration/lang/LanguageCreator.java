@@ -3,9 +3,9 @@ package io.intino.magritte.builder.compiler.codegeneration.lang;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
-import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
-import io.intino.magritte.builder.compiler.model.Model;
-import io.intino.magritte.builder.compiler.utils.Format;
+import io.intino.magritte.builder.core.CompilerConfiguration;
+import io.intino.magritte.builder.model.Model;
+import io.intino.magritte.builder.utils.Format;
 
 import java.util.Collection;
 import java.util.Iterator;

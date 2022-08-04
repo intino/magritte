@@ -1,10 +1,14 @@
 package io.intino.magritte.builder;
 
 
-import io.intino.magritte.builder.compiler.core.errorcollection.TaraException;
+import io.intino.magritte.builder.compiler.operations.GenerateLanguageOperation;
+import io.intino.magritte.builder.compiler.operations.LayerGenerationOperation;
+import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
 import io.intino.magritte.builder.compiler.shared.TaraBuildConstants;
+import io.intino.magritte.builder.core.errorcollection.TaraException;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +26,7 @@ public class TaracRunner {
 			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)
 				throw new TaraException("Error finding args file");
-			new TaraCompilerRunner(verbose).run(argsFile);
+			new TaraCompilerRunner(verbose, List.of(LayerGenerationOperation.class, StashGenerationOperation.class, GenerateLanguageOperation.class)).run(argsFile);
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString() : e.getMessage());
 			e.printStackTrace();

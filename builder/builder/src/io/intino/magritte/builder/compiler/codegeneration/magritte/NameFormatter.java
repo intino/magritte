@@ -1,11 +1,11 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte;
 
-import io.intino.magritte.builder.compiler.model.NodeImpl;
-import io.intino.magritte.builder.compiler.model.NodeReference;
+import io.intino.magritte.builder.model.NodeImpl;
+import io.intino.magritte.builder.model.NodeReference;
 import io.intino.magritte.lang.model.Aspect;
 import io.intino.magritte.lang.model.Node;
 
-import static io.intino.magritte.builder.compiler.utils.Format.*;
+import static io.intino.magritte.builder.utils.Format.*;
 
 public class NameFormatter {
 	public static final char DOT = '.';

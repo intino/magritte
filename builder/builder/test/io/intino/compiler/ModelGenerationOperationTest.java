@@ -1,10 +1,10 @@
 package io.intino.compiler;
 
 import io.intino.magritte.builder.CompilationInfoExtractor;
-import io.intino.magritte.builder.compiler.core.CompilationUnit;
-import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
-import io.intino.magritte.builder.compiler.core.SourceUnit;
-import io.intino.magritte.builder.compiler.core.operation.sourceunit.ParseOperation;
+import io.intino.magritte.builder.core.CompilationUnit;
+import io.intino.magritte.builder.core.CompilerConfiguration;
+import io.intino.magritte.builder.core.SourceUnit;
+import io.intino.magritte.builder.core.operation.sourceunit.ParseOperation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,13 +17,12 @@ import static org.junit.Assert.assertFalse;
 
 @Ignore
 public class ModelGenerationOperationTest {
-
-	private CompilerConfiguration configuration = new CompilerConfiguration();
+	private final CompilerConfiguration configuration = new CompilerConfiguration();
 	private CompilationUnit unit;
-	private Map<File, Boolean> srcFiles = new LinkedHashMap<>();
+	private final Map<File, Boolean> srcFiles = new LinkedHashMap<>();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		srcFiles.put(new File(this.getClass().getResource("/sandbox/src/ParseTest.tara").getPath()), true);
 		CompilationInfoExtractor.getInfoFromArgsFile(new File(this.getClass().getResource("/sandbox/confFiles/sample/M3.txt").getPath()), configuration, srcFiles);
 		unit = new CompilationUnit(configuration);
@@ -31,7 +30,7 @@ public class ModelGenerationOperationTest {
 	}
 
 	@Test
-	public void acceptedParsing() throws Exception {
+	public void acceptedParsing() {
 		ParseOperation operation = new ParseOperation(unit);
 		for (File srcFile : srcFiles.keySet()) {
 			operation.call(new SourceUnit(srcFile, configuration, unit.getErrorCollector(), srcFiles.get(srcFile)));
@@ -40,7 +39,7 @@ public class ModelGenerationOperationTest {
 	}
 
 	@Test
-	public void acceptedGeneratedModel() throws Exception {
+	public void acceptedGeneratedModel() {
 		ParseOperation operation = new ParseOperation(unit);
 		for (File srcFile : srcFiles.keySet()) {
 			operation.call(new SourceUnit(srcFile, configuration, unit.getErrorCollector(), srcFiles.get(srcFile)));

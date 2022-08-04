@@ -6,9 +6,9 @@ import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.magritte.Language;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
-import io.intino.magritte.builder.compiler.model.Model;
-import io.intino.magritte.builder.compiler.model.NodeReference;
+import io.intino.magritte.builder.core.CompilerConfiguration;
+import io.intino.magritte.builder.model.Model;
+import io.intino.magritte.builder.model.NodeReference;
 import io.intino.magritte.lang.model.Node;
 import io.intino.magritte.lang.model.NodeRoot;
 import io.intino.magritte.lang.model.Tag;
@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static io.intino.magritte.builder.compiler.utils.Format.firstUpperCase;
-import static io.intino.magritte.builder.compiler.utils.Format.javaValidName;
+import static io.intino.magritte.builder.utils.Format.firstUpperCase;
+import static io.intino.magritte.builder.utils.Format.javaValidName;
 
 
 public class LayerFrameCreator implements TemplateTags {

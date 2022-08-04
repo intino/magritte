@@ -6,7 +6,7 @@ import io.intino.itrules.FrameBuilder;
 import io.intino.magritte.Language;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.magritte.builder.compiler.model.VariableReference;
+import io.intino.magritte.builder.model.VariableReference;
 import io.intino.magritte.lang.model.*;
 import io.intino.magritte.lang.model.rules.Size;
 import io.intino.magritte.lang.model.rules.variable.NativeRule;

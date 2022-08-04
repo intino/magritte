@@ -2,11 +2,11 @@ package io.intino.magritte.builder.compiler.codegeneration.magritte.natives;
 
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
-import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
-import io.intino.magritte.builder.compiler.model.Model;
-import io.intino.magritte.builder.compiler.model.NodeImpl;
-import io.intino.magritte.builder.compiler.model.NodeReference;
-import io.intino.magritte.builder.compiler.utils.Format;
+import io.intino.magritte.builder.core.CompilerConfiguration;
+import io.intino.magritte.builder.model.Model;
+import io.intino.magritte.builder.model.NodeImpl;
+import io.intino.magritte.builder.model.NodeReference;
+import io.intino.magritte.builder.utils.Format;
 import io.intino.magritte.lang.model.*;
 
 import java.io.File;

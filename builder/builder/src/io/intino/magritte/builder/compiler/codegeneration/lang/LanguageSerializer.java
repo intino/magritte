@@ -1,12 +1,12 @@
 package io.intino.magritte.builder.compiler.codegeneration.lang;
 
 import io.intino.itrules.FrameBuilder;
-import io.intino.magritte.builder.compiler.core.CompilerConfiguration;
-import io.intino.magritte.builder.compiler.core.errorcollection.TaraException;
-import io.intino.magritte.builder.compiler.model.Model;
 import io.intino.magritte.builder.compiler.shared.TaraBuildConstants;
-import io.intino.magritte.builder.compiler.utils.FileSystemUtils;
-import io.intino.magritte.builder.compiler.utils.JavaCompiler;
+import io.intino.magritte.builder.core.CompilerConfiguration;
+import io.intino.magritte.builder.core.errorcollection.TaraException;
+import io.intino.magritte.builder.model.Model;
+import io.intino.magritte.builder.utils.FileSystemUtils;
+import io.intino.magritte.builder.utils.JavaCompiler;
 import io.intino.magritte.dsl.Meta;
 import io.intino.magritte.dsl.Proteo;
 import io.intino.magritte.lang.semantics.Constraint;
@@ -25,10 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static io.intino.magritte.builder.compiler.core.CompilerConfiguration.REPOSITORY;
-import static io.intino.magritte.builder.compiler.utils.FileSystemUtils.writeBuffer;
-import static io.intino.magritte.builder.compiler.utils.Format.firstUpperCase;
-import static io.intino.magritte.builder.compiler.utils.Format.reference;
+import static io.intino.magritte.builder.core.CompilerConfiguration.REPOSITORY;
+import static io.intino.magritte.builder.utils.FileSystemUtils.writeBuffer;
+import static io.intino.magritte.builder.utils.Format.firstUpperCase;
+import static io.intino.magritte.builder.utils.Format.reference;
 import static java.io.File.separator;
 
 public class LanguageSerializer {
