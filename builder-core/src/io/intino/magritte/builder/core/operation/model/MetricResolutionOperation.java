@@ -19,12 +19,10 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MetricResolutionOperation extends ModelOperation {
-
 	private static final Logger LOG = Logger.getGlobal();
-	private final CompilationUnit unit;
 
 	public MetricResolutionOperation(CompilationUnit unit) {
-		this.unit = unit;
+		super(unit);
 	}
 
 	@Override
@@ -33,7 +31,7 @@ public class MetricResolutionOperation extends ModelOperation {
 			resolve(model);
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
+			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getElement().file())), true);
 		}
 	}
 

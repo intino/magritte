@@ -20,18 +20,17 @@ import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRES
 
 public class ModelDependencyResolutionOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getGlobal();
-	private final CompilationUnit unit;
 
 	public ModelDependencyResolutionOperation(CompilationUnit unit) {
-		this.unit = unit;
+		super(unit);
 	}
 
 	@Override
 	public void call(Model model) {
 		try {
-			final CompilerConfiguration conf = unit.configuration();
+			final CompilerConfiguration conf = compilationUnit.configuration();
 			if (conf.isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]" + " Resolving dependencies...");
+				compilationUnit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]" + " Resolving dependencies...");
 			final DependencyResolver dependencyResolver = new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory());
 			dependencyResolver.resolve();
 			notifyRulesNotLoaded(dependencyResolver);
@@ -40,14 +39,14 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new NativeResolver(model, conf.functionsDirectory()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			unit.getErrorCollector().addError(DependencyErrorMessage.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
+			compilationUnit.getErrorCollector().addError(DependencyErrorMessage.create(e, compilationUnit.getSourceUnits().get(e.getElement().file())), true);
 		}
 	}
 
 	private void notifyRulesNotLoaded(DependencyResolver dependencyResolver) {
 		for (DependencyException entry : dependencyResolver.rulesNotLoaded()) {
-			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), entry.getElement());
-			unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, entry.getMessage(), sourceFromFile, entry.getLine(), entry.getElement().column()));
+			SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), entry.getElement());
+			compilationUnit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, entry.getMessage(), sourceFromFile, entry.getLine(), entry.getElement().column()));
 		}
 	}
 

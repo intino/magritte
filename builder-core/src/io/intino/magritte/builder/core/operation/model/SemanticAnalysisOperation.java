@@ -25,7 +25,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	private final CompilerConfiguration conf;
 
 	public SemanticAnalysisOperation(CompilationUnit unit) {
-		this.unit = unit;
+		super(unit);
 		this.conf = unit.configuration();
 	}
 

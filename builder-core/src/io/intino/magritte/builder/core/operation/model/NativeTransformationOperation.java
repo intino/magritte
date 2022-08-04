@@ -24,11 +24,11 @@ import static io.intino.magritte.lang.model.Tag.Reactive;
 import static java.util.Collections.singletonList;
 
 public class NativeTransformationOperation extends ModelOperation {
-
 	private final File resources;
 	private final List<File> sources;
 
 	public NativeTransformationOperation(CompilationUnit unit) {
+		super(unit);
 		this.resources = unit.configuration().resourcesDirectory();
 		this.sources = unit.configuration().sourceDirectories();
 	}

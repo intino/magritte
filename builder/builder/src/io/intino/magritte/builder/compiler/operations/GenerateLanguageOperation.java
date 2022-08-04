@@ -16,23 +16,22 @@ import static java.util.logging.Level.SEVERE;
 
 public class GenerateLanguageOperation extends ModelCollectionOperation {
 	private static final Logger LOG = Logger.getGlobal();
-	private final CompilationUnit unit;
 
 	public GenerateLanguageOperation(CompilationUnit unit) {
-		this.unit = unit;
+		super(unit);
 	}
 
 	@Override
 	public void call(Collection<Model> models) {
 		try {
-			if (unit.configuration().model().level().isSolution()) return;
-			if (unit.configuration().isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + unit.configuration().getModule() + " - " + unit.configuration().model().outDsl() + "] Generating language...");
-			new LanguageSerializer(unit.configuration(), models).serialize();
-			unit.getErrorCollector().failIfErrors();
+			if (compilationUnit.configuration().model().level().isSolution()) return;
+			if (compilationUnit.configuration().isVerbose())
+				compilationUnit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + compilationUnit.configuration().getModule() + " - " + compilationUnit.configuration().model().outDsl() + "] Generating language...");
+			new LanguageSerializer(compilationUnit.configuration(), models).serialize();
+			compilationUnit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
 			LOG.log(SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);
-			throw new CompilationFailedException(Phases.CODE_GENERATION, unit, e);
+			throw new CompilationFailedException(Phases.CODE_GENERATION, compilationUnit, e);
 		}
 	}
 }

@@ -29,13 +29,11 @@ import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRES
 public class StashGenerationOperation extends ModelOperation {
 	public static final String STASH = ".stash";
 	private static final Logger LOG = Logger.getLogger(StashGenerationOperation.class.getName());
-	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private String outDSL;
 
 	public StashGenerationOperation(CompilationUnit compilationUnit) {
-		super();
-		this.compilationUnit = compilationUnit;
+		super(compilationUnit);
 		this.conf = compilationUnit.configuration();
 	}
 

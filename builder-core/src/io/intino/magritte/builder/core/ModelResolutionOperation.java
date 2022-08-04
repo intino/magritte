@@ -7,6 +7,10 @@ import io.intino.magritte.builder.model.Model;
 
 class ModelResolutionOperation extends ModelOperation {
 
+	public ModelResolutionOperation(CompilationUnit unit) {
+		super(unit);
+	}
+
 	@Override
 	public void call(Model model) {
 		if (model.level() == Level.Solution) new InstanceMarker(model).all();

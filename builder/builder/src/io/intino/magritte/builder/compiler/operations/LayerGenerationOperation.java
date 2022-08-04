@@ -41,7 +41,6 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private static final String JAVA = ".java";
 	private static final String GRAPH = "Graph";
 
-	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private final File srcFolder;
 	private final File outFolder;
@@ -49,7 +48,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private final Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
-		this.compilationUnit = compilationUnit;
+		super(compilationUnit);
 		this.conf = compilationUnit.configuration();
 		this.outFolder = conf.getOutDirectory();
 		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
