@@ -97,8 +97,7 @@ public class CompilerConfiguration implements Cloneable {
 	}
 
 	public void sourceEncoding(String encoding) {
-		if (encoding == null) sourceEncoding = "UTF8";
-		this.sourceEncoding = encoding;
+		sourceEncoding = encoding == null ? "UTF8" : encoding;
 	}
 
 	public File getOutDirectory() {
