@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.*;
 
-class TaraCompilerRunner {
+public class TaraCompilerRunner {
 	private final boolean verbose;
 	private final List<Class<? extends Operation>> codeGenerationOperations;
 	private PrintStream out = System.out;
