@@ -26,7 +26,11 @@
 			<url>https://artifactory.intino.io/artifactory/release-builders</url>
 		</repository>
 	</distributionManagement>
-
+	<build>
+		<outputDirectory>../../out/production/builder</outputDirectory>
+		<testOutputDirectory>../../out/test/builder</testOutputDirectory>
+		<directory>../../out/build/builder</directory>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.antlr</groupId>
