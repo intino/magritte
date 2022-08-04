@@ -22,16 +22,16 @@ class TaraCompilerRunner {
 	private final List<Class<? extends Operation>> codeGenerationOperations;
 	private PrintStream out = System.out;
 
-	TaraCompilerRunner(boolean verbose, List<Class<? extends Operation>> codeGenerationOperations) {
+	public TaraCompilerRunner(boolean verbose, List<Class<? extends Operation>> codeGenerationOperations) {
 		this.verbose = verbose;
 		this.codeGenerationOperations = codeGenerationOperations;
 	}
 
-	TaraCompilerRunner(boolean verbose) {
+	public TaraCompilerRunner(boolean verbose) {
 		this(verbose, List.of());
 	}
 
-	void run(File argsFile) {
+	public void run(File argsFile) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		final Map<File, Boolean> sources = new LinkedHashMap<>();
 		CompilationInfoExtractor.getInfoFromArgsFile(argsFile, config, sources);
@@ -48,7 +48,7 @@ class TaraCompilerRunner {
 	}
 
 
-	void run(CompilerConfiguration config, List<File> files) {
+	public void run(CompilerConfiguration config, List<File> files) {
 		config.setVerbose(verbose);
 		this.out = config.out();
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
