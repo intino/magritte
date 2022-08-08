@@ -51,6 +51,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new MetricResolutionOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new NativeTransformationOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
+		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
 	}
 
 

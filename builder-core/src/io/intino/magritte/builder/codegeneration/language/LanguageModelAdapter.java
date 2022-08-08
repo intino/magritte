@@ -1,13 +1,11 @@
-package io.intino.magritte.builder.compiler.codegeneration.lang;
+package io.intino.magritte.builder.codegeneration.language;
 
 import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
 import io.intino.magritte.Language;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashHelper;
+import io.intino.magritte.builder.codegeneration.TemplateTags;
 import io.intino.magritte.builder.model.Model;
 import io.intino.magritte.builder.model.NodeImpl;
 import io.intino.magritte.builder.model.NodeReference;
@@ -25,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.Configuration.Artifact.Model.Level.Product;
-import static io.intino.magritte.builder.utils.Format.capitalize;
+import static io.intino.magritte.builder.utils.Format.*;
 import static io.intino.magritte.lang.model.Tag.*;
 import static java.util.stream.Collectors.toList;
 
@@ -118,17 +116,13 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 
 	private void addDoc(Node node, FrameBuilder frame) {
 		frame.add(DOC, new FrameBuilder(DOC).
-				add(LAYER, findLayer(node)).
+//				add(LAYER, findLayer(node)).
 				add(FILE, new File(node.file()).getName().replace("\\", "\\\\")).
 				add(LINE, node.line()).
 				add(DOC, node.doc() != null ? format(node) : "").
 				toFrame());
 	}
 
-	private String findLayer(Node node) {
-		if (node instanceof Model) return "";
-		return NameFormatter.getQn(node, workingPackage);
-	}
 
 	private String format(Node node) {
 		return node.doc().replace("\"", "\\\"").replace("\n", "\\n");
@@ -183,7 +177,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addParameterConstraint(constrainsFrame, aspect, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, workingPackage, level).addParameterConstraint(constrainsFrame, aspect, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}
@@ -269,10 +263,23 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 
 	private FrameBuilder buildAssumptions(Node node) {
 		FrameBuilder assumptions = new FrameBuilder(ASSUMPTIONS);
-		assumptions.add(ASSUMPTION, new FrameBuilder("stashNodeName").add("value", StashHelper.name(node, workingPackage)));
+		assumptions.add(ASSUMPTION, new FrameBuilder("stashNodeName").add("value", name(node, workingPackage)));
 		addAnnotationAssumptions(node, assumptions);
 		return assumptions;
 	}
+
+	public static String name(io.intino.magritte.lang.model.Node owner, String workingPackage) {
+		return owner instanceof Model ? "" : withDollar().format(noPackage().format(getQn(owner, workingPackage))).toString();
+	}
+
+	public static String getQn(Node node, String workingPackage) {
+		return workingPackage.toLowerCase() + DOT + qualifiedName().format(layerQn(node)).toString();
+	}
+
+	private static String layerQn(Node node) {
+		return node instanceof NodeReference ? ((NodeReference) node).layerQualifiedName() : ((NodeImpl) node).layerQualifiedName();
+	}
+
 
 	private void addAnnotationAssumptions(Node node, FrameBuilder assumptions) {
 		node.annotations().forEach(tag -> assumptions.add(ASSUMPTION, tag.name().toLowerCase()));

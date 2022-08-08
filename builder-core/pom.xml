@@ -27,9 +27,9 @@
 		</repository>
 	</distributionManagement>
 	<build>
-		<outputDirectory>../../out/production/builder-core</outputDirectory>
-		<testOutputDirectory>../../out/test/builder-core</testOutputDirectory>
-		<directory>../../out/build/builder-core</directory>
+		<outputDirectory>../out/production/builder-core</outputDirectory>
+		<testOutputDirectory>../out/test/builder-core</testOutputDirectory>
+		<directory>../out/build/builder-core</directory>
 	</build>
 	<dependencies>
 		<dependency>

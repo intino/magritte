@@ -1,11 +1,11 @@
-package io.intino.magritte.builder.compiler.codegeneration.lang;
+package io.intino.magritte.builder.codegeneration.language;
 
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
 import io.intino.itrules.adapters.ExcludeAdapter;
 import io.intino.magritte.Language;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
+import io.intino.magritte.builder.codegeneration.TemplateTags;
 import io.intino.magritte.builder.model.Model;
 import io.intino.magritte.builder.model.NodeReference;
 import io.intino.magritte.lang.model.*;

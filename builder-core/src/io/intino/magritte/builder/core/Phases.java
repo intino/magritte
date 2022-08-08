@@ -10,7 +10,8 @@ public class Phases {
 	public static final int SEMANTIC_ANALYSIS = 6;
 	public static final int POST_ANALYSIS_RESOLUTION = 7;
 	public static final int CODE_GENERATION = 8;
-	public static final int ALL = 9;
+	public static final int LANGUAGE_GENERATION = 9;
+	public static final int ALL = 10;
 	public static final int FIRST = INITIALIZATION;
 	public static final int LAST = CODE_GENERATION;
 	private static final String[] descriptions = {

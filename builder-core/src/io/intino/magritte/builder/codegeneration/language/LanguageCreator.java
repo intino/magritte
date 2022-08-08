@@ -1,4 +1,4 @@
-package io.intino.magritte.builder.compiler.codegeneration.lang;
+package io.intino.magritte.builder.codegeneration.language;
 
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;

@@ -1,11 +1,11 @@
-package io.intino.magritte.builder.compiler.codegeneration.lang;
+package io.intino.magritte.builder.codegeneration.language;
 
 import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
+import io.intino.itrules.adapters.ExcludeAdapter;
 import io.intino.magritte.Language;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
+import io.intino.magritte.builder.codegeneration.TemplateTags;
 import io.intino.magritte.builder.model.VariableReference;
 import io.intino.magritte.lang.model.*;
 import io.intino.magritte.lang.model.rules.Size;
@@ -23,13 +23,14 @@ import static io.intino.magritte.lang.model.Tag.Instance;
 import static io.intino.magritte.lang.model.Tag.Reactive;
 import static java.util.Collections.emptyList;
 
-class LanguageParameterAdapter extends Generator implements TemplateTags {
+class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
+	private final String workingPackage;
 	private final Level level;
 
-	LanguageParameterAdapter(Language language, String outDSL, String workingPackage, String languageWorkingPackage, Level level) {
-		super(language, outDSL, workingPackage, languageWorkingPackage);
+	LanguageParameterAdapter(Language language, String workingPackage, Level level) {
 		this.language = language;
+		this.workingPackage = workingPackage;
 		this.level = level;
 	}
 
@@ -110,6 +111,28 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 			final FrameBuilder ruleFrame = ruleToFrame(new NativeRule("", "", emptyList()));
 			if (ruleFrame != null) frame.add(RULE, ruleFrame.toFrame());
 		}
+	}
+
+	protected FrameBuilder ruleToFrame(Rule rule) {
+		if (rule == null) return null;
+		final FrameBuilder builder = new FrameBuilder();
+		builder.put(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		builder.append(rule);
+		if (rule instanceof VariableCustomRule) {
+			FrameBuilder frameBuilder = new FrameBuilder("customRule");
+			frameBuilder.add(QN, cleanQn(((VariableCustomRule) rule).qualifiedName()));
+			frameBuilder.add("aClass", cleanQn(((VariableCustomRule) rule).externalClass()));
+			if (((VariableCustomRule) rule).isMetric()) {
+				frameBuilder.add(METRIC);
+				frameBuilder.add(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
+			}
+			return frameBuilder;
+		}
+		return builder;
+	}
+
+	public static String cleanQn(String qualifiedName) {
+		return qualifiedName.replace(Node.ANONYMOUS, "").replace("[", "").replace("]", "").replace(":", "").replace("$", ".");
 	}
 
 	private boolean isTerminal(Variable variable) {
