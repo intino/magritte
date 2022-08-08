@@ -21,7 +21,6 @@ import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRES
 
 public class SemanticAnalysisOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(SemanticAnalysisOperation.class.getName());
-	private CompilationUnit unit;
 	private final CompilerConfiguration conf;
 
 	public SemanticAnalysisOperation(CompilationUnit unit) {
@@ -33,7 +32,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.configuration().model().outDsl() + "]" + " Analyzing semantic...");
+				compilationUnit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + compilationUnit.configuration().model().outDsl() + "]" + " Analyzing semantic...");
 			if (model.language() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model).analyze();
 		} catch (TaraException e) {
@@ -47,20 +46,20 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		for (io.intino.magritte.lang.semantics.errorcollector.SemanticException e : fatal.exceptions()) {
 			Element[] origins = e.origin();
 			if (origins == null || origins.length == 0) return;
-			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), origins[0]);
+			SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), origins[0]);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
 			for (Element element : origins) {
 				if (e.level() == SemanticNotification.Level.ERROR || e.level() == SemanticNotification.Level.RECOVERABLE_ERROR)
-					unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
+					compilationUnit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
 				else if (e.level() == SemanticNotification.Level.WARNING)
-					unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
+					compilationUnit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
 			}
 		}
 	}
 
 	public void error(TaraException e) {
 		LOG.severe(e.getMessage());
-		throw new CompilationFailedException(unit.getPhase(), unit, e);
+		throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 	}
 
 	private SourceUnit getSourceFromFile(Collection<SourceUnit> values, Element origin) {

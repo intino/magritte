@@ -116,13 +116,16 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 
 	private void addDoc(Node node, FrameBuilder frame) {
 		frame.add(DOC, new FrameBuilder(DOC).
-//				add(LAYER, findLayer(node)).
+				add(LAYER, findLayer(node)).
 				add(FILE, new File(node.file()).getName().replace("\\", "\\\\")).
 				add(LINE, node.line()).
 				add(DOC, node.doc() != null ? format(node) : "").
 				toFrame());
 	}
 
+	private String findLayer(Node node) {
+		return node instanceof Model ? "" : getQn(node, workingPackage);
+	}
 
 	private String format(Node node) {
 		return node.doc().replace("\"", "\\\"").replace("\n", "\\n");
@@ -190,7 +193,8 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		node.components().stream().filter(Node::isMetaAspect).forEach(aspectNode -> {
 			List<Node.AspectConstraint> with = aspectNode.aspectConstraints();
 			FrameBuilder builder = new FrameBuilder(CONSTRAINT, META_ASPECT).add(VALUE, aspectNode.qualifiedName());
-			if (with != null && !with.isEmpty()) builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
+			if (with != null && !with.isEmpty())
+				builder.add(WITH, with.stream().map(c -> c.node().qualifiedName()).toArray(Object[]::new));
 			constraints.add(CONSTRAINT, builder.toFrame());
 		});
 	}

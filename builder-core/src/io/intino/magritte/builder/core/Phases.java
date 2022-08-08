@@ -13,7 +13,7 @@ public class Phases {
 	public static final int LANGUAGE_GENERATION = 9;
 	public static final int ALL = 10;
 	public static final int FIRST = INITIALIZATION;
-	public static final int LAST = CODE_GENERATION;
+	public static final int LAST = LANGUAGE_GENERATION;
 	private static final String[] descriptions = {
 			"",
 			"initialization",
