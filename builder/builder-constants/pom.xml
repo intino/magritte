@@ -15,9 +15,9 @@
     </properties>
 
     <build>
-        <outputDirectory>../../out/production/tara-builder-constants</outputDirectory>
-        <testOutputDirectory>../../out/test/tara-builder-constants</testOutputDirectory>
-        <directory>../../out/build/tara-builder-constants</directory>
+        <outputDirectory>../../out/production/builder-constants</outputDirectory>
+        <testOutputDirectory>../../out/test/builder-constants</testOutputDirectory>
+        <directory>../../out/build/builder-constants</directory>
         <sourceDirectory>src</sourceDirectory>
 
     </build>
