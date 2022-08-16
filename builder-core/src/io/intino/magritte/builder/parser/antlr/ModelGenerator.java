@@ -59,7 +59,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterNode(NodeContext ctx) {
 		if (!errors.isEmpty()) return;
-		NodeImpl node = new NodeImpl();
+		NodeImpl node = new NodeImpl(ctx.getText());
 		node.languageName(model.languageName());
 		node.setSub(ctx.signature().SUB() != null);
 		String hashCodeName = calculateName(ctx);

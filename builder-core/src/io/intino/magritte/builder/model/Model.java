@@ -11,15 +11,14 @@ import java.util.*;
 
 
 public class Model implements NodeRoot {
-
 	private String file;
 	private Language language;
 	private Level level;
-	private Map<Node, List<Rule>> components = new LinkedHashMap<>();
 	private List<String> uses;
-	private Map<String, File> rules = new HashMap<>();
 	private File resourcesRoot;
 	private List<Node> facets;
+	private final Map<Node, List<Rule>> components = new LinkedHashMap<>();
+	private final Map<String, File> rules = new HashMap<>();
 
 	public Model(String file) {
 		this.file = file;

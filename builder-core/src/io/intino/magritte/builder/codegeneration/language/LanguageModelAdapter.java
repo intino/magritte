@@ -68,7 +68,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		createRuleFrame(model, builder, root);
 		model.components().forEach(n -> {
 			final FrameBuilder rootNodeFrame = new FrameBuilder(ROOT);
-			rootNodeFrame.add("number", rootNumber = ++rootNumber);
+			rootNodeFrame.add("number", ++rootNumber);
 			rootNodeFrame.add("language", outDSL);
 			root.add("root", rootNodeFrame.toFrame());
 			buildNode(n, rootNodeFrame);
@@ -119,8 +119,12 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 				add(LAYER, findLayer(node)).
 				add(FILE, new File(node.file()).getName().replace("\\", "\\\\")).
 				add(LINE, node.line()).
-				add(DOC, node.doc() != null ? format(node) : "").
+				add(DOC, node.doc() != null ? format(node) : text(node)).
 				toFrame());
+	}
+
+	private String text(Node node) {
+		return node instanceof NodeImpl ? ((NodeImpl) node).text() : node.toString();
 	}
 
 	private String findLayer(Node node) {

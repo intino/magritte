@@ -16,29 +16,33 @@ public class NodeImpl implements Node {
 	private String file;
 	private int line;
 	private Node container;
-	private List<String> uses = new ArrayList<>();
 	private String type;
 	private String doc;
 	private boolean sub;
-	private Map<Node, List<Rule>> components = new LinkedHashMap<>();
-	private List<Tag> flags = new ArrayList<>();
-	private List<Tag> annotations = new ArrayList<>();
 	private String name;
 	private String parentName;
 	private Node parent;
-	private List<Parameter> parameters = new ArrayList<>();
-	private List<Variable> variables = new ArrayList<>();
-	private List<Aspect> aspects = new ArrayList<>();
-	private List<AspectConstraint> aspectConstraints;
-	private String language;
-	private String uid;
-	private List<Node> children = new ArrayList<>();
-	private List<String> context = new ArrayList<>();
 	private boolean anonymous = true;
 	private boolean dirty;
 	private boolean virtual;
-	private String stashNodeName;
 	private String hashCode;
+	private String language;
+	private String uid;
+	private final String text;
+	private final List<String> uses = new ArrayList<>();
+	private final Map<Node, List<Rule>> components = new LinkedHashMap<>();
+	private final List<Tag> flags = new ArrayList<>();
+	private final List<Tag> annotations = new ArrayList<>();
+	private final List<Parameter> parameters = new ArrayList<>();
+	private final List<Variable> variables = new ArrayList<>();
+	private final List<Aspect> aspects = new ArrayList<>();
+	private final List<Node> children = new ArrayList<>();
+	private List<AspectConstraint> aspectConstraints;
+	private List<String> context = new ArrayList<>();
+
+	public NodeImpl(String text) {
+		this.text = text;
+	}
 
 	@Override
 	public String name() {
@@ -263,7 +267,6 @@ public class NodeImpl implements Node {
 
 	@Override
 	public void stashNodeName(String name) {
-		this.stashNodeName = name;
 	}
 
 	@Override
@@ -385,6 +388,10 @@ public class NodeImpl implements Node {
 	@Override
 	public String toString() {
 		return type + " " + qualifiedName();
+	}
+
+	public String text() {
+		return this.text;
 	}
 
 	private String newUUID() {
