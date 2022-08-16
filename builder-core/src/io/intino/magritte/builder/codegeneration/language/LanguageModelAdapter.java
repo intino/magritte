@@ -32,12 +32,11 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private final Level level;
 	private final String workingPackage;
 	private final String languageWorkingPackage;
-	private Model model;
-	private Set<Node> processed = new HashSet<>();
-	private String outDSL;
+	private final Set<Node> processed = new HashSet<>();
+	private final String outDSL;
+	private final Locale locale;
+	private final Language language;
 	private int rootNumber = 0;
-	private Locale locale;
-	private Language language;
 
 	LanguageModelAdapter(String outDSL, Locale locale, Language language, Level type, String workingPackage, String languageWorkingPackage) {
 		this.outDSL = outDSL;
@@ -50,7 +49,6 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 
 	@Override
 	public void adapt(Model model, FrameBuilderContext context) {
-		this.model = model;
 		initRoot(context);
 		buildRootNodes(model, context);
 		addInheritedRules(model, context);
