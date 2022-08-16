@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 class LanguageCreator {
 	private final CompilerConfiguration conf;
-	private Collection<Model> models;
+	private final Collection<Model> models;
 
 	LanguageCreator(CompilerConfiguration conf, Collection<Model> models) {
 		this.conf = conf;
