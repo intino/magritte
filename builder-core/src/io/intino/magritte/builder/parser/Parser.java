@@ -15,10 +15,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.nio.file.Files.readAllBytes;
 import static org.antlr.v4.runtime.CharStreams.fromString;
 
 public class Parser {
@@ -28,14 +28,14 @@ public class Parser {
 	private final File file;
 	private final CompilerConfiguration.Language language;
 	private final String outDsl;
-	private TaraGrammar grammar;
+	private final TaraGrammar grammar;
 	private TaraGrammar.RootContext rootContext;
 
 	public Parser(File file, CompilerConfiguration.Language language, String sourceEncoding, String outDsl) throws IOException {
 		this.file = file;
 		this.language = language;
 		this.outDsl = outDsl;
-		TaraLexer lexer = new TaraLexer(fromString(new String(readAllBytes(file.toPath()), Charset.forName(sourceEncoding)).trim()));
+		TaraLexer lexer = new TaraLexer(fromString(Files.readString(file.toPath(), Charset.forName(sourceEncoding)).trim()));
 		lexer.reset();
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		grammar = new TaraGrammar(tokens);

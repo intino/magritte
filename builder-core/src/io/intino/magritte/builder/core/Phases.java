@@ -23,11 +23,10 @@ public class Phases {
 			"model dependency resolution",
 			"semantic analysis",
 			"post-analysis resolution",
-			"class generation",
-			"stash generation",
-		"language generation",
-		"output",
-		"finalization"};
+			"code generation",
+			"language generation",
+			"output",
+			"finalization"};
 
 	private Phases() {
 	}
