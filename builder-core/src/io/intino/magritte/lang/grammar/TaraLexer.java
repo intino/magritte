@@ -68,7 +68,6 @@ public class TaraLexer extends Lexer {
 				"LETTER"
 		};
 	}
-
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
@@ -87,9 +86,7 @@ public class TaraLexer extends Lexer {
 				"'%EXPRESSION_END%'"
 		};
 	}
-
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
-
 	private static String[] makeSymbolicNames() {
 		return new String[]{
 				null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "IS", "INTO", "WITH",
@@ -109,7 +106,6 @@ public class TaraLexer extends Lexer {
 				"QUOTE_END", "EXPRESSION_BEGIN", "EXPRESSION_END"
 		};
 	}
-
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -118,7 +114,6 @@ public class TaraLexer extends Lexer {
 	 */
 	@Deprecated
 	public static final String[] tokenNames;
-
 	static {
 		tokenNames = new String[_SYMBOLIC_NAMES.length];
 		for (int i = 0; i < tokenNames.length; i++) {
@@ -299,7 +294,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void INLINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 0:
@@ -307,7 +301,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void SEMICOLON_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 1:
@@ -315,7 +308,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void STRING_MULTILINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 2:
@@ -323,7 +315,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void SINGLE_QUOTE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 3:
@@ -331,7 +322,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void EXPRESSION_MULTILINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 4:
@@ -339,7 +329,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void NEWLINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 5:
@@ -347,7 +336,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void DOC_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 6:
@@ -355,7 +343,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void ME_STRING_MULTILINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 7:
@@ -363,7 +350,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void ME_CHARACTER_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 8:
@@ -371,7 +357,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void E_QUOTE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 9:
@@ -379,7 +364,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void E_SLASH_Q_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 10:
@@ -387,7 +371,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void E_SLASH_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 11:
@@ -395,7 +378,6 @@ public class TaraLexer extends Lexer {
 				break;
 		}
 	}
-
 	private void E_CHARACTER_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 			case 12:
@@ -935,7 +917,6 @@ public class TaraLexer extends Lexer {
 					"R\f";
 	public static final ATN _ATN =
 			new ATNDeserializer().deserialize(_serializedATN.toCharArray());
-
 	static {
 		_decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
 		for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {

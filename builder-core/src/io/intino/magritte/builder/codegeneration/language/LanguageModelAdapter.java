@@ -31,7 +31,6 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	private static final String FacetSeparator = ":";
 	private final Level level;
 	private final String workingPackage;
-	private final String languageWorkingPackage;
 	private final Set<Node> processed = new HashSet<>();
 	private final String outDSL;
 	private final Locale locale;
@@ -44,7 +43,6 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		this.language = language;
 		this.level = type;
 		this.workingPackage = workingPackage;
-		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
 	@Override
@@ -117,7 +115,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 				add(LAYER, findLayer(node)).
 				add(FILE, new File(node.file()).getName().replace("\\", "\\\\")).
 				add(LINE, node.line()).
-				add(DOC, node.doc() != null ? format(node) : text(node)).
+				add(DOC, node.doc() != null ? format(node.doc()) : format(text(node))).
 				toFrame());
 	}
 
@@ -129,8 +127,8 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 		return node instanceof Model ? "" : getQn(node, workingPackage);
 	}
 
-	private String format(Node node) {
-		return node.doc().replace("\"", "\\\"").replace("\n", "\\n");
+	private String format(String doc) {
+		return doc.replace("\"", "\\\"").replace("\n", "\\n");
 	}
 
 	private void addTypes(Node node, FrameBuilder builder) {

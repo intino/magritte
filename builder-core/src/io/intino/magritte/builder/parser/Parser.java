@@ -22,9 +22,7 @@ import java.util.logging.Logger;
 import static org.antlr.v4.runtime.CharStreams.fromString;
 
 public class Parser {
-
 	private static final Logger LOG = Logger.getGlobal();
-
 	private final File file;
 	private final CompilerConfiguration.Language language;
 	private final String outDsl;

@@ -15,6 +15,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,12 +36,19 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final Model model;
 	private final CompilerConfiguration.Language language;
 	private final List<SyntaxException> errors = new ArrayList<>();
+	private final String fileContent;
 
 	public ModelGenerator(String file, CompilerConfiguration.Language language, String outDsl) {
 		this.file = file;
 		this.language = language;
 		this.outDsl = outDsl;
 		deque.add(model = new Model(file));
+		try {
+			this.fileContent = Files.readString(new File(file).toPath());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	@Override
@@ -59,7 +68,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterNode(NodeContext ctx) {
 		if (!errors.isEmpty()) return;
-		NodeImpl node = new NodeImpl(ctx.getText());
+		NodeImpl node = new NodeImpl(fileContent.substring(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex()));
 		node.languageName(model.languageName());
 		node.setSub(ctx.signature().SUB() != null);
 		String hashCodeName = calculateName(ctx);
