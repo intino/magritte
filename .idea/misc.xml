@@ -6,7 +6,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/core/language/src/io/intino/magritte/lang/lexicon/TaraLexer.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="$PROJECT_DIR$/builder/builder/gen" />
+          <option name="outputDir" value="$PROJECT_DIR$/builder-core/src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="io.intino.magritte.lang.grammar" />
@@ -16,7 +16,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/core/language/src/io/intino/magritte/lang/grammar/TaraGrammar.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="$PROJECT_DIR$/builder/builder/gen" />
+          <option name="outputDir" value="$PROJECT_DIR$/builder-core/src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="io.intino.magritte.lang.grammar" />
