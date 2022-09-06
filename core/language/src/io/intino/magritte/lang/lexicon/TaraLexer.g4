@@ -167,7 +167,7 @@ SPACES: SP+ EOF? 	-> channel(HIDDEN);
 DOC : '!!' .*? NEWLINE {emitToken(DOC);};
 
 SP: (' ' | '\t');
-NL: ('\r'? '\n' | '\r');
+NL: (('\r'? '\n') | '\r');
 
 NEW_LINE_INDENT: 'indent';
 DEDENT         : 'dedent';

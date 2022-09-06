@@ -128,7 +128,7 @@ class LanguageModelAdapter implements io.intino.itrules.Adapter<Model>, Template
 	}
 
 	private String format(String doc) {
-		return doc.replace("\"", "\\\"").replace("\n", "\\n");
+		return doc.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
 	}
 
 	private void addTypes(Node node, FrameBuilder builder) {
