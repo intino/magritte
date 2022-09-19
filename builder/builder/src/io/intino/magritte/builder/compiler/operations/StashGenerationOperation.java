@@ -51,11 +51,14 @@ public class StashGenerationOperation extends ModelOperation {
 		}
 	}
 
-	private void createSeparatedStashes(Model model) throws TaraException {
-		for (List<Node> nodes : pack(model)) {
-			if (nodes.isEmpty()) continue;
-			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
-		}
+	private void createSeparatedStashes(Model model) {
+		unpack(model).parallelStream().forEach(nodes -> {
+			try {
+				writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
+			} catch (TaraException e) {
+				LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
+			}
+		});
 	}
 
 	private void createFullStash(Model model) throws TaraException {
@@ -93,17 +96,16 @@ public class StashGenerationOperation extends ModelOperation {
 				new File(destiny, Format.firstUpperCase().format(conf.model().outDsl()).toString() + STASH);
 	}
 
-	private List<List<Node>> pack(Model model) {
+	private List<List<Node>> unpack(Model model) {
 		Map<String, List<Node>> nodes = new HashMap<>();
-		for (Node node : model.components()) {
-			if (!nodes.containsKey(node.file()))
-				nodes.put(node.file(), new ArrayList<>());
+		model.components().forEach(node -> {
+			if (!nodes.containsKey(node.file())) nodes.put(node.file(), new ArrayList<>());
 			nodes.get(node.file()).add(node);
-		}
-		return pack(nodes);
+		});
+		return unpack(nodes);
 	}
 
-	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
+	private List<List<Node>> unpack(Map<String, List<Node>> nodes) {
 		return new ArrayList<>(nodes.values());
 	}
 }

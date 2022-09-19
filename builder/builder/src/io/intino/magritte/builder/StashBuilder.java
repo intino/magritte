@@ -2,6 +2,7 @@ package io.intino.magritte.builder;
 
 import io.intino.Configuration;
 import io.intino.magritte.Language;
+import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
 import io.intino.magritte.builder.core.CompilerConfiguration;
 import io.intino.magritte.builder.utils.FileSystemUtils;
 import io.intino.magritte.io.Stash;
@@ -61,7 +62,8 @@ public class StashBuilder {
 
 	public Stash[] build() {
 		try {
-			new TaraCompilerRunner(true).run(createConfiguration(), files);
+			TaraCompilerRunner runner = new TaraCompilerRunner(true, List.of(StashGenerationOperation.class));
+			runner.run(createConfiguration(), files);
 			final File[] createdStashes = findCreatedStashes();
 			if (createdStashes.length == 0) return null;
 			final Stash[] stash = Arrays.stream(createdStashes).map(StashDeserializer::stashFrom).toArray(Stash[]::new);
@@ -84,7 +86,7 @@ public class StashBuilder {
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);
 		configuration.setModule(module);
-		configuration.setExcludedPhases(Arrays.asList(1, 8, 10, 11));
+		configuration.setExcludedPhases(List.of(1));
 		configuration.setMake(true);
 		configuration.model().outDsl(module);
 		configuration.sourceEncoding(charset.name());

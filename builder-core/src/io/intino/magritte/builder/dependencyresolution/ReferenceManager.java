@@ -19,7 +19,7 @@ import static io.intino.magritte.builder.utils.FileSystemUtils.getNameWithoutExt
 
 public class ReferenceManager {
 
-	private Model model;
+	private final Model model;
 
 	ReferenceManager(Model model) {
 		this.model = model;
