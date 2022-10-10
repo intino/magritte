@@ -31,7 +31,7 @@ public class MetricResolutionOperation extends ModelOperation {
 			resolve(model);
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getElement().file())), true);
+			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
 		}
 	}
 

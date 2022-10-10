@@ -47,7 +47,7 @@ public class StashGenerationOperation extends ModelOperation {
 			else createFullStash(model);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
-			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+			throw new CompilationFailedException(unit.getPhase(), unit, e);
 		}
 	}
 
@@ -83,7 +83,7 @@ public class StashGenerationOperation extends ModelOperation {
 			stream.write(content);
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Error writing stashes: " + e.getMessage(), e);
-			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+			throw new CompilationFailedException(unit.getPhase(), unit, e);
 		}
 		file.getPath();
 	}

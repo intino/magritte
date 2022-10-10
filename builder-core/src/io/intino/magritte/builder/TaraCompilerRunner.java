@@ -89,8 +89,8 @@ public class TaraCompilerRunner {
 	}
 
 	private void report(Map<File, Boolean> srcFiles, List<OutputItem> compiled) {
-		if (compiled.isEmpty()) reportNotCompiledItems(srcFiles);
-		else reportCompiledItems(compiled);
+//		if (compiled.isEmpty()) reportNotCompiledItems(srcFiles);
+//		else reportCompiledItems(compiled);
 		out.println();
 	}
 

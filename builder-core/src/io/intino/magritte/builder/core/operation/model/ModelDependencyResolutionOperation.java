@@ -28,9 +28,9 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			final CompilerConfiguration conf = compilationUnit.configuration();
+			final CompilerConfiguration conf = unit.configuration();
 			if (conf.isVerbose())
-				compilationUnit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]" + " Resolving dependencies...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]" + " Resolving dependencies...");
 			final DependencyResolver dependencyResolver = new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory());
 			dependencyResolver.resolve();
 			notifyRulesNotLoaded(dependencyResolver);
@@ -39,14 +39,14 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new NativeResolver(model, conf.functionsDirectory()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			compilationUnit.getErrorCollector().addError(DependencyErrorMessage.create(e, compilationUnit.getSourceUnits().get(e.getElement().file())), true);
+			unit.getErrorCollector().addError(DependencyErrorMessage.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
 		}
 	}
 
 	private void notifyRulesNotLoaded(DependencyResolver dependencyResolver) {
 		for (DependencyException entry : dependencyResolver.rulesNotLoaded()) {
-			SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), entry.getElement());
-			compilationUnit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, entry.getMessage(), sourceFromFile, entry.getLine(), entry.getElement().column()));
+			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), entry.getElement());
+			unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, entry.getMessage(), sourceFromFile, entry.getLine(), entry.getElement().column()));
 		}
 	}
 

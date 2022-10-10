@@ -32,7 +32,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				compilationUnit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + compilationUnit.configuration().model().outDsl() + "]" + " Analyzing semantic...");
+				unit.configuration().out().println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.configuration().model().outDsl() + "]" + " Analyzing semantic...");
 			if (model.language() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model).analyze();
 		} catch (TaraException e) {
@@ -46,20 +46,20 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		for (io.intino.magritte.lang.semantics.errorcollector.SemanticException e : fatal.exceptions()) {
 			Element[] origins = e.origin();
 			if (origins == null || origins.length == 0) return;
-			SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), origins[0]);
+			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), origins[0]);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
 			for (Element element : origins) {
 				if (e.level() == SemanticNotification.Level.ERROR || e.level() == SemanticNotification.Level.RECOVERABLE_ERROR)
-					compilationUnit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
+					unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
 				else if (e.level() == SemanticNotification.Level.WARNING)
-					compilationUnit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
+					unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
 			}
 		}
 	}
 
 	public void error(TaraException e) {
 		LOG.severe(e.getMessage());
-		throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+		throw new CompilationFailedException(unit.getPhase(), unit, e);
 	}
 
 	private SourceUnit getSourceFromFile(Collection<SourceUnit> values, Element origin) {

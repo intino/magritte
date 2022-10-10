@@ -63,11 +63,11 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			if (conf.isVerbose()) conf.out().println(prefix() + " Generating Layers...");
 			if (!model.level().equals(Solution)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
-			compilationUnit.addOutputItems(outMap);
-			compilationUnit.compilationDifferentialCache().saveCache(model.components().stream().map(c -> ((NodeImpl) c).getHashCode()).collect(Collectors.toList()));
+			unit.addOutputItems(outMap);
+			unit.compilationDifferentialCache().saveCache(model.components().stream().map(c -> ((NodeImpl) c).getHashCode()).collect(Collectors.toList()));
 		} catch (Throwable e) {
 			LOG.log(java.util.logging.Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
-			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+			throw new CompilationFailedException(unit.getPhase(), unit, e);
 		}
 	}
 
@@ -129,7 +129,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private boolean isModified(Node node) {
-		return compilationUnit.compilationDifferentialCache().isModified((NodeImpl) node);
+		return unit.compilationDifferentialCache().isModified((NodeImpl) node);
 	}
 
 	private void renderFrame(Map<String, Map<String, String>> map, Node node, Model model, Map.Entry<String, Frame> layerFrame) {

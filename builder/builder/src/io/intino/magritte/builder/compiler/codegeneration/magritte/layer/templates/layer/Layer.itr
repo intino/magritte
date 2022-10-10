@@ -53,29 +53,29 @@ def type(overriden) trigger(remove)
 end
 
 def type(node) !type(aspect | final | instance | abstract) trigger(new)
-    public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
-        $qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
+	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
+		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
-        return newElement;
-    }
+		return newElement;
+	}
 end
 
 def type(node) !type(aspect | single | final | instance | abstract | overriden) trigger(clear)
-    public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
 end
 
 def type(node & create) !type(aspect |final | instance) trigger(new)
-    public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
-        $qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
+	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
+		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
-        return newElement;
-    }
+		return newElement;
+	}
 end
 
 def type(node & create) !type(single | final | instance) trigger(clear)
-    public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
+	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
 end
@@ -93,16 +93,16 @@ def type(availableAspect) !type(abstract) attribute(variable) trigger(availableA
 	public $qn as$name+FirstUpperCase([$variable+parameters...[, ]]) {
 		$qn+reference newElement = core$$().addAspect($qn+reference.class);
 		$variable+assign...[$NL]
-        return newElement;
-    }
+		return newElement;
+	}
 
-    public boolean is$name+FirstUpperCase() {
-    	return core$$().is($qn+reference.class);
-    }
+	public boolean is$name+FirstUpperCase() {
+		return core$$().is($qn+reference.class);
+	}
 
-    public void remove$name+FirstUpperCase() {
+	public void remove$name+FirstUpperCase() {
 		core$$().removeAspect($qn+reference.class);
-    }
+	}
 end
 
 def type(availableAspect) trigger(availableAspect)
@@ -168,7 +168,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 		@Override
 		protected java.util.Map<java.lang.String, java.util.List<?>> variables$$() {
-			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
+			java.util.Map<java.lang.String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
 			[$variable+list...[$NL]]
 			return map;
 		}
@@ -180,10 +180,10 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		}]
 
 		[@Override
-        protected void removeNode$$(io.intino.magritte.framework.Node node) {
-            super.removeNode$$(node);
-            $node+remove...[$NL]
-        }]
+		protected void removeNode$$(io.intino.magritte.framework.Node node) {
+			super.removeNode$$(node);
+			$node+remove...[$NL]
+		}]
 
 		@Override
 		protected void load$$(java.lang.String name, java.util.List<?> values) {
@@ -206,8 +206,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		[@Override
 		protected void sync$$(io.intino.magritte.framework.Layer layer) {
 			super.sync$$(layer);
-		    $aspect+aspectAssign...[$NL~else ]
-		    $constraint+aspectAssign...[$NL~else ]
+			$aspect+aspectAssign...[$NL~else ]
+			$constraint+aspectAssign...[$NL~else ]
 		}]
 
 		[public Create create() {

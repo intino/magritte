@@ -3,18 +3,13 @@ package io.intino.magritte.builder.core;
 import io.intino.magritte.Language;
 import io.intino.magritte.builder.core.errorcollection.CompilationFailedException;
 import io.intino.magritte.builder.core.operation.Operation;
-import io.intino.magritte.builder.core.operation.model.*;
 import io.intino.magritte.builder.core.operation.setup.SetupConfigurationOperation;
 import io.intino.magritte.builder.core.operation.setup.SetupOperation;
-import io.intino.magritte.builder.core.operation.sourceunit.*;
 import io.intino.magritte.builder.model.Model;
 import io.intino.magritte.builder.utils.DifferentialCache;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public final class CompilationUnit extends ProcessingUnit {
@@ -24,7 +19,6 @@ public final class CompilationUnit extends ProcessingUnit {
 	private final Map<Language, Model> models = new HashMap<>();
 	private final List<Operation>[] phaseOperations;
 	private final Map<String, List<String>> outputItems = new HashMap<>();
-
 
 	public CompilationUnit(CompilerConfiguration configuration) {
 		super(configuration, null);
@@ -66,7 +60,10 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void addOutputItems(Map<String, List<String>> paths) {
-		outputItems.putAll(paths);
+		for (String source : paths.keySet()) {
+			outputItems.putIfAbsent(source, new ArrayList<>());
+			outputItems.get(source).addAll(paths.get(source));
+		}
 	}
 
 	public void addSource(SourceUnit source) {
