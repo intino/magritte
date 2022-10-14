@@ -3,8 +3,10 @@ package io.intino.magritte.builder.core;
 import io.intino.magritte.Language;
 import io.intino.magritte.builder.core.errorcollection.CompilationFailedException;
 import io.intino.magritte.builder.core.operation.Operation;
+import io.intino.magritte.builder.core.operation.model.*;
 import io.intino.magritte.builder.core.operation.setup.SetupConfigurationOperation;
 import io.intino.magritte.builder.core.operation.setup.SetupOperation;
+import io.intino.magritte.builder.core.operation.sourceunit.*;
 import io.intino.magritte.builder.model.Model;
 import io.intino.magritte.builder.utils.DifferentialCache;
 
