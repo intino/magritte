@@ -368,6 +368,17 @@ public class GraphTest {
 	}
 
 	@Test
+	public void should_remove_all_children_grandchildren() {
+		MockApplication application = new Graph(TestHelper.mockStore()).loadStashes("m1", "m2", "m3").as(MockApplication.class);
+		MockLayer parent = application.core$().createRoot("Mock", "x", "x").as(MockLayer.class);
+		MockLayer child = application.core$().concept("Mock").createNode("1", parent.core$()).as(MockLayer.class);
+		MockLayer grandChild = application.core$().concept("Mock").createNode("1", child.core$()).as(MockLayer.class);
+		child.delete$();
+		child = application.core$().concept("Mock").createNode("1", parent.core$()).as(MockLayer.class);
+		grandChild = application.core$().concept("Mock").createNode("1", child.core$()).as(MockLayer.class);
+	}
+
+	@Test
 	public void should_provide_correct_root_node_id() {
 		Node child = new Node("xxx#yyy$zzz");
 		assertThat(child.rootNodeId(), is("xxx#yyy"));

@@ -71,6 +71,14 @@ public class Graph {
 		return load(id, true);
 	}
 
+	public Node load(String stash, String name) {
+		return load(stash, name, true);
+	}
+
+	public Node load(String stash, String name, boolean logFail) {
+		return load(stash + "#" + name, logFail);
+	}
+
 	public Node load(String id, boolean logFail) {
 		Node node = loadFromLoaders(id);
 		if (node == null) node = node(id);
@@ -153,6 +161,7 @@ public class Graph {
 		Map<String, Node> stashMap = nodes.get(node.stash());
 		if(stashMap == null) return;
 		stashMap.remove(node.fullName());
+		for (Node child : node.componentList()) doRemove(child);
 	}
 
 	public void removeInMemory(Node node) {
@@ -278,6 +287,7 @@ public class Graph {
 	}
 
 	public Node createRoot(Concept concept, String stash, String name) {
+		check(stash);
 		Node newNode = GraphHelper.createNode(this, concept, stash, name);
 		if (newNode != null) commit(newNode);
 		return newNode;
@@ -285,10 +295,15 @@ public class Graph {
 
 	private void doLoadStashes(boolean logFail, String... stashes) {
 		stream(stashes).forEach(s -> {
+			check(s);
 			Stash stash = stashOf(stashWithExtension(s), logFail);
 			doLoadStashes(stash);
 			if (stash != null && !stash.concepts.isEmpty()) this.languages.add(s);
 		});
+	}
+
+	private static void check(String stash) {
+		if(stash.contains("//")) throw new MagritteException("Invalid stash path " + stash);
 	}
 
 	void doLoadStashes(Stash... stashes) {
