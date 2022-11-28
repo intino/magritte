@@ -70,6 +70,10 @@ class GraphHelper {
 			getGlobal().warning("Node with id " + path + "#" + name + " already exists");
 			return null;
 		}
+		if (name != null && (name.contains(".") || name.contains("$"))){
+			getGlobal().severe("Name " + name + " is invalid. $ or . cannot be used");
+			return null;
+		}
 		return concept.createRoot(canonicalPath(path), name == null ? graph.createNodeName() : name, graph.model);
 	}
 }

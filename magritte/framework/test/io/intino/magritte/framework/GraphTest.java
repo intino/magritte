@@ -379,6 +379,16 @@ public class GraphTest {
 	}
 
 	@Test
+	public void should_not_allow_invalid_names() {
+		MockApplication application = new Graph(TestHelper.mockStore()).loadStashes("m1", "m2", "m3").as(MockApplication.class);
+		assertNull(application.core$().createRoot("Mock", "x", "x.y"));
+		Node node = application.core$().createRoot("Mock", "x", "x");
+		assertNotNull(node);
+		assertNull(application.core$().concept("Mock").createNode("1$2", node));
+		assertNotNull(application.core$().concept("Mock").createNode("1", node));
+	}
+
+	@Test
 	public void should_provide_correct_root_node_id() {
 		Node child = new Node("xxx#yyy$zzz");
 		assertThat(child.rootNodeId(), is("xxx#yyy"));

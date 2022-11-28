@@ -286,4 +286,9 @@ public class Node extends Predicate {
 		layers.forEach(l -> layers.forEach(l::sync$));
 	}
 
+	@Override
+	public String toString() {
+		return name() + " {" + String.join(", ", typeNames) + "}";
+	}
+
 }

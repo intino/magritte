@@ -167,6 +167,10 @@ public class Concept extends Predicate {
 			getGlobal().severe("Owner " + owner.name() + " contains a component named " + name);
 			return null;
 		}
+		if (name != null && (name.contains(".") || name.contains("$"))) {
+			getGlobal().severe("Name " + name + " is invalid. $ or . cannot be used");
+			return null;
+		}
 		return newNode(owner.id() + "$" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
