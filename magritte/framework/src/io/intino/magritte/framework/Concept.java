@@ -149,8 +149,8 @@ public class Concept extends Predicate {
 		return newNode(path + "#" + (name != null ? name : model.graph().createNodeName()), model);
 	}
 
-	private boolean ownerContainsComponent(Node owner, String name) {
-		return owner.graph().load(owner.id() + "$" + name, false) != null;
+	private Node component(Node owner, String name) {
+		return owner.graph().load(owner.id() + "$" + name, false);
 	}
 
 	public Node createNode(Node owner) {
@@ -163,8 +163,8 @@ public class Concept extends Predicate {
 			getGlobal().severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		if (owner != null && !(owner instanceof Model) && ownerContainsComponent(owner, name)) {
-			getGlobal().severe("Owner " + owner.name() + " contains a component named " + name);
+		if (owner != null && !(owner instanceof Model) && component(owner, name) != null) {
+			getGlobal().severe("Owner " + owner.name() + " contains a component named " + name + ". Node " + component(owner, name).toString());
 			return null;
 		}
 		if (name != null && (name.contains(".") || name.contains("$"))) {

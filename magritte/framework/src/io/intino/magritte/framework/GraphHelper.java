@@ -67,7 +67,7 @@ class GraphHelper {
 		path = path == null || path.isEmpty() ? "Misc" : path;
 		graph.doLoadStashes(graph.stashOf(StashHelper.stashWithExtension(path), false));
 		if (name != null && graph.node(path + "#" + name) != null) {
-			getGlobal().warning("Node with id " + path + "#" + name + " already exists");
+			getGlobal().warning("Node with id " + path + "#" + name + " already exists. Node: " + graph.node(path + "#" + name).toString());
 			return null;
 		}
 		if (name != null && (name.contains(".") || name.contains("$"))){
