@@ -105,10 +105,25 @@ def type(availableAspect) !type(abstract) attribute(variable) trigger(availableA
 	}
 end
 
-def type(availableAspect) trigger(availableAspect)
+def type(availableAspect) !type(abstract) trigger(availableAspect)
+
 	public $qn+reference as$name+FirstUpperCase() {
 		io.intino.magritte.framework.Layer as = a$$($qn+reference.class);
 		return as != null ? ($qn+reference) as : [$abstract?core$$().addAspect($qn+reference.class)];
+	}
+
+	public boolean is$name+FirstUpperCase() {
+		return core$$().is($qn+reference.class);
+	}
+
+	public void remove$name+FirstUpperCase() {
+		core$$().removeAspect($qn+reference.class);
+	}
+end
+
+def type(availableAspect) trigger(availableAspect)
+	public $qn+reference as$name+FirstUpperCase() {
+		return a$$($qn+reference.class);
 	}
 
 	public boolean is$name+FirstUpperCase() {
