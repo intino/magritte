@@ -47,6 +47,7 @@ public class ASTMerger {
 	private Map<Language, List<SourceUnit>> groupByLanguage() {
 		Map<Language, List<SourceUnit>> list = new HashMap<>();
 		for (SourceUnit source : sources) {
+			if (source.getModel().components().isEmpty()) continue;
 			if (!list.containsKey(source.getModel().language()))
 				list.put(source.getModel().language(), new ArrayList<>());
 			list.get(source.getModel().language()).add(source);
