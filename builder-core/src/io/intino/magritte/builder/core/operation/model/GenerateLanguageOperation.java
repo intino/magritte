@@ -10,7 +10,7 @@ import io.intino.magritte.builder.model.Model;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static java.util.logging.Level.SEVERE;
 
 public class GenerateLanguageOperation extends ModelCollectionOperation {

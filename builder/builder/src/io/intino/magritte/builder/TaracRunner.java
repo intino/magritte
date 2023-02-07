@@ -3,8 +3,8 @@ package io.intino.magritte.builder;
 
 import io.intino.magritte.builder.compiler.operations.LayerGenerationOperation;
 import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
-import io.intino.magritte.builder.compiler.shared.TaraBuildConstants;
 import io.intino.magritte.builder.core.errorcollection.TaraException;
+import io.intino.magritte.builder.shared.TaraBuildConstants;
 
 import java.io.File;
 import java.util.List;

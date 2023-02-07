@@ -1,10 +1,10 @@
 package io.intino.magritte.builder.codegeneration.language;
 
 import io.intino.itrules.FrameBuilder;
-import io.intino.magritte.builder.compiler.shared.TaraBuildConstants;
 import io.intino.magritte.builder.core.CompilerConfiguration;
 import io.intino.magritte.builder.core.errorcollection.TaraException;
 import io.intino.magritte.builder.model.Model;
+import io.intino.magritte.builder.shared.TaraBuildConstants;
 import io.intino.magritte.builder.utils.FileSystemUtils;
 import io.intino.magritte.builder.utils.JavaCompiler;
 import io.intino.magritte.dsl.Meta;

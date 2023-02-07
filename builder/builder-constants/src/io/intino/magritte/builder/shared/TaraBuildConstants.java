@@ -1,4 +1,4 @@
-package io.intino.magritte.builder.compiler.shared;
+package io.intino.magritte.builder.shared;
 
 public class TaraBuildConstants {
 

@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.GENERATION_PACKAGE;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.GENERATION_PACKAGE;
 import static java.io.File.separator;
 
 public class CompilerConfiguration implements Cloneable {

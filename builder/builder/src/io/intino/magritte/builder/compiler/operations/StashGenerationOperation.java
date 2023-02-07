@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static io.intino.Configuration.Artifact.Model.Level.Solution;
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class StashGenerationOperation extends ModelOperation {
 	public static final String STASH = ".stash";

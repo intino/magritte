@@ -2,10 +2,10 @@ package io.intino.magritte.builder;
 
 import io.intino.Configuration;
 import io.intino.magritte.builder.TaraCompiler.OutputItem;
-import io.intino.magritte.builder.compiler.shared.TaraBuildConstants;
-import io.intino.magritte.builder.compiler.shared.TaraCompilerMessageCategories;
 import io.intino.magritte.builder.core.*;
 import io.intino.magritte.builder.core.operation.Operation;
+import io.intino.magritte.builder.shared.TaraBuildConstants;
+import io.intino.magritte.builder.shared.TaraCompilerMessageCategories;
 import io.intino.magritte.builder.utils.FileSystemUtils;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.*;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.*;
 
 public class TaraCompilerRunner {
 	private final boolean verbose;

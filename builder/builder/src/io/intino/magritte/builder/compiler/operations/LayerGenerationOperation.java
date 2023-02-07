@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static io.intino.Configuration.Artifact.Model.Level.Solution;
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 import static io.intino.magritte.builder.utils.Format.firstUpperCase;
 import static io.intino.magritte.builder.utils.Format.javaValidName;
 import static java.io.File.separator;

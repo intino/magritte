@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.*;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.*;
 
 public class CompilationInfoExtractor {
 	private static final Logger LOG = Logger.getGlobal();

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class UnifyModelOperation extends SourceUnitCollectionOperation {
 	private static final Logger LOG = Logger.getGlobal();

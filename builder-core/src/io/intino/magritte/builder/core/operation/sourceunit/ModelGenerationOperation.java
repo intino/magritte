@@ -10,7 +10,7 @@ import io.intino.magritte.builder.core.errorcollection.message.Message;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.magritte.builder.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.magritte.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ModelGenerationOperation extends SourceUnitOperation {
 	private static final Logger LOG = Logger.getGlobal();
