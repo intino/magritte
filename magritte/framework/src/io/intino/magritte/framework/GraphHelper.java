@@ -46,7 +46,8 @@ class GraphHelper {
 		Map<String, Node> stashMap = graph.nodes.get(stash);
 		if(stashMap == null) return Collections.emptyList();
 		List<Node> nodes = new ArrayList<>();
-		for (Node node : new ArrayList<>(stashMap.values())) if (node.isRoot()) nodes.add(node);
+		List<Node> values = new ArrayList<>(stashMap.values());
+		for (Node node : values) if (node.isRoot()) nodes.add(node);
 		return nodes;
 	}
 
