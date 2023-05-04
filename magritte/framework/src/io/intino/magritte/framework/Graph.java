@@ -428,7 +428,7 @@ public class Graph {
 		concepts.put(concept.id, concept);
 	}
 
-	void register(Node node) {
+	synchronized void register(Node node) {
 		if(!nodes.containsKey(node.stash())) nodes.put(node.stash(), new LinkedHashMap<>());
 		nodes.get(node.stash()).put(node.fullName(), node);
 	}
