@@ -250,7 +250,7 @@ public class GlobalConstraints {
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
-				if (tag.equals(Instance))
+				if (Instance.equals(tag))
 					error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
 		Variable parentVariable = findParentVariable(variable);

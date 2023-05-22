@@ -1,6 +1,5 @@
 package io.intino.magritte.builder;
 
-import io.intino.Configuration;
 import io.intino.magritte.builder.TaraCompiler.OutputItem;
 import io.intino.magritte.builder.core.*;
 import io.intino.magritte.builder.core.operation.Operation;
@@ -15,6 +14,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static io.intino.Configuration.Artifact.Model.Level.values;
 import static io.intino.magritte.builder.shared.TaraBuildConstants.*;
 
 public class TaraCompilerRunner {
@@ -103,7 +103,7 @@ public class TaraCompilerRunner {
 		testConf.workingPackage(testConf.workingPackage() + ".test");
 		if (config.model().outDsl() != null) testConf.addLanguage(config.model().outDsl(), config.version());
 		if (config.model().level() != null)
-			testConf.model().level(Configuration.Artifact.Model.Level.values()[config.model().level().ordinal() == 0 ? 0 : config.model().level().ordinal() - 1]);
+			testConf.model().level(values()[config.model().level().ordinal() == 0 ? 0 : config.model().level().ordinal() - 1]);
 		List<OutputItem> outputs = new ArrayList<>();
 		for (File file : testFiles.keySet()) {
 			testConf.model().outDsl(file.getName());

@@ -1,6 +1,6 @@
 package io.intino.magritte.builder;
 
-import io.intino.Configuration;
+import io.intino.Configuration.Artifact.Model.Level;
 import io.intino.magritte.Language;
 import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
 import io.intino.magritte.builder.core.CompilerConfiguration;
@@ -81,7 +81,7 @@ public class StashBuilder {
 
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
-		configuration.model().level(Configuration.Artifact.Model.Level.Solution);
+		configuration.model().level(Level.Solution);
 		configuration.setTaraDirectory(new File(new File(java.lang.System.getProperty("user.home")), ".m2"));
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);

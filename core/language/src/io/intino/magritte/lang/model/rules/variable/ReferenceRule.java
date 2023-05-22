@@ -6,27 +6,26 @@ import io.intino.magritte.lang.model.Primitive;
 import java.util.*;
 
 public class ReferenceRule implements VariableRule<List<Primitive.Reference>> {
-	private List<String> allowedReferences = new ArrayList<>();
+	private final List<String> allowedReferences = new ArrayList<>();
 
 	public ReferenceRule(Collection<String> allowedReferences) {
-		for (String allowedReference : allowedReferences) {
-			if (!this.allowedReferences.contains(allowedReference)) this.allowedReferences.add(allowedReference);
-			Arrays.stream(allowedReference.split(":")).filter(r -> !this.allowedReferences.contains(r)).forEach(r -> this.allowedReferences.add(r));
-		}
+		allowedReferences.forEach(ref -> {
+			if (!this.allowedReferences.contains(ref)) this.allowedReferences.add(ref);
+			Arrays.stream(ref.split(":")).filter(r -> !this.allowedReferences.contains(r)).forEach(r -> this.allowedReferences.add(r));
+		});
 	}
-
 
 	public boolean accept(List<Primitive.Reference> values, String metric) {
 		return accept(values);
 	}
 
 	public boolean accept(List<Primitive.Reference> values) {
-		for (Primitive.Reference v : values) {
-			final Node reference = v.reference();
-			for (String type : reference.types())
-				if (allowedReferences.contains(type) || allowedReferences.contains(type.split(":")[0])) return true;
-		}
-		return false;
+		return values.stream().anyMatch(v -> acceptValue(v.reference()) || acceptValue(v.reference().resolve()));
+	}
+
+	private boolean acceptValue(Node v) {
+		return v.types().stream()
+				.anyMatch(type -> allowedReferences.contains(type) || allowedReferences.contains(type.split(":")[0]));
 	}
 
 	public List<String> allowedReferences() {
