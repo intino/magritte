@@ -151,29 +151,26 @@ public class Graph {
 		return (T) wrappers.get(aClass);
 	}
 
-	public void remove(Node node) {
+	public synchronized void remove(Node node) {
 		node.owner().remove(node);
 		doRemove(node);
 		save(node.stash());
 	}
 
-	private void doRemove(Node node) {
+	private synchronized void doRemove(Node node) {
 		Map<String, Node> stashMap = nodes.get(node.stash());
 		if(stashMap == null) return;
 		stashMap.remove(node.fullName());
 		for (Node child : node.componentList()) doRemove(child);
 	}
 
-	public void removeInMemory(Node node) {
+	public synchronized void removeInMemory(Node node) {
 		node.owner().remove(node);
 		doRemove(node);
 	}
 
-	public void remove(String stash) {
-		nodesIn(stash).forEach(node -> {
-			node.owner().remove(node);
-			doRemove(node);
-		});
+	public synchronized void remove(String stash) {
+		nodes.remove(stash).values().forEach(n -> n.owner().remove(n));
 		save(stash);
 	}
 
@@ -184,7 +181,7 @@ public class Graph {
 		wrappers.values().forEach(GraphWrapper::update);
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		model.componentList().forEach(model::remove);
 		openedStashes.clear();
 		languages.clear();
@@ -338,10 +335,6 @@ public class Graph {
 		List<Stash> result = new ArrayList<>();
 		stashList.forEach(s -> s.uses.stream().map(this::stashOf).filter(Objects::nonNull).forEach(result::add));
 		return result;
-	}
-
-	private List<Node> nodesIn(String stash) {
-		return model.graph.rootList().stream().filter(i -> i.stash().equals(stash)).collect(toList());
 	}
 
 	private Stash stashOf(String source) {
