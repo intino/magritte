@@ -16,7 +16,7 @@ refactors/
 ide/teseo/application/test-gen
 ide/legio/legio-core/test-gen/
 .tara/
-builder/builder/test-res/stashes/
+builder2/builder/test-res/stashes/
 test-gen
 .idea/codeStyles/codeStyleConfig.xml
 .idea/codeStyles/Project.xml
