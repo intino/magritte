@@ -19,7 +19,7 @@ public class StashSerializer {
 		kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
 		kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
 		kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
-		kryo.register(ArrayList.class, new DefaultSerializers.ArraysAsListSerializer());
+		kryo.register(ArrayList.class);
 	}
 
 	private StashSerializer() {

@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/builder" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder-constants" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder-constants/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder-constants/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/builder/builder/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/builder/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/builder/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/builder2/builder-constants" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/builder2/builder-constants/src" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/builder2/builder-constants/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/io" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/io/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/io/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/language" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/language/res" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core/language/src" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/framework" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/framework/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/framework/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/io" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/io/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/io/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/magritte/framework/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
