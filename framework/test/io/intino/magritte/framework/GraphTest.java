@@ -262,8 +262,9 @@ public class GraphTest {
 		store.writeStash(TestHelper.thirdStash(), TestHelper.thirdStash + TestHelper.Extension);
 		store.writeStash(TestHelper.dependantStashByUse(), TestHelper.dependantStashByUse + TestHelper.Extension);
 		store.writeStash(TestHelper.independentStashInSubStash(), TestHelper.independentStash + TestHelper.Extension);
+		store.writeStash(TestHelper.cyclicDependantStash(), TestHelper.cyclicDependantStash + TestHelper.Extension);
 		store.writeStash(TestHelper.m3(), TestHelper.m3 + TestHelper.Extension);
-		assertThat(new Graph(new InMemoryFileStore(temp)).loadStashes(TestHelper.oneMockStash).find(MockLayer.class).size(), is(7));
+		assertThat(new Graph(new InMemoryFileStore(temp)).loadStashes(TestHelper.oneMockStash).find(MockLayer.class).size(), is(8));
 	}
 
 	@Test
