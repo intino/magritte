@@ -17,6 +17,7 @@ public class Concept {
 	public List<Variable> parameters = new ArrayList<>();
 	public List<Node> nodes = new ArrayList<>();
 
+
 	@Override
 	public String toString() {
 		return "Concept{" + name + '}';

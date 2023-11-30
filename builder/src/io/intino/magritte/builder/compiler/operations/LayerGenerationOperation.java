@@ -19,9 +19,7 @@ import io.intino.tara.builder.utils.Format;
 import io.intino.tara.language.model.Mogram;
 import io.intino.tara.language.model.Tag;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -34,6 +32,7 @@ import static io.intino.tara.builder.utils.Format.javaValidName;
 import static java.io.File.separator;
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("resource")
 public class LayerGenerationOperation extends ModelOperation implements TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
 	private static final String DOT = ".";
@@ -77,8 +76,13 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeAbstractGraph(new AbstractGraphCreator(model.language(), conf.model().outDsl(), conf.model().level(), conf.workingPackage(), conf.model().language().generationPackage()).create(model)));
+		writeAbstractGraph(model, layers);
 		writeGraph(createGraph());
+	}
+
+	private void writeAbstractGraph(Model model, Map<String, Map<String, String>> layers) {
+		AbstractGraphCreator abstractGraphCreator = new AbstractGraphCreator(model.language(), conf);
+		registerOutputs(layers, writeAbstractGraph(abstractGraphCreator.create(model)));
 	}
 
 	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
@@ -211,7 +215,6 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return workingPackage.getPath() + File.separator + javaValidName().format(node.name()).toString();
 	}
 
-
 	private List<File> collectAllLayers(File out) {
 		List<File> list = new ArrayList<>();
 		if (!out.isDirectory() && !out.getName().equals(GRAPH + JAVA)) list.add(out);
@@ -223,11 +226,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private boolean write(File file, String text) {
 		try {
-			file.getParentFile().mkdirs();
-			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-			fileWriter.write(text);
-			fileWriter.close();
-			return true;
+			Files.writeString(file.toPath(), text);
 		} catch (IOException e) {
 			LOG.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
 		}

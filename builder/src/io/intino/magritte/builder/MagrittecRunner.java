@@ -2,7 +2,6 @@ package io.intino.magritte.builder;
 
 
 import io.intino.magritte.builder.compiler.operations.LayerGenerationOperation;
-import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
 import io.intino.tara.builder.TaraCompilerRunner;
 import io.intino.tara.builder.core.errorcollection.TaraException;
 import io.intino.tara.builder.shared.TaraBuildConstants;
@@ -11,6 +10,9 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static io.intino.tara.builder.shared.TaraBuildConstants.MESSAGES_END;
+import static io.intino.tara.builder.shared.TaraBuildConstants.MESSAGES_START;
 
 public class MagrittecRunner {
 
@@ -26,7 +28,7 @@ public class MagrittecRunner {
 			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)
 				throw new TaraException("Error finding args file");
-			new TaraCompilerRunner(verbose, List.of(LayerGenerationOperation.class, StashGenerationOperation.class)).run(argsFile);
+			new TaraCompilerRunner(verbose, List.of(LayerGenerationOperation.class)).run(argsFile);
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString() : e.getMessage());
 			e.printStackTrace();
@@ -37,7 +39,7 @@ public class MagrittecRunner {
 	private static File checkConfigurationFile(String arg) {
 		final File argsFile = new File(arg);
 		if (!argsFile.exists()) {
-			LOG.severe("%%mArguments file for Tara compiler not found/%m");
+			LOG.severe(MESSAGES_START + "Arguments file for Tara compiler not found" + MESSAGES_END);
 			return null;
 		}
 		return argsFile;
@@ -45,7 +47,7 @@ public class MagrittecRunner {
 
 	private static boolean checkArgumentsNumber(String[] args) {
 		if (args.length < 1) {
-			LOG.severe("%%mThere is no arguments for tara compiler/%m");
+			LOG.severe(MESSAGES_START + "There is no arguments for tara compiler" + MESSAGES_END);
 			return true;
 		}
 		return false;

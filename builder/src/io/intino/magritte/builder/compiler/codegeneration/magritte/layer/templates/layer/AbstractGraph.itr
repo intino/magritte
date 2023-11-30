@@ -4,7 +4,6 @@ def type(graph)
 	import io.intino.magritte.framework.Graph;
 
 	public class AbstractGraph extends io.intino.magritte.framework.GraphWrapper {
-
 		protected io.intino.magritte.framework.Graph graph;
 		$node+declaration...[$NL]
 
@@ -96,6 +95,15 @@ def type(graph)
 			java.util.HashMap<String, Indexer> map = new java.util.HashMap<>();
 			[$node+put...[$NL]]
 			return map;
+		}
+
+		public static io.intino.magritte.io.Stash$[] stashes() {
+			return new io.intino.magritte.io.Stash$[]{[$parentPackage.AbstractGraph.stashes()$[0$], ]stash()};
+		}
+
+		private static io.intino.magritte.io.Stash stash() {
+			String content = "$stash";
+			return io.intino.magritte.io.StashDeserializer.stashFrom(java.util.Base64.getDecoder().decode(content));
 		}
 
 		public static class Indexer {
@@ -224,4 +232,9 @@ def type(node & concept) !type(single | final | abstract | component | instance)
 	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>(AbstractGraph.this.$name+FirstLowerCase+javaValidWord~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
+end
+
+
+def trigger(quoted)
+	"$value"
 end
