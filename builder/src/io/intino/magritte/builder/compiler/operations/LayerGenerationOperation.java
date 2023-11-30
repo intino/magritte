@@ -5,6 +5,7 @@ import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.Template;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.AbstractGraphCreator;
+import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.GraphLoaderCreator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.LayerTemplate;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.GraphTemplate;
@@ -59,7 +60,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			if (conf.isVerbose()) conf.out().println(prefix() + " Cleaning Old Layers...");
 			if (!conf.model().level().equals(CompilerConfiguration.Level.Model)) cleanOldLayers(model);
 			if (conf.isVerbose()) conf.out().println(prefix() + " Generating Layers...");
-			if (!model.level().equals(CompilerConfiguration.Level.Model)) createLayers(model);
+			createClasses(model);
 			registerOutputs(writeNativeClasses(model));
 			unit.addOutputItems(outMap);
 //			unit.compilationDifferentialCache().saveCache(model.components().stream().map(c -> ((MogramImpl) c).getHashCode()).collect(Collectors.toList()));
@@ -73,11 +74,19 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return new NativesCreator(model, conf).create();
 	}
 
-	private void createLayers(Model model) {
-		final Map<String, Map<String, String>> layers = createLayerClasses(model);
-		layers.values().forEach(this::writeLayers);
-		writeAbstractGraph(model, layers);
-		writeGraph(createGraph());
+	private void createClasses(Model model) {
+		if (!model.level().equals(CompilerConfiguration.Level.Model)) {
+			final Map<String, Map<String, String>> layers = createLayerClasses(model);
+			layers.values().forEach(this::writeLayers);
+			writeAbstractGraph(model, layers);
+			writeGraph(createGraph());
+		} else writeGraphLoader(model);
+	}
+
+	private void writeGraphLoader(Model model) {
+		File target = new File(new File(conf.sourceDirectories().get(0), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + "Loader" + JAVA);
+		if (!target.exists()) write(target, new GraphLoaderCreator(model.language(), conf).create(model));
+//		for (List<String> paths : outMap.values()) paths.add(target.getAbsolutePath());
 	}
 
 	private void writeAbstractGraph(Model model, Map<String, Map<String, String>> layers) {
@@ -85,9 +94,9 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		registerOutputs(layers, writeAbstractGraph(abstractGraphCreator.create(model)));
 	}
 
-	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
+	private void registerOutputs(Map<String, Map<String, String>> layers, String abstractGraphPath) {
 		fillLayerInOutMap(layers);
-		for (List<String> paths : outMap.values()) paths.add(modelPath);
+		for (List<String> paths : outMap.values()) paths.add(abstractGraphPath);
 	}
 
 	private void registerOutputs(Map<String, String> nativeOuts) {
@@ -139,7 +148,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void renderFrame(Map<String, Map<String, String>> map, Mogram node, Map.Entry<String, Frame> layerFrame) {
 		if (node.is(Tag.Decorable)) {
 			Map.Entry<String, Frame> frame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
-			File file = new File(srcDestiny(frame));
+			File file = new File(srcTarget(frame));
 			if (file.exists() && node.isAbstract()) checkAbstractDecorable(file);
 			map.get(node.file()).put(file.getAbsolutePath(), file.exists() ? "" : render(frame));
 		} else removeDecorable(layerFrame.getKey(), node.name());
@@ -167,7 +176,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		return new File(outFolder, layerFrameMap.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
-	private String srcDestiny(Map.Entry<String, Frame> layerFrameMap) {
+	private String srcTarget(Map.Entry<String, Frame> layerFrameMap) {
 		return new File(srcFolder, layerFrameMap.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
@@ -185,14 +194,14 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String writeAbstractGraph(String text) {
-		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), "Abstract" + GRAPH + JAVA);
-		destiny.getParentFile().mkdirs();
-		return write(destiny, text) ? destiny.getAbsolutePath() : null;
+		File target = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), "Abstract" + GRAPH + JAVA);
+		target.getParentFile().mkdirs();
+		return write(target, text) ? target.getAbsolutePath() : null;
 	}
 
 	private void writeGraph(String text) {
-		File destiny = new File(new File(conf.sourceDirectories().get(0), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + JAVA);
-		if (!destiny.exists()) write(destiny, text);
+		File target = new File(new File(conf.sourceDirectories().get(0), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + JAVA);
+		if (!target.exists()) write(target, text);
 	}
 
 	private void cleanOldLayers(Model model) {

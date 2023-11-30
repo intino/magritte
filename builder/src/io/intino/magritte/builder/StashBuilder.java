@@ -1,5 +1,6 @@
 package io.intino.magritte.builder;
 
+import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
 import io.intino.magritte.io.Stash;
 import io.intino.magritte.io.StashDeserializer;
 import io.intino.tara.Language;
@@ -20,10 +21,8 @@ import java.util.Map;
 
 import static io.intino.tara.builder.core.CompilerConfiguration.Level.Model;
 
-
 @SuppressWarnings("unused")
 public class StashBuilder {
-
 	private final String dsl;
 	private final String dslVersion;
 	private final String module;

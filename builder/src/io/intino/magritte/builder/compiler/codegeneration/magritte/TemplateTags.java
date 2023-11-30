@@ -8,6 +8,7 @@ public interface TemplateTags {
 	String TARGET_CONTAINER = "targetContainer";
 	String RULE = "rule";
 	String SIZE = "size";
+	String STASH = "stash";
 	String NATIVE = "native";
 	String PARENT_SUPER = "parentSuper";
 	String POSITION = "position";

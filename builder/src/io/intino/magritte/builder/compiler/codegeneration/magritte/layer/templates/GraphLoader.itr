@@ -1,0 +1,30 @@
+def type(graphLoader)
+	package $workingPackage+lowercase;
+
+	import io.intino.magritte.framework.Graph;
+	import io.intino.magritte.framework.Store;
+	import io.intino.magritte.io.Stash;
+
+	public class GraphLoader {
+
+		$stash+field...[$NL]
+
+		public static load() {
+			Stash$[] stashes = Arrays.stream($stash+name...[, ]).map(s->io.intino.magritte.io.Deserializer.deserialize(s)).toArray(Stash$[]::new);
+			return $language~Graph.load(stashes);
+		}
+
+		public static load(Store store) {
+			Stash$[] stashes = Arrays.stream($stash+name...[, ]).map(s->io.intino.magritte.io.Deserializer.deserialize(s)).toArray(Stash$[]::new);
+			return $language~Graph.load(store, stashes);
+		}
+	}
+end
+
+def trigger(name)
+	$name
+end
+
+def trigger(field)
+	private final String $name = "$value"
+end

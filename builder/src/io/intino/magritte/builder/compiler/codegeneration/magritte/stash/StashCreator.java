@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.DOT;
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
-import static io.intino.magritte.builder.compiler.operations.StashGenerationOperation.STASH;
 import static io.intino.tara.builder.utils.Format.noPackage;
 import static io.intino.tara.builder.utils.Format.withDollar;
 import static io.intino.tara.language.model.Primitive.*;
@@ -32,6 +31,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public class StashCreator {
+	private static final String STASH = ".stash";
 	private final List<io.intino.tara.language.model.Mogram> mograms;
 	private final Language language;
 	private final File resourceFolder;
