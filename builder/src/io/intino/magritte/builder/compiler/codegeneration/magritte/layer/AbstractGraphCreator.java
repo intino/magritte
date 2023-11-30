@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import static io.intino.tara.language.model.Tag.*;
 
 public class AbstractGraphCreator extends Generator implements TemplateTags {
-
 	private final Level modelLevel;
 	private final CompilerConfiguration conf;
 
@@ -58,11 +57,8 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 		if (node.is(Instance)) builder.add(INSTANCE);
 		if (node.isAbstract()) builder.add(ABSTRACT);
 		String qn = NameFormatter.getQn(node, workingPackage.toLowerCase());
-		builder.add(QN, qn);
-		builder.add(STASH_QN, qn);
-		builder.add(OUT_LANGUAGE, outDsl);
+		builder.add(QN, qn).add(STASH_QN, qn).add(OUT_LANGUAGE, outDsl).add(NAME, node.name());
 		addType(node, size, builder);
-		builder.add(NAME, node.name());
 		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> builder.add(VARIABLE, frameOf(variable)));
 		addTerminalVariables(node, builder);
 		return builder.toFrame();
