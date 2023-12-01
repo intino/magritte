@@ -1,30 +1,33 @@
 def type(graphLoader)
 	package $workingPackage+lowercase;
 
-	import io.intino.magritte.framework.Graph;
+	import $language_workingPackage.$language+firstUpperCase~Graph;
 	import io.intino.magritte.framework.Store;
 	import io.intino.magritte.io.Stash;
 
-	public class GraphLoader {
+	public class $name+snakeCaseToCamelCase+firstUpperCase~GraphLoader {
 
-		$stash+field...[$NL]
+		private static final String$[] serialized = new String$[] {
+			$stash+quoted...[, ]
+		};
 
-		public static load() {
-			Stash$[] stashes = Arrays.stream($stash+name...[, ]).map(s->io.intino.magritte.io.Deserializer.deserialize(s)).toArray(Stash$[]::new);
-			return $language~Graph.load(stashes);
+		public static $language+firstUpperCase~Graph load() {
+			return $language+firstUpperCase~Graph.load(stashes());
 		}
 
-		public static load(Store store) {
-			Stash$[] stashes = Arrays.stream($stash+name...[, ]).map(s->io.intino.magritte.io.Deserializer.deserialize(s)).toArray(Stash$[]::new);
-			return $language~Graph.load(store, stashes);
+		public static $language+firstUpperCase~Graph load(Store store) {
+			return $language+firstUpperCase~Graph.load(store, stashes());
+		}
+
+		private static Stash$[] stashes() {
+			return java.util.Arrays.stream(serialized)
+					.map(s -> java.util.Base64.getDecoder().decode(s))
+					.map(s -> io.intino.magritte.io.StashDeserializer.stashFrom(s))
+					.toArray(Stash$[]::new);
 		}
 	}
 end
 
-def trigger(name)
-	$name
-end
-
-def trigger(field)
-	private final String $name = "$value"
+def trigger(quoted)
+	"$this"
 end

@@ -14,9 +14,6 @@ import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.utils.Format;
 import io.intino.tara.language.model.Mogram;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -32,7 +29,10 @@ public class GraphLoaderCreator extends Generator implements TemplateTags {
 
 	public String create(Model model) {
 		FrameBuilder builder = new FrameBuilder("graphLoader");
-		builder.add(LANGUAGE, conf.model().language());
+		builder.add(WORKING_PACKAGE, workingPackage);
+		builder.add(NAME, conf.model().outDsl());
+		builder.add(LANGUAGE, conf.model().language().name());
+		builder.add(LANGUAGE + "_" + WORKING_PACKAGE, conf.model().language().generationPackage());
 		builder.add(STASH, createStashes(model));
 		return Format.customize(new GraphLoaderTemplate()).render(builder.toFrame());
 	}
@@ -41,15 +41,18 @@ public class GraphLoaderCreator extends Generator implements TemplateTags {
 		return unpack(model).parallelStream()
 				.map(nodes -> {
 					try {
-						return stashOf(nodes, model.language());
+						return serialized(stashOf(nodes, model.language()));
 					} catch (TaraException e) {
 						LOG.log(java.util.logging.Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 						return null;
 					}
 				})
 				.filter(Objects::nonNull)
-				.map(s -> Base64.getEncoder().encodeToString(StashSerializer.serialize(s)))
 				.toArray(String[]::new);
+	}
+
+	private String serialized(Stash stash) {
+		return Base64.getEncoder().encodeToString(StashSerializer.serialize(stash));
 	}
 
 	private List<List<Mogram>> unpack(Model model) {
@@ -72,14 +75,4 @@ public class GraphLoaderCreator extends Generator implements TemplateTags {
 			throw new TaraException("Error creating stashes: " + e.getMessage());
 		}
 	}
-
-
-	private void create(File file, String text) {
-		try {
-			Files.writeString(file.toPath(), text);
-		} catch (IOException e) {
-			LOG.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
-		}
-	}
-
 }

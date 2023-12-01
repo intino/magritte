@@ -84,9 +84,9 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private void writeGraphLoader(Model model) {
-		File target = new File(new File(conf.sourceDirectories().get(0), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + "Loader" + JAVA);
-		if (!target.exists()) write(target, new GraphLoaderCreator(model.language(), conf).create(model));
-//		for (List<String> paths : outMap.values()) paths.add(target.getAbsolutePath());
+		File target = new File(new File(outFolder, conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + "Loader" + JAVA);
+		write(target, new GraphLoaderCreator(model.language(), conf).create(model));
+		for (List<String> paths : outMap.values()) paths.add(target.getAbsolutePath());
 	}
 
 	private void writeAbstractGraph(Model model, Map<String, Map<String, String>> layers) {
@@ -235,6 +235,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private boolean write(File file, String text) {
 		try {
+			file.getParentFile().mkdirs();
 			Files.writeString(file.toPath(), text);
 		} catch (IOException e) {
 			LOG.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
