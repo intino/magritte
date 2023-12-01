@@ -5,9 +5,8 @@ def type(graphLoader)
 	import io.intino.magritte.framework.Store;
 	import io.intino.magritte.io.Stash;
 
-	public class $name+snakeCaseToCamelCase+firstUpperCase~GraphLoader {
-
-		private static final String$[] serialized = new String$[] {
+	public class GraphLoader {
+		private static final String$[] serialized = new String$[]{
 			$stash+quoted...[, ]
 		};
 

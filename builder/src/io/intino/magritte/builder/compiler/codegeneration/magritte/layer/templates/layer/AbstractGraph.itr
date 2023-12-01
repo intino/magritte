@@ -97,8 +97,8 @@ def type(graph)
 			return map;
 		}
 
-		public static io.intino.magritte.io.Stash$[] stashes() {
-			return new io.intino.magritte.io.Stash$[]{[$parentPackage.AbstractGraph.stashes()$[0$], ]stash()};
+		public static io.intino.magritte.io.Stash$[] _language() {
+			return new io.intino.magritte.io.Stash$[]{[$parentPackage.AbstractGraph._language()$[0$], ]stash()};
 		}
 
 		private static io.intino.magritte.io.Stash stash() {

@@ -108,6 +108,12 @@ public class Graph {
 		return url;
 	}
 
+	public Graph loadLanguage(String language, Stash... stash) {
+		this.languages.add(language);
+		doLoadStashes(stash);
+		return this;
+	}
+
 	public String[] openedStashes() {
 		return new HashSet<>(openedStashes).toArray(new String[openedStashes.size()]);
 	}
@@ -159,7 +165,7 @@ public class Graph {
 
 	private synchronized void doRemove(Node node) {
 		Map<String, Node> stashMap = nodes.get(node.stash());
-		if(stashMap == null) return;
+		if (stashMap == null) return;
 		stashMap.remove(node.fullName());
 		for (Node child : node.componentList()) doRemove(child);
 	}
@@ -300,7 +306,7 @@ public class Graph {
 	}
 
 	private static void check(String stash) {
-		if(stash.contains("//")) throw new MagritteException("Invalid stash path " + stash);
+		if (stash.contains("//")) throw new MagritteException("Invalid stash path " + stash);
 	}
 
 	void doLoadStashes(Stash... stashes) {
@@ -402,9 +408,7 @@ public class Graph {
 	}
 
 	private void doInit(String language) {
-		this.languages.add(language);
-		Stash stash = stashOf(language);
-		doLoadStashes(stash);
+		loadLanguage(language, stashOf(language));
 	}
 
 	private Node loadFromLoaders(String id) {
@@ -422,7 +426,7 @@ public class Graph {
 	}
 
 	synchronized void register(Node node) {
-		if(!nodes.containsKey(node.stash())) nodes.put(node.stash(), new LinkedHashMap<>());
+		if (!nodes.containsKey(node.stash())) nodes.put(node.stash(), new LinkedHashMap<>());
 		nodes.get(node.stash()).put(node.fullName(), node);
 	}
 
