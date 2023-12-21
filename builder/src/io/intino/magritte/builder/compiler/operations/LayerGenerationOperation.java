@@ -50,7 +50,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		super(compilationUnit);
 		this.conf = compilationUnit.configuration();
 		this.outFolder = conf.getOutDirectory();
-		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().get(0);
+		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().stream().filter(d -> !d.getName().equals("gen")).findFirst().orElse(conf.sourceDirectories().get(0));
 		this.template = Format.customize(new LayerTemplate());
 	}
 
@@ -200,7 +200,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private void writeGraph(String text) {
-		File target = new File(new File(conf.sourceDirectories().get(0), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + JAVA);
+		File target = new File(new File(srcFolder, conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + JAVA);
 		if (!target.exists()) write(target, text);
 	}
 

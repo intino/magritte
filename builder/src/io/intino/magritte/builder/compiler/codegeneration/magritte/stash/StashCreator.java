@@ -118,8 +118,8 @@ public class StashCreator {
 		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(aspectNode, workingPackage)).toString());
 	}
 
-	private String calculateParent(io.intino.tara.language.model.Mogram node) {
-		return node.parent() != null ? ((MogramImpl) node.parent()).layerQn() : null;
+	private String calculateParent(io.intino.tara.language.model.Mogram mogram) {
+		return mogram.parent() != null ? ((MogramImpl) mogram.parent()).layerQn() : null;
 	}
 
 	private Concept createChildAspectType(io.intino.tara.language.model.Mogram aspectNode, io.intino.tara.language.model.Mogram node, Concept parent) {
