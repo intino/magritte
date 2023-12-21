@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.intino</groupId>
 		<artifactId>magritte</artifactId>
-		<version>5.0.0</version>
+		<version>4.0.0</version>
 	</parent>
 
     <distributionManagement>
