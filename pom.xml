@@ -23,7 +23,7 @@
 		<repository>
 			<id>intino-maven</id>
 			<name>intino-maven</name>
-			<url>https://artifactory.intino.io/artifactory/releases/</url>
+			<url>https://artifactory.intino.io/artifactory/releases</url>
 		</repository>
 	</repositories>
 
@@ -56,7 +56,7 @@
 		<repository>
 			<id>intino-maven</id>
 			<name>intino-maven-releases</name>
-			<url>https://artifactory.intino.io/artifactory/release-libraries</url>
+			<url>https://artifactory.intino.io/artifactory/release-frameworks</url>
 		</repository>
 	</distributionManagement>
 </project>
