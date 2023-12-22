@@ -13,8 +13,8 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String getQn(Mogram node, String workingPackage) {
-		return workingPackage.toLowerCase() + DOT + qualifiedName().format(layerQn(node)).toString();
+	public static String getQn(Mogram mogram, String workingPackage) {
+		return workingPackage.toLowerCase() + DOT + qualifiedName().format(layerQn(mogram)).toString();
 	}
 
 	private static String layerQn(Mogram node) {

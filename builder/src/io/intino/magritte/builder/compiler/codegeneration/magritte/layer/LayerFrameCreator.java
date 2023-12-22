@@ -55,9 +55,10 @@ public class LayerFrameCreator implements TemplateTags {
 		return new SimpleEntry<>(calculateLayerPath(node, addWorkingPackage(builder)), builder.toFrame());
 	}
 
-	private void addSlot(FrameBuilder builder, Mogram node) {
-		if (node instanceof MogramReference || node.is(Tag.Instance)) return;
-		builder.add(NODE, new FrameBuilder().put(adapters).append(node).toFrame());
+	private void addSlot(FrameBuilder builder, Mogram mogram) {
+		if (mogram instanceof MogramReference || mogram.is(Tag.Instance))
+			return;
+		builder.add(NODE, new FrameBuilder().put(adapters).append(mogram).toFrame());
 	}
 
 	public Map.Entry<String, Frame> createDecorable(Mogram node) {

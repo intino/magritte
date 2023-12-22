@@ -8,6 +8,7 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.builder.core.CompilerConfiguration.Level;
+import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramImpl;
 import io.intino.tara.builder.model.MogramReference;
 import io.intino.tara.dsls.Meta;
@@ -18,7 +19,6 @@ import io.intino.tara.language.model.rules.Size;
 import io.intino.tara.language.semantics.Constraint.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.cleanQn;
@@ -47,50 +47,52 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 		addVariables(mogram, context);
 		addComponents(mogram, context);
 		addNonAbstractCreates(mogram, context);
-		addAspectClasses(mogram, context);
+		addFacetClasses(mogram, context);
 		addAllowedAspects(mogram, context);
 		if (mogram.isFacet()) {
 			addAspectConstrains(mogram, context);
-			addTargetComponents(mogram, context);
-			addAspect(mogram, mogram.container(), context);
+			if (!(mogram.container() instanceof Model)) {
+				addTargetComponents(mogram, context);
+				addFacet(mogram, mogram.container(), context);
+			}
 		}
 		addParent(mogram, context);
 	}
 
-	private void addAspectClasses(Mogram node, FrameBuilderContext context) {
+	private void addFacetClasses(Mogram node, FrameBuilderContext context) {
 		if (node.isReference()) return;
-		aspectNodes(node).
-				forEach(aspectNode -> addAspectSlot(context, aspectNode));
+		facetMograms(node).forEach(m -> addFacetSlot(context, m));
 	}
 
-	private Stream<Mogram> aspectNodes(Mogram node) {
+	private Stream<Mogram> facetMograms(Mogram node) {
 		return node.components().stream().filter(n -> !n.isReference() && n.isFacet());
 	}
 
-	private void addAspectSlot(FrameBuilderContext context, Mogram aspectNode) {
+	private void addFacetSlot(FrameBuilderContext context, Mogram aspectNode) {
 		context.add(NODE, FrameBuilder.from(context).append(aspectNode).add("aspect").toFrame());
 	}
 
-	private void addAspect(Mogram aspect, Mogram target, FrameBuilderContext context) {
+	private void addFacet(Mogram facet, Mogram target, FrameBuilderContext context) {
 		String qn = cleanQn(getQn(target, workingPackage));
 		final FrameBuilder builder = new FrameBuilder().add(ASPECT).add(NAME, target.name()).add(QN, qn).add(OUT_LANGUAGE, outDsl);
-		if (aspect.isSub() && aspect.parent() != null) builder.add(OVERRIDEN);
+		if (facet.isSub() && facet.parent() != null) builder.add(OVERRIDEN);
 		context.add(ASPECT, builder.toFrame());
 		context.add("core", new FrameBuilder().add("core").add(QN, qn).add(NAME, target.name()).toFrame());
 	}
 
-	private void addTargetComponents(Mogram node, FrameBuilderContext context) {
-		node.container().components().stream().filter(c -> !c.isFacet()).forEach((Mogram c) -> {
-					if (!isOverriden(c, node)) {
-						final FrameBuilder builder = FrameBuilder.from(context).append(c).add(TARGET);
-						if (((c instanceof MogramReference && !((MogramReference) c).isHas()) || c instanceof MogramImpl) && (c.targetOfReference().parent() != null))
-							builder.add(INHERITED).add(PARENT_REF, c.targetOfReference().parent().qualifiedName());
-						builder.add(TARGET_CONTAINER, node.container().name());
-						if (node.container().sizeOf(c).isSingle()) builder.add(SINGLE);
-						context.add(NODE, builder.toFrame());
-					}
-				}
-		);
+	private void addTargetComponents(Mogram facet, FrameBuilderContext context) {
+		facet.container().components().stream()
+				.filter(c -> !c.isFacet())
+				.filter(c -> !isOverriden(c, facet))
+				.forEach(c -> {
+							final FrameBuilder builder = FrameBuilder.from(context).append(c).add(TARGET);
+							if (((c instanceof MogramReference && !((MogramReference) c).isHas()) || c instanceof MogramImpl) && (c.targetOfReference().parent() != null))
+								builder.add(INHERITED).add(PARENT_REF, c.targetOfReference().parent().qualifiedName());
+							builder.add(TARGET_CONTAINER, facet.container().name());
+							if (facet.container().sizeOf(c).isSingle()) builder.add(SINGLE);
+							context.add(NODE, builder.toFrame());
+						}
+				);
 	}
 
 	private void addNodeInfo(Mogram node, FrameBuilderContext context) {
@@ -160,7 +162,7 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private void addAllowedAspects(Mogram node, FrameBuilderContext context) {
-		allowedAspects(node).forEach(aspect -> {
+		allowedFacets(node).forEach(aspect -> {
 			FrameBuilder builder = new FrameBuilder(AVAILABLE_ASPECT);
 			builder.add(NAME, aspect.name());
 			if (aspect.isAbstract()) builder.add(ABSTRACT);
@@ -175,9 +177,9 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 
-	private Collection<Mogram> allowedAspects(Mogram node) {
+	private Collection<Mogram> allowedFacets(Mogram node) {
 		Set<Mogram> nodes = new HashSet<>();
-		for (Mogram aspectNode : node.components().stream().filter(Mogram::isFacet).collect(Collectors.toList())) {
+		for (Mogram aspectNode : node.components().stream().filter(Mogram::isFacet).toList()) {
 			if (aspectNode.isReference()) continue;
 			nodes.add(aspectNode);
 			nodes.addAll(collectChildren(aspectNode));
@@ -195,29 +197,30 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 		return getQn(node instanceof MogramReference ? ((MogramReference) node).destination() : node, workingPackage.toLowerCase());
 	}
 
-	private void addVariables(Mogram node, FrameBuilderContext context) {
-		node.variables().forEach(v -> {
+	private void addVariables(Mogram mogram, FrameBuilderContext context) {
+		mogram.variables().forEach(v -> {
 			final FrameBuilder builder = FrameBuilder.from(this.context)
 					.add(OWNER)
 					.append(v)
-					.add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name());
+					.add(CONTAINER, isInDecorable(mogram) ? completeName(mogram) : mogram.name());
 			context.add(VARIABLE, builder.toFrame());
 		});
-		if (node.isFacet()) {
-			node.container().variables().stream().
-					filter(variable -> !variable.isInherited() && !isOverriden(node, variable)).
+		if (mogram.isFacet()) {
+			mogram.container().variables().stream().
+					filter(variable -> !variable.isInherited() && !isOverriden(mogram, variable)).
 					forEach(variable -> context.add(VARIABLE,
 							FrameBuilder.from(context).append(variable).add(TARGET).
-									add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name()).
+									add(CONTAINER, isInDecorable(mogram) ? completeName(mogram) : mogram.name()).
 									toFrame()));
-			node.facetConstraints().forEach(c ->
+			mogram.facetConstraints().forEach(c ->
 					c.node().variables().forEach(v ->
 							context.add(VARIABLE,
 									FrameBuilder.from(context).append(v).add(TARGET).
-											add(CONTAINER, isInDecorable(node) ? completeName(node) : node.name()).
+											add(CONTAINER, isInDecorable(mogram) ? completeName(mogram) : mogram.name()).
 											toFrame())));
 		}
-		addTerminalVariables(node, context);
+
+		addTerminalVariables(mogram, context);
 	}
 
 	private String completeName(Mogram node) {

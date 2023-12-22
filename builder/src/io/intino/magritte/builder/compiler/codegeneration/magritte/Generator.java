@@ -5,6 +5,7 @@ import io.intino.itrules.FrameBuilderContext;
 import io.intino.itrules.adapters.ExcludeAdapter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.TypesProvider;
 import io.intino.tara.Language;
+import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramReference;
 import io.intino.tara.builder.model.VariableReference;
 import io.intino.tara.builder.parser.NativeExtractor;
@@ -55,23 +56,26 @@ public abstract class Generator implements TemplateTags {
 		return imports;
 	}
 
-	protected void addParent(Mogram node, FrameBuilderContext context) {
-		final Mogram parent = node.parent();
+	protected void addParent(Mogram mogram, FrameBuilderContext context) {
+		final Mogram parent = mogram.parent();
 		if (parent == null) {
-			if (!node.children().isEmpty() || context.contains(CREATE) || context.contains(NODE)) context.add(PARENT_SUPER, false);
+			if (!mogram.children().isEmpty() || context.contains(CREATE) || context.contains(NODE))
+				context.add(PARENT_SUPER, false);
 			return;
 		}
 		String parentQN = cleanQn(getQn(parent, workingPackage));
 		context.add(PARENT, parentQN);
-		if (context.contains(CREATE) || context.contains(NODE)) context.add(PARENT_SUPER, true).add("parentName", parentQN);
-		if ((context.contains(NODE)) && hasLists(node.parent())
-				|| (parent.isFacet() && parent.container().components().stream().anyMatch(c -> !c.isFacet() && !c.isMetaFacet()) && hasLists(parent.container())))
+		if (context.contains(CREATE) || context.contains(NODE))
+			context.add(PARENT_SUPER, true).add("parentName", parentQN);
+		Mogram parentTarget = parent.container();
+		if ((context.contains(NODE)) && hasLists(mogram.parent())
+				|| (parent.isFacet() && !(parentTarget instanceof Model) && parentTarget.components().stream().anyMatch(c -> !c.isFacet() && !c.isMetaFacet()) && hasLists(parentTarget)))
 			context.add("parentClearName", parentQN);
 	}
 
-	protected void addComponents(Mogram node, FrameBuilderContext context) {
-		if (node instanceof MogramReference) return;
-		node.components().stream().
+	protected void addComponents(Mogram mogram, FrameBuilderContext context) {
+		if (mogram instanceof MogramReference) return;
+		mogram.components().stream().
 				filter(c -> !c.is(Instance) && !c.isFacet() && !c.isAnonymous() && (!c.isReference() || (((MogramReference) c).isHas()))).
 				forEach(c -> context.add(NODE, FrameBuilder.from(context).append(c).add(OWNER).toFrame()));
 	}
@@ -118,7 +122,8 @@ public abstract class Generator implements TemplateTags {
 		}
 		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), context, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		addAspectVariables(node, context);
-		if (!context.contains(CONTAINER)) context.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
+		if (!context.contains(CONTAINER))
+			context.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
 	}
 
 	private boolean isRequired(Mogram node, Constraint.Parameter allow) {
@@ -163,7 +168,8 @@ public abstract class Generator implements TemplateTags {
 
 	private void addTerminalVariable(Mogram node, String type, FrameBuilderContext context, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
 		FrameBuilder varBuilder = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
-		if (!varBuilder.contains(CONTAINER)) varBuilder.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
+		if (!varBuilder.contains(CONTAINER))
+			varBuilder.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
 		context.add(VARIABLE, varBuilder.toFrame());
 	}
 
