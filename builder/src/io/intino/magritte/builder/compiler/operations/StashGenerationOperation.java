@@ -53,7 +53,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private void createSeparatedStashes(Model model) {
-		unpack(model).parallelStream().forEach(nodes -> {
+		unpack(model).forEach(nodes -> {
 			try {
 				writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
 			} catch (TaraException e) {
@@ -76,17 +76,21 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private void writeStashTo(File taraFile, Stash stash) {
-		final byte[] content = StashSerializer.serialize(stash);
-		final File file = stashDestiny(taraFile);
-		stash.path = file.getName();
-		file.getParentFile().mkdirs();
-		try (FileOutputStream stream = new FileOutputStream(file)) {
-			stream.write(content);
-		} catch (IOException e) {
+		try {
+			final byte[] content = StashSerializer.serialize(stash);
+			final File file = stashDestiny(taraFile);
+			stash.path = file.getName();
+			file.getParentFile().mkdirs();
+			try (FileOutputStream stream = new FileOutputStream(file)) {
+				stream.write(content);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Error writing stashes: " + e.getMessage(), e);
+				throw new CompilationFailedException(unit.getPhase(), unit, e);
+			}
+		} catch (Throwable e) {
 			LOG.log(Level.SEVERE, "Error writing stashes: " + e.getMessage(), e);
 			throw new CompilationFailedException(unit.getPhase(), unit, e);
 		}
-		file.getPath();
 	}
 
 	private File stashDestiny(File taraFile) {
