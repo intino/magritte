@@ -55,7 +55,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private void createSeparatedStashes(Model model) {
 		unpack(model).forEach(nodes -> {
 			try {
-				writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
+				writeStashTo(stashDestination(new File(nodes.get(0).file())), stashOf(nodes, model.language()));
 			} catch (TaraException e) {
 				LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 			}
@@ -64,7 +64,7 @@ public class StashGenerationOperation extends ModelOperation {
 
 	private void createFullStash(Model model) throws TaraException {
 		if (model.components().isEmpty()) return;
-		writeStashTo(stashDestiny(new File(model.components().get(0).file())), stashOf(model.components(), model.language()));
+		writeStashTo(stashDestination(new File(model.components().get(0).file())), stashOf(model.components(), model.language()));
 	}
 
 	private Stash stashOf(List<Mogram> nodes, Language language) throws TaraException {
@@ -78,7 +78,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private void writeStashTo(File taraFile, Stash stash) {
 		try {
 			final byte[] content = StashSerializer.serialize(stash);
-			final File file = stashDestiny(taraFile);
+			final File file = stashDestination(taraFile);
 			stash.path = file.getName();
 			file.getParentFile().mkdirs();
 			try (FileOutputStream stream = new FileOutputStream(file)) {
@@ -93,7 +93,7 @@ public class StashGenerationOperation extends ModelOperation {
 		}
 	}
 
-	private File stashDestiny(File taraFile) {
+	private File stashDestination(File taraFile) {
 		final File destiny = conf.resourcesDirectory();
 		destiny.mkdirs();
 		return conf.isTest() || conf.model().level() == CompilerConfiguration.Level.Model ?

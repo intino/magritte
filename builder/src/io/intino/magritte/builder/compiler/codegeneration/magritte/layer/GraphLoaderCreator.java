@@ -38,7 +38,7 @@ public class GraphLoaderCreator extends Generator implements TemplateTags {
 	}
 
 	private String[] createStashes(Model model) {
-		return unpack(model).parallelStream()
+		return unpack(model).stream()
 				.map(nodes -> {
 					try {
 						return serialized(stashOf(nodes, model.language()));
