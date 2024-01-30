@@ -28,9 +28,9 @@ public class LayerFrameCreator implements TemplateTags {
 	private final Map<Class, Adapter> adapters;
 	private final String outDsl;
 	private final String workingPackage;
+	private final NodeAdapter nodeAdapter;
+	private final LayerVariableAdapter variableAdapter;
 	private Node initNode = null;
-	private NodeAdapter nodeAdapter;
-	private LayerVariableAdapter variableAdapter;
 
 	private LayerFrameCreator(String outDsl, Model model, Language language, Level modelLevel, String workingPackage, String languageWorkingPackage) {
 		this.outDsl = outDsl;

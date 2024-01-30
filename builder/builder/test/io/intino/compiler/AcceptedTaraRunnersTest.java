@@ -14,7 +14,7 @@ import java.time.Instant;
 import static io.intino.magritte.builder.TaracRunner.main;
 
 @Ignore
-public class AcceptedTaraRunners {
+public class AcceptedTaraRunnersTest {
 
 	private String home;
 

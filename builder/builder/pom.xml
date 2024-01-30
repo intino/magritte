@@ -32,6 +32,12 @@
 		<testOutputDirectory>../../out/test/builder</testOutputDirectory>
 		<directory>../../out/build/builder</directory>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>re</directory>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
