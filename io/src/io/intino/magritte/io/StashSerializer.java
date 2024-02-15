@@ -2,7 +2,6 @@ package io.intino.magritte.io;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.esotericsoftware.kryo.serializers.DeflateSerializer;
 import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -18,6 +17,9 @@ public class StashSerializer {
 		kryo.setRegistrationRequired(false);
 		kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
 		kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
+		kryo.register(Node.class, new DeflateSerializer(kryo.getDefaultSerializer(Node.class)));
+		kryo.register(Concept.class, new DeflateSerializer(kryo.getDefaultSerializer(Concept.class)));
+		kryo.register(Variable.class, new DeflateSerializer(kryo.getDefaultSerializer(Variable.class)));
 		kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
 		kryo.register(ArrayList.class);
 	}
