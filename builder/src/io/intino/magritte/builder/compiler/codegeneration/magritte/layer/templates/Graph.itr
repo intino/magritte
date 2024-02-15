@@ -21,6 +21,14 @@ def type(wrapper)
 		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(io.intino.magritte.framework.Store store, io.intino.magritte.io.Stash... startingModel) {
 			return new Graph(store).loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
+
+		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(String... startingModel) {
+			return new Graph().loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+		}
+
+		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(io.intino.magritte.framework.Store store, String... startingModel) {
+			return new Graph(store).loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+		}
 	}
 end
 
