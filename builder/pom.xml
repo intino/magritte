@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.intino.magritte</groupId>
 	<artifactId>builder</artifactId>
-	<version>5.0.0</version>
+	<version>5.0.1</version>
 
 	<parent>
 		<groupId>io.intino</groupId>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>io.intino.magritte</groupId>
 			<artifactId>io</artifactId>
-			<version>4.0.0</version>
+			<version>4.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
