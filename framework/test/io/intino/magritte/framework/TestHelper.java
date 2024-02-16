@@ -2,7 +2,7 @@ package io.intino.magritte.framework;
 
 import io.intino.magritte.framework.stores.FileSystemStore;
 import io.intino.magritte.framework.stores.ResourcesStore;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.File;
 import java.io.InputStream;
@@ -151,7 +151,7 @@ public class TestHelper {
 
 	public static Stash manyReferences() {
 		Stash stash = emptyStash();
-		io.intino.magritte.io.Node node = newNode(missingReference + "#x", list("Mock"), list(), emptyList());
+		io.intino.magritte.io.model.Node node = newNode(missingReference + "#x", list("Mock"), list(), emptyList());
 		String[] references = new String[2000];
 		for (int i = 0; i < 2000; i++) {
 			references[i] = "stash" + i + "#x";

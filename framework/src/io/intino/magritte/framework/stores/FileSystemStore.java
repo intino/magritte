@@ -2,9 +2,9 @@ package io.intino.magritte.framework.stores;
 
 import io.intino.magritte.framework.Node;
 import io.intino.magritte.framework.Store;
-import io.intino.magritte.io.Stash;
 import io.intino.magritte.io.StashDeserializer;
 import io.intino.magritte.io.StashSerializer;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.File;
 import java.io.IOException;

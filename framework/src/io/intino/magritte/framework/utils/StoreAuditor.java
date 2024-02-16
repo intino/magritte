@@ -4,8 +4,8 @@ import io.intino.magritte.framework.PersistenceManager;
 import io.intino.magritte.framework.Predicate;
 import io.intino.magritte.framework.Store;
 import io.intino.magritte.framework.stores.FileSystemStore;
-import io.intino.magritte.io.Node;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Node;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

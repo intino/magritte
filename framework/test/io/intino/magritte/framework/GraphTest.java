@@ -6,7 +6,7 @@ import io.intino.magritte.framework.modelviews.MockApplication;
 import io.intino.magritte.framework.modelviews.MockPlatform;
 import io.intino.magritte.framework.stores.FileSystemStore;
 import io.intino.magritte.framework.stores.InMemoryFileStore;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;

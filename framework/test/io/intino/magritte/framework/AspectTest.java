@@ -1,6 +1,6 @@
 package io.intino.magritte.framework;
 
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 import org.junit.Test;
 
 import java.io.InputStream;

@@ -1,5 +1,10 @@
 package io.intino.magritte.io;
 
+import io.intino.magritte.io.model.Concept;
+import io.intino.magritte.io.model.Node;
+import io.intino.magritte.io.model.Stash;
+import io.intino.magritte.io.model.Variable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

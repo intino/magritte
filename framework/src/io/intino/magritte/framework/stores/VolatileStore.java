@@ -1,26 +1,26 @@
 package io.intino.magritte.framework.stores;
 
-import io.intino.magritte.io.Stash;
-import io.intino.magritte.io.ThreadSafeStashDeserializer;
-import io.intino.magritte.io.ThreadSafeStashSerializer;
+import io.intino.magritte.io.StashDeserializer;
+import io.intino.magritte.io.model.Stash;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VolatileStore extends ResourcesStore {
+import static io.intino.magritte.io.StashSerializer.serialize;
 
+public class VolatileStore extends ResourcesStore {
 	protected final Map<String, byte[]> stashes = new ConcurrentHashMap<>();
 
 	@Override
 	public Stash stashFrom(String path) {
 		return stashes.containsKey(path) ?
-				ThreadSafeStashDeserializer.stashFrom(stashes.get(path)) :
+				StashDeserializer.stashFrom(stashes.get(path)) :
 				super.stashFrom(path);
 	}
 
 	@Override
 	public void writeStash(Stash stash, String path) {
-		stashes.put(path, ThreadSafeStashSerializer.serialize(stash));
+		stashes.put(path, serialize(stash));
 	}
 
 	@Override

@@ -2,9 +2,11 @@ package io.intino.magritte.builder.compiler.codegeneration.magritte.stash;
 
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.natives.NativeFormatter;
-import io.intino.magritte.io.Concept;
-import io.intino.magritte.io.Variable;
-import io.intino.magritte.io.*;
+import io.intino.magritte.io.Helper;
+import io.intino.magritte.io.model.Concept;
+import io.intino.magritte.io.model.Node;
+import io.intino.magritte.io.model.Stash;
+import io.intino.magritte.io.model.Variable;
 import io.intino.tara.Language;
 import io.intino.tara.builder.core.CompilerConfiguration;
 import io.intino.tara.builder.core.CompilerConfiguration.Level;
@@ -152,7 +154,7 @@ public class StashCreator {
 	private Node createNode(io.intino.tara.language.model.Mogram node) {
 		Node instanceNode = new Node();
 		instanceNode.name = buildReferenceName(node);
-		instanceNode.layers = StashHelper.collectTypes(node, this.language);
+		instanceNode.layers.addAll(StashHelper.collectTypes(node, this.language));
 		instanceNode.variables.addAll(parametersOf(node));
 		instanceNode.nodes.addAll(createNodes(node.components()));
 		return instanceNode;

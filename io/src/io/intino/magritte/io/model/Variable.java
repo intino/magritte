@@ -1,4 +1,4 @@
-package io.intino.magritte.io;
+package io.intino.magritte.io.model;
 
 import java.util.ArrayList;
 import java.util.List;

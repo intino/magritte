@@ -1,8 +1,8 @@
 package io.intino.magritte.builder.compiler.operations;
 
 import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashCreator;
-import io.intino.magritte.io.Stash;
 import io.intino.magritte.io.StashSerializer;
+import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.builder.core.CompilationUnit;
 import io.intino.tara.builder.core.CompilerConfiguration;

@@ -1,7 +1,7 @@
 package io.intino.magritte.framework;
 
-import io.intino.magritte.io.Stash;
-import io.intino.magritte.io.Variable;
+import io.intino.magritte.io.model.Stash;
+import io.intino.magritte.io.model.Variable;
 
 import java.util.*;
 
@@ -29,15 +29,15 @@ class StashReader {
 		loadNodes(graph.model, stash.nodes);
 	}
 
-	private void loadConcepts(List<io.intino.magritte.io.Concept> rawConcepts) {
-		for (io.intino.magritte.io.Concept rawConcept : rawConcepts) {
+	private void loadConcepts(List<io.intino.magritte.io.model.Concept> rawConcepts) {
+		for (io.intino.magritte.io.model.Concept rawConcept : rawConcepts) {
 			graph.layerFactory.register(rawConcept.name, rawConcept.className);
 			loadConcept(graph.concept$(rawConcept.name), rawConcept);
 		}
 	}
 
 	@SuppressWarnings("Convert2MethodRef")
-	private void loadConcept(Concept concept, io.intino.magritte.io.Concept rawConcept) {
+	private void loadConcept(Concept concept, io.intino.magritte.io.model.Concept rawConcept) {
 		concept.parent(graph.concept$(rawConcept.parent));
 		List<Concept> concepts = typesWithoutConcept(rawConcept);
 		concept.metatype = !concepts.isEmpty() ? concepts.get(0) : null;
@@ -53,7 +53,7 @@ class StashReader {
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
 	}
 
-	private List<Concept> typesWithoutConcept(io.intino.magritte.io.Concept taraConcept) {
+	private List<Concept> typesWithoutConcept(io.intino.magritte.io.model.Concept taraConcept) {
 		List<Concept> result = new ArrayList<>();
 		for (String type : taraConcept.types)
 			if (!proteoTypes.contains(type))
@@ -61,9 +61,9 @@ class StashReader {
 		return result;
 	}
 
-	private List<Node> loadNodes(Node parent, List<io.intino.magritte.io.Node> rawNodes) {
+	private List<Node> loadNodes(Node parent, List<io.intino.magritte.io.model.Node> rawNodes) {
 		List<Node> result = new ArrayList<>();
-		for (io.intino.magritte.io.Node rawNode : rawNodes) {
+		for (io.intino.magritte.io.model.Node rawNode : rawNodes) {
 			Node node = graph.node$(rawNode.name);
 			node.owner(parent);
 			loadNode(node, rawNode);
@@ -73,7 +73,7 @@ class StashReader {
 		return result;
 	}
 
-	private Node loadNode(Node node, io.intino.magritte.io.Node rawNode) {
+	private Node loadNode(Node node, io.intino.magritte.io.model.Node rawNode) {
 		List<Concept> metaTypes = metaTypesOf(conceptsOf(rawNode.layers));
 		addConcepts(node, metaTypes);
 		loadNodes(node, rawNode.nodes);
@@ -82,7 +82,7 @@ class StashReader {
 		return node;
 	}
 
-	private List<Node> loadVirtualNodes(List<io.intino.magritte.io.Node> nodes) {
+	private List<Node> loadVirtualNodes(List<io.intino.magritte.io.model.Node> nodes) {
 		Node root = new Model(graph, emptyMap());
 		return loadNodes(root, nodes);
 	}

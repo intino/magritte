@@ -1,7 +1,7 @@
 package io.intino.magritte.framework.stores;
 
-import io.intino.magritte.io.Node;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Node;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,14 +15,13 @@ import java.util.logging.Level;
 
 import static java.util.UUID.randomUUID;
 import static java.util.logging.Logger.getGlobal;
-import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unused")
 public class AdvancedFileSystemStore extends FileSystemStore {
 
 	private static final String SEP = ";";
 
-	private Map<String, List<ResourceModification>> resources = new HashMap<>();
+	private final Map<String, List<ResourceModification>> resources = new HashMap<>();
 
 	public AdvancedFileSystemStore(File file) {
 		super(file);
@@ -31,7 +30,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	}
 
 	private void processCommit() {
-		List<ResourceModification> list = resources.values().stream().flatMap(Collection::stream).collect(toList());
+		List<ResourceModification> list = resources.values().stream().flatMap(Collection::stream).toList();
 		list.forEach(r -> remove(r.newUrl));
 		if (!list.isEmpty())
 			getGlobal().warning(list.size() + " resources have been removed since owners were not saved before");
@@ -83,7 +82,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 			if (oldUrl == null || !oldUrl.getProtocol().contains("file")) return;
 			File oldFile = new File(oldUrl.toURI());
 			if (!oldFile.getAbsolutePath().startsWith(file.getAbsolutePath())) return;
-			if (!oldFile.delete()) getGlobal().severe("Url " + oldUrl.toString() + " could not be deleted");
+			if (!oldFile.delete()) getGlobal().severe("Url " + oldUrl + " could not be deleted");
 		} catch (URISyntaxException e) {
 			getGlobal().severe(e.getCause().getMessage());
 		}
@@ -91,8 +90,8 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 
 	private void writeCommit() {
 		StringBuilder content = new StringBuilder();
-		resources.entrySet().forEach(e -> e.getValue()
-				.forEach(r -> content.append(e.getKey()).append(SEP).append(r.newUrl).append(SEP).append(r.oldUrl).append("\n")));
+		resources.forEach((key, value) -> value
+				.forEach(r -> content.append(key).append(SEP).append(r.newUrl).append(SEP).append(r.oldUrl).append("\n")));
 		try {
 			Files.write(commitFile().toPath(), content.toString().getBytes());
 		} catch (IOException e) {
@@ -125,8 +124,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		return fileOf(".commit");
 	}
 
-	private class ResourceModification {
-
+	private static class ResourceModification {
 		URL newUrl;
 		URL oldUrl;
 

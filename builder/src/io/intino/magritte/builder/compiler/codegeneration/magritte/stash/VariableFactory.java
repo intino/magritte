@@ -1,6 +1,6 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.stash;
 
-import io.intino.magritte.io.Variable;
+import io.intino.magritte.io.model.Variable;
 import io.intino.tara.language.model.Primitive;
 
 import java.lang.reflect.InvocationTargetException;

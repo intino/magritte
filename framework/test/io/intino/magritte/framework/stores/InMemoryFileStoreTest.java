@@ -1,7 +1,7 @@
 package io.intino.magritte.framework.stores;
 
 import io.intino.magritte.framework.TestHelper;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 

@@ -7,11 +7,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
-public class Deserializer {
+class Bytes {
+	private static final Logger LOG = Logger.getLogger(Bytes.class.getName());
 
-	private static final Logger LOG = Logger.getLogger(Deserializer.class.getName());
-
-	protected static byte[] bytesFrom(InputStream inputStream) {
+	static byte[] from(InputStream inputStream) {
 		try {
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 			int nRead;
@@ -27,8 +26,7 @@ public class Deserializer {
 		}
 	}
 
-
-	protected static byte[] bytesFrom(File file) {
+	static byte[] from(File file) {
 		try {
 			return Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
@@ -36,5 +34,4 @@ public class Deserializer {
 			return new byte[0];
 		}
 	}
-
 }

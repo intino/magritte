@@ -97,11 +97,11 @@ def type(graph)
 			return map;
 		}
 
-		public static io.intino.magritte.io.Stash$[] _language() {
-			return new io.intino.magritte.io.Stash$[]{[$parentPackage.AbstractGraph._language()$[0$], ]stash()};
+		public static io.intino.magritte.io.model.Stash$[] _language() {
+			return new io.intino.magritte.io.model.Stash$[]{[$parentPackage.AbstractGraph._language()$[0$], ]stash()};
 		}
 
-		private static io.intino.magritte.io.Stash stash() {
+		private static io.intino.magritte.io.model.Stash stash() {
 			String content = "$stash";
 			return io.intino.magritte.io.StashDeserializer.stashFrom(java.util.Base64.getDecoder().decode(content));
 		}

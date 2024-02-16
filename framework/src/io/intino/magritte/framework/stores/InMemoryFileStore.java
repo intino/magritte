@@ -1,6 +1,6 @@
 package io.intino.magritte.framework.stores;
 
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class InMemoryFileStore extends FileSystemStore {
-
 	boolean firstLoad = true;
 
 	public InMemoryFileStore(File file) {
@@ -40,11 +39,12 @@ public class InMemoryFileStore extends FileSystemStore {
 		try {
 			if (!file.exists()) return new ArrayList<>();
 			List<String> result = new ArrayList<>();
-			Files.walkFileTree(file.toPath(), new SimpleFileVisitor<Path>() {
+			Files.walkFileTree(file.toPath(), new SimpleFileVisitor<>() {
 
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					if (file.toString().toLowerCase().endsWith(".stash")) result.add(relativePathOf(file.toUri().toURL()));
+					if (file.toString().toLowerCase().endsWith(".stash"))
+						result.add(relativePathOf(file.toUri().toURL()));
 					return FileVisitResult.CONTINUE;
 				}
 			});

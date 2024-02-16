@@ -4,7 +4,7 @@ import io.intino.magritte.framework.Graph;
 import io.intino.magritte.framework.Node;
 import io.intino.magritte.framework.Store;
 import io.intino.magritte.framework.layers.Child;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 import org.junit.Test;
 
 import java.io.InputStream;

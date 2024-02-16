@@ -1,61 +1,66 @@
-package io.intino.magritte.framework.stresstests;
-
-import io.intino.magritte.framework.Graph;
-import io.intino.magritte.io.StashDeserializer;
+import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Concept;
 import io.intino.magritte.io.model.Node;
 import io.intino.magritte.io.model.Stash;
 import io.intino.magritte.io.model.Variable;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static io.intino.magritte.io.Helper.*;
-import static io.intino.magritte.io.StashSerializer.serialize;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
-public class StressTests {
-	private static final Random Random = new Random();
+public class StashTest {
 	private static final int NumberOfCars = 1000;
 	private static final int NumberOfFacts = 100000;
+	private static final java.util.Random Random = new Random();
+	static File dir = new File("stashes");
 
 	@BeforeClass
-	public static void beforeClass() throws Exception {
-		Files.write(Paths.get("test-res/Members.stash"), serialize(membersStash()));
-		Files.write(Paths.get("test-res/Facts.stash"), serialize(factsStash()));
+	public static void beforeClass() {
+		dir.mkdirs();
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		for (File file : Objects.requireNonNull(dir.listFiles())) file.delete();
+		dir.delete();
 	}
 
 	@Test
-	public void loading_stashes_without_magritte() {
-		long init = System.nanoTime();
-		StashDeserializer.stashFrom(new File("test-res/Facts.stash"));
-		StashDeserializer.stashFrom(new File("test-res/Members.stash"));
-		long finish = System.nanoTime();
-		System.out.println("Loading stashes without magritte: " + ((finish - init) / 1e6) + " ms");
+	public void create_and_read_stash() {
+		Stream.of(membersStash(), factsStash()).parallel().forEach(s -> {
+			try {
+				Files.write(Paths.get(s.path + ".stash"), StashSerializer.serialize(s));
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+		});
 	}
 
-	@Test
-	public void loading_stashes_with_magritte() {
-		long init = System.nanoTime();
-		new Graph().loadStashes("Members", "Facts");
-		long finish = System.nanoTime();
-		System.out.println("Loading stashes with magritte: " + ((finish - init) / 1e6) + " ms");
-	}
 
 	private static Stash membersStash() {
-		return newStash("Proteo", list(), list(), concepts(), members());
+		Stash members = newStash("Proteo", list(), list(), concepts(), members());
+		members.path = "members";
+		return members;
 	}
 
 	private static Stash factsStash() {
-		return newStash("Members", list(), list(), list(), facts());
+		Stash facts = newStash("Members", list(), list(), list(), facts());
+		facts.path = "facts";
+		return facts;
 	}
 
 	private static List<Concept> concepts() {
@@ -84,4 +89,5 @@ public class StressTests {
 				newDouble("distance", Random.nextDouble())
 		);
 	}
+
 }

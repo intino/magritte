@@ -2,7 +2,7 @@ package io.intino.magritte.framework;
 
 import io.intino.magritte.framework.tags.Terminal;
 import io.intino.magritte.framework.types.DateX;
-import io.intino.magritte.io.Variable;
+import io.intino.magritte.io.model.Variable;
 
 import java.net.URL;
 import java.time.Instant;
@@ -41,11 +41,11 @@ class StashWriter {
 		return languages.isEmpty() ? null : languages.get(0);
 	}
 
-	private List<io.intino.magritte.io.Node> nodes(List<Node> nodes) {
+	private List<io.intino.magritte.io.model.Node> nodes(List<Node> nodes) {
 		return nodes.stream().map(this::node).collect(toList());
 	}
 
-	private io.intino.magritte.io.Node node(Node node) {
+	private io.intino.magritte.io.model.Node node(Node node) {
 		return newNode(node.id, layersOf(node), variablesOf(node.variables()), nodes(node.componentList()));
 	}
 

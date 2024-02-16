@@ -2,7 +2,7 @@ package io.intino.magritte.framework;
 
 import io.intino.magritte.framework.stores.ResourcesStore;
 import io.intino.magritte.framework.utils.I18n;
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +31,8 @@ public class Graph {
 	LayerFactory layerFactory = new LayerFactory();
 	Set<String> languages = new LinkedHashSet<>();
 	Set<String> openedStashes = new HashSet<>();
-	private Map<Node, Map<String, List<?>>> variables = new HashMap<>();
-	private I18n i18n = new I18n();
+	private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
+	private final I18n i18n = new I18n();
 
 	public Graph() {
 		this(new ResourcesStore());
@@ -142,7 +142,7 @@ public class Graph {
 		try {
 			return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, node);
 		} catch (IOException e) {
-			getGlobal().severe("Url at " + url.toString() + " could not be accessed");
+			getGlobal().severe("Url at " + url + " could not be accessed");
 			return null;
 		}
 	}
@@ -334,7 +334,7 @@ public class Graph {
 			stashListSize = stashList.size();
 			stashList.addAll(processUses(stashList));
 		}
-		return stashList.toArray(new Stash[stashList.size()]);
+		return stashList.toArray(new Stash[0]);
 	}
 
 	private List<Stash> processUses(List<Stash> stashList) {

@@ -1,8 +1,7 @@
 package io.intino.magritte.framework.utils;
 
 import io.intino.magritte.framework.stores.FileSystemStore;
-import io.intino.magritte.io.Stash;
-import io.intino.magritte.io.StashSerializer;
+import io.intino.magritte.io.model.Stash;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,11 +9,11 @@ import java.io.File;
 import java.nio.file.Files;
 
 import static io.intino.magritte.io.Helper.*;
+import static io.intino.magritte.io.StashSerializer.serialize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class StoreAuditorTest {
-
 	private File tempDirectory;
 
 	@Before
@@ -25,12 +24,12 @@ public class StoreAuditorTest {
 
 	@Test
 	public void should_provide_correct_changes() throws Exception {
-		Files.write(new File(tempDirectory, "xxx.stash").toPath(), StashSerializer.serialize(stashOld()));
+		Files.write(new File(tempDirectory, "xxx.stash").toPath(), serialize(stashOld()));
 		StoreAuditor auditor = new StoreAuditor(new FileSystemStore(tempDirectory));
 		auditor.trace("xxx.stash");
 		assertThat(auditor.changeList().size(), is(6));
 		auditor.commit();
-		Files.write(new File(tempDirectory, "xxx.stash").toPath(), StashSerializer.serialize(stashNew()));
+		Files.write(new File(tempDirectory, "xxx.stash").toPath(), serialize(stashNew()));
 		auditor = new StoreAuditor(new FileSystemStore(tempDirectory));
 		auditor.trace("xxx.stash");
 		assertThat(auditor.changeList().size(), is(7));

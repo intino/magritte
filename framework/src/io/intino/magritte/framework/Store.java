@@ -1,6 +1,6 @@
 package io.intino.magritte.framework;
 
-import io.intino.magritte.io.Stash;
+import io.intino.magritte.io.model.Stash;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
