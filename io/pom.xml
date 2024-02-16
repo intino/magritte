@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.intino.magritte</groupId>
     <artifactId>io</artifactId>
-	<version>4.0.0</version>
+	<version>4.0.1</version>
 	<parent>
 		<groupId>io.intino</groupId>
 		<artifactId>magritte</artifactId>
