@@ -65,17 +65,17 @@ public class Helper {
 		return new ArrayList<>(Arrays.asList(elements));
 	}
 
-	public static Variable newVariable(String name, List<?> values) {
+	public static Variable newVariableOfList(String name, List<?> values) {
 		Variable variable = new Variable();
 		variable.name = name;
 		variable.values = new ArrayList<>(values);
 		return variable;
 	}
 
-	public static Variable newVariable(String name, Object value) {
+	public static Variable newVariable(String name, Object... value) {
 		Variable variable = new Variable();
 		variable.name = name;
-		variable.values = new ArrayList<>(List.of(value));
+		variable.values = new ArrayList<>(Arrays.asList(value));
 		return variable;
 	}
 

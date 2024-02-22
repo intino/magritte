@@ -7,6 +7,7 @@ import io.intino.magritte.io.model.Stash;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,7 +157,7 @@ public class TestHelper {
 		for (int i = 0; i < 2000; i++) {
 			references[i] = "stash" + i + "#x";
 		}
-		node.variables.add(newVariable("varMockList", references));
+		node.variables.add(newVariableOfList("varMockList", Arrays.asList(references)));
 		stash.nodes.add(node);
 		return stash;
 	}

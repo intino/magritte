@@ -64,15 +64,15 @@ class StashWriter {
 
 	private Variable variableOf(Map.Entry<String, List<?>> variable) {
 		Object value = variable.getValue().get(0);
-		if (value instanceof Concept) return newVariable(variable.getKey(), conceptOf(variable.getValue()));
-		if (value instanceof URL) return newVariable(variable.getKey(), resourceOf(variable.getValue()));
-		if (value instanceof Layer) return newVariable(variable.getKey(), refsOfLayers(variable.getValue()));
-		if (value instanceof Enum) return newVariable(variable.getKey(), words(variable.getValue()));
-		if (value instanceof NativeCode) return newVariable(variable.getKey(), classesOf(variable.getValue()));
-		if (value instanceof Instant) return newVariable(variable.getKey(), instantOf(variable.getValue()));
-		if (value instanceof DateX) return newVariable(variable.getKey(), dateOf(variable.getValue()));
-		if (value instanceof LocalTime) return newVariable(variable.getKey(), timeOf(variable.getValue()));
-		else return newVariable(variable.getKey(), variable.getValue());
+		if (value instanceof Concept) return newVariableOfList(variable.getKey(), conceptOf(variable.getValue()));
+		if (value instanceof URL) return newVariableOfList(variable.getKey(), resourceOf(variable.getValue()));
+		if (value instanceof Layer) return newVariableOfList(variable.getKey(), refsOfLayers(variable.getValue()));
+		if (value instanceof Enum) return newVariableOfList(variable.getKey(), words(variable.getValue()));
+		if (value instanceof NativeCode) return newVariableOfList(variable.getKey(), classesOf(variable.getValue()));
+		if (value instanceof Instant) return newVariableOfList(variable.getKey(), instantOf(variable.getValue()));
+		if (value instanceof DateX) return newVariableOfList(variable.getKey(), dateOf(variable.getValue()));
+		if (value instanceof LocalTime) return newVariableOfList(variable.getKey(), timeOf(variable.getValue()));
+		else return newVariableOfList(variable.getKey(), variable.getValue());
 	}
 
 	private List<String> conceptOf(List<?> values) {

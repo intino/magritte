@@ -59,9 +59,9 @@ public class Creation {
 
 	private Stash mockStash() {
 		return newStash("Proteo", list(), list(), list(
-				newConcept("Child", false, false, false, true, "io.intino.magritte.framework.layers.Child", "Parent", list("Concept"), list(), list(newVariable("childVar", list("child"))), list(newVariable("fillByChildVar", "filledByChild")), list()),
-				newConcept("Parent", false, false, false, true, "io.intino.magritte.framework.layers.Parent", "Grandparent", list("Concept"), list(), list(newVariable("parentVar", list("parent")), newVariable("fillByChildVar", "toBeFilled")), list(newVariable("fillByParentVar", "filledByParent")), list()),
-				newConcept("Grandparent", false, false, false, true, "io.intino.magritte.framework.layers.Grandparent", null, list("Concept"), list(), list(newVariable("grandparentVar", list("grandparent")), newVariable("fillByParentVar", list("toBeFilled"))), list(), list())
+				newConcept("Child", false, false, false, true, "io.intino.magritte.framework.layers.Child", "Parent", list("Concept"), list(), list(newVariableOfList("childVar", list("child"))), list(newVariable("fillByChildVar", "filledByChild")), list()),
+				newConcept("Parent", false, false, false, true, "io.intino.magritte.framework.layers.Parent", "Grandparent", list("Concept"), list(), list(newVariableOfList("parentVar", list("parent")), newVariable("fillByChildVar", "toBeFilled")), list(newVariable("fillByParentVar", "filledByParent")), list()),
+				newConcept("Grandparent", false, false, false, true, "io.intino.magritte.framework.layers.Grandparent", null, list("Concept"), list(), list(newVariableOfList("grandparentVar", list("grandparent")), newVariableOfList("fillByParentVar", list("toBeFilled"))), list(), list())
 		), list());
 	}
 }
