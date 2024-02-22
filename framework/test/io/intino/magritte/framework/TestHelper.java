@@ -42,7 +42,7 @@ public class TestHelper {
 	public static Store fileSystemMockStore(File file) {
 		return new FileSystemStore(file) {
 
-			Map<String, Stash> store = new HashMap<String, Stash>() {{
+			final Map<String, Stash> store = new HashMap<>() {{
 				put(m1 + Extension, m1());
 				put(m2 + Extension, m2());
 				put(m3 + Extension, m3());
@@ -63,25 +63,25 @@ public class TestHelper {
 
 	public static Stash uuidStash() {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(uuidStash + "#46012fc8-968a-4b0b-b329-9f2e7c48986a", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
+		stash.nodes.add(newNode(uuidStash + "#46012fc8-968a-4b0b-b329-9f2e7c48986a", list("Mock"), list(newVariable("mockLayer", secondStash + "#y")), emptyList()));
 		return stash;
 	}
 
 	public static Stash firstStash() {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(firstStash + "#x", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
+		stash.nodes.add(newNode(firstStash + "#x", list("Mock"), list(newVariable("mockLayer", secondStash + "#y")), emptyList()));
 		return stash;
 	}
 
 	public static Stash secondStash() {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(secondStash + "#y", list("Mock"), list(newReference("mockLayer", thirdStash + "#z")), emptyList()));
+		stash.nodes.add(newNode(secondStash + "#y", list("Mock"), list(newVariable("mockLayer", thirdStash + "#z")), emptyList()));
 		return stash;
 	}
 
 	public static Stash thirdStash() {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(thirdStash + "#z", list("Mock"), list(newReference("mockLayer", firstStash + "#x")), emptyList()));
+		stash.nodes.add(newNode(thirdStash + "#z", list("Mock"), list(newVariable("mockLayer", firstStash + "#x")), emptyList()));
 		return stash;
 	}
 
@@ -102,7 +102,7 @@ public class TestHelper {
 	public static Stash cyclicDependantStash() {
 		Stash stash = emptyStash();
 		stash.uses.add(dependantStashByUse);
-		stash.nodes.add(newNode(cyclicDependantStash + "#x", list("Mock"), list(newReference("mockLayer", dependantStashByUse + "#x")), emptyList()));
+		stash.nodes.add(newNode(cyclicDependantStash + "#x", list("Mock"), list(newVariable("mockLayer", dependantStashByUse + "#x")), emptyList()));
 		return stash;
 	}
 
@@ -145,7 +145,7 @@ public class TestHelper {
 
 	public static Stash missingReference() {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(missingReference + "#x", list("Mock"), list(newReference("mockLayer", "nonExistingStash" + "#x")), emptyList()));
+		stash.nodes.add(newNode(missingReference + "#x", list("Mock"), list(newVariable("mockLayer", "nonExistingStash" + "#x")), emptyList()));
 		return stash;
 	}
 
@@ -156,14 +156,14 @@ public class TestHelper {
 		for (int i = 0; i < 2000; i++) {
 			references[i] = "stash" + i + "#x";
 		}
-		node.variables.add(newReference("varMockList", references));
+		node.variables.add(newVariable("varMockList", references));
 		stash.nodes.add(node);
 		return stash;
 	}
 
-	public static Stash referencedStash(String stashname) {
+	public static Stash referencedStash(String stashName) {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(stashname.replace(".stash", "") + "#x", list("Mock"), list(newReference("varMockList", "stash1#x")), emptyList()));
+		stash.nodes.add(newNode(stashName.replace(".stash", "") + "#x", list("Mock"), list(newVariable("varMockList", "stash1#x")), emptyList()));
 		return stash;
 	}
 
@@ -189,7 +189,7 @@ public class TestHelper {
 	}
 
 	public static class MockStore implements Store {
-		Map<String, Stash> store = new HashMap<String, Stash>() {{
+		Map<String, Stash> store = new HashMap<>() {{
 			put(emptyStash + Extension, emptyStash());
 			put(oneMockStash + Extension, oneMockStash());
 			put(uuidStash + Extension, uuidStash());

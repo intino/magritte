@@ -37,35 +37,35 @@ public class StoreAuditorTest {
 
 	private Stash stashOld() {
 		return newStash("xxx", list(
-				newNode("xxx#yyyy", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#yyyy2", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#yyyy3", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#yyyy4", list("test"), list(newString("test", "hola2")), list(
-						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#5fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#5fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list())))
+				newNode("xxx#yyyy", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#yyyy2", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#yyyy3", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#yyyy4", list("test"), list(newVariable("test", "hola2")), list(
+						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#5fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#5fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list())))
 		));
 	}
 
 	private Stash stashNew() {
 		return newStash("xxx", list(
-				newNode("xxx#yyyy", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#yyyy2", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#yyyy4", list("test"), list(newString("test", "hola3")), list(
-						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#6fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#6fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list()))),
-				newNode("xxx#6fbf91b6-ad94-40bc-bbf2-9cf1bd563952", list("test"), list(newString("test", "hola")), list(
-						newNode("xxx#yyyy$zzzz", list("test"), list(newString("test", "hola")), list())))
+				newNode("xxx#yyyy", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#yyyy2", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#yyyy4", list("test"), list(newVariable("test", "hola3")), list(
+						newNode("xxx#yyyy$5fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#6fbf91b6-ad94-40bc-bbf2-9cf1bd563950", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#6fbf91b6-ad94-40bc-bbf2-9cf1bd563951", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list()))),
+				newNode("xxx#6fbf91b6-ad94-40bc-bbf2-9cf1bd563952", list("test"), list(newVariable("test", "hola")), list(
+						newNode("xxx#yyyy$zzzz", list("test"), list(newVariable("test", "hola")), list())))
 		));
 	}
 

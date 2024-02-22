@@ -69,7 +69,7 @@ public class StressTests {
 
 	private static List<Node> members() {
 		return range(0, NumberOfCars).boxed()
-				.map(i -> newNode("Members#c" + i, list("Car"), list(newString("plate", "c" + i)), list())).collect(toList());
+				.map(i -> newNode("Members#c" + i, list("Car"), list(newVariable("plate", "c" + i)), list())).collect(toList());
 	}
 
 	private static List<Node> facts() {
@@ -79,9 +79,9 @@ public class StressTests {
 
 	private static List<Variable> factCarVariables() {
 		return Arrays.asList(
-				newReference("car", "Members#c" + Random.nextInt(NumberOfCars)),
-				newDouble("speed", Random.nextDouble()),
-				newDouble("distance", Random.nextDouble())
+				newVariable("car", "Members#c" + Random.nextInt(NumberOfCars)),
+				newVariable("speed", Random.nextDouble()),
+				newVariable("distance", Random.nextDouble())
 		);
 	}
 }

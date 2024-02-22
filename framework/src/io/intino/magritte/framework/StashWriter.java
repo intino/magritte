@@ -37,7 +37,7 @@ class StashWriter {
 	}
 
 	private String language() {
-		List<String> languages = new ArrayList(model.languages);
+		List<String> languages = new ArrayList<>(model.languages);
 		return languages.isEmpty() ? null : languages.get(0);
 	}
 
@@ -64,22 +64,16 @@ class StashWriter {
 
 	private Variable variableOf(Map.Entry<String, List<?>> variable) {
 		Object value = variable.getValue().get(0);
-		if (value instanceof Integer) return newInteger(variable.getKey(), (List<Integer>) variable.getValue());
-		if (value instanceof Long) return newLong(variable.getKey(), (List<Long>) variable.getValue());
-		if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
-		if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
-		if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
-		if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
-		if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
-		if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
-		if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
-		if (value instanceof Instant) return newInstant(variable.getKey(), instantOf(variable.getValue()));
-		if (value instanceof DateX) return newDate(variable.getKey(), dateOf(variable.getValue()));
-		if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
-		if (value instanceof Concept) return newConcept(variable.getKey(), conceptOf(variable.getValue()));
-		return newObject(variable.getKey(), objectOf(variable.getValue()));
+		if (value instanceof Concept) return newVariable(variable.getKey(), conceptOf(variable.getValue()));
+		if (value instanceof URL) return newVariable(variable.getKey(), resourceOf(variable.getValue()));
+		if (value instanceof Layer) return newVariable(variable.getKey(), refsOfLayers(variable.getValue()));
+		if (value instanceof Enum) return newVariable(variable.getKey(), words(variable.getValue()));
+		if (value instanceof NativeCode) return newVariable(variable.getKey(), classesOf(variable.getValue()));
+		if (value instanceof Instant) return newVariable(variable.getKey(), instantOf(variable.getValue()));
+		if (value instanceof DateX) return newVariable(variable.getKey(), dateOf(variable.getValue()));
+		if (value instanceof LocalTime) return newVariable(variable.getKey(), timeOf(variable.getValue()));
+		else return newVariable(variable.getKey(), variable.getValue());
 	}
-
 
 	private List<String> conceptOf(List<?> values) {
 		return values.stream().map(v -> ((Concept) v).id()).collect(toList());
@@ -98,7 +92,6 @@ class StashWriter {
 	}
 
 	private List<String> dateOf(List<?> values) {
-		// TODO JJ serializar el DateX a string
 		return values.stream().map(v -> ((LocalDateTime) v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
 	}
 

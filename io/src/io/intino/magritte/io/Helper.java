@@ -60,118 +60,22 @@ public class Helper {
 		return node;
 	}
 
-	public static Variable.Integer newInteger(String name, List<Integer> values) {
-		return (Variable.Integer) fillVariable(new Variable.Integer(), name, values);
-	}
-
-	public static Variable.Long newLong(String name, List<Long> values) {
-		return (Variable.Long) fillVariable(new Variable.Long(), name, values);
-	}
-
-	public static Variable.Double newDouble(String name, List<Double> values) {
-		return (Variable.Double) fillVariable(new Variable.Double(), name, values);
-	}
-
-	public static Variable.Boolean newBoolean(String name, List<Boolean> values) {
-		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values);
-	}
-
-	public static Variable.String newString(String name, List<String> values) {
-		return (Variable.String) fillVariable(new Variable.String(), name, values);
-	}
-
-	public static Variable.String newConcept(String name, List<String> values) {
-		return (Variable.String) fillVariable(new Variable.String(), name, values);
-	}
-
-	public static Variable.Resource newResource(String name, List<String> values) {
-		return (Variable.Resource) fillVariable(new Variable.Resource(), name, values);
-	}
-
-	public static Variable.Reference newReference(String name, List<String> values) {
-		return (Variable.Reference) fillVariable(new Variable.Reference(), name, values);
-	}
-
-	public static Variable.Word newWord(String name, List<String> values) {
-		return (Variable.Word) fillVariable(new Variable.Word(), name, values);
-	}
-
-	public static Variable.Function newFunction(String name, List<String> values) {
-		return (Variable.Function) fillVariable(new Variable.Function(), name, values);
-	}
-
-	public static Variable.Instant newInstant(String name, List<Long> values) {
-		return (Variable.Instant) fillVariable(new Variable.Instant(), name, values);
-	}
-
-	public static Variable.Date newDate(String name, List<String> values) {
-		return (Variable.Date) fillVariable(new Variable.Date(), name, values);
-	}
-
-	public static Variable.Time newTime(String name, List<String> values) {
-		return (Variable.Time) fillVariable(new Variable.Time(), name, values);
-	}
-
-	public static Variable.Object newObject(String name, List<?> values) {
-		return (Variable.Object) fillVariable(new Variable.Object(), name, values);
-	}
-
-	public static Variable.Integer newInteger(String name, Integer... values) {
-		return newInteger(name, list(values));
-	}
-
-	public static Variable.Long newLong(String name, Long... values) {
-		return newLong(name, list(values));
-	}
-
-	public static Variable.Double newDouble(String name, Double... values) {
-		return newDouble(name, list(values));
-	}
-
-	public static Variable.Boolean newBoolean(String name, Boolean... values) {
-		return newBoolean(name, list(values));
-	}
-
-	public static Variable.String newString(String name, String... values) {
-		return newString(name, list(values));
-	}
-
-	public static Variable.Resource newResource(String name, String... values) {
-		return newResource(name, list(values));
-	}
-
-	public static Variable.Reference newReference(String name, String... values) {
-		return newReference(name, list(values));
-	}
-
-	public static Variable.Word newWord(String name, String... values) {
-		return newWord(name, list(values));
-	}
-
-	public static Variable.Function newFunction(String name, String... values) {
-		return newFunction(name, list(values));
-	}
-
-	public static Variable.Instant newInstant(String name, Long... values) {
-		return newInstant(name, list(values));
-	}
-
-	public static Variable.Date newDate(String name, String... values) {
-		return newDate(name, list(values));
-	}
-
-	public static Variable.Time newTime(String name, String... values) {
-		return newTime(name, list(values));
-	}
-
 	@SafeVarargs
 	public static <T> List<T> list(T... elements) {
 		return new ArrayList<>(Arrays.asList(elements));
 	}
 
-	private static Variable fillVariable(Variable variable, String name, List<?> values) {
+	public static Variable newVariable(String name, List<?> values) {
+		Variable variable = new Variable();
 		variable.name = name;
-		variable.values = values;
+		variable.values = new ArrayList<>(values);
+		return variable;
+	}
+
+	public static Variable newVariable(String name, Object value) {
+		Variable variable = new Variable();
+		variable.name = name;
+		variable.values = new ArrayList<>(List.of(value));
 		return variable;
 	}
 
