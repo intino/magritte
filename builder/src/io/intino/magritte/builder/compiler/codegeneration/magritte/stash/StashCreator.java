@@ -173,8 +173,7 @@ public class StashCreator {
 	}
 
 	private Variable transformTaraVariableToStashVariable(io.intino.tara.language.model.Variable modelVariable) {
-		final Variable variable = VariableFactory.get(modelVariable.type());
-		if (variable == null) return null;
+		final Variable variable = new Variable();
 		variable.name = modelVariable.name();
 		if (modelVariable.isReference() && !(modelVariable.values().get(0) instanceof Expression))
 			variable.values = buildReferenceValues(modelVariable.values());
@@ -187,8 +186,7 @@ public class StashCreator {
 	}
 
 	private Variable createVariableFromParameter(Parameter parameter) {
-		final Variable variable = VariableFactory.get(parameter.type());
-		if (variable == null) return null;
+		final Variable variable = new Variable();
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
 		else if (parameter.values().get(0) instanceof Expression)
@@ -236,7 +234,8 @@ public class StashCreator {
 	private List<?> convert(Valued valued) {
 		final Primitive type = valued.type();
 		if (type.equals(WORD)) return WORD.convert(valued.values().toArray());
-		if (type.equals(LONG) && areIntegers(valued)) return valued.values().stream().map(v -> Long.valueOf((Integer) v)).collect(toList());
+		if (type.equals(LONG) && areIntegers(valued))
+			return valued.values().stream().map(v -> Long.valueOf((Integer) v)).collect(toList());
 		else if (type.equals(INSTANT)) return INSTANT.convert(valued.values().toArray(new String[0]));
 		if (type.equals(RESOURCE)) {
 			return (valued.values()).stream()
