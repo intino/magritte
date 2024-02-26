@@ -1,3 +1,4 @@
+import io.intino.alexandria.Json;
 import io.intino.magritte.io.StashDeserializer;
 import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Concept;
@@ -5,17 +6,17 @@ import io.intino.magritte.io.model.Node;
 import io.intino.magritte.io.model.Stash;
 import io.intino.magritte.io.model.Variable;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static io.intino.magritte.io.Helper.*;
@@ -41,9 +42,20 @@ public class StashTest {
 	}
 
 	@Test
-	public void name() {
-		File file = new File("/Users/oroncal/Downloads/Cuentas.stash");
-		Stash stash = StashDeserializer.stashFrom(file);
+	public void serializeStash() throws IOException {
+		InputStream stream = StashTest.class.getResourceAsStream("./cuentas_stash.json");
+		String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+//		json = json.replace("\u00A0", " ");
+		for (int i = 0; i < 100; i++) {
+			Stash stash = Json.fromJson(json, Stash.class);
+			stash.nodes = new ArrayList<>(stash.nodes.subList(500 + i - 2, 500 + i));
+			byte[] serialize = StashSerializer.serialize(stash);
+			Stash returnedStash = StashDeserializer.stashFrom(serialize);
+			if (returnedStash == null) {
+				System.out.println(Json.toJson(stash));
+			}
+			Assert.assertNotNull("Falló en " + i, returnedStash);
+		}
 
 	}
 
