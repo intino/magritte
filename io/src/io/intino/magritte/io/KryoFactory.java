@@ -17,6 +17,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 
 class KryoFactory {
@@ -40,7 +41,8 @@ class KryoFactory {
 		kryo.register(String.class, new DeflateSerializer(new DefaultSerializers.StringSerializer()));
 		kryo.register(Concept.class, new DeflateSerializer(kryo.getDefaultSerializer(Concept.class)));
 		kryo.register(Variable.class, new DeflateSerializer(kryo.getDefaultSerializer(Variable.class)));
-		kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
+		kryo.register(LocalDateTime.class, new DeflateSerializer(new LocalDateTimeSerializer()));
+		kryo.register(ArrayList.class, new DeflateSerializer(new DefaultSerializers.ArraysAsListSerializer()));
 		return kryo;
 	}
 
