@@ -4,21 +4,13 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.CollectionSerializer;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
-import com.esotericsoftware.kryo.serializers.DeflateSerializer;
 import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 import com.esotericsoftware.kryo.util.Pool;
 import com.esotericsoftware.minlog.Log;
-import io.intino.magritte.io.model.Concept;
-import io.intino.magritte.io.model.Node;
-import io.intino.magritte.io.model.Stash;
-import io.intino.magritte.io.model.Variable;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 
 class KryoFactory {
@@ -37,13 +29,6 @@ class KryoFactory {
 		Log.ERROR();
 		kryo.setRegistrationRequired(false);
 		kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-		kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
-		kryo.register(Node.class, new DeflateSerializer(kryo.getDefaultSerializer(Node.class)));
-		kryo.register(String.class, new DeflateSerializer(new DefaultSerializers.StringSerializer()));
-		kryo.register(Concept.class, new DeflateSerializer(kryo.getDefaultSerializer(Concept.class)));
-		kryo.register(Variable.class, new DeflateSerializer(kryo.getDefaultSerializer(Variable.class)));
-		kryo.register(LocalDateTime.class, new DeflateSerializer(new LocalDateTimeSerializer()));
-		kryo.register(ArrayList.class, new DeflateSerializer(new CollectionSerializer<ArrayList<?>>()));
 		return kryo;
 	}
 
