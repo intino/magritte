@@ -1,3 +1,5 @@
+import io.intino.alexandria.Json;
+import io.intino.magritte.io.StashDeserializer;
 import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Concept;
 import io.intino.magritte.io.model.Node;
@@ -5,10 +7,13 @@ import io.intino.magritte.io.model.Stash;
 import io.intino.magritte.io.model.Variable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -38,6 +43,20 @@ public class StashTest {
 		for (File file : Objects.requireNonNull(dir.listFiles())) file.delete();
 		dir.delete();
 	}
+
+	@Test
+	@Ignore
+	public void serializeStash() throws IOException {
+		InputStream stream = StashTest.class.getResourceAsStream("./cuentas_stash.json");
+		String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+		Stash stash = Json.fromJson(json, Stash.class);
+		byte[] serialize = StashSerializer.serialize(stash);
+		Stash returnedStash = StashDeserializer.stashFrom(serialize);
+		if (returnedStash == null) {
+			System.err.println(Json.toJson(stash));
+		}
+	}
+
 
 	@Test
 	public void create_and_read_stash() {
