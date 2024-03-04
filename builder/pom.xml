@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.intino.magritte</groupId>
 	<artifactId>builder</artifactId>
-	<version>5.1.0</version>
+	<version>6.0.0</version>
 
 	<parent>
 		<groupId>io.intino</groupId>
 		<artifactId>magritte</artifactId>
-		<version>4.0.1</version>
+		<version>5.0.0</version>
 	</parent>
 
 	<distributionManagement>
