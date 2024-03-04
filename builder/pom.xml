@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                              http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.intino.magritte</groupId>
+	<artifactId>builder</artifactId>
+	<version>6.0.0</version>
+
+	<parent>
+		<groupId>io.intino</groupId>
+		<artifactId>magritte</artifactId>
+		<version>5.0.0</version>
+	</parent>
+
+	<distributionManagement>
+		<repository>
+			<id>intino-maven</id>
+			<url>https://artifactory.intino.io/artifactory/release-builders</url>
+		</repository>
+	</distributionManagement>
+	<build>
+		<outputDirectory>../out/production/builder</outputDirectory>
+		<testOutputDirectory>../out/test/builder</testOutputDirectory>
+		<directory>../out/build/builder</directory>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>io.intino.magritte.builder.MagrittecRunner</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.intino.tara</groupId>
+			<artifactId>builder</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.intino.tara</groupId>
+			<artifactId>language</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.intino.magritte</groupId>
+			<artifactId>io</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

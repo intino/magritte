@@ -1,6 +1,0 @@
-<settings>
-  <name>ide/plugin</name>
-  <dependencies>
-    <dependency>ide/jps-plugin</dependency>
-  </dependencies>
-</settings>
