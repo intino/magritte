@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.intino.magritte</groupId>
+    <artifactId>io</artifactId>
+	<version>5.0.0</version>
+	<parent>
+		<groupId>io.intino</groupId>
+		<artifactId>magritte</artifactId>
+		<version>5.0.0</version>
+	</parent>
+
+    <distributionManagement>
+        <repository>
+            <id>intino-maven</id>
+            <name>intino-maven-releases</name>
+            <url>https://artifactory.intino.io/artifactory/release-frameworks</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+		<outputDirectory>../out/production/io</outputDirectory>
+        <testOutputDirectory>../../out/test/io</testOutputDirectory>
+		<directory>../out/build/io</directory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+			<version>5.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.intino.alexandria</groupId>
+			<artifactId>json</artifactId>
+			<version>1.2.3</version>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
+</project>

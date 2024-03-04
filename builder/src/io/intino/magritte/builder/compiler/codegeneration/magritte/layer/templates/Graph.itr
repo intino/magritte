@@ -1,0 +1,34 @@
+def type(wrapper)
+	package $workingPackage+lowercase;
+
+	import io.intino.magritte.framework.Graph;
+
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Graph extends $workingPackage+lowercase.AbstractGraph {
+
+		public $generatedLanguage+javaValidName+FirstUpperCase~Graph(Graph graph) {
+			super(graph);
+		}
+
+		public $generatedLanguage+javaValidName+FirstUpperCase~Graph(io.intino.magritte.framework.Graph graph, $generatedLanguage+javaValidName+FirstUpperCase~Graph wrapper) {
+		    super(graph, wrapper);
+		}
+
+
+		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(io.intino.magritte.io.model.Stash... startingModel) {
+			return new Graph().loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+		}
+
+		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(io.intino.magritte.framework.Store store, io.intino.magritte.io.model.Stash... startingModel) {
+			return new Graph(store).loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+		}
+
+		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(String... startingModel) {
+			return new Graph().loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+		}
+
+		public static $generatedLanguage+javaValidName+FirstUpperCase~Graph load(io.intino.magritte.framework.Store store, String... startingModel) {
+			return new Graph(store).loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+		}
+	}
+end
+

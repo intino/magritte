@@ -6,7 +6,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/core/language/src/io/intino/magritte/lang/lexicon/TaraLexer.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="$PROJECT_DIR$/builder/builder/gen" />
+          <option name="outputDir" value="$PROJECT_DIR$/builder-core/src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="io.intino.magritte.lang.grammar" />
@@ -16,7 +16,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/core/language/src/io/intino/magritte/lang/grammar/TaraGrammar.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="$PROJECT_DIR$/builder/builder/gen" />
+          <option name="outputDir" value="$PROJECT_DIR$/builder-core/src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="io.intino.magritte.lang.grammar" />
@@ -26,6 +26,7 @@
       </list>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="IdProvider" IDEtalkID="06963A41F6B18C0E87181116967CCB43" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -74,10 +75,12 @@
         <option value="$PROJECT_DIR$/ide/pandora/application/pom.xml" />
         <option value="$PROJECT_DIR$/ide/legio/legio/pom.xml" />
         <option value="$PROJECT_DIR$/ide/pandora/pandora-plugin-core/pom.xml" />
+        <option value="$PROJECT_DIR$/builder-core/pom.xml" />
       </list>
     </option>
+    <option name="workspaceImportForciblyTurnedOn" value="true" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="11.0.5" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

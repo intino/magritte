@@ -1,0 +1,32 @@
+def type(graphLoader)
+	package $workingPackage+lowercase;
+
+	import $language_workingPackage.$language+firstUpperCase~Graph;
+	import io.intino.magritte.framework.Store;
+	import io.intino.magritte.io.model.Stash;
+
+	public class GraphLoader {
+		private static final String$[] serialized = new String$[]{
+			$stash+quoted...[,$NL]
+		};
+
+		public static $language+firstUpperCase~Graph load() {
+			return $language+firstUpperCase~Graph.load(stashes());
+		}
+
+		public static $language+firstUpperCase~Graph load(Store store) {
+			return $language+firstUpperCase~Graph.load(store, stashes());
+		}
+
+		private static Stash$[] stashes() {
+			return java.util.Arrays.stream(serialized)
+					.map(s -> java.util.Base64.getDecoder().decode(s))
+					.map(s -> io.intino.magritte.io.StashDeserializer.stashFrom(s))
+					.toArray(Stash$[]::new);
+		}
+	}
+end
+
+def trigger(quoted)
+	"$this"
+end
