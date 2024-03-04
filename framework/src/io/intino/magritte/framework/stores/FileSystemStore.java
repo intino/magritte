@@ -13,6 +13,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.logging.Logger.getGlobal;
 
@@ -21,6 +23,7 @@ public class FileSystemStore implements Store {
 
 	protected final File file;
 	protected boolean allowWriting = true;
+	private Set<String> stashesWithConcepts = new HashSet<>();
 
 	public FileSystemStore(File file) {
 		this.file = file;
@@ -43,6 +46,16 @@ public class FileSystemStore implements Store {
 
 	@Override
 	public Stash stashFrom(String path) {
+		Stash stash = getStash(path);
+		if (hasConcepts(stash)) stashesWithConcepts.add(path);
+		return stash;
+	}
+
+	private static boolean hasConcepts(Stash stash) {
+		return stash != null && stash.concepts != null && !stash.concepts.isEmpty();
+	}
+
+	private Stash getStash(String path) {
 		if (fileOf(path).exists()) return StashDeserializer.stashFrom(fileOf(path));
 		return new ResourcesStore().stashFrom(path);
 	}
@@ -85,7 +98,7 @@ public class FileSystemStore implements Store {
 	@Override
 	public void writeStash(Stash stash, String path) {
 		try {
-			Stash composedStash = composeStash(path, stash);
+			Stash composedStash = stashesWithConcepts.contains(path) ? composeStash(path, stash) : stash;
 			if (hasContent(composedStash))
 				Files.write(preparePath(path).toPath(), StashSerializer.serialize(composedStash));
 			else preparePath(path).delete();
