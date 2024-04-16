@@ -102,7 +102,7 @@ def type(graph)
 		}
 
 		private static io.intino.magritte.io.model.Stash stash() {
-			String content = "$stash";
+			String content = $stash;
 			return io.intino.magritte.io.StashDeserializer.stashFrom(java.util.Base64.getDecoder().decode(content));
 		}
 
@@ -142,6 +142,11 @@ def type(graph)
 			void clear();
 		}
 	}
+end
+
+
+def trigger(stash)
+	$part+quoted...[ +$NL]
 end
 
 def type(instance) trigger(put)
@@ -234,7 +239,6 @@ def type(node & concept) !type(single | final | abstract | component | instance)
 	}
 end
 
-
 def trigger(quoted)
-	"$value"
+	"$this"
 end

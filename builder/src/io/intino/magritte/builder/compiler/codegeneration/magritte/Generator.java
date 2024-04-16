@@ -1,9 +1,12 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte;
 
+import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
 import io.intino.itrules.adapters.ExcludeAdapter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.TypesProvider;
+import io.intino.magritte.io.StashSerializer;
+import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramReference;
@@ -77,6 +80,15 @@ public abstract class Generator implements TemplateTags {
 		mogram.components().stream().
 				filter(c -> !c.is(Instance) && !c.isFacet() && !c.isAnonymous() && (!c.isReference() || (((MogramReference) c).isHas()))).
 				forEach(c -> context.add(NODE, FrameBuilder.from(context).append(c).add(OWNER).toFrame()));
+	}
+
+	protected Frame stashFrame(Stash stash) {
+		FrameBuilder builder = new FrameBuilder("stash");
+		String code = Base64.getEncoder().encodeToString(StashSerializer.serialize(stash));
+		for (int i = 0; i < code.length() / 500; i++) builder.add("part", code.substring(500 * i, 500 * (i + 1)));
+		int rest = code.length() % 500;
+		if (rest > 0) builder.add("part", code.substring(code.length() - rest));
+		return builder.toFrame();
 	}
 
 	protected String getType(Variable variable) {

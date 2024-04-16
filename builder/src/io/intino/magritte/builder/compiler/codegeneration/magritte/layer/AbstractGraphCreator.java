@@ -6,7 +6,6 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashCreator;
-import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
@@ -21,7 +20,6 @@ import io.intino.tara.language.model.Mogram;
 import io.intino.tara.language.model.Variable;
 import io.intino.tara.language.model.rules.Size;
 
-import java.util.Base64;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -44,7 +42,7 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
 				forEach(node -> builder.add(NODE, createRootNodeFrame(node, model.sizeOf(node))));
 		Stash stash = new StashCreator(model.components(), language, outDsl, conf).create();
-		builder.add("stash", Base64.getEncoder().encodeToString(StashSerializer.serialize(stash)));
+		builder.add("stash", stashFrame(stash));
 		if (!(language instanceof Proteo || language instanceof Meta))
 			builder.add("parentPackage", languageWorkingPackage);
 		return Format.customize(new GraphTemplate()).render(builder.toFrame());

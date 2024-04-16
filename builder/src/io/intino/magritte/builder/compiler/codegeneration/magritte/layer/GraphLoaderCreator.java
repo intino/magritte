@@ -1,11 +1,11 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.layer;
 
+import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.GraphLoaderTemplate;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashCreator;
-import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.builder.core.CompilerConfiguration;
@@ -37,22 +37,18 @@ public class GraphLoaderCreator extends Generator implements TemplateTags {
 		return Format.customize(new GraphLoaderTemplate()).render(builder.toFrame());
 	}
 
-	private String[] createStashes(Model model) {
+	private Frame[] createStashes(Model model) {
 		return unpack(model).stream()
 				.map(nodes -> {
 					try {
-						return serialized(stashOf(nodes, model.language()));
+						return stashFrame(stashOf(nodes, model.language()));
 					} catch (TaraException e) {
 						LOG.log(java.util.logging.Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 						return null;
 					}
 				})
 				.filter(Objects::nonNull)
-				.toArray(String[]::new);
-	}
-
-	private String serialized(Stash stash) {
-		return Base64.getEncoder().encodeToString(StashSerializer.serialize(stash));
+				.toArray(Frame[]::new);
 	}
 
 	private List<List<Mogram>> unpack(Model model) {

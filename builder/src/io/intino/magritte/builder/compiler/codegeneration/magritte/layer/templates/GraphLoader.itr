@@ -7,7 +7,7 @@ def type(graphLoader)
 
 	public class GraphLoader {
 		private static final String$[] serialized = new String$[]{
-			$stash+quoted...[,$NL]
+			$stash...[,$NL]
 		};
 
 		public static $language+firstUpperCase~Graph load() {
@@ -25,6 +25,10 @@ def type(graphLoader)
 					.toArray(Stash$[]::new);
 		}
 	}
+end
+
+def trigger(stash)
+	$part...[ +$NL]
 end
 
 def trigger(quoted)
