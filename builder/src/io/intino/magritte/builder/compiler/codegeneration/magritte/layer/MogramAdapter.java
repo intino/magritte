@@ -11,12 +11,11 @@ import io.intino.tara.builder.core.CompilerConfiguration.Level;
 import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramImpl;
 import io.intino.tara.builder.model.MogramReference;
-import io.intino.tara.dsls.Meta;
-import io.intino.tara.dsls.Proteo;
 import io.intino.tara.language.model.Mogram;
 import io.intino.tara.language.model.Variable;
 import io.intino.tara.language.model.rules.Size;
 import io.intino.tara.language.semantics.Constraint.Component;
+import io.intino.tara.language.semantics.Documentation;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -143,10 +142,10 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private void addType(FrameBuilderContext frame, Mogram node) {
-		if (!(language instanceof Proteo || language instanceof Meta)) {
-			frame.add(CONCEPT_LAYER, language.doc(node.type()).layer());
-			frame.add(TYPE, nodeType(node, sizeConstraint(node)));
-		}
+		Documentation doc = language.doc(node.type());
+		if (doc == null) return;
+		frame.add(CONCEPT_LAYER, doc.layer());
+		frame.add(TYPE, nodeType(node, sizeConstraint(node)));
 	}
 
 	private Size sizeConstraint(Mogram node) {

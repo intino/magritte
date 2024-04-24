@@ -102,9 +102,11 @@ def type(graph)
 		}
 
 		private static io.intino.magritte.io.model.Stash stash() {
-			String content = $stash;
+			String content = $stash+call;
 			return io.intino.magritte.io.StashDeserializer.stashFrom(java.util.Base64.getDecoder().decode(content));
 		}
+
+		$stash+stashMethod
 
 		public static class Indexer {
 			Add add;
@@ -145,8 +147,22 @@ def type(graph)
 end
 
 
-def trigger(stash)
-	$part+quoted...[ +$NL]
+def type(stash) trigger(call)
+	$part+methodCall...[ + ]
+end
+
+def trigger(methodCall)
+	stash$index()
+end
+
+def type(stash) trigger(stashMethod)
+	$part+method...[$NL$NL]
+end
+
+def trigger(method)
+	private static String stash$index() {
+		return "$code";
+	}
 end
 
 def type(instance) trigger(put)

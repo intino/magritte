@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.tara.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.builder.BuildConstants.PRESENTABLE_MESSAGE;
 
 
 public class StashGenerationOperation extends ModelOperation {

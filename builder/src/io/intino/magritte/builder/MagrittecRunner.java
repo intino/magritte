@@ -1,18 +1,18 @@
 package io.intino.magritte.builder;
 
-
+import io.intino.builder.BuildConstants;
 import io.intino.magritte.builder.compiler.operations.LayerGenerationOperation;
 import io.intino.tara.builder.TaraCompilerRunner;
 import io.intino.tara.builder.core.errorcollection.TaraException;
-import io.intino.tara.builder.shared.TaraBuildConstants;
 
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.tara.builder.shared.TaraBuildConstants.MESSAGES_END;
-import static io.intino.tara.builder.shared.TaraBuildConstants.MESSAGES_START;
+import static io.intino.builder.BuildConstants.MESSAGES_END;
+import static io.intino.builder.BuildConstants.MESSAGES_START;
+
 
 public class MagrittecRunner {
 
@@ -23,7 +23,7 @@ public class MagrittecRunner {
 
 	public static void main(String[] args) {
 		final boolean verbose = args.length != 2 || Boolean.parseBoolean(args[1]);
-		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
+		if (verbose) System.out.println(BuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
 		try {
 			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)

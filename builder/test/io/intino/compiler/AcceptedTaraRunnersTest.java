@@ -18,6 +18,18 @@ public class AcceptedTaraRunnersTest {
 
 	private String home;
 
+	@Test
+	public void name() throws IOException {
+		String dor = "/Users/oroncal/workspace/sandbox/intellijcommunity/system/compile-server/demo-dsl_67915b44/_temp_/";
+		File file = new File(dor + "ideaTaraToCompile1.txt");
+		while (true) {
+			if (file.exists()) {
+				System.out.println(Files.readString(file.toPath()));
+				return;
+			}
+		}
+	}
+
 	private static String temp(String filepath) {
 		try {
 			File file = new File(filepath);

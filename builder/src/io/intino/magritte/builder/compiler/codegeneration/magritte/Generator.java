@@ -33,6 +33,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
 public abstract class Generator implements TemplateTags {
+	public static final int CHUNK_SIZE = 4000;
 	protected final Language language;
 	protected final String outDsl;
 	protected final String workingPackage;
@@ -85,9 +86,12 @@ public abstract class Generator implements TemplateTags {
 	protected Frame stashFrame(Stash stash) {
 		FrameBuilder builder = new FrameBuilder("stash");
 		String code = Base64.getEncoder().encodeToString(StashSerializer.serialize(stash));
-		for (int i = 0; i < code.length() / 500; i++) builder.add("part", code.substring(500 * i, 500 * (i + 1)));
-		int rest = code.length() % 500;
-		if (rest > 0) builder.add("part", code.substring(code.length() - rest));
+		int i;
+		for (i = 0; i < code.length() / CHUNK_SIZE; i++)
+			builder.add("part", new FrameBuilder("part").add("index", i).add("code", code.substring(CHUNK_SIZE * i, CHUNK_SIZE * (i + 1))));
+		int rest = code.length() % CHUNK_SIZE;
+		if (rest > 0)
+			builder.add("part", new FrameBuilder("part").add("index", i).add("code", code.substring(code.length() - rest)));
 		return builder.toFrame();
 	}
 
