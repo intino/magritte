@@ -85,13 +85,15 @@ public abstract class Generator implements TemplateTags {
 
 	protected Frame stashFrame(Stash stash) {
 		FrameBuilder builder = new FrameBuilder("stash");
+		String name = stash.path.replace(".stash", "");
+
 		String code = Base64.getEncoder().encodeToString(StashSerializer.serialize(stash));
 		int i;
 		for (i = 0; i < code.length() / CHUNK_SIZE; i++)
-			builder.add("part", new FrameBuilder("part").add("index", i).add("code", code.substring(CHUNK_SIZE * i, CHUNK_SIZE * (i + 1))));
+			builder.add("part", new FrameBuilder("part").add("name", name).add("index", i).add("code", code.substring(CHUNK_SIZE * i, CHUNK_SIZE * (i + 1))));
 		int rest = code.length() % CHUNK_SIZE;
 		if (rest > 0)
-			builder.add("part", new FrameBuilder("part").add("index", i).add("code", code.substring(code.length() - rest)));
+			builder.add("part", new FrameBuilder("part").add("name", name).add("index", i).add("code", code.substring(code.length() - rest)));
 		return builder.toFrame();
 	}
 

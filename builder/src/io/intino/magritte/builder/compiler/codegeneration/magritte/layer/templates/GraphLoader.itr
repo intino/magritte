@@ -6,8 +6,8 @@ def type(graphLoader)
 	import io.intino.magritte.io.model.Stash;
 
 	public class GraphLoader {
-		private static final String$[] serialized = new String$[]{
-			$stash...[,$NL]
+		private static final String$[] serialized = new String$[] {
+			$stash+call...[,$NL]
 		};
 
 		public static $language+firstUpperCase~Graph load() {
@@ -18,6 +18,8 @@ def type(graphLoader)
 			return $language+firstUpperCase~Graph.load(store, stashes());
 		}
 
+		$stash+stashMethod...[$NL$NL]
+
 		private static Stash$[] stashes() {
 			return java.util.Arrays.stream(serialized)
 					.map(s -> java.util.Base64.getDecoder().decode(s))
@@ -27,10 +29,24 @@ def type(graphLoader)
 	}
 end
 
-def trigger(stash)
-	$part...[ +$NL]
+def type(stash) trigger(call)
+	$part+methodCall...[ + ]
+end
+
+def trigger(methodCall)
+	stash$name+firstUpperCase$index()
+end
+
+def type(stash) trigger(stashMethod)
+	$part+method...[$NL$NL]
+end
+
+def trigger(method)
+	private static String stash$name+firstUpperCase$index() {
+		return "$code";
+	}
 end
 
 def trigger(quoted)
 	"$this"
-end
+endd

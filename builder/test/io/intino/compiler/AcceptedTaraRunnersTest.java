@@ -15,13 +15,13 @@ import static io.intino.magritte.builder.MagrittecRunner.main;
 
 @Ignore
 public class AcceptedTaraRunnersTest {
-
 	private String home;
 
 	@Test
 	public void name() throws IOException {
-		String dor = "/Users/oroncal/workspace/sandbox/intellijcommunity/system/compile-server/demo-dsl_67915b44/_temp_/";
-		File file = new File(dor + "ideaTaraToCompile1.txt");
+		var project = "datahub-3_2c0a2b10";
+		String dor = "/Users/oroncal/workspace/sandbox/intellij2024/system/compile-server/" + project + "/_temp_/";
+		File file = new File(dor + "ideaTaraToCompile.txt");
 		while (true) {
 			if (file.exists()) {
 				System.out.println(Files.readString(file.toPath()));
