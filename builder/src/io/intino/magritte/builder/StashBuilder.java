@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.intino.tara.builder.core.CompilerConfiguration.Level.Model;
 
@@ -63,7 +64,7 @@ public class StashBuilder {
 	public Stash[] build() {
 		try {
 			TaraCompilerRunner runner = new TaraCompilerRunner(true, List.of(StashGenerationOperation.class));
-			runner.run(createConfiguration(), files);
+			runner.run(createConfiguration(), files.stream().collect(Collectors.toMap(f -> f, f -> true)));
 			final File[] createdStashes = findCreatedStashes();
 			if (createdStashes.length == 0) return null;
 			final Stash[] stash = Arrays.stream(createdStashes).map(StashDeserializer::stashFrom).toArray(Stash[]::new);
