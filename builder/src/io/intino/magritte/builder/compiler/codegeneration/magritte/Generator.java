@@ -1,9 +1,12 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte;
 
+import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
 import io.intino.itrules.adapters.ExcludeAdapter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.TypesProvider;
+import io.intino.magritte.io.StashSerializer;
+import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramReference;
@@ -30,6 +33,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
 public abstract class Generator implements TemplateTags {
+	public static final int CHUNK_SIZE = 4000;
 	protected final Language language;
 	protected final String outDsl;
 	protected final String workingPackage;
@@ -77,6 +81,20 @@ public abstract class Generator implements TemplateTags {
 		mogram.components().stream().
 				filter(c -> !c.is(Instance) && !c.isFacet() && !c.isAnonymous() && (!c.isReference() || (((MogramReference) c).isHas()))).
 				forEach(c -> context.add(NODE, FrameBuilder.from(context).append(c).add(OWNER).toFrame()));
+	}
+
+	protected Frame stashFrame(Stash stash) {
+		FrameBuilder builder = new FrameBuilder("stash");
+		String name = stash.path.replace(".stash", "");
+
+		String code = Base64.getEncoder().encodeToString(StashSerializer.serialize(stash));
+		int i;
+		for (i = 0; i < code.length() / CHUNK_SIZE; i++)
+			builder.add("part", new FrameBuilder("part").add("name", name).add("index", i).add("code", code.substring(CHUNK_SIZE * i, CHUNK_SIZE * (i + 1))));
+		int rest = code.length() % CHUNK_SIZE;
+		if (rest > 0)
+			builder.add("part", new FrameBuilder("part").add("name", name).add("index", i).add("code", code.substring(code.length() - rest)));
+		return builder.toFrame();
 	}
 
 	protected String getType(Variable variable) {

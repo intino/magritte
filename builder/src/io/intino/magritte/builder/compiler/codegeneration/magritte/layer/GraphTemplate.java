@@ -3,7 +3,7 @@ package io.intino.magritte.builder.compiler.codegeneration.magritte.layer;
 import io.intino.itrules.Rule;
 import io.intino.itrules.RuleSet;
 import io.intino.itrules.Template;
-import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.layer.AbstractGraphTemplate;
+import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.AbstractGraphTemplate;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.layer.HelpersTemplate;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.layer.NewElementTemplate;
 

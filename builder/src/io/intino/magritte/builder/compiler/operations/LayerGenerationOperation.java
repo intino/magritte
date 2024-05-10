@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.builder.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static io.intino.builder.BuildConstants.PRESENTABLE_MESSAGE;
 import static io.intino.tara.builder.utils.Format.firstUpperCase;
 import static io.intino.tara.builder.utils.Format.javaValidName;
 import static java.io.File.separator;

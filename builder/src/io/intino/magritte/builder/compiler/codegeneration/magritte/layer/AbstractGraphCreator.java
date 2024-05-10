@@ -6,7 +6,6 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashCreator;
-import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
@@ -15,13 +14,11 @@ import io.intino.tara.builder.core.CompilerConfiguration.Level;
 import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramImpl;
 import io.intino.tara.builder.utils.Format;
-import io.intino.tara.dsls.Meta;
-import io.intino.tara.dsls.Proteo;
 import io.intino.tara.language.model.Mogram;
 import io.intino.tara.language.model.Variable;
 import io.intino.tara.language.model.rules.Size;
+import io.intino.tara.language.semantics.Documentation;
 
-import java.util.Base64;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -44,9 +41,8 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
 				forEach(node -> builder.add(NODE, createRootNodeFrame(node, model.sizeOf(node))));
 		Stash stash = new StashCreator(model.components(), language, outDsl, conf).create();
-		builder.add("stash", Base64.getEncoder().encodeToString(StashSerializer.serialize(stash)));
-		if (!(language instanceof Proteo || language instanceof Meta))
-			builder.add("parentPackage", languageWorkingPackage);
+		builder.add("stash", stashFrame(stash));
+		builder.add("parentPackage", languageWorkingPackage);
 		return Format.customize(new GraphTemplate()).render(builder.toFrame());
 	}
 
@@ -65,8 +61,9 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 	}
 
 	private void addType(Mogram node, Size rule, FrameBuilder builder) {
-		if (!(language instanceof Proteo) && !(language instanceof Meta))
-			builder.add(CONCEPT_LAYER, language.doc(node.type()).layer());
+		Documentation doc = language.doc(node.type());
+		if (doc == null) return;
+		builder.add(CONCEPT_LAYER, doc.layer());
 		builder.add(TYPE, nodeType(node, rule));
 	}
 
