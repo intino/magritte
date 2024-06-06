@@ -86,7 +86,8 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void writeGraphLoader(Model model) {
 		File target = new File(new File(outFolder, conf.workingPackage().toLowerCase().replace(".", File.separator)), GRAPH + "Loader" + JAVA);
 		write(target, new GraphLoaderCreator(model.language(), conf).create(model));
-		for (List<String> paths : outMap.values()) paths.add(target.getAbsolutePath());
+		if (outMap.isEmpty()) unit.getSourceUnits().forEach((s, v) -> put(s, target.getAbsolutePath()));
+		else for (List<String> paths : outMap.values()) paths.add(target.getAbsolutePath());
 	}
 
 	private void writeAbstractGraph(Model model, Map<String, Map<String, String>> layers) {
