@@ -153,6 +153,7 @@ rule not type(target) and type(nodeimpl) and not type(instance) and trigger(Node
 		<<$node+setter...[$NL$NL]>>
 
 		<<$availableAspect...[$NL$NL]>>
+
 		<<$core>>
 
 		<<protected java.util.List<io.intino.magritte.framework.Node> componentList$$() {

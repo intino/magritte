@@ -7,7 +7,7 @@ rule type(variable, word, outDefined, owner, multiple) and not (type(inherited) 
 rule type(variable, word, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
 	if (name.equalsIgnoreCase("$name")) this.$name+javaValidName+FirstLowerCase = new java.util.ArrayList<>((java.util.List<$type>) values);
 
-rule type(variable, word) and type(outDefined) and not (type(inherited) or type(overriden) or type(reactive)) and type(owner) and  trigger(set)
+rule type(variable, word) and type(outDefined) and not (type(inherited) or type(overriden) or type(reactive)) and type(owner) and trigger(set)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($workingPackage+LowerCase.rules.$rule+externalWordClass) values.get(0);
 
 rule type(variable, word, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)

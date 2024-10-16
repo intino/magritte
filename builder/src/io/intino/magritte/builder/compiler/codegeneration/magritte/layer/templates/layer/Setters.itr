@@ -60,8 +60,6 @@ rule type(variable, Concept) and not type(multiple) and not type(owner) and not 
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
------ OWN SETTERS -----
-
 rule type(variable, word, outDefined) and not (type(target) or type(inherited) or type(overriden) or type(multiple) or type(final)) and trigger(setter)
 	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
 		this.$name+FirstLowerCase+javaValidName = value;

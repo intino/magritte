@@ -8,19 +8,21 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.Language;
 import io.intino.tara.language.semantics.Constraint.Component;
+import io.intino.tara.model.Annotation;
 import io.intino.tara.model.Mogram;
 import io.intino.tara.model.MogramReference;
 import io.intino.tara.model.Property;
 import io.intino.tara.model.rules.Size;
 import io.intino.tara.processors.Resolver;
+import io.intino.tara.processors.model.HasMogram;
 import io.intino.tara.processors.model.Model;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static io.intino.magritte.builder.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static io.intino.tara.model.Annotation.Decorable;
 import static io.intino.tara.model.Annotation.Generalization;
 import static io.intino.tara.model.Level.M1;
@@ -38,11 +40,12 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	@Override
 	public void adapt(Mogram mogram, FrameBuilderContext context) {
 		this.context = context;
-		getTypes(mogram, language).forEach(context::add);
+		TypesProvider.getTypes(mogram, language).forEach(context::add);
 		context.add(MODEL_TYPE, mogram.level() == M3 ? METAMETAMODEL : METAMODEL);
 		addNodeInfo(mogram, context);
 		addProperties(mogram, context);
 		addComponents(mogram, context);
+		addReferences(mogram, context);
 		addNonAbstractCreates(mogram, context);
 		addFacetClasses(mogram, context);
 		addAllowedAspects(mogram, context);
@@ -65,7 +68,29 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private void addFacetSlot(FrameBuilderContext context, Mogram aspectNode) {
-		context.add(NODE, FrameBuilder.from(context).append(aspectNode).add("aspect").toFrame());
+		context.add(NODE, FrameBuilder.from(context).append(aspectNode).add(ASPECT).toFrame());
+	}
+
+	private void addReferences(Mogram mogram, FrameBuilderContext context) {
+		mogram.referenceComponents().forEach(r -> context.add(NODE, frameOf(r).add(OWNER).toFrame()));
+	}
+
+	private FrameBuilder frameOf(HasMogram ref) {
+		FrameBuilder builder = new FrameBuilder();
+		Mogram target = ref.target().get();
+		addNodeInfo(target, builder);
+		getTypes(ref).forEach(builder::add);
+		addProperties(target, builder);
+		return builder;
+	}
+
+	private List<String> getTypes(HasMogram ref) {
+		Mogram target = ref.target().get();
+		List<String> types = target.annotations().stream().map(Annotation::name).collect(Collectors.toList());
+		types.add("Node");
+		final Size size = ref.container().sizeOf(ref);
+		if (size != null && size.isSingle()) types.add(SINGLE);
+		return types;
 	}
 
 	private void addFacet(Mogram facet, Mogram target, FrameBuilderContext context) {
@@ -77,15 +102,27 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private void addTargetComponents(Mogram facet, FrameBuilderContext context) {
-		facet.container().components().stream()
+		Mogram target = facet.facetPrescription().get();
+		target.components().stream()
 				.filter(c -> !isOverriden(c, facet))
-				.forEach(c -> {
-							final FrameBuilder builder = FrameBuilder.from(context).append(c).add(TARGET);
-							builder.add(TARGET_CONTAINER, facet.container().name());
-							if (facet.container().sizeOf(c).isSingle()) builder.add(SINGLE);
-							context.add(NODE, builder.toFrame());
-						}
-				);
+				.forEach(c -> addCoreMogram(facet, context, c));
+		target.referenceComponents().stream()
+				.filter(c -> !isOverriden(c.target().get(), facet))
+				.forEach(c -> addCoreMogramReference(facet, context, c));
+	}
+
+	private void addCoreMogramReference(Mogram facet, FrameBuilderContext context, HasMogram c) {
+		final FrameBuilder builder = frameOf(c).add(TARGET);
+		builder.add(TARGET_CONTAINER, facet.container().name());
+		if (facet.container().sizeOf(c).isSingle()) builder.add(SINGLE);
+		context.add(NODE, builder.toFrame());
+	}
+
+	private static void addCoreMogram(Mogram facet, FrameBuilderContext context, Mogram c) {
+		final FrameBuilder builder = FrameBuilder.from(context).append(c).add(TARGET);
+		builder.add(TARGET_CONTAINER, facet.container().name());
+		if (facet.container().sizeOf(c).isSingle()) builder.add(SINGLE);
+		context.add(NODE, builder.toFrame());
 	}
 
 	private void addNodeInfo(Mogram node, FrameBuilderContext context) {
@@ -94,7 +131,7 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 		if (node.doc() != null) context.add(DOC, node.doc());
 		if (node.container() != null) context.add(CONTAINER_NAME, node.container().name());
 		addType(context, node);
-		addName(this.context, node);
+		addName(context, node);
 		boolean decorable = node.is(Decorable) || isInDecorable(node);
 		if (node.is(Generalization) || decorable) context.add(ABSTRACT, true);
 		if (decorable) context.add(DECORABLE, true);
@@ -118,11 +155,11 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 				});
 	}
 
-	private FrameBuilder createFrame(Mogram node) {
+	private FrameBuilder createFrame(Mogram mogram) {
 		final FrameBuilder builder = new FrameBuilder(REFERENCE, CREATE);
-		getTypes(node, language).forEach(builder::add);
-		addName(builder, node);
-		addProperties(node, builder);
+		TypesProvider.getTypes(mogram, language).forEach(builder::add);
+		addName(builder, mogram);
+		addProperties(mogram, builder);
 		return builder;
 	}
 
@@ -189,13 +226,10 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private void addProperties(Mogram mogram, FrameBuilderContext context) {
-		mogram.properties().forEach(p -> {
-			final FrameBuilder builder = FrameBuilder.from(this.context)
-					.add(OWNER)
-					.append(p)
-					.add(CONTAINER, isInDecorable(mogram) ? completeName(mogram) : mogram.name());
-			context.add(PROPERTY, builder.toFrame());
-		});
+		effectiveProperties(mogram).forEach(p -> context.add(PROPERTY, FrameBuilder.from(this.context)
+				.add(OWNER)
+				.append(p)
+				.add(CONTAINER, isInDecorable(mogram) ? completeName(mogram) : mogram.name()).toFrame()));
 		if (mogram.facetPrescription() != null) {
 			mogram.facetPrescription().get().properties().stream().
 					filter(p -> !isOverriden(mogram, p)).
@@ -212,6 +246,16 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 		}
 
 		addTerminalProperties(mogram, context);
+	}
+
+	private Stream<Property> effectiveProperties(Mogram mogram) {
+		Map<String, Property> properties = new HashMap<>();
+		Mogram current = mogram;
+		while (current.parent() != null) {
+			current.properties().forEach(p -> properties.putIfAbsent(p.name(), p));
+			current = current.parent().get();
+		}
+		return properties.values().stream();
 	}
 
 	private String completeName(Mogram node) {

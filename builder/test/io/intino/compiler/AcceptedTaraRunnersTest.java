@@ -129,22 +129,32 @@ public class AcceptedTaraRunnersTest {
 	private static void check(File root, File checkRoot) throws IOException {
 		ArrayList<File> list = new ArrayList<>();
 		FileSystemUtils.getAllFiles(new File(root, "gen"), list);
+		int count = 0;
 		for (File file : list) {
 			if (Excluded.contains(file.getName())) continue;
 			if (!file.getName().endsWith(".java")) continue;
 			List<String> actual = Files.readAllLines(file.toPath()).stream().map(l -> l.replace("  ", " ")).toList();
-			List<String> expected = Files.readAllLines(Path.of(file.getAbsolutePath().replace(root.getAbsolutePath(), checkRoot.getAbsolutePath())));
+			List<String> expected = Files.readAllLines(expected(root, checkRoot, file)).stream().map(l -> l.replace("  ", " ").replace(")!", ") !")).toList();
 			Patch<String> patch = DiffUtils.diff(actual, expected);
 			for (AbstractDelta<String> delta : patch.getDeltas()) {
-				System.out.println(delta.getType() + " on " + file.getAbsolutePath().replace(root.getAbsolutePath(), ""));
-				System.out.println(String.join("\n", delta.getSource().getLines()));
-				System.out.println("vs");
-				System.out.println(String.join("\n", delta.getTarget().getLines()));
+				String actualText = String.join("\n", delta.getSource().getLines());
+				String expectedText = String.join("\n", delta.getTarget().getLines());
+				if (actualText.trim().equals(expectedText.trim())) continue;
+				System.out.println(delta.getType() + " on " + file.getAbsolutePath().replace(root.getAbsolutePath(), "") + " " + delta.getSource().getPosition());
+				System.out.println(actualText);
+				System.out.println("vs expected:");
+				System.out.println(expectedText);
 				System.out.println();
 				System.out.println("---------------");
+				count++;
 			}
-			if (!patch.getDeltas().isEmpty()) break;
+			if (count > 0) break;
+
 		}
+	}
+
+	private static Path expected(File root, File checkRoot, File file) {
+		return Path.of(file.getAbsolutePath().replace(root.getAbsolutePath(), checkRoot.getAbsolutePath()));
 	}
 
 	@Test
