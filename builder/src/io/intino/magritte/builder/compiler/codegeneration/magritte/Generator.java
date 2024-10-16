@@ -1,25 +1,21 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte;
 
+import io.intino.itrules.Engine;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.itrules.FrameBuilderContext;
 import io.intino.itrules.adapters.ExcludeAdapter;
+import io.intino.itrules.template.Template;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.TypesProvider;
 import io.intino.magritte.io.StashSerializer;
 import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
-import io.intino.tara.builder.model.Model;
-import io.intino.tara.builder.model.MogramReference;
-import io.intino.tara.builder.model.VariableReference;
-import io.intino.tara.builder.parser.NativeExtractor;
 import io.intino.tara.builder.utils.Format;
-import io.intino.tara.language.model.*;
-import io.intino.tara.language.model.rules.variable.NativeObjectRule;
-import io.intino.tara.language.model.rules.variable.NativeRule;
-import io.intino.tara.language.model.rules.variable.VariableCustomRule;
-import io.intino.tara.language.model.rules.variable.WordRule;
 import io.intino.tara.language.semantics.Constraint;
-import io.intino.tara.language.semantics.constraints.parameter.ReferenceParameter;
+import io.intino.tara.model.*;
+import io.intino.tara.model.rules.property.*;
+import io.intino.tara.processors.model.ReferenceProperty;
+import io.intino.tara.processors.parser.NativeExtractor;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -27,8 +23,10 @@ import java.util.stream.Collectors;
 
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static io.intino.tara.language.model.Primitive.OBJECT;
-import static io.intino.tara.language.model.Tag.*;
+import static io.intino.tara.builder.utils.Format.javaValidName;
+import static io.intino.tara.model.Annotation.Decorable;
+import static io.intino.tara.model.Annotation.Final;
+import static io.intino.tara.model.Primitive.OBJECT;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -47,12 +45,12 @@ public abstract class Generator implements TemplateTags {
 		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
-	public static boolean isInDecorable(Mogram node) {
-		Mogram container = node.container();
+	public static boolean isInDecorable(Mogram mogram) {
+		ElementContainer container = mogram.container();
 		if (container instanceof MogramRoot) return false;
 		while (!(container.container() instanceof MogramRoot))
 			container = container.container();
-		return container.is(Decorable);
+		return ((Mogram) container).is(Decorable);
 	}
 
 	public Set<String> getImports() {
@@ -60,26 +58,25 @@ public abstract class Generator implements TemplateTags {
 	}
 
 	protected void addParent(Mogram mogram, FrameBuilderContext context) {
-		final Mogram parent = mogram.parent();
-		if (parent == null) {
+		if (mogram.parent() == null) {
 			if (!mogram.children().isEmpty() || context.contains(CREATE) || context.contains(NODE))
 				context.add(PARENT_SUPER, false);
 			return;
 		}
+		final Mogram parent = mogram.parent().get();
 		String parentQN = cleanQn(getQn(parent, workingPackage));
 		context.add(PARENT, parentQN);
 		if (context.contains(CREATE) || context.contains(NODE))
 			context.add(PARENT_SUPER, true).add("parentName", parentQN);
-		Mogram parentTarget = parent.container();
-		if ((context.contains(NODE)) && hasLists(mogram.parent())
-				|| (parent.isFacet() && !(parentTarget instanceof Model) && parentTarget.components().stream().anyMatch(c -> !c.isFacet() && !c.isMetaFacet()) && hasLists(parentTarget)))
+		ElementContainer parentTarget = parent.container();
+		if ((context.contains(NODE)) && hasLists(mogram.parent().get())
+				|| (parent.facetPrescription() != null && !(parentTarget instanceof MogramRoot) && !parentTarget.components().isEmpty() && hasLists((Mogram) parentTarget)))
 			context.add("parentClearName", parentQN);
 	}
 
 	protected void addComponents(Mogram mogram, FrameBuilderContext context) {
-		if (mogram instanceof MogramReference) return;
 		mogram.components().stream().
-				filter(c -> !c.is(Instance) && !c.isFacet() && !c.isAnonymous() && (!c.isReference() || (((MogramReference) c).isHas()))).
+				filter(c -> !c.level().equals(Level.M1) && !c.isAnonymous()).
 				forEach(c -> context.add(NODE, FrameBuilder.from(context).append(c).add(OWNER).toFrame()));
 	}
 
@@ -97,15 +94,21 @@ public abstract class Generator implements TemplateTags {
 		return builder.toFrame();
 	}
 
-	protected String getType(Variable variable) {
-		if (variable instanceof VariableReference)
-			return cleanQn(getQn(((VariableReference) variable).getTarget(), (((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage).toLowerCase()));
-		else if (Primitive.WORD.equals(variable.type()))
-			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).externalClass()) :
-					Format.firstUpperCase().format(variable.name()).toString();
-		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
-		else return variable.type().javaName();
+	protected String getType(Property prop) {
+		if (prop.isReference()) {
+			return cleanQn(getQn(((ReferenceProperty) prop).target().get(), workingPackage.toLowerCase()));
+		} else if (Primitive.WORD.equals(prop.type())) {
+			PropertyCustomRule customRule = prop.rule(PropertyCustomRule.class);
+			return customRule != null ?
+					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format((customRule).externalClass()) :
+					Format.firstUpperCase().format(prop.name()).toString();
+		} else if (OBJECT.equals(prop.type())) return (prop.rule(NativeObjectRule.class)).type();
+		else return prop.type().javaName();
+	}
+
+
+	private <T> T ruleOfTypeConcrete(List<Rule> rules, Class<T> aClass) {
+		return (T) rules.stream().filter(aClass::isInstance).findFirst().orElse(null);
 	}
 
 	protected FrameBuilder ruleToFrame(Rule rule) {
@@ -113,98 +116,96 @@ public abstract class Generator implements TemplateTags {
 		final FrameBuilder builder = new FrameBuilder();
 		builder.put(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		builder.append(rule);
-		if (rule instanceof VariableCustomRule) {
+		if (rule instanceof PropertyCustomRule) {
 			FrameBuilder frameBuilder = new FrameBuilder("customRule");
-			frameBuilder.add(QN, cleanQn(((VariableCustomRule) rule).qualifiedName()));
-			frameBuilder.add("aClass", cleanQn(((VariableCustomRule) rule).externalClass()));
-			if (((VariableCustomRule) rule).isMetric()) {
+			frameBuilder.add(QN, cleanQn(((PropertyCustomRule) rule).qualifiedName()));
+			frameBuilder.add("aClass", cleanQn(((PropertyCustomRule) rule).externalClass()));
+			if (((PropertyCustomRule) rule).isMetric()) {
 				frameBuilder.add(METRIC);
-				frameBuilder.add(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
+				frameBuilder.add(DEFAULT, ((PropertyCustomRule) rule).getDefaultUnit());
 			}
 			return frameBuilder;
 		}
 		return builder;
 	}
 
-	protected Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
-				|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile);
+	protected Predicate<Annotation> isLayerInterface() {
+		return tag -> tag.equals(Annotation.Component) || tag.equals(Annotation.Feature) || tag.equals(Annotation.Private);
 	}
 
-	protected void addTerminalVariables(Mogram node, final FrameBuilderContext context) {
-		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
-		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
+	protected void addTerminalProperties(Mogram mogram, final FrameBuilderContext context) {
+		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(mogram);
+		if (mogram.parent() == null && !terminalCoreVariables.isEmpty()) {
 			if (!context.contains(META_TYPE))
-				context.add(META_TYPE, languageWorkingPackage + DOT + metaType(node));
+				context.add(META_TYPE, languageWorkingPackage + DOT + metaType(mogram));
 		}
-		terminalCoreVariables.forEach(c -> addTerminalVariable(node, languageWorkingPackage + "." + node.type(), context, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
-		addAspectVariables(node, context);
+		terminalCoreVariables.forEach(c -> addTerminalVariable(mogram, languageWorkingPackage + "." + mogram.types().get(0), context, (Constraint.Property) c, mogram.parent() != null, isRequired(mogram, (Constraint.Property) c), META_TYPE, languageWorkingPackage));
+		addAspectVariables(mogram, context);
 		if (!context.contains(CONTAINER))
-			context.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
+			context.add(CONTAINER, isInDecorable(mogram) ? mogram.qualifiedName() : mogram.name());
 	}
 
-	private boolean isRequired(Mogram node, Constraint.Parameter allow) {
-		Mogram n = node.isReference() ? node.targetOfReference() : node;
-		while (n != null) {
-			for (Parameter parameter : n.parameters())
-				if (parameter.name().equals(allow.name())) return false;
-			n = n.parent();
+	private boolean isRequired(Mogram mogram, Constraint.Property c) {
+		while (mogram != null) {
+			for (PropertyDescription parameter : mogram.parameters())
+				if (parameter.name().equals(c.name())) return false;
+			mogram = (Mogram) mogram.parent();
 		}
 		return true;
 	}
 
-	private void addAspectVariables(Mogram node, FrameBuilderContext context) {
-		for (Facet aspect : node.appliedFacets())
+	private void addAspectVariables(Mogram mogram, FrameBuilderContext context) {
+		for (Facet aspect : mogram.appliedFacets())
 			context.add(META_ASPECT, new FrameBuilder(META_ASPECT).add(NAME, aspect.type()).add(TYPE, languageWorkingPackage + "." + aspect.fullType()).toFrame());
-		collectTerminalFacetVariables(node).forEach((key, value) -> value.forEach(c ->
-				addTerminalVariable(node, languageWorkingPackage + "." + node.type(), context, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), key, languageWorkingPackage)));
+		collectTerminalFacetVariables(mogram).forEach((key, value) -> value.forEach(c ->
+				addTerminalVariable(mogram, languageWorkingPackage + "." + mogram.types().get(0), context, (Constraint.Property) c, mogram.parent() != null, isRequired(mogram, (Constraint.Property) c), key, languageWorkingPackage)));
 	}
 
-	private List<Constraint> collectTerminalCoreVariables(Mogram node) {
-		final Collection<Constraint> allows = language.constraints(node.type());
-		if (allows == null) return emptyList();
-		return allows.stream().filter(allow -> allow instanceof Constraint.Parameter &&
-				((Constraint.Parameter) allow).flags().contains(Terminal) &&
-				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
+	private List<Constraint> collectTerminalCoreVariables(Mogram mogram) {
+		final Collection<Constraint> allows = language.constraints(mogram.types().get(0));
+		return emptyList();
+//		return allows.stream().filter(allow -> allow instanceof Constraint.Property &&
+//				((Constraint.Property) allow).annotations().contains(Terminal) &&
+//				!isRedefined((Constraint.Property) allow, node.variables())).collect(Collectors.toList());
 	}
 
-	private Map<String, List<Constraint>> collectTerminalFacetVariables(Mogram node) {
-		List<Constraint> constraints = language.constraints(node.type());
+	private Map<String, List<Constraint>> collectTerminalFacetVariables(Mogram mogram) {
+		List<Constraint> constraints = language.constraints(mogram.types().get(0));
 		if (constraints == null) return emptyMap();
 		Map<String, List<Constraint>> map = new HashMap<>();
-		final List<Constraint> aspects = constraints.stream().filter(c -> c instanceof Constraint.Facet && hasFacet(node, ((Constraint.Facet) c).type())).toList();
+		final List<Constraint> aspects = constraints.stream().filter(c -> c instanceof Constraint.Facet && hasFacet(mogram, ((Constraint.Facet) c).type())).toList();
 		for (Constraint aspect : aspects) map.put(((Constraint.Facet) aspect).type(), new ArrayList<>());
-		aspects.forEach(f -> map.put(((Constraint.Facet) f).type(), ((Constraint.Facet) f).constraints().stream().filter(byTerminalParameters(node)).collect(Collectors.toList())));
+		aspects.forEach(f -> map.put(((Constraint.Facet) f).type(), ((Constraint.Facet) f).constraints().stream().filter(byTerminalParameters(mogram)).collect(Collectors.toList())));
 		return map;
 	}
 
-	protected String metaType(Mogram node) {
-		final String type = node.type();
-		return type.contains(":") ? type.split(":")[1] + "." + node.type().replace(":", "") : node.type();
+	protected String metaType(Mogram mogram) {
+		final String type = mogram.types().get(0);
+		return type.contains(":") ? type.split(":")[1] + "." + type.replace(":", "") : mogram.types().get(0);
 	}
 
-	private void addTerminalVariable(Mogram node, String type, FrameBuilderContext context, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
+	private void addTerminalVariable(Mogram mogram, String type, FrameBuilderContext context, Constraint.Property parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
 		FrameBuilder varBuilder = createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage);
 		if (!varBuilder.contains(CONTAINER))
-			varBuilder.add(CONTAINER, isInDecorable(node) ? node.qualifiedName() : node.name());
-		context.add(VARIABLE, varBuilder.toFrame());
+			varBuilder.add(CONTAINER, isInDecorable(mogram) ? mogram.qualifiedName() : mogram.name());
+		context.add(PROPERTY, varBuilder.toFrame());
 	}
 
-	private boolean hasFacet(Mogram node, String type) {
-		return node.appliedFacets().stream().anyMatch(aspect -> aspect.type().equals(type));
+	private boolean hasFacet(Mogram mogram, String type) {
+		return mogram.appliedFacets().stream().anyMatch(aspect -> aspect.type().equals(type));
 	}
 
-	private Predicate<Constraint> byTerminalParameters(Mogram node) {
-		return o -> o instanceof Constraint.Parameter &&
-				((Constraint.Parameter) o).flags().contains(Terminal) &&
-				!isRedefined((Constraint.Parameter) o, node.variables());
+	private Predicate<Constraint> byTerminalParameters(Mogram mogram) {
+		return o -> o instanceof Constraint.Property &&
+//				((Constraint.Property) o).annotations().contains(Terminal) &&
+				!isRedefined((Constraint.Property) o, mogram.properties());
 	}
 
-	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
-		return variables.stream().anyMatch(variable -> variable.name().equals(allow.name()));
+	private boolean isRedefined(Constraint.Property c, List<? extends Property> property) {
+		return property.stream().anyMatch(prop -> prop.name().equals(c.name()));
 	}
 
-	private FrameBuilder createFrame(final Constraint.Parameter parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {
+	private FrameBuilder createFrame(final Constraint.Property parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {
 		final FrameBuilder builder = new FrameBuilder(TypesProvider.getTypes(parameter, isRequired)).add(META_TYPE).add(TARGET);
 		if (inherited) builder.add(INHERITED);
 		builder.add(NAME, parameter.name());
@@ -214,7 +215,7 @@ public abstract class Generator implements TemplateTags {
 		builder.add(WORKING_PACKAGE, workingPackage);
 		builder.add(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
-			final WordRule rule = (WordRule) parameter.rule();
+			final WordRule rule = ruleOfTypeConcrete(parameter.rules(), WordRule.class);
 			final List<String> words = rule.words();
 			if (rule.isCustom()) {
 				builder.add(OUTDEFINED);
@@ -223,14 +224,14 @@ public abstract class Generator implements TemplateTags {
 			builder.add(WORD_VALUES, words.toArray(new Object[0]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION)) {
-			final NativeRule rule = (NativeRule) parameter.rule();
+			final FunctionRule rule = ruleOfTypeConcrete(parameter.rules(), FunctionRule.class);
 			final String signature = rule.signature();
 			NativeExtractor extractor = new NativeExtractor(signature);
 			builder.add("methodName", extractor.methodName());
 			builder.add("parameters", extractor.parameters());
 			builder.add("returnType", extractor.returnType());
 			builder.add(RULE, rule.interfaceClass());
-			builder.add(OUT_LANGUAGE, parameter.scope());
+//			builder.add(OUT_LANGUAGE, parameter.scope());//TODO
 			imports.addAll(new ArrayList<>(rule.imports()));
 		}
 		if (!builder.contains(OUT_LANGUAGE))
@@ -238,12 +239,33 @@ public abstract class Generator implements TemplateTags {
 		return builder;
 	}
 
-	private String type(Constraint.Parameter parameter) {
-		return parameter instanceof ReferenceParameter ?
-				languageWorkingPackage + DOT + ((ReferenceParameter) parameter).referenceType() :
+	private String type(Constraint.Property parameter) {
+		return parameter.type() == Primitive.REFERENCE ?
+				languageWorkingPackage + DOT + ruleOfTypeConcrete(parameter.rules(), ReferenceRule.class).allowedReferences().get(0) :
 				parameter.type().getName();
 	}
 
+	public static Engine customize(Template template) {
+		Engine engine = new Engine(template);
+		engine.add("string", Format.string());
+		engine.add("reference", Format.reference());
+		engine.add("toCamelCase", Format.toCamelCase());
+		engine.add("snakeCaseToCamelCase", Format.snakeCaseToCamelCase());
+		engine.add("withDollar", Format.withDollar());
+		engine.add("noPackage", Format.noPackage());
+		engine.add("key", Format.key());
+//		engine.add("returnType", (trigger, type) -> trigger.frame().frames("returnType").next().value().equals(type));
+		engine.add("WithoutType", Format.nativeParameterWithoutType());
+		engine.add("javaValidName", javaValidName());
+		engine.add("javaValidWord", Format.javaValidWord());
+		engine.add("withoutGeneric", Format.withoutGeneric());
+		return engine;
+	}
+
+
+	private boolean hasLists(Mogram mogram) {
+		return mogram.components().stream().anyMatch(c -> !mogram.sizeOf(c).isSingle() && !c.is(Final));
+	}
 
 	//	private void addParent(FacetTarget target) {
 //		Mogram parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
@@ -261,8 +283,4 @@ public abstract class Generator implements TemplateTags {
 //	return parent.components().stream().filter(c -> c.container().rulesOf(c).stream().noneMatch(rule -> rule instanceof Size && ((Size) rule).isSingle())).collect(Collectors.toList());
 //}
 //
-	private boolean hasLists(Mogram node) {
-		return node.components().stream().filter(c -> !c.isFacet() && !c.isMetaFacet()).anyMatch(c -> !node.sizeOf(c).isSingle() && !c.is(Final));
-	}
-
 }

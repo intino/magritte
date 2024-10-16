@@ -1,18 +1,13 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.layer;
 
+import io.intino.builder.CompilerConfiguration;
 import io.intino.itrules.Adapter;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.Language;
-import io.intino.tara.builder.core.CompilerConfiguration;
-import io.intino.tara.builder.core.CompilerConfiguration.Level;
-import io.intino.tara.builder.model.Model;
-import io.intino.tara.builder.model.MogramReference;
-import io.intino.tara.language.model.Mogram;
-import io.intino.tara.language.model.MogramRoot;
-import io.intino.tara.language.model.Tag;
-import io.intino.tara.language.model.Variable;
+import io.intino.tara.model.*;
+import io.intino.tara.processors.model.Model;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
@@ -22,73 +17,76 @@ import java.util.Set;
 
 import static io.intino.tara.builder.utils.Format.firstUpperCase;
 import static io.intino.tara.builder.utils.Format.javaValidName;
+import static io.intino.tara.model.Annotation.Generalization;
+import static io.intino.tara.model.Level.M1;
 
 
 public class LayerFrameCreator implements TemplateTags {
-	private final Map<Class, Adapter> adapters;
+	private final Map<Class<?>, Adapter> adapters;
 	private final String outDsl;
 	private final String workingPackage;
 	private final MogramAdapter mogramAdapter;
-	private final LayerVariableAdapter variableAdapter;
+	private final LayerPropertyAdapter propertyAdapter;
 	private Mogram initNode = null;
 
-	private LayerFrameCreator(String outDsl, Language language, Level modelLevel, String workingPackage, String languageWorkingPackage) {
+	private LayerFrameCreator(String outDsl, Language language, String workingPackage, String languageWorkingPackage) {
 		this.outDsl = outDsl;
 		this.workingPackage = workingPackage;
 		this.adapters = new HashMap<>();
-		this.adapters.put(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage));
-		this.adapters.put(Mogram.class, mogramAdapter = new MogramAdapter(outDsl, modelLevel, language, null, workingPackage, languageWorkingPackage));
+		this.adapters.put(Property.class, propertyAdapter = new LayerPropertyAdapter(language, outDsl, workingPackage, languageWorkingPackage));
+		this.adapters.put(Mogram.class, mogramAdapter = new MogramAdapter(outDsl, language, null, workingPackage, languageWorkingPackage));
 	}
 
-	public LayerFrameCreator(CompilerConfiguration conf, String language) {
-		this(conf.model().outDsl(), conf.model().language().get(), conf.model().level(), conf.workingPackage(), conf.model().language().generationPackage());
+	public LayerFrameCreator(CompilerConfiguration conf, Language language) {
+		this(conf.dsl().outDsl(), language, conf.generationPackage(), conf.dsl().generationPackage());
 	}
 
-	public Map.Entry<String, Frame> create(Mogram node) {
-		initNode = node;
+	public Map.Entry<String, Frame> create(Mogram mogram) {
+		initNode = mogram;
 		mogramAdapter.getImports().clear();
-		variableAdapter.getImports().clear();
+		propertyAdapter.getImports().clear();
 		mogramAdapter.setInitNode(initNode);
 		final FrameBuilder builder = new FrameBuilder(LAYER).add(OUT_LANGUAGE, outDsl).add(WORKING_PACKAGE, workingPackage);
-		addSlot(builder, node);
+		addSlot(builder, mogram);
 		addNodeImports(builder);
-		return new SimpleEntry<>(calculateLayerPath(node, addWorkingPackage(builder)), builder.toFrame());
+		return new SimpleEntry<>(calculateLayerPath(mogram, addWorkingPackage(builder)), builder.toFrame());
 	}
 
 	private void addSlot(FrameBuilder builder, Mogram mogram) {
-		if (mogram instanceof MogramReference || mogram.is(Tag.Instance))
+		if (mogram instanceof MogramReference || mogram.level().equals(M1))
 			return;
 		builder.add(NODE, new FrameBuilder().put(adapters).append(mogram).toFrame());
 	}
 
-	public Map.Entry<String, Frame> createDecorable(Mogram node) {
+	public Map.Entry<String, Frame> createDecorable(Mogram mogram) {
 		final FrameBuilder builder = new FrameBuilder(LAYER, DECORABLE);
 		final String aPackage = addWorkingPackage(builder);
-		builder.add(NAME, node.name());
-		if (!(node.container() instanceof MogramRoot)) builder.add(CONTAINER, node.container().qualifiedName());
-		if (node.isAbstract()) builder.add(ABSTRACT, true);
-		builder.add("decorableNode", node.components().stream().filter(c -> !c.isReference()).map(this::createDecorableFrame).toArray(Frame[]::new));
-		return new SimpleEntry<>(calculateDecorablePath(node, aPackage), builder.toFrame());
+		builder.add(NAME, mogram.name());
+		if (!(mogram.container() instanceof MogramRoot))
+			builder.add(CONTAINER, ((Mogram) mogram.container()).qualifiedName());
+		if (mogram.is(Generalization)) builder.add(ABSTRACT, true);
+		builder.add("decorableNode", mogram.components().stream().filter(c -> !(c instanceof MogramReference)).map(this::createDecorableFrame).toArray(Frame[]::new));
+		return new SimpleEntry<>(calculateDecorablePath(mogram, aPackage), builder.toFrame());
 	}
 
-	private Frame createDecorableFrame(Mogram node) {
-		FrameBuilder builder = new FrameBuilder("decorableNode").add("name", node.name());
-		if (node.isAbstract()) builder.add("abstract", "abstract");
-		builder.add("decorableNode", node.components().stream().filter(c -> !c.isReference()).map(this::createDecorableFrame).toArray(Frame[]::new));
+	private Frame createDecorableFrame(Mogram mogram) {
+		FrameBuilder builder = new FrameBuilder("decorableNode").add("name", mogram.name());
+		if (mogram.is(Generalization)) builder.add("abstract", "abstract");
+		builder.add("decorableNode", mogram.components().stream().filter(c -> !(c instanceof MogramReference)).map(this::createDecorableFrame).toArray(Frame[]::new));
 		return builder.toFrame();
 	}
 
-	private String calculateLayerPath(Mogram node, String aPackage) {
-		return aPackage + DOT + (node.is(Tag.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(node.name()).toString());
+	private String calculateLayerPath(Mogram mogram, String aPackage) {
+		return aPackage + DOT + (mogram.is(Annotation.Decorable) ? "Abstract" : "") + firstUpperCase().format(javaValidName().format(mogram.name()).toString());
 	}
 
 	private String calculateDecorablePath(Mogram node, String aPackage) {
-		return aPackage + (node.container() instanceof Model ? "" : DOT + node.container().qualifiedName().toLowerCase()) + DOT + firstUpperCase().format(javaValidName().format(node.name()).toString());
+		return aPackage + (node.container() instanceof Model ? "" : DOT + ((Mogram) node.container()).qualifiedName().toLowerCase()) + DOT + firstUpperCase().format(javaValidName().format(node.name()).toString());
 	}
 
 	private void addNodeImports(FrameBuilder builder) {
 		Set<String> set = new HashSet<>(mogramAdapter.getImports());
-		set.addAll(variableAdapter.getImports());
+		set.addAll(propertyAdapter.getImports());
 		if (!set.isEmpty()) builder.add(IMPORTS, set.toArray(new Object[0]));
 	}
 

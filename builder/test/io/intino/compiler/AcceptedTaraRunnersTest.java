@@ -1,5 +1,9 @@
 package io.intino.compiler;
 
+import com.github.difflib.DiffUtils;
+import com.github.difflib.patch.AbstractDelta;
+import com.github.difflib.patch.Patch;
+import io.intino.tara.builder.utils.FileSystemUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,6 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static io.intino.magritte.builder.MagrittecRunner.main;
 
@@ -19,11 +26,10 @@ public class AcceptedTaraRunnersTest {
 
 	@Test
 	public void name() throws IOException {
-		var project = "datahub-3_2c0a2b10";
-		String dor = "/Users/oroncal/workspace/sandbox/intellij2024/system/compile-server/" + project + "/_temp_/";
-		File file = new File(dor + "ideaTaraToCompile.txt");
+		String dir = "/Users/oroncal/Library/Caches/JetBrains/IntelliJIdea2024.1/compile-server/tafat_71aee1a0/_temp_";
+		File file = new File(dir, "ideaTaraToCompile.txt");
 		while (true) {
-			if (file.exists()) {
+			if (file.exists() && file.length() > 0) {
 				System.out.println(Files.readString(file.toPath()));
 				return;
 			}
@@ -110,17 +116,41 @@ public class AcceptedTaraRunnersTest {
 	}
 
 	@Test
+	public void konos_M2() throws IOException {
+		String dir = "/Users/oroncal/workspace/infrastructure/magritte/test-playground/konos/konos/";
+		String checkDir = "/Users/oroncal/workspace/infrastructure/magritte/test-playground/konos_check/";
+		FileSystemUtils.removeDir(dir + "gen");
+		main(new String[]{temp(home + "sandbox/confFiles/konos/m2.txt")});
+		check(new File(dir), new File(checkDir));
+	}
+
+	static Set<String> Excluded = Set.of("Sentinel.java");
+
+	private static void check(File root, File checkRoot) throws IOException {
+		ArrayList<File> list = new ArrayList<>();
+		FileSystemUtils.getAllFiles(new File(root, "gen"), list);
+		for (File file : list) {
+			if (Excluded.contains(file.getName())) continue;
+			if (!file.getName().endsWith(".java")) continue;
+			List<String> actual = Files.readAllLines(file.toPath()).stream().map(l -> l.replace("  ", " ")).toList();
+			List<String> expected = Files.readAllLines(Path.of(file.getAbsolutePath().replace(root.getAbsolutePath(), checkRoot.getAbsolutePath())));
+			Patch<String> patch = DiffUtils.diff(actual, expected);
+			for (AbstractDelta<String> delta : patch.getDeltas()) {
+				System.out.println(delta.getType() + " on " + file.getAbsolutePath().replace(root.getAbsolutePath(), ""));
+				System.out.println(String.join("\n", delta.getSource().getLines()));
+				System.out.println("vs");
+				System.out.println(String.join("\n", delta.getTarget().getLines()));
+				System.out.println();
+				System.out.println("---------------");
+			}
+			if (!patch.getDeltas().isEmpty()) break;
+		}
+	}
+
+	@Test
 	public void konos_M1() {
 		System.out.println(Instant.now().toString());
 		main(new String[]{temp(home + "sandbox/confFiles/konos/m1-test.txt")});
 		System.out.println(Instant.now().toString());
 	}
-
-	@Test
-	public void konos_M2() {
-		System.out.println(Instant.now().toString());
-		main(new String[]{temp(home + "sandbox/confFiles/konos/m2.txt")});
-		System.out.println(Instant.now().toString());
-	}
-
 }

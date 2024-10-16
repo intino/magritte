@@ -1,43 +1,32 @@
-def type(Variable & word & multiple) type(owner) !type(inherited) attribute(words) trigger(constructor)
+rule type(Variable, word, multiple) and type(owner) and not type(inherited) and attribute(words) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
-end
 
-def type(Variable & word) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
+rule type(Variable, word) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
-end
 
-def type(Variable & reactive) type(owner) !type(inherited | empty) trigger(constructor)
+rule type(Variable, reactive) and type(owner) and not (type(inherited) or type(empty)) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
-end
 
-def type(Variable & function) type(owner) !type(inherited | empty) attribute(body) trigger(constructor)
+rule type(Variable, function) and type(owner) and not (type(inherited) or type(empty)) and attribute(body) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
-end
 
-def type(Variable & date) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
+rule type(Variable, date) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
-end
 
-def type(Variable & time) type(owner) !type(inherited | empty) attribute(values) !type(multiple) trigger(constructor)
+rule type(Variable, time) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and not type(multiple) and trigger(constructor)
 	_load("$name+FirstLowerCase",  new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
-end
 
-def type(Variable & double & multiple) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
-	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(new Double$[$] {$values...[, ]})));
-end
+rule type(Variable, double, multiple) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and trigger(constructor)
+	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(new Double[] {$values...[, ]})));
 
-def type(Variable & double) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
+rule type(Variable, double) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList((double) $values)));
-end
 
-def type(Variable & reference) type(owner) !type(inherited | empty) attribute(values) type(multiple) trigger(constructor)
+rule type(Variable, reference) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and type(multiple) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(graph().concept("$type"))));
-end
 
-def type(Variable & resource) type(owner) !type(inherited | empty) attribute(values) trigger(constructor)
+rule type(Variable, resource) and type(owner) and not (type(inherited) or type(empty)) and attribute(values) and trigger(constructor)
 	_load("$name+FirstLowerCase", io.intino.magritte.framework.loaders.StringLoader.load(Arrays.asList($values+quoted...[, ])));
-end
 
-def type(Variable & owner) !type(inherited | empty) attribute(values) trigger(constructor)
+rule type(Variable, owner) and not (type(inherited) or type(empty)) and attribute(values) and trigger(constructor)
 	_load("$name+FirstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
-end

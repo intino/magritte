@@ -1,96 +1,83 @@
-def type(Layer & decorable)
-	package $package+javaValidName+lowercase[.$container+lowercase];
+rule type(Layer, decorable)
+	package $package+javaValidName+lowercase<<.$container+lowercase>>;
 
-	public [$abstract] class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
+	public <<$abstract>> class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 		public $name+javaValidName+FirstUpperCase(io.intino.magritte.framework.Node node) {
 			super(node);
 		}
 
-		[$decorableNode...[$NL$NL]]
+		<<$decorableNode...[$NL$NL]>>
 	}
-end
 
 
-def trigger(decorableNode)
-	public static [$abstract] class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
+rule trigger(decorableNode)
+	public static <<$abstract>> class $name+javaValidName+FirstUpperCase extends Abstract$name+javaValidName+FirstUpperCase {
 		public $name+javaValidName+FirstUpperCase(io.intino.magritte.framework.Node node) {
 			super(node);
 		}
 
-		[$decorableNode...[$NL$NL]]
+		<<$decorableNode...[$NL$NL]>>
 	}
-end
 
-def type(Layer)
+rule type(Layer)
 	package $package+javaValidName+lowercase;
 
 	import $workingPackage+javaValidName+lowercase.*;
-	[$imports...[$NL]]
+	<<$imports...[$NL]>>
 
 	$node
-end
 
-def type(single & owner) !type(overriden | instance) trigger(add)
+rule type(single, owner) and not (type(overriden) or type(instance)) and trigger(add)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = node.as($qn+reference.class);
-end
 
-def type(owner) !type(overriden | instance) trigger(add)
+rule type(owner) and not (type(overriden) or type(instance)) and trigger(add)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.add(node.as($qn+reference.class));
-end
 
-def type(overriden) trigger(add)
-end
+rule type(overriden) and trigger(add)
 
-def type(single & owner) !type(overriden | instance) trigger(remove)
+rule type(single, owner) and not (type(overriden) or type(instance)) and trigger(remove)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = null;
-end
 
-def type(owner) !type(overriden | instance) trigger(remove)
+rule type(owner) and not (type(overriden) or type(instance)) and trigger(remove)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.remove(node.as($qn+reference.class));
-end
 
-def type(overriden) trigger(remove)
-end
+rule type(overriden) and trigger(remove)
 
-def type(node) !type(aspect | final | instance | abstract) trigger(new)
+rule type(node) and not (type(aspect) or type(final) or type(instance) or type(abstract)) and trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
-end
 
-def type(node) !type(aspect | single | final | instance | abstract | overriden) trigger(clear)
+rule type(node) and not (type(aspect) or type(single) or type(final) or type(instance) or type(abstract) or type(overriden)) and trigger(clear)
 	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
-end
 
-def type(node & create) !type(aspect |final | instance) trigger(new)
+rule type(node, create) and not (type(aspect) or type(final) or type(instance)) and trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
-end
 
-def type(node & create) !type(single | final | instance) trigger(clear)
+rule type(node, create) and not (type(single) or type(final) or type(instance)) and trigger(clear)
 	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
-end
 
-def type(node & owner) trigger(new)
-end
-def type(node & owner) trigger(clear)
-end
+rule type(node, owner) and trigger(new)
 
-def type(availableAspect) !type(abstract) attribute(variable) trigger(availableAspect)
+
+rule type(node, owner) and trigger(clear)
+
+rule type(availableAspect) and not type(abstract) and attribute(variable) and trigger(availableAspect)
 	public $qn as$name+FirstUpperCase() {
 		return a$$($qn+reference.class);
 	}
 
-	public $qn as$name+FirstUpperCase([$variable+parameters...[, ]]) {
+	public $qn as$name+FirstUpperCase(<<$variable+parameters...[, ]>>) {
 		$qn+reference newElement = core$$().addAspect($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
@@ -103,9 +90,8 @@ def type(availableAspect) !type(abstract) attribute(variable) trigger(availableA
 	public void remove$name+FirstUpperCase() {
 		core$$().removeAspect($qn+reference.class);
 	}
-end
 
-def type(availableAspect) !type(abstract) trigger(availableAspect)
+rule type(availableAspect) and not type(abstract) and trigger(availableAspect)
 
 	public $qn+reference as$name+FirstUpperCase() {
 		io.intino.magritte.framework.Layer as = a$$($qn+reference.class);
@@ -119,9 +105,8 @@ def type(availableAspect) !type(abstract) trigger(availableAspect)
 	public void remove$name+FirstUpperCase() {
 		core$$().removeAspect($qn+reference.class);
 	}
-end
 
-def type(availableAspect) trigger(availableAspect)
+rule type(availableAspect) and trigger(availableAspect)
 	public $qn+reference as$name+FirstUpperCase() {
 		return a$$($qn+reference.class);
 	}
@@ -129,103 +114,98 @@ def type(availableAspect) trigger(availableAspect)
 	public boolean is$name+FirstUpperCase() {
 		return core$$().is($qn+reference.class);
 	}
-end
 
-def type(core) trigger(core)
+rule type(core) and trigger(core)
 	public $qn+reference as$name() {
 		return ($qn+reference) a$$($qn+reference.class);
 	}
-end
 
-def type(aspect) !type(overriden) trigger(aspectAssign)
+rule type(aspect) and not type(overriden) and trigger(aspectAssign)
 	if (layer instanceof $qn+reference) _$name+FirstLowerCase = ($qn+reference) layer;
-end
 
-def type(constraint) trigger(aspectAssign)
+rule type(constraint) and trigger(aspectAssign)
 	if (layer instanceof $qn+reference) _$name+FirstLowerCase = ($qn+reference) layer;
-end
 
-def trigger(decorable)
+rule trigger(decorable)
 	Abstract
-end
 
-def !type(target) type(nodeimpl) !type(instance) trigger(Node)
-	public [$inner] [$abstract] class $decorable[$name+javaValidName+FirstUpperCase] [extends $parent? extends io.intino.magritte.framework.Layer] [implements $flag+tag...[, ]] {
-		[$variable+declaration...[$NL]]
-		[$node+declaration...[$NL]]
-		[$aspect+declaration...[$NL]]
-		[$constraint+declaration...[$NL]]
-		[$metaType]
-		[$metaAspect...[$NL]]
+rule not type(target) and type(nodeimpl) and not type(instance) and trigger(Node)
+	public<< $inner>><< $abstract>> class $decorable<<$name+javaValidName+FirstUpperCase>><< extends $parent? extends io.intino.magritte.framework.Layer>><< implements $flag+tag...[, ]>> {
+		<<$variable+declaration...[$NL]>>
+		<<$node+declaration...[$NL]>>
+		<<$aspect+declaration...[$NL]>>
+		<<$constraint+declaration...[$NL]>>
+		<<$metaType>>
+		<<$metaAspect...[$NL]>>
 
 		public $decorable$name+javaValidName+FirstUpperCase(io.intino.magritte.framework.Node node) {
 			super(node);
-			[_metaType = a$$($metaType+typeInit.class);]
-			[_$metaAspect+name = a$$($metaAspect+typeInit.class);]
+			<<_metaType = a$$($metaType+typeInit.class);>>
+			<<_$metaAspect+name = a$$($metaAspect+typeInit.class);>>
 		}
 
-		[$variable+getter...[$NL$NL]]
+		<<$variable+getter...[$NL$NL]>>
 
-		[$variable+setter...[$NL$NL]]
+		<<$variable+setter...[$NL$NL]>>
 
-		[$node+getter...[$NL$NL]]
+		<<$node+getter...[$NL$NL]>>
 
-		[$node+setter...[$NL$NL]]
+		<<$node+setter...[$NL$NL]>>
 
-		[$availableAspect...[$NL$NL]]
-		[$core]
+		<<$availableAspect...[$NL$NL]>>
+		<<$core>>
 
-		[protected java.util.List<io.intino.magritte.framework.Node> componentList$$() {
+		<<protected java.util.List<io.intino.magritte.framework.Node> componentList$$() {
 			java.util.Set<io.intino.magritte.framework.Node> components = new java.util.LinkedHashSet<>(super.componentList$$());
 			$node+componentList...[$NL]
 			return new java.util.ArrayList<>(components);
-		}]
+		}>>
 
 		@Override
 		protected java.util.Map<java.lang.String, java.util.List<?>> variables$$() {
 			java.util.Map<java.lang.String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
-			[$variable+list...[$NL]]
+			<<$variable+list...[$NL]>>
 			return map;
 		}
 
-		[@Override
+		<<@Override
 		protected void addNode$$(io.intino.magritte.framework.Node node) {
 			super.addNode$$(node);
 			$node+add...[$NL]
-		}]
+		}>>
 
-		[@Override
+		<<@Override
 		protected void removeNode$$(io.intino.magritte.framework.Node node) {
 			super.removeNode$$(node);
 			$node+remove...[$NL]
-		}]
+		}>>
 
 		@Override
 		protected void load$$(java.lang.String name, java.util.List<?> values) {
 			super.load$$(name, values);
-			[$aspect+init]
-			[$metaType+metaTypeLoad]
-			[$metaAspect+metaAspectLoad]
-			[$variable+init...[$NL~else ]]
+			<<$aspect+init>>
+			<<$metaType+metaTypeLoad>>
+			<<$metaAspect+metaAspectLoad>>
+			<<$variable+init...[$NL~else ]>>
 		}
 
 		@Override
 		protected void set$$(java.lang.String name, java.util.List<?> values) {
 			super.set$$(name, values);
-			[$aspect+set]
-			[$metaType+metaTypeSet]
-			[$metaAspect+metaAspectSet]
-			[$variable+set...[$NL~else ]]
+			<<$aspect+set>>
+			<<$metaType+metaTypeSet>>
+			<<$metaAspect+metaAspectSet>>
+			<<$variable+set...[$NL~else ]>>
 		}
 
-		[@Override
+		<<@Override
 		protected void sync$$(io.intino.magritte.framework.Layer layer) {
 			super.sync$$(layer);
 			$aspect+aspectAssign...[$NL~else ]
 			$constraint+aspectAssign...[$NL~else ]
-		}]
+		}>>
 
-		[public Create create() {
+		<<public Create create() {
 			return new Create(null);
 		}
 
@@ -242,99 +222,78 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 			$node+new...[$NL$NL]
 			$create+new...[$NL$NL]
-		}]
+		}>>
 
-		[public Clear clear() {
+		<<public Clear clear() {
 			return new Clear();
 		}
 
 		public class Clear $parentClearName+parentClear {
 			$node+clear...[$NL$NL]
-		}]
+		}>>
 
-		[$node...[$NL]]
+		<<$node...[$NL]>>
 
 		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph graph() {
 			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph) core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
 	}
 
-end
 
-def trigger(parentCreate)
+rule trigger(parentCreate)
 	extends $this.Create
-end
 
-def trigger(parentClear)
+rule trigger(parentClear)
 	extends $this.Clear
-end
 
-def type(metaAspect) trigger(name)
+rule type(metaAspect) and trigger(name)
 	$name+javaValidName+FirstLowerCase
-end
 
-def type(metaAspect) trigger(typeInit)
+rule type(metaAspect) and trigger(typeInit)
 	$type
-end
 
-def trigger(typeInit)
+rule trigger(typeInit)
 	$this
-end
 
-def attribute(this:true) trigger(parentinit)
+rule attribute(this, true) and trigger(parentinit)
 	super(name);
-end
 
-def attribute(this:false) trigger(parentinit)
+rule attribute(this, false) and trigger(parentinit)
 	this.name = name;
-end
 
-def attribute(this:true) trigger(parentvariable)
-end
+rule attribute(this, true) and trigger(parentvariable)
 
-def attribute(this:false) trigger(parentvariable)
+rule attribute(this, false) and trigger(parentvariable)
 	protected final java.lang.String name;
-end
 
-def trigger(metaTypeLoad)
+rule trigger(metaTypeLoad)
 	core$$().load(_metaType, name, values);
-end
 
-def trigger(metaTypeSet)
+rule trigger(metaTypeSet)
 	core$$().set(_metaType, name, values);
-end
 
-def trigger(metaAspectLoad)
+rule trigger(metaAspectLoad)
 	core$$().load(_$name+FirstLowerCase, name, values);
-end
 
-def trigger(metaAspectSet)
+rule trigger(metaAspectSet)
 	core$$().set(_$name+FirstLowerCase, name, values);
-end
 
-def trigger(metaType)
+rule trigger(metaType)
 	protected $this _metaType;
-end
 
-def trigger(metaAspect)
+rule trigger(metaAspect)
 	protected $type _$name+FirstLowerCase;
-end
 
-def trigger(tag)
+rule trigger(tag)
 	io.intino.magritte.framework.tags.$this+lowerCase+FirstUpperCase
-end
 
-def attribute(Layer) trigger(var)
+rule attribute(Layer) and trigger(var)
 
-end
 
-def trigger(var)
+rule trigger(var)
 	super.variables$$()
-end
-def attribute(this:true) trigger(inner)
+rule attribute(this, true) and trigger(inner)
 	static
-end
 
-def attribute(this:true) trigger(abstract)
+rule attribute(this, true) and trigger(abstract)
 	abstract
-end

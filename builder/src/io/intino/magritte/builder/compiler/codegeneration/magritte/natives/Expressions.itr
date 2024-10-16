@@ -1,10 +1,10 @@
-def type(function)
-	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
+rule type(function)
+	package $workingPackage+lowercase+javaValidName.natives<<.$package+lowercase+javaValidName>>;
 
-	[$imports...[$NL]]
+	<<$imports...[$NL]>>
 
 	/**$qn#$file#$line#$column**/
-	public class $name+FirstUpperCase+javaValidName_$uid implements [$scope+lowercase+javaValidName.functions.]$rule+FirstUpperCase, io.intino.magritte.framework.Function {
+	public class $name+FirstUpperCase+javaValidName_$uid implements <<$scope+lowercase+javaValidName.functions.>>$rule+FirstUpperCase, io.intino.magritte.framework.Function {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -22,12 +22,11 @@ def type(function)
 			return $nativeContainer+reference.class;
 		}
 	}
-end
 
-def type(native)
-	package $workingPackage+lowercase+javaValidName.natives[.$package+lowercase+javaValidName];
+rule type(native)
+	package $workingPackage+lowercase+javaValidName.natives<<.$package+lowercase+javaValidName>>;
 
-	[$imports...[$NL]]
+	<<$imports...[$NL]>>
 
 	/**$qn#$file#$line#$column**/
 	public class $name+FirstUpperCase+javaValidName_$uid implements io.intino.magritte.framework.Expression<$type+format> {
@@ -48,48 +47,36 @@ def type(native)
 			return $nativeContainer+reference.class;
 		}
 	}
-end
 
-def type(list) trigger(format)
+rule type(list) and trigger(format)
 	java.util.List<$value+javaType>
-end
 
-def trigger(format)
+rule trigger(format)
 	$value+javaType
-end
 
-def attribute(this:instant) trigger(javaType)
+rule attribute(this, instant) and trigger(javaType)
 	java.time.Instant
-end
 
-def attribute(this:Instant) trigger(javaType)
+rule attribute(this, Instant) and trigger(javaType)
 	java.time.Instant
-end
 
-def attribute(this:Date) trigger(javaType)
+rule attribute(this, Date) and trigger(javaType)
 	Date
-end
 
-def attribute(this:date) trigger(javaType)
+rule attribute(this, date) and trigger(javaType)
 	Date
-end
 
-def attribute(this:time) trigger(javaType)
+rule attribute(this, time) and trigger(javaType)
 	java.time.LocalTime
-end
 
-def attribute(this:Time) trigger(javaType)
+rule attribute(this, Time) and trigger(javaType)
 	java.time.LocalTime
-end
 
-def attribute(this:Resource) trigger(javaType)
+rule attribute(this, Resource) and trigger(javaType)
 	java.net.URL
-end
 
-def attribute(this:resource) trigger(javaType)
+rule attribute(this, resource) and trigger(javaType)
 	java.net.URL
-end
 
-def trigger(javatype)
+rule trigger(javatype)
 	$this+reference
-end

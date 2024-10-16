@@ -8,15 +8,13 @@ import io.intino.itrules.FrameBuilderContext;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.Language;
-import io.intino.tara.builder.model.Model;
-import io.intino.tara.builder.model.MogramImpl;
-import io.intino.tara.builder.model.VariableReference;
-import io.intino.tara.builder.parser.NativeExtractor;
 import io.intino.tara.builder.utils.Format;
-import io.intino.tara.language.model.*;
-import io.intino.tara.language.model.rules.variable.NativeObjectRule;
-import io.intino.tara.language.model.rules.variable.NativeRule;
 import io.intino.tara.language.semantics.Constraint;
+import io.intino.tara.model.*;
+import io.intino.tara.model.rules.Size;
+import io.intino.tara.model.rules.property.FunctionRule;
+import io.intino.tara.model.rules.property.NativeObjectRule;
+import io.intino.tara.processors.model.ReferenceProperty;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,9 +23,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.cleanQn;
-import static io.intino.tara.Resolver.shortType;
-import static io.intino.tara.language.model.Primitive.OBJECT;
-import static io.intino.tara.language.model.Tag.*;
+import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.layerQn;
+import static io.intino.tara.model.Annotation.Feature;
+import static io.intino.tara.model.Level.M1;
+import static io.intino.tara.model.Primitive.OBJECT;
+import static io.intino.tara.processors.Resolver.shortType;
 
 @SuppressWarnings("ALL")
 public class NativeFormatter implements TemplateTags {
@@ -36,26 +36,24 @@ public class NativeFormatter implements TemplateTags {
 	private final Language language;
 	private final String aPackage;
 	private final String workingPackage;
-	private final boolean system;
+	private final boolean m1;
 	private final Map<String, Set<String>> imports;
+	private final Map<String, String> workingPackages;
 	private String languageWorkingPackage;
 
-	public NativeFormatter(Language language, String outDsl, String aPackage, String workingPackage, String languageWorkingPackage, boolean system, File importsFile) {
+	public NativeFormatter(Language language, String outDsl, String subPackage, String workingPackage, String languageWorkingPackage, boolean m1, File importsFile) {
 		this.outDsl = outDsl;
 		this.language = language;
-		this.aPackage = aPackage;
+		this.aPackage = subPackage;
 		this.workingPackage = workingPackage;
 		this.languageWorkingPackage = languageWorkingPackage;
-		this.system = system;
+		this.m1 = m1;
+		this.workingPackages = Map.of(language.languageName(), languageWorkingPackage == null ? "" : languageWorkingPackage, outDsl, workingPackage);
 		this.imports = load(importsFile);
 	}
 
-	public static String workingPackageScope(Valued valued, String workingPackage) {
-		return valued.scope() != null && !valued.scope().isEmpty() ? valued.scope() : workingPackage;
-	}
-
 	private static String getQn(Mogram owner, String language, boolean m0) {
-		return !m0 ? NameFormatter.getQn(owner, language) : language.toLowerCase() + DOT + owner.type();
+		return !m0 ? NameFormatter.getQn(owner, language) : language.toLowerCase() + DOT + owner.types().get(0);
 	}
 
 	private static String getQn(Facet facet, String language, boolean m0) {
@@ -67,23 +65,23 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String getQn(Mogram owner, Mogram node, String workingPackage, boolean m0) {
-		return !m0 ? NameFormatter.getQn(owner, workingPackage) : workingPackage.toLowerCase() + DOT + owner.type();
+		return !m0 ? NameFormatter.getQn(owner, workingPackage) : workingPackage.toLowerCase() + DOT + owner.types().get(0);
 	}
 
-	public static String getSignature(Parameter parameter) {
-		return ((NativeRule) parameter.rule()).signature();
+	public static String getSignature(PropertyDescription parameter) {
+		return parameter.rule(FunctionRule.class).signature();
 	}
 
-	public static String getInterface(Parameter parameter) {
-		final NativeRule rule = (NativeRule) parameter.rule();
+	public static String getInterface(PropertyDescription parameter) {
+		final FunctionRule rule = parameter.rule(FunctionRule.class);
 		if (rule.interfaceClass() == null)
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
 		return rule.interfaceClass();
 	}
 
-	public static String getInterface(Variable variable) {
-		final NativeRule rule = (NativeRule) variable.rule();
-		if (rule.interfaceClass() == null)
+	public static String getInterface(Property property) {
+		final FunctionRule rule = property.rule(FunctionRule.class);
+		if (rule == null || rule.interfaceClass() == null)
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
 		return rule.interfaceClass();
 	}
@@ -103,32 +101,32 @@ public class NativeFormatter implements TemplateTags {
 		return "";
 	}
 
-	public static String getSignature(Variable variable) {
-		return ((NativeRule) variable.rule()).signature();
+	public static String getSignature(Property property) {
+		return property.rule(FunctionRule.class).signature();
 	}
 
 	public static String buildContainerPath(String languageWorkingPackage, Mogram node, String workingPackage) {
 		if (node instanceof Mogram) {
-			final Mogram scope = node.is(Instance) ? firstNoFeature(node) : firstNoFeatureAndNamed(node);
+			final Mogram scope = node.level() == M1 ? firstNoFeature(node) : firstNoFeatureAndNamed(node);
 			if (scope == null) return "";
-			if (scope.is(Instance)) return getTypeAsScope(scope, languageWorkingPackage);
+			if (scope.level() == M1) return getTypeAsScope(scope, languageWorkingPackage);
 			return getQn(scope, (Mogram) node, workingPackage, false);
 		} else if (node instanceof Facet) {
 			final Mogram scope = firstNoFeatureAndNamed(node);
 			if (scope == null) return "";
-			return scope.is(Instance) ? getTypeAsScope(scope, languageWorkingPackage) : getQn(scope, workingPackage, false);
+			return scope.level() == M1 ? getTypeAsScope(scope, languageWorkingPackage) : getQn(scope, workingPackage, false);
 		} else return "";
 	}
 
 	public static String buildExpressionContainerPath(String typeWorkingPackage, Mogram owner, String outDSL, String workingPackage) {
 		final String trueWorkingPackage = extractWorkingPackage(typeWorkingPackage, workingPackage);
 		if (owner instanceof Mogram) {
-			final Mogram scope = ((Mogram) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			final Mogram scope = ((Mogram) owner).level() == M1 ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.is(Instance)) return getTypeAsScope(scope, trueWorkingPackage);
+			if (scope.level() == M1) return getTypeAsScope(scope, trueWorkingPackage);
 			else return getQn(scope, (Mogram) owner, workingPackage, false);
 		} else if (owner instanceof Facet) {
-			return ((Mogram) owner.container()).is(Instance) ? getTypeAsScope(owner, trueWorkingPackage) : getQn((Facet) owner, workingPackage, false);
+			return ((Mogram) owner.container()).level() == M1 ? getTypeAsScope(owner, trueWorkingPackage) : getQn((Facet) owner, workingPackage, false);
 		} else return "";
 	}
 
@@ -138,22 +136,22 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String getTypeAsScope(Mogram scope, String languageWorkingPackage) {
 		return languageWorkingPackage + DOT +
-				(scope instanceof Mogram ? cleanQn(scope.type()) : cleanQn(facetType((Facet) scope)));
+				(scope instanceof Mogram ? cleanQn(scope.types().get(0)) : cleanQn(facetType((Facet) scope)));
 	}
 
 	private static List<Facet> containerFacets(Mogram scope) {
-		MogramContainer container = scope.container();
+		ElementContainer container = scope.container();
 		while (container != null && ((Mogram) container).appliedFacets().isEmpty())
 			container = container.container();
 		return container != null ? ((Mogram) container).appliedFacets() : Collections.emptyList();
 	}
 
-	private static String facetType(Facet scope) {
-		return scope.type().toLowerCase() + DOT + scope.type() + shortType(scope.container().type());//TODO cuando la faceta esté contenido dentro de otro concepto como saberlo
+	private static String facetType(Facet facet) {
+		return facet.type().toLowerCase() + DOT + facet.type() + shortType(facet.target().get().types().get(0));
 	}
 
-	private static Mogram firstNoFeature(MogramContainer owner) {
-		MogramContainer container = owner;
+	private static Mogram firstNoFeature(ElementContainer owner) {
+		ElementContainer container = owner;
 		while (container != null) {
 			if (container instanceof Mogram && !(container instanceof MogramRoot) && !((Mogram) container).is(Feature))
 				return (Mogram) container;
@@ -162,8 +160,8 @@ public class NativeFormatter implements TemplateTags {
 		return owner instanceof Mogram ? (Mogram) owner : (Mogram) owner.container();
 	}
 
-	private static Mogram firstNoFeatureAndNamed(MogramContainer owner) {
-		MogramContainer container = owner;
+	private static Mogram firstNoFeatureAndNamed(ElementContainer owner) {
+		ElementContainer container = owner;
 		while (container != null) {
 			if (container instanceof Mogram && !(container instanceof MogramRoot) && !((Mogram) container).isAnonymous() &&
 					!((Mogram) container).is(Feature)) return (Mogram) container;
@@ -172,28 +170,25 @@ public class NativeFormatter implements TemplateTags {
 		return owner instanceof Mogram ? (Mogram) owner : (Mogram) owner.container();
 	}
 
-	private static MogramContainer searchFeatureReference(Mogram owner) {
-		final Model model = model(owner);
+	private static ElementContainer searchFeatureReference(Mogram owner) {
+		final MogramRoot model = model(owner);
 		if (model == null) return owner;
-		final MogramContainer nodeContainer = searchFeatureReference(model, owner);
+		final ElementContainer nodeContainer = searchFeatureReference(model, owner);
 		return nodeContainer != null ? nodeContainer : owner;
 	}
 
-	private static MogramContainer searchFeatureReference(MogramContainer node, Mogram target) {
-		if (node instanceof Mogram && ((Mogram) node).isReference() && target.equals(((Mogram) node).targetOfReference()))
-			return node.container();
-		if (node instanceof Mogram && ((Mogram) node).isReference()) return null;
-		for (Mogram component : node.components()) {
-			final MogramContainer nodeContainer = searchFeatureReference(component, target);
+	private static ElementContainer searchFeatureReference(ElementContainer container, Mogram target) {
+		for (Mogram component : container.components()) {
+			final ElementContainer nodeContainer = searchFeatureReference(component, target);
 			if (nodeContainer != null) return nodeContainer;
 		}
 		return null;
 	}
 
-	private static Model model(MogramContainer owner) {
-		MogramContainer container = owner;
+	private static MogramRoot model(ElementContainer owner) {
+		ElementContainer container = owner;
 		while (container != null) {
-			if (container instanceof Mogram && container instanceof Model) return (Model) container;
+			if (container instanceof Mogram && container instanceof MogramRoot) return (MogramRoot) container;
 			container = container.container();
 		}
 		return null;
@@ -201,7 +196,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String calculatePackage(Mogram container) {
 		final Mogram node = firstNamedContainer(container);
-		return node == null ? "" : ((MogramImpl) node).layerQn().replace("$", ".").replace("#", ".").toLowerCase();
+		return node == null ? "" : layerQn((Mogram) node).replace("$", ".").replace("#", ".").toLowerCase();
 	}
 
 	private static Mogram firstNamedContainer(Mogram container) {
@@ -217,19 +212,19 @@ public class NativeFormatter implements TemplateTags {
 
 	private static List<Mogram> collectStructure(Mogram container) {
 		List<Mogram> containers = new ArrayList<>();
-		Mogram current = container;
+		ElementContainer current = container;
 		while (current != null && !(current instanceof MogramRoot)) {
-			containers.add(0, current);
+			containers.add(0, (Mogram) current);
 			current = current.container();
 		}
 		return containers;
 	}
 
-	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
-		for (Constraint.Parameter variable : parameters)
-			if (variable.name().equals(name))
-				return variable;
-		return null;
+	private static Constraint.Property findParameter(List<Constraint.Property> props, String name) {
+		return props.stream()
+				.filter(prop -> prop.name().equals(name)).
+				findFirst()
+				.orElse(null);
 	}
 
 	private Map<String, Set<String>> load(File importsFile) {
@@ -242,26 +237,25 @@ public class NativeFormatter implements TemplateTags {
 		}
 	}
 
-	public void fillFrameForFunctionVariable(Variable variable, Object body, FrameBuilderContext context) {
-		final String signature = getSignature(variable);
+	public void fillFrameForFunctionProperty(Property prop, Object body, FrameBuilderContext context) {
+		final String signature = getSignature(prop);
 		context.add(PACKAGE, this.aPackage);
-		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
-		imports.addAll(collectImports(variable));
+		final Set<String> imports = new HashSet<>((prop.rule(FunctionRule.class)).imports());
+		imports.addAll(collectImports(prop));
 		if (!imports.isEmpty()) context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackage);
 		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, outDsl.toLowerCase());
 		if (!context.contains(WORKING_PACKAGE))
 			context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
-		if (!context.contains(RULE)) context.add(RULE, cleanQn(getInterface(variable)));
-		if (!context.contains(NAME)) context.add(NAME, variable.name());
-		if (!context.contains(QN)) context.add(QN, variable.container().qualifiedName());
-		context.add(FILE, variable.file());
-		context.add(LINE, variable.line());
-		context.add(COLUMN, variable.column());
+		if (!context.contains(RULE)) context.add(RULE, cleanQn(getInterface(prop)));
+		if (!context.contains(NAME)) context.add(NAME, prop.name());
+		if (!context.contains(QN)) context.add(QN, prop.container().qualifiedName());
+		context.add(FILE, prop.source().getPath());
+		context.add(LINE, prop.line());
 		if (body != null) context.add(BODY, formatBody(body.toString(), signature));
-		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
+		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(workingPackages.getOrDefault(language.languageName(), workingPackage), prop.container(), workingPackage)));
 		context.add(SIGNATURE, signature);
-		context.add(UID, variable.getUID());
+		context.add(UID, prop.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
 		context.add("methodName", extractor.methodName());
 		context.add("parameters", extractor.parameters());
@@ -269,7 +263,7 @@ public class NativeFormatter implements TemplateTags {
 		context.add("exception", extractor.exceptions());
 	}
 
-	public void fillFrameForFunctionParameter(Parameter parameter, Object body, FrameBuilderContext context) {
+	public void fillFrameForFunctionParameter(PropertyDescription parameter, Object body, FrameBuilderContext context) {
 		final String signature = getSignature(parameter);
 		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, this.outDsl);
 		if (!context.contains(NAME)) context.add(NAME, parameter.name());
@@ -278,13 +272,13 @@ public class NativeFormatter implements TemplateTags {
 		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackageScope(parameter, workingPackage));
 		if (!context.contains(WORKING_PACKAGE)) context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(parameter)));
-		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
+		final Set<String> imports = new HashSet<String>(((FunctionRule) parameter.rule(FunctionRule.class)).imports());
 		imports.addAll(collectImports(parameter));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		context.add(SIGNATURE, signature);
-		context.add(FILE, parameter.file());
+		context.add(FILE, parameter.source().getPath());
 		context.add(LINE, parameter.line());
-		context.add(COLUMN, parameter.column());
+//		context.add(COLUMN, parameter.column());
 		context.add(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
 		context.add(UID, parameter.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
@@ -295,32 +289,36 @@ public class NativeFormatter implements TemplateTags {
 		context.add("exception", extractor.exceptions());
 	}
 
-	public void fillFrameNativeVariable(FrameBuilderContext context, Variable variable, Object body) {
+	private String workingPackageScope(Valued valued, String workingPackage) {
+		return workingPackages.getOrDefault(language.languageName(), this.workingPackage);
+	}
+
+	public void fillFrameFunctionProperty(FrameBuilderContext context, Property prop, Object body) {
 		context.add(NATIVE);
-		context.add(FILE, variable.file());
-		context.add(LINE, variable.line());
-		context.add(COLUMN, variable.column());
-		final Set<String> imports = new HashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new HashSet<>());
-		imports.addAll(collectImports(variable));
-		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(variable)));
+		context.add(FILE, prop.source().getPath());
+		context.add(LINE, prop.line());
+//		context.add(COLUMN, prop.column());
+		final Set<String> imports = new HashSet<>(prop.rule(FunctionRule.class) != null ? prop.rule(FunctionRule.class).imports() : new HashSet<>());
+		imports.addAll(collectImports(prop));
+		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(prop)));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!aPackage.isEmpty()) context.add(PACKAGE, aPackage.toLowerCase());
-		if (!context.contains(NAME)) context.add(NAME, variable.name());
+		if (!context.contains(NAME)) context.add(NAME, prop.name());
 		if (!context.contains(OUT_LANGUAGE)) context.add(OUT_LANGUAGE, outDsl);
 		if (!context.contains(WORKING_PACKAGE))
 			context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
-		context.add(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable));
-		if (!context.contains(TYPE)) context.add(TYPE, typeFrame(type(variable), variable.isMultiple()));
-		context.add(UID, variable.getUID());
-		if (body != null) context.add(BODY, formatBody(body.toString(), variable.type().getName()));
+		context.add(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(prop));
+		if (!context.contains(TYPE)) context.add(TYPE, typeFrame(type(prop), prop.isMultiple()));
+		context.add(UID, prop.getUID());
+		if (body != null) context.add(BODY, formatBody(body.toString(), prop.type().getName()));
 	}
 
-	public void fillFrameNativeParameter(FrameBuilderContext context, Parameter parameter, String body) {
+	public void fillFrameFunctionParameter(FrameBuilderContext context, PropertyDescription parameter, String body) {
 		context.add(NATIVE);
-		context.add(FILE, parameter.file());
+		context.add(FILE, parameter.source().getPath());
 		context.add(LINE, parameter.line());
-		context.add(COLUMN, parameter.column());
-		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
+//		context.add(COLUMN, parameter.column());
+		final Set<String> imports = new HashSet<>(parameter.rule(FunctionRule.class) != null ? (parameter.rule(FunctionRule.class)).imports() : new HashSet<>());
 		imports.addAll(collectImports(parameter));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		context.add(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter));
@@ -335,26 +333,27 @@ public class NativeFormatter implements TemplateTags {
 		if (body != null) context.add(BODY, formatBody(body, parameter.type().getName()));
 	}
 
-	public String type(Variable variable) {
-		final boolean multiple = variable.isMultiple();
-		if (variable.flags().contains(Concept)) return "io.intino.magritte.framework.Concept";
-		if (variable.isReference()) {
-			return NameFormatter.getQn(((VariableReference) variable).targetOfReference(), ((VariableReference) variable).isTypeReference() ? languageWorkingPackage : workingPackage);
-		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
-		else if (Primitive.WORD.equals(variable.type()))
-			return NameFormatter.getQn(variable.container(), workingPackage) + "." + Format.firstUpperCase().format(variable.name());
-		else return variable.type().javaName();
+	public String type(Property prop) {
+		final boolean multiple = prop.isMultiple();
+		if (prop.isReference()) {
+			return NameFormatter.getQn(((ReferenceProperty) prop).target().get(), workingPackage);
+		} else if (OBJECT.equals(prop.type())) return ((NativeObjectRule) prop.rule(NativeObjectRule.class)).type();
+		else if (Primitive.WORD.equals(prop.type()))
+			return NameFormatter.getQn(prop.container(), workingPackage) + "." + Format.firstUpperCase().format(prop.name());
+		else return prop.type().javaName();
 	}
 
-	private boolean isMultiple(Parameter parameter) {
-		final Constraint.Parameter constraint = parameterConstraintOf(parameter);
-		return constraint != null && !constraint.size().isSingle();
+	private boolean isMultiple(PropertyDescription parameter) {
+		final Constraint.Property constraint = propertyConstraintOf(parameter);
+		if (constraint == null) return false;
+		Size rule = (Size) constraint.rules().stream().filter(r -> r instanceof Size).findFirst().orElse(null);
+		return rule != null && !rule.isSingle();
 	}
 
-	public String type(Parameter parameter) {
+	public String type(PropertyDescription parameter) {
 		final boolean multiple = parameter.isMultiple();
 		return parameter.type().equals(OBJECT) ?
-				((NativeObjectRule) parameter.rule()).type() :
+				(parameter.rule(NativeObjectRule.class)).type() :
 				parameter.type().javaName();
 	}
 
@@ -370,25 +369,25 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public String buildContainerPathOfExpression(Valued valued) {
-		return cleanQn(buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, system ? languageWorkingPackage : workingPackage));
+		return cleanQn(buildExpressionContainerPath(workingPackages.getOrDefault(language.languageName(), workingPackage), valued.container(), this.outDsl, m1 ? languageWorkingPackage : workingPackage));
 	}
 
-	public Constraint.Parameter parameterConstraintOf(Parameter parameter) {
-		List<Constraint.Parameter> parameters = parameterConstraintsOf(parameter.container());
-		if (parameters.isEmpty() || parameters.size() <= parameter.position()) return null;
-		return findParameter(parameters, parameter.name());
+	public Constraint.Property propertyConstraintOf(PropertyDescription parameter) {
+		List<Constraint.Property> properties = parameterConstraintsOf(parameter.container());
+		if (properties.isEmpty() || properties.size() <= parameter.position()) return null;
+		return findParameter(properties, parameter.name());
 	}
 
-	private List<Constraint.Parameter> parameterConstraintsOf(Mogram node) {
+	private List<Constraint.Property> parameterConstraintsOf(Mogram mogram) {
 		if (language == null) return Collections.emptyList();
-		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
+		final List<Constraint> nodeConstraints = language.constraints(mogram.types().get(0));
 		if (nodeConstraints == null) return Collections.emptyList();
 		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
-		List<Constraint.Parameter> parameters = new ArrayList<>();
+		List<Constraint.Property> parameters = new ArrayList<>();
 		for (Constraint constraint : constraints)
-			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
+			if (constraint instanceof Constraint.Property) parameters.add((Constraint.Property) constraint);
 			else if (constraint instanceof Constraint.Facet)
-				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Property).map(c -> (Constraint.Property) c).collect(Collectors.toList()));
 		return parameters;
 	}
 }

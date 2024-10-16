@@ -1,8 +1,7 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.layer;
 
-import io.intino.itrules.Rule;
-import io.intino.itrules.RuleSet;
-import io.intino.itrules.Template;
+import io.intino.itrules.template.Rule;
+import io.intino.itrules.template.Template;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.layer.*;
 
 import java.util.ArrayList;
@@ -11,21 +10,21 @@ import java.util.List;
 public class LayerTemplate extends Template {
 
 	@Override
-	protected RuleSet ruleSet() {
-		return new RuleSet()
-				.add(getAll(new io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.layer.LayerTemplate().ruleSet()))
-				.add(getAll(new HelpersTemplate().ruleSet()))
-				.add(getAll(new DeclarationTemplate().ruleSet()))
-				.add(getAll(new ConstructorTemplate().ruleSet()))
-				.add(getAll(new GettersTemplate().ruleSet()))
-				.add(getAll(new SettersTemplate().ruleSet()))
-				.add(getAll(new NewElementTemplate().ruleSet()))
-				.add(getAll(new Init_referenceTemplate().ruleSet()))
-				.add(getAll(new InitTemplate().ruleSet()))
-				.add(getAll(new Set_referenceTemplate().ruleSet()))
-				.add(getAll(new SetTemplate().ruleSet()))
-				.add(getAll(new ListTemplate().ruleSet()))
-				;
+	public List<Rule> ruleSet() {
+		List<Rule> rules = new ArrayList<>();
+		rules.addAll(new io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.layer.LayerTemplate().ruleSet());
+		rules.addAll(new HelpersTemplate().ruleSet());
+		rules.addAll(new DeclarationTemplate().ruleSet());
+		rules.addAll(new ConstructorTemplate().ruleSet());
+		rules.addAll(new GettersTemplate().ruleSet());
+		rules.addAll(new SettersTemplate().ruleSet());
+		rules.addAll(new NewElementTemplate().ruleSet());
+		rules.addAll(new Init_referenceTemplate().ruleSet());
+		rules.addAll(new InitTemplate().ruleSet());
+		rules.addAll(new Set_referenceTemplate().ruleSet());
+		rules.addAll(new SetTemplate().ruleSet());
+		rules.addAll(new ListTemplate().ruleSet());
+		return rules;
 	}
 
 	private Rule[] getAll(Iterable<Rule> ruleSet) {

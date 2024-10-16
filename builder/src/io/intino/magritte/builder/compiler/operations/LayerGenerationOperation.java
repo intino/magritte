@@ -1,8 +1,10 @@
 package io.intino.magritte.builder.compiler.operations;
 
+import io.intino.builder.CompilerConfiguration;
+import io.intino.itrules.Engine;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
-import io.intino.itrules.Template;
+import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.AbstractGraphCreator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.GraphLoaderCreator;
@@ -11,14 +13,12 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.LayerTe
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.templates.GraphTemplate;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.natives.NativesCreator;
 import io.intino.tara.builder.core.CompilationUnit;
-import io.intino.tara.builder.core.CompilerConfiguration;
 import io.intino.tara.builder.core.errorcollection.CompilationFailedException;
 import io.intino.tara.builder.core.operation.model.ModelOperation;
-import io.intino.tara.builder.model.Model;
-import io.intino.tara.builder.model.MogramImpl;
 import io.intino.tara.builder.utils.Format;
-import io.intino.tara.language.model.Mogram;
-import io.intino.tara.language.model.Tag;
+import io.intino.tara.model.Annotation;
+import io.intino.tara.model.Mogram;
+import io.intino.tara.processors.model.Model;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 import static io.intino.builder.BuildConstants.PRESENTABLE_MESSAGE;
 import static io.intino.tara.builder.utils.Format.firstUpperCase;
 import static io.intino.tara.builder.utils.Format.javaValidName;
+import static io.intino.tara.model.Annotation.Generalization;
+import static io.intino.tara.model.Level.M1;
 import static java.io.File.separator;
 import static java.util.Objects.requireNonNull;
 
@@ -43,27 +45,26 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private final CompilerConfiguration conf;
 	private final File srcFolder;
 	private final File outFolder;
-	private final Template template;
+	private final Engine engine;
 	private final Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
 		super(compilationUnit);
 		this.conf = compilationUnit.configuration();
-		this.outFolder = conf.getOutDirectory();
-		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().stream().filter(d -> !d.getName().equals("gen")).findFirst().orElse(conf.sourceDirectories().get(0));
-		this.template = Format.customize(new LayerTemplate());
+		this.outFolder = conf.genDirectory();
+		this.srcFolder = conf.srcDirectory();
+		this.engine = Generator.customize(new LayerTemplate());
 	}
 
 	@Override
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose()) conf.out().println(prefix() + " Cleaning Old Layers...");
-			if (!conf.model().level().equals(CompilerConfiguration.Level.Model)) cleanOldLayers(model);
+			if (model.mograms().stream().anyMatch(m -> m.level() != M1)) cleanOldLayers(model);
 			if (conf.isVerbose()) conf.out().println(prefix() + " Generating Layers...");
 			createClasses(model);
 			registerOutputs(writeNativeClasses(model));
 			unit.addOutputItems(outMap);
-//			unit.compilationDifferentialCache().saveCache(model.components().stream().map(c -> ((MogramImpl) c).getHashCode()).collect(Collectors.toList()));
 		} catch (Throwable e) {
 			LOG.log(java.util.logging.Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(unit.getPhase(), unit, e);
@@ -71,11 +72,11 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private Map<String, String> writeNativeClasses(Model model) {
-		return new NativesCreator(model, conf).create();
+		return new NativesCreator(model, unit.language(), conf).create();
 	}
 
 	private void createClasses(Model model) {
-		if (!model.level().equals(CompilerConfiguration.Level.Model)) {
+		if (model.mograms().stream().anyMatch(m -> m.level() != M1)) {
 			final Map<String, Map<String, String>> layers = createLayerClasses(model);
 			layers.values().forEach(this::writeLayers);
 			writeAbstractGraph(model, layers);
@@ -84,14 +85,14 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private void writeGraphLoader(Model model) {
-		File target = new File(new File(outFolder, conf.workingPackage().toLowerCase().replace(".", File.separator)), GRAPH + "Loader" + JAVA);
-		write(target, new GraphLoaderCreator(model.language(), conf).create(model));
-		if (outMap.isEmpty()) unit.getSourceUnits().forEach((s, v) -> put(s, target.getAbsolutePath()));
+		File target = new File(new File(outFolder, conf.generationPackage().toLowerCase().replace(".", File.separator)), GRAPH + "Loader" + JAVA);
+		write(target, new GraphLoaderCreator(unit.language(), conf).create(model));
+		if (outMap.isEmpty()) unit.getSourceUnits().forEach((s, v) -> put(s.getPath(), target.getAbsolutePath()));
 		else for (List<String> paths : outMap.values()) paths.add(target.getAbsolutePath());
 	}
 
 	private void writeAbstractGraph(Model model, Map<String, Map<String, String>> layers) {
-		AbstractGraphCreator abstractGraphCreator = new AbstractGraphCreator(model.language(), conf);
+		AbstractGraphCreator abstractGraphCreator = new AbstractGraphCreator(unit.language(), conf);
 		registerOutputs(layers, writeAbstractGraph(abstractGraphCreator.create(model)));
 	}
 
@@ -119,40 +120,34 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private String createGraph() {
 		FrameBuilder builder = new FrameBuilder("wrapper");
-		builder.add(OUT_LANGUAGE, conf.model().outDsl());
-		builder.add(WORKING_PACKAGE, conf.workingPackage());
-		return Format.customize(new GraphTemplate()).render(builder.toFrame());
+		builder.add(OUT_LANGUAGE, conf.dsl().outDsl());
+		builder.add(WORKING_PACKAGE, conf.generationPackage());
+		return Generator.customize(new GraphTemplate()).render(builder.toFrame());
 	}
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) {
 		Map<String, Map<String, String>> map = new HashMap<>();
-		for (Mogram node : model.components()) {
-			if (node.is(Tag.Instance) || !((MogramImpl) node).isDirty() || ((MogramImpl) node).isVirtual()) continue;
-			renderNode(map, node);
-		}
+		model.components().stream()
+				.filter(mogram -> mogram.level() != M1)
+				.forEach(mogram -> renderMogram(map, mogram));
 		return map;
 	}
 
-	private void renderNode(Map<String, Map<String, String>> map, Mogram node) {
-		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, node.languageName()).create(node);
-		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
+	private void renderMogram(Map<String, Map<String, String>> map, Mogram mogram) {
+		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf, unit.language()).create(mogram);
+		if (!map.containsKey(mogram.source().getPath())) map.put(mogram.source().getPath(), new LinkedHashMap<>());
 		String destination = destination(layerFrame);
-		boolean modified = true; //isModified(node);
-		map.get(node.file()).put(destination, !modified && new File(destination).exists() ? "" : render(layerFrame));
-		renderFrame(map, node, layerFrame);
+		map.get(mogram.source().getPath()).put(destination, new File(destination).exists() ? "" : render(layerFrame));
+		renderFrame(map, mogram, layerFrame);
 	}
 
-//	private boolean isModified(Mogram node) {
-//		return unit.compilationDifferentialCache().isModified((MogramImpl) node);
-//	}
-
-	private void renderFrame(Map<String, Map<String, String>> map, Mogram node, Map.Entry<String, Frame> layerFrame) {
-		if (node.is(Tag.Decorable)) {
-			Map.Entry<String, Frame> frame = new LayerFrameCreator(conf, node.languageName()).createDecorable(node);
+	private void renderFrame(Map<String, Map<String, String>> map, Mogram mogram, Map.Entry<String, Frame> layerFrame) {
+		if (mogram.is(Annotation.Decorable)) {
+			Map.Entry<String, Frame> frame = new LayerFrameCreator(conf, unit.language()).createDecorable(mogram);
 			File file = new File(srcTarget(frame));
-			if (file.exists() && node.isAbstract()) checkAbstractDecorable(file);
-			map.get(node.file()).put(file.getAbsolutePath(), file.exists() ? "" : render(frame));
-		} else removeDecorable(layerFrame.getKey(), node.name());
+			if (file.exists() && mogram.is(Generalization)) checkAbstractDecorable(file);
+			map.get(mogram.source().getPath()).put(file.getAbsolutePath(), file.exists() ? "" : render(frame));
+		} else removeDecorable(layerFrame.getKey(), mogram.name());
 	}
 
 	private void checkAbstractDecorable(File file) {
@@ -195,34 +190,38 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String writeAbstractGraph(String text) {
-		File target = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), "Abstract" + GRAPH + JAVA);
+		File target = new File(new File(outFolder, conf.generationPackage().replace(".", File.separator)), "Abstract" + GRAPH + JAVA);
 		target.getParentFile().mkdirs();
 		return write(target, text) ? target.getAbsolutePath() : null;
 	}
 
 	private void writeGraph(String text) {
-		File target = new File(new File(srcFolder, conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.model().outDsl())) + GRAPH + JAVA);
+		File target = new File(new File(srcFolder, conf.generationPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(javaValidName().format(conf.dsl().outDsl())) + GRAPH + JAVA);
 		if (!target.exists()) write(target, text);
 	}
 
 	private void cleanOldLayers(Model model) {
-		final String workingPackage = conf.workingPackage() == null ? conf.getModule() : conf.workingPackage();
-		File out = new File(conf.getOutDirectory(), workingPackage.toLowerCase());
+		final String generationPackage = conf.generationPackage() == null ? conf.module() : conf.generationPackage();
+		File out = new File(conf.genDirectory(), generationPackage.toLowerCase());
 		List<File> layers = filterOld(collectAllLayers(out), out, model);
 		layers.forEach(File::delete);
 	}
 
 	private List<File> filterOld(List<File> files, File base, Model model) {
 		List<File> current = calculateCurrentLayers(base, model);
-		return files.stream().filter(layer -> !current.contains(layer) && !isUnderSource(layer)).collect(Collectors.toList());
+		return files.stream().filter(layer -> !current.contains(layer) && !isUnderSource(layer))
+				.collect(Collectors.toList());
 	}
 
 	private List<File> calculateCurrentLayers(File base, Model model) {
-		return model.components().stream().filter(n -> !n.is(Tag.Instance) && !n.isAnonymous()).map(node -> new File(calculateLayerPath(node, base) + JAVA)).collect(Collectors.toList());
+		return model.components().stream()
+				.filter(m -> m.level() != M1 && !m.isAnonymous())
+				.map(m -> new File(calculateLayerPath(m, base) + JAVA))
+				.collect(Collectors.toList());
 	}
 
-	private String calculateLayerPath(Mogram node, File workingPackage) {
-		return workingPackage.getPath() + File.separator + javaValidName().format(node.name()).toString();
+	private String calculateLayerPath(Mogram mogram, File generationPackage) {
+		return generationPackage.getPath() + File.separator + javaValidName().format(mogram.name()).toString();
 	}
 
 	private List<File> collectAllLayers(File out) {
@@ -246,10 +245,10 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String render(Map.Entry<String, Frame> layerFrame) {
-		return template.render(layerFrame.getValue());
+		return engine.render(layerFrame.getValue());
 	}
 
 	private String prefix() {
-		return PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.model().outDsl() + "]";
+		return PRESENTABLE_MESSAGE + "[" + conf.module() + " - " + conf.dsl().outDsl() + "]";
 	}
 }

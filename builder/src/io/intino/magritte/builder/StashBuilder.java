@@ -1,18 +1,18 @@
 package io.intino.magritte.builder;
 
+import io.intino.Configuration.Artifact.Dsl.Level;
+import io.intino.builder.CompilerConfiguration;
 import io.intino.magritte.builder.compiler.operations.StashGenerationOperation;
 import io.intino.magritte.io.StashDeserializer;
 import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
 import io.intino.tara.builder.TaraCompilerRunner;
-import io.intino.tara.builder.core.CompilerConfiguration;
 import io.intino.tara.builder.utils.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.builder.core.CompilerConfiguration.Level.Model;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("unused")
 public class StashBuilder {
@@ -40,7 +40,7 @@ public class StashBuilder {
 		this.module = module;
 		this.stream = stream;
 		this.language = null;
-		this.charset = StandardCharsets.UTF_8;
+		this.charset = UTF_8;
 		try {
 			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
 		} catch (IOException ignored) {
@@ -63,7 +63,7 @@ public class StashBuilder {
 
 	public Stash[] build() {
 		TaraCompilerRunner runner = new TaraCompilerRunner(true, List.of(StashGenerationOperation.class));
-		runner.run(createConfiguration(), files.stream().collect(Collectors.toMap(f -> f, f -> true)));
+		runner.run(createConfiguration(), files.stream().collect(Collectors.toMap(f -> f, f -> true)));//TODO add language
 		final File[] createdStashes = findCreatedStashes();
 		if (createdStashes.length == 0) return null;
 		final Stash[] stash = Arrays.stream(createdStashes).map(StashDeserializer::stashFrom).toArray(Stash[]::new);
@@ -78,17 +78,15 @@ public class StashBuilder {
 
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
-		configuration.model().level(Model);
-		configuration.languagesRepository(new File(new File(java.lang.System.getProperty("user.home")), ".m2/repository"));
-		configuration.setOutDirectory(workingDirectory);
-		configuration.setResourcesDirectory(workingDirectory);
-		configuration.setModule(module);
-		configuration.setExcludedPhases(List.of(1));
-		configuration.model().outDsl(module);
+		configuration.dsl().level(Level.Model);
+		configuration.localRepository(new File(new File(java.lang.System.getProperty("user.home")), ".m2/repository"));
+		configuration.outDirectory(workingDirectory);
+		configuration.resDirectory(workingDirectory);
+		configuration.module(module);
+		configuration.dsl().outDsl(module);
 		configuration.sourceEncoding(charset.name());
 		configuration.out(this.stream);
-		if (language == null) configuration.language(dsl, dslVersion);
-		else configuration.language(language);
+		if (language == null) configuration.dsl().name(dsl).version(dslVersion);
 		return configuration;
 	}
 }

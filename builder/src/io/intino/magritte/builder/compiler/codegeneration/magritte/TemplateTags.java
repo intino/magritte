@@ -18,11 +18,11 @@ public interface TemplateTags {
 	String CONCEPT_LAYER = "conceptLayer";
 	String DEFAULT = "default";
 	String EMPTY = "empty";
-	String PLATFORM = "Platform";
+	String METAMETAMODEL = "Platform";
 	String MAIN = "Main";
 	String DECORABLE = "decorable";
 	String SCOPE = "scope";
-	String PRODUCT = "Product";
+	String METAMODEL = "Product";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
 	String EXTERNAL_CLASS = "externalClass";
@@ -81,7 +81,7 @@ public interface TemplateTags {
 	String INHERITED = "inherited";
 	String PARENT_REF = "parentRef";
 	String OVERRIDEN = "overriden";
-	String VARIABLE = "variable";
+	String PROPERTY = "variable";
 	String WORDS = "words";
 	String TERMINAL = "terminal";
 	String MULTIPLE = "multiple";

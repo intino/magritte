@@ -1,16 +1,12 @@
-def type(variable & reference & concept & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
+rule type(variable, Concept, reference, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<io.intino.magritte.framework.Concept>) values);
-end
 
-def type(variable & reference & concept & owner) !type(inherited | overriden | reactive) trigger(set)
+rule type(variable, Concept, reference, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = (io.intino.magritte.framework.Concept) values.get(0);
-end
 
-def type(variable & reference & multiple & owner) !type(concept | inherited | overriden | reactive) trigger(set)
+rule type(variable, reference, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+FirstLowerCase = ((java.util.List<java.lang.Object>) values).stream().
 		map(s -> graph().core$$().load(((io.intino.magritte.framework.Layer) s).core$$().id()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
-end
 
-def type(variable & reference & owner) !type(concept | inherited | reactive | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = values.get(0)!= null ? core$$().graph().load(((io.intino.magritte.framework.Layer) values.get(0)).core$$().id()).as($type+reference.class) : null;
-end
+rule type(variable, reference, owner) and not (type(inherited) or type(reactive) or type(overriden)) and trigger(set)
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = values.get(0) != null ? core$$().graph().load(((io.intino.magritte.framework.Layer) values.get(0)).core$$().id()).as($type+reference.class) : null;

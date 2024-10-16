@@ -1,5 +1,6 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.layer;
 
+import io.intino.builder.CompilerConfiguration;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
@@ -8,29 +9,24 @@ import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashCreator;
 import io.intino.magritte.io.model.Stash;
 import io.intino.tara.Language;
-import io.intino.tara.Resolver;
-import io.intino.tara.builder.core.CompilerConfiguration;
-import io.intino.tara.builder.core.CompilerConfiguration.Level;
-import io.intino.tara.builder.model.Model;
-import io.intino.tara.builder.model.MogramImpl;
-import io.intino.tara.builder.utils.Format;
-import io.intino.tara.language.model.Mogram;
-import io.intino.tara.language.model.Variable;
-import io.intino.tara.language.model.rules.Size;
-import io.intino.tara.language.semantics.Documentation;
+import io.intino.tara.model.Level;
+import io.intino.tara.model.Mogram;
+import io.intino.tara.model.Property;
+import io.intino.tara.model.rules.Size;
+import io.intino.tara.processors.Resolver;
+import io.intino.tara.processors.model.Model;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.language.model.Tag.*;
+import static io.intino.tara.model.Annotation.*;
+
 
 public class AbstractGraphCreator extends Generator implements TemplateTags {
-	private final Level modelLevel;
 	private final CompilerConfiguration conf;
 
 	public AbstractGraphCreator(Language language, CompilerConfiguration conf) {
-		super(language, conf.model().outDsl(), conf.workingPackage(), conf.model().language().generationPackage());
-		this.modelLevel = conf.model().level();
+		super(language, conf.dsl().outDsl(), conf.generationPackage(), conf.dsl().generationPackage());
 		this.conf = conf;
 	}
 
@@ -43,42 +39,43 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 		Stash stash = new StashCreator(model.components(), language, outDsl, conf).create();
 		builder.add("stash", stashFrame(stash));
 		builder.add("parentPackage", languageWorkingPackage);
-		return Format.customize(new GraphTemplate()).render(builder.toFrame());
+		return Generator.customize(new GraphTemplate()).render(builder.toFrame());
 	}
 
 	private Frame createRootNodeFrame(Mogram node, Size size) {
 		FrameBuilder builder = new FrameBuilder(NODE);
 		if (size.isSingle()) builder.add(SINGLE);
-		if (node.isTerminal()) builder.add(CONCEPT);
-		if (node.is(Instance)) builder.add(INSTANCE);
-		if (node.isAbstract()) builder.add(ABSTRACT);
+		if (node.level() == Level.M1) builder.add(INSTANCE);
+		if (node.is(Generalization)) builder.add(ABSTRACT);
 		String qn = NameFormatter.getQn(node, workingPackage.toLowerCase());
 		builder.add(QN, qn).add(STASH_QN, qn).add(OUT_LANGUAGE, outDsl).add(NAME, node.name());
 		addType(node, size, builder);
-		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> builder.add(VARIABLE, frameOf(variable)));
-		addTerminalVariables(node, builder);
+		node.properties().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> builder.add(PROPERTY, frameOf(variable)));
+		addTerminalProperties(node, builder);
 		return builder.toFrame();
 	}
 
 	private void addType(Mogram node, Size rule, FrameBuilder builder) {
-		Documentation doc = language.doc(node.type());
+		String doc = node.metaMograms().get(0).doc();
 		if (doc == null) return;
-		builder.add(CONCEPT_LAYER, doc.layer());
+//		builder.add(CONCEPT_LAYER, doc.layer());
 		builder.add(TYPE, nodeType(node, rule));
 	}
 
 	private String nodeType(Mogram node, Size rule) {
-		return Resolver.shortType(node.type()) + (!rule.isSingle() ? "List" : "");
+		return Resolver.shortType(node.types().get(0)) + (!rule.isSingle() ? "List" : "");
 	}
 
-	private Frame frameOf(Variable variable) {
-		return new FrameBuilder(VARIABLE, variable.type().getName())
-				.put(Variable.class, new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage))
-				.append(variable)
+	private Frame frameOf(Property property) {
+		return new FrameBuilder(PROPERTY, property.type().getName())
+				.put(Property.class, new LayerPropertyAdapter(language, outDsl, workingPackage, languageWorkingPackage))
+				.append(property)
 				.toFrame();
 	}
 
 	private Collection<Mogram> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component) && !n.is(Feature) && !n.into(Feature) && !((MogramImpl) n).isVirtual()).collect(Collectors.toList());
+		return model.components().stream()
+				.filter(n -> !n.is(Component) && !n.is(Feature))
+				.collect(Collectors.toList());
 	}
 }

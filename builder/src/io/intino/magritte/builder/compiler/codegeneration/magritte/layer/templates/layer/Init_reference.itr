@@ -1,15 +1,11 @@
-def type(variable & reference & multiple & concept) !type(inherited | reactive) !type(overriden) type(owner) trigger(init)
+rule type(variable, reference, multiple, concept) and not (type(inherited) or type(reactive)) and not type(overriden) and type(owner) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ConceptLoader.load(values, this);
-end
 
-def type(variable & reference & concept & owner) !type(inherited | reactive | overriden) trigger(init)
+rule type(variable, reference, concept, owner) and not (type(inherited) or type(reactive) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ConceptLoader.load(values, this).get(0);
-end
 
-def type(variable & reference & multiple & owner) !type(concept | reactive | inherited | overriden) trigger(init)
+rule type(variable, reference, multiple, owner) and not (type(concept) or type(reactive) or type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.NodeLoader.load(values,  $type+reference.class, this);
-end
 
-def type(variable & reference) !type(concept | reactive) !type(inherited) !type(overriden) type(owner) trigger(init)
+rule type(variable, reference) and not (type(concept) or type(reactive)) and not type(inherited) and not type(overriden) and type(owner) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.NodeLoader.load(values, $type+reference.class, this).get(0);
-end

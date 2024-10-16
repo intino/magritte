@@ -1,63 +1,47 @@
-def type(variable & Word & multiple & required) !type(outDefined) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, Word, multiple, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	java.util.List<$qn.$type+FirstUpperCase> $name+javaValidWord
-end
 
-def type(variable & Word & multiple & OutDefined & required) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, Word, multiple, OutDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+FirstLowerCase
-end
 
-def type(variable & Word & outDefined & required) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, Word, outDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	$workingPackage+LowerCase.rules.$rule+externalWordClass $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & Word & required) !type(outDefined) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, Word, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	$qn+reference.$type+FirstUpperCase $name+javaValidWord
-end
 
-def type(variable & reactive & multiple & required) !type(empty) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, reactive, multiple, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	io.intino.magritte.framework.Expression<java.util.List<$type+fullType+reference>> $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & reactive & required) !type(multiple | empty) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, reactive, required) and not (type(multiple) or type(empty)) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	io.intino.magritte.framework.Expression<$type+fullType+reference> $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & function & required) !type(empty) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, function, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	$workingPackage+LowerCase.functions.$rule+interfaceClass $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & multiple & required) !type(concept | empty) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, multiple, required) and not (type(concept) or type(empty)) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	java.util.List<$type+fullType+reference> $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & resource & required) !type(concept | empty | multiple) trigger(parameters)
+rule type(variable, resource, required) and not (type(concept) or type(empty) or type(multiple)) and trigger(parameters)
 	$type+reference+variableType $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & required) !type(concept | empty | multiple) !attribute(values) !attribute(wordvalues) trigger(parameters)
+rule type(variable, required) and not (type(concept) or type(empty) or type(multiple)) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	$type+reference+variableType $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & concept & multiple & required) !type(empty) !attribute(values) trigger(parameters)
+rule type(variable, concept, multiple, required) and not type(empty) and not attribute(values) and trigger(parameters)
 	java.util.List<io.intino.magritte.framework.Concept> $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def type(variable & concept & required) !type(multiple | empty) !attribute(values) trigger(parameters)
+rule type(variable, concept, required) and not (type(multiple) or type(empty)) and not attribute(values) and trigger(parameters)
 	io.intino.magritte.framework.Concept $name+javaValidName+FirstLowerCase+javaValidWord
-end
 
-def	type(variable & reactive & required) !type(empty) !attribute(values) !attribute(wordvalues) trigger(assign)
+rule type(variable, reactive, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(assign)
 	newElement.core$$().set(newElement, "$name+FirstLowerCase", java.util.Collections.singletonList($name+javaValidName+FirstLowerCase+javaValidWord));
-end
 
-def	type(variable & multiple & required) !type(empty) !attribute(values) !attribute(wordvalues) trigger(assign)
+rule type(variable, multiple, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(assign)
 	newElement.core$$().set(newElement, "$name+FirstLowerCase", $name+javaValidName+FirstLowerCase+javaValidWord);
-end
 
-def	type(variable & required) !type(multiple | empty) !attribute(values) !attribute(wordvalues) trigger(assign)
+rule type(variable, required) and not (type(multiple) or type(empty)) and not attribute(values) and not attribute(wordvalues) and trigger(assign)
 	newElement.core$$().set(newElement, "$name+FirstLowerCase", java.util.Collections.singletonList($name+javaValidName+FirstLowerCase+javaValidWord));
-end
 
-def	type(variable & required) !type(empty) !attribute(values) !attribute(wordvalues) trigger(name)
+rule type(variable, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(name)
 	$name+javaValidWord
-end

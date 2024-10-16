@@ -1,4 +1,4 @@
-def type(graph)
+rule type(graph)
 	package $workingPackage+LowerCase;
 
 	import io.intino.magritte.framework.Graph;
@@ -83,22 +83,22 @@ def type(graph)
 				this.name = name;
 			}
 
-			[$node+new...[$NL$NL]]
+			<<$node+new...[$NL$NL]>>
 		}
 
 		public class Clear {
-		    [$node+clear...[$NL$NL]]
+		    <<$node+clear...[$NL$NL]>>
 		}
 
 
 		private java.util.HashMap<String, Indexer> _fillIndex() {
 			java.util.HashMap<String, Indexer> map = new java.util.HashMap<>();
-			[$node+put...[$NL]]
+			<<$node+put...[$NL]>>
 			return map;
 		}
 
-		public static io.intino.magritte.io.model.Stash$[] _language() {
-			return new io.intino.magritte.io.model.Stash$[]{[$parentPackage.AbstractGraph._language()$[0$], ]stash()};
+		public static io.intino.magritte.io.model.Stash[] _language() {
+			return new io.intino.magritte.io.model.Stash[]{<<$parentPackage.AbstractGraph._language()[0], >>stash()};
 		}
 
 		private static io.intino.magritte.io.model.Stash stash() {
@@ -144,94 +144,73 @@ def type(graph)
 			void clear();
 		}
 	}
-end
 
-
-def type(stash) trigger(call)
+rule type(stash) and trigger(call)
 	$part+methodCall...[ + ]
-end
 
-def trigger(methodCall)
+rule trigger(methodCall)
 	stash$index()
-end
 
-def type(stash) trigger(stashMethod)
+rule type(stash) and trigger(stashMethod)
 	$part+method...[$NL$NL]
-end
 
-def trigger(method)
+rule trigger(method)
 	private static String stash$index() {
 		return "$code";
 	}
-end
 
-def type(instance) trigger(put)
+rule type(instance) and trigger(put)
 	map.put("$generatedLanguage+FirstUpperCase#$name", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($conceptLayer+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
-end
 
-def !type(instance) type(single)  trigger(put)
+rule not type(instance) and type(single) and  trigger(put)
 	map.put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase+javaValidWord = node.as($qn+reference.class), node -> $name+FirstLowerCase+javaValidWord = null, () -> $name+FirstLowerCase+javaValidWord = null));
-end
 
-def !type(instance) trigger(put)
+rule not type(instance) and trigger(put)
 	map.put("$stashQn+noPackage+withDollar", new Indexer(node -> $name+FirstLowerCase~List.add(node.as($qn+reference.class)), node -> $name+FirstLowerCase~List.remove(node.as($qn+reference.class)), () -> $name+FirstLowerCase~List.clear()));
-end
 
-def trigger(add)
-end
+rule trigger(add)
 
-def type(node & instance) trigger(declaration)
+rule type(node, instance) and trigger(declaration)
 	private $conceptLayer $name+FirstLowerCase+javaValidWord;
-end
 
-def type(node & single) trigger(declaration)
+rule type(node, single) and trigger(declaration)
 	private $qn+reference $name+FirstLowerCase+javaValidWord;
-end
 
-def type(node) trigger(declaration)
+rule type(node) and trigger(declaration)
 	private java.util.List<$qn+reference> $name+FirstLowerCase~List = new java.util.ArrayList<>();
-end
 
-def type(node & instance) trigger(update)
+rule type(node, instance) and trigger(update)
 	io.intino.magritte.framework.Node $name+FirstLowerCase+javaValidWord~Node = this.graph.load("$generatedLanguage+FirstUpperCase#$name");
 	if ($name+FirstLowerCase+javaValidWord~Node != null) this.$name+FirstLowerCase+javaValidWord = $name+FirstLowerCase+javaValidWord~Node.as($conceptLayer.class);
-end
 
-def type(node & single) trigger(update)
+rule type(node, single) and trigger(update)
 	$name+FirstLowerCase = this.graph.rootList($qn+reference.class).stream().findFirst().orElse(null);
-end
 
-def type(node) trigger(update)
+rule type(node) and trigger(update)
 	$name+FirstLowerCase~List = this.graph.rootList($qn+reference.class);
-end
 
-def type(node) type(instance | single) trigger(clone)
+rule type(node) and (type(instance) or type(single)) and trigger(clone)
 	this.$name+FirstLowerCase+javaValidWord = wrapper.$name+FirstLowerCase+javaValidWord;
-end
 
-def type(node) trigger(clone)
+rule type(node) and trigger(clone)
 	this.$name+FirstLowerCase~List = new java.util.ArrayList<>(wrapper.$name+FirstLowerCase~List);
-end
 
-def type(node & instance) trigger(getter)
+rule type(node, instance) and trigger(getter)
 	public $conceptLayer $name+FirstLowerCase+javaValidWord() {
 		return $name+FirstLowerCase+javaValidWord;
 	}
-end
 
-def type(node & single) trigger(getter)
+rule type(node, single) and trigger(getter)
 	public $qn+reference $name+FirstLowerCase+javaValidWord() {
 		return $name+FirstLowerCase+javaValidWord;
 	}
-end
 
-def type(node) trigger(getter)
+rule type(node) and trigger(getter)
 	public java.util.List<$qn+reference> $name+FirstLowerCase~List() {
 		return $name+FirstLowerCase~List;
 	}
-end
 
-def type(node) !type(single | instance) trigger(filter)
+rule type(node) and not (type(single) or type(instance)) and trigger(filter)
 	public java.util.stream.Stream<$qn+reference> $name+FirstLowerCase~List(java.util.function.Predicate<$qn+reference> filter) {
 		return $name+FirstLowerCase~List.stream().filter(filter);
 	}
@@ -239,22 +218,18 @@ def type(node) !type(single | instance) trigger(filter)
 	public $qn+reference $name+FirstLowerCase+javaValidWord(int index) {
 		return $name+FirstLowerCase~List.get(index);
 	}
-end
 
-def type(node & concept) !type(final | abstract | component | instance) trigger(new)
-	public $qn+reference $name+FirstLowerCase+javaValidWord([$variable+parameters...[, ]]) {
+rule type(node, concept) and not (type(final) or type(abstract) or type(component) or type(instance)) and trigger(new)
+	public $qn+reference $name+FirstLowerCase+javaValidWord(<<$variable+parameters...[, ]>>) {
 		$qn+reference newElement = AbstractGraph.this.graph.createRoot($qn+reference.class, stash, this.name).a$$($qn+reference.class);
-		[$variable+assign...[$NL]]
+		<<$variable+assign...[$NL]>>
 		return newElement;
 	}
-end
 
-def type(node & concept) !type(single | final | abstract | component | instance) trigger(clear)
+rule type(node, concept) and not (type(single) or type(final) or type(abstract) or type(component) or type(instance)) and trigger(clear)
 	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>(AbstractGraph.this.$name+FirstLowerCase+javaValidWord~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
-end
 
-def trigger(quoted)
+rule trigger(quoted)
 	"$this"
-end

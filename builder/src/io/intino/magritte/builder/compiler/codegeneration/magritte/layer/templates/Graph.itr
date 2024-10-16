@@ -1,4 +1,4 @@
-def type(wrapper)
+rule type(wrapper)
 	package $workingPackage+lowercase;
 
 	import io.intino.magritte.framework.Graph;
@@ -30,5 +30,3 @@ def type(wrapper)
 			return new Graph(store).loadLanguage("$generatedLanguage+firstUpperCase", _language()).loadStashes(startingModel).as($generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
 	}
-end
-

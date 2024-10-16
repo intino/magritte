@@ -1,5 +1,6 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.stash;
 
+import io.intino.builder.CompilerConfiguration;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.magritte.io.Helper;
@@ -8,51 +9,47 @@ import io.intino.magritte.io.model.Node;
 import io.intino.magritte.io.model.Stash;
 import io.intino.magritte.io.model.Variable;
 import io.intino.tara.Language;
-import io.intino.tara.builder.core.CompilerConfiguration;
-import io.intino.tara.builder.core.CompilerConfiguration.Level;
-import io.intino.tara.builder.model.Model;
-import io.intino.tara.builder.model.MogramImpl;
 import io.intino.tara.builder.utils.Format;
-import io.intino.tara.dsls.MetaIdentifiers;
-import io.intino.tara.language.model.*;
-import io.intino.tara.language.model.rules.variable.NativeRule;
+import io.intino.tara.model.*;
+import io.intino.tara.model.rules.property.FunctionRule;
+import io.intino.tara.processors.model.Model;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.DOT;
+import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.*;
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.stash.StashHelper.hasToBeConverted;
 import static io.intino.tara.builder.utils.Format.noPackage;
 import static io.intino.tara.builder.utils.Format.withDollar;
-import static io.intino.tara.language.model.Primitive.*;
-import static io.intino.tara.language.model.Tag.*;
+import static io.intino.tara.model.Annotation.*;
+import static io.intino.tara.model.Level.M1;
+import static io.intino.tara.model.Level.M3;
+import static io.intino.tara.model.Primitive.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public class StashCreator {
 	private static final String STASH = ".stash";
-	private final List<io.intino.tara.language.model.Mogram> mograms;
+	private final List<Mogram> mograms;
 	private final Language language;
 	private final File resourceFolder;
-	private final Level level;
 	private final boolean test;
 	private final Stash stash = new Stash();
 	private final String outDSL;
 	private final String workingPackage;
 
-	public StashCreator(List<io.intino.tara.language.model.Mogram> mograms, Language language, String outDSL, CompilerConfiguration conf) {
+	public StashCreator(List<Mogram> mograms, Language language, String outDSL, CompilerConfiguration conf) {
 		this.mograms = mograms;
 		this.language = language;
 		this.outDSL = Format.javaValidName().format(Format.firstUpperCase().format(outDSL)).toString();
-		this.workingPackage = conf.workingPackage();
-		this.resourceFolder = conf.resourcesDirectory();
-		this.level = conf.model().level();
-		this.test = conf.isTest();
+		this.workingPackage = conf.generationPackage();
+		this.resourceFolder = conf.resDirectory();
+		this.test = conf.test();
 		this.stash.language = language.languageName();
-		this.stash.path = new File(mograms.get(0).file()).getName().split("\\.")[0] + STASH;
+		this.stash.path = new File(mograms.get(0).source()).getName().split("\\.")[0] + STASH;
 	}
 
 	private static String toSystemIndependentName(String fileName) {
@@ -61,75 +58,76 @@ public class StashCreator {
 
 	public Stash create() {
 		mograms.forEach(node -> create(node, null));
-		stash.contentRules = collectContents(mograms.stream().filter(node -> !node.is(Component) && !node.isFacet() && !node.is(Instance)).collect(Collectors.toList()));
+		stash.contentRules = collectContents(mograms.stream()
+				.filter(mogram -> !mogram.is(Component) && mogram.facetPrescription() == null && mogram.level() != M1)
+				.collect(Collectors.toList()));
 		return stash;
 	}
 
-	private void create(io.intino.tara.language.model.Mogram node, Concept container) {
-		if (node.isReference()) return;
-		if (node.is(Instance))
-			if (container == null) stash.nodes.add(createNode(node));
-			else container.nodes.add(createNode(node));
-		else createConcept(node);
+	private void create(Mogram mogram, Concept container) {
+		if (mogram.level() == M1)
+			if (container == null) stash.nodes.add(createNode(mogram));
+			else container.nodes.add(createNode(mogram));
+		else createConcept(mogram);
 	}
 
-	private void createConcept(io.intino.tara.language.model.Mogram node) {
-		if (node.isFacet()) stash.concepts.addAll(createAspectConcept(node));
+	private void createConcept(Mogram mogram) {
+		if (mogram.facetPrescription() != null) stash.concepts.addAll(createFacetConcept(mogram));
 		else {
-			List<io.intino.tara.language.model.Mogram> nodeList = collectTypeComponents(node.components());
-			Concept concept = Helper.newConcept(StashHelper.name(node, workingPackage),
-					node.isAbstract(),
-					node.type().equals(MetaIdentifiers.META_CONCEPT),
-					node.isFacet() || node.isMetaFacet(),
-					node.container() instanceof Model && !node.is(Tag.Component),
-					className(node),
-					node.parent() != null ? Format.qualifiedName().format(((MogramImpl) node.parent()).layerQualifiedName()).toString() : null,
-					StashHelper.collectTypes(node, this.language),
+			List<Mogram> nodeList = collectTypeComponents(mogram.components());
+			Concept concept = Helper.newConcept(StashHelper.name(mogram, workingPackage),
+					mogram.is(Generalization),
+					mogram.level() == M3,
+					mogram.facetPrescription() != null,
+					mogram.container() instanceof Model && !mogram.is(Annotation.Component),
+					className(mogram),
+					mogram.parent() != null ? Format.qualifiedName().format(layerQualifiedName(mogram.parent().get())).toString() : null,
+					StashHelper.collectTypes(mogram, this.language),
 					collectContents(nodeList),
-					variablesOf(node),
-					parametersOf(node),
+					propertiesOf(mogram),
+					parametersOf(mogram),
 					emptyList());
 			stash.concepts.add(concept);
-			for (io.intino.tara.language.model.Mogram component : node.components()) create(component, concept);
+			for (Mogram component : mogram.components()) create(component, concept);
 		}
 	}
 
-	private List<Concept> createAspectConcept(io.intino.tara.language.model.Mogram aspectNode) {
+	private List<Concept> createFacetConcept(Mogram facetMogram) {
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
 		concepts.add(concept);
-		concept.isMetaConcept = aspectNode.type().equals(MetaIdentifiers.META_CONCEPT);
-		concept.isAbstract = aspectNode.isAbstract();
+		concept.isMetaConcept = facetMogram.level().equals(M3);
+		concept.isAbstract = facetMogram.is(Generalization);
 		concept.isAspect = true;
-		concept.name = StashHelper.name(aspectNode, workingPackage);
-		concept.className = aspectClassName(aspectNode);
-		concept.types = StashHelper.collectTypes(aspectNode, language);
-		concept.parent = calculateParent(aspectNode);
-		concept.variables = variablesOf(aspectNode);
-		concept.parameters = parametersOf(aspectNode);
-		concept.contentRules = collectContents(collectTypeComponents(aspectNode.components()));
-		for (io.intino.tara.language.model.Mogram component : aspectNode.components()) create(component, concept);
+		concept.name = StashHelper.name(facetMogram, workingPackage);
+		concept.className = facetClassName(facetMogram);
+		concept.types = StashHelper.collectTypes(facetMogram, language);
+		concept.parent = calculateParent(facetMogram);
+		concept.variables = propertiesOf(facetMogram);
+		concept.parameters = parametersOf(facetMogram);
+		concept.contentRules = collectContents(collectTypeComponents(facetMogram.components()));
+		for (Mogram component : facetMogram.components()) create(component, concept);
 		return concepts;
 	}
 
-	private String className(io.intino.tara.language.model.Mogram node) {
-		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(node, workingPackage))).toString();
+	private String className(Mogram mogram) {
+		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(mogram, workingPackage))).toString();
 	}
 
-	private String aspectClassName(io.intino.tara.language.model.Mogram aspectNode) {
-		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(aspectNode, workingPackage)).toString());
+	private String facetClassName(Mogram facetMogram) {
+		return workingPackage + DOT + withDollar().format(noPackage().format(NameFormatter.getQn(facetMogram, workingPackage)).toString());
 	}
 
-	private String calculateParent(io.intino.tara.language.model.Mogram mogram) {
-		return mogram.parent() != null ? ((MogramImpl) mogram.parent()).layerQn() : null;
+	private String calculateParent(Mogram mogram) {
+		return mogram.parent() != null ? layerQn(mogram.parent().get()) : null;
 	}
 
-	private Concept createChildAspectType(io.intino.tara.language.model.Mogram aspectNode, io.intino.tara.language.model.Mogram node, Concept parent) {
+	private Concept createChildAspectType(Mogram facetMogram, Mogram mogram, Concept parent) {
 		final Concept child = new Concept();
-		child.name = StashHelper.name(aspectNode, workingPackage);//TODO
+		child.name = StashHelper.name(facetMogram, workingPackage);//TODO
 		child.parent = parent.name;
-		child.isAbstract = aspectNode.isAbstract();
-		child.className = aspectClassName(aspectNode);
+		child.isAbstract = facetMogram.is(Generalization);
+		child.className = facetClassName(facetMogram);
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
@@ -137,21 +135,22 @@ public class StashCreator {
 		return child;
 	}
 
-	private List<io.intino.tara.language.model.Mogram> collectTypeComponents(List<io.intino.tara.language.model.Mogram> nodes) {
-		return nodes.stream().filter(component -> !(component.is(Instance))).collect(toList());
+	private List<Mogram> collectTypeComponents(List<Mogram> mograms) {
+		return mograms.stream().filter(component -> (component.level() != M1)).collect(toList());
 	}
 
-	private List<Concept.Content> collectContents(List<io.intino.tara.language.model.Mogram> nodes) {
-		return nodes.stream().
-				filter(node -> !node.isFacet() && !node.is(Instance)).
-				map(n -> new Concept.Content(n.isReference() ? ((MogramImpl) n.targetOfReference()).layerQualifiedName() : ((MogramImpl) n).layerQualifiedName(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
+	private List<Concept.Content> collectContents(List<Mogram> mograms) {
+		return mograms.stream().
+				filter(m -> m.facetPrescription() == null && m.level() != M1).
+				map(m -> new Concept.Content(layerQualifiedName(m), m.container().sizeOf(m).min(), m.container().sizeOf(m).max()))
+				.collect(Collectors.toList());
 	}
 
-	private List<Node> createNodes(List<io.intino.tara.language.model.Mogram> nodes) {
+	private List<Node> createNodes(List<Mogram> nodes) {
 		return nodes.stream().map(this::createNode).collect(toList());
 	}
 
-	private Node createNode(io.intino.tara.language.model.Mogram node) {
+	private Node createNode(Mogram node) {
 		Node instanceNode = new Node();
 		instanceNode.name = buildReferenceName(node);
 		instanceNode.layers.addAll(StashHelper.collectTypes(node, this.language));
@@ -164,69 +163,73 @@ public class StashCreator {
 		return !v.values().isEmpty() && v.values().get(0) != null && !(v.values().get(0) instanceof EmptyMogram);
 	}
 
-	private List<Variable> variablesOf(io.intino.tara.language.model.Mogram node) {
-		return node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::transformTaraVariableToStashVariable).collect(Collectors.toList());
+	private List<Variable> propertiesOf(Mogram mogram) {
+		return mogram.properties().stream().filter(this::isNotEmpty).map(this::transformTaraVariableToStashVariable).collect(Collectors.toList());
 	}
 
-	private List<Variable> parametersOf(io.intino.tara.language.model.Mogram node) {
+	private List<Variable> parametersOf(Mogram node) {
 		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 	}
 
-	private Variable transformTaraVariableToStashVariable(io.intino.tara.language.model.Variable modelVariable) {
+	private Variable transformTaraVariableToStashVariable(Property prop) {
 		final Variable variable = new Variable();
-		variable.name = modelVariable.name();
-		if (modelVariable.isReference() && !(modelVariable.values().get(0) instanceof Expression))
-			variable.values = buildReferenceValues(modelVariable.values());
-		else if (modelVariable.values().get(0) instanceof Expression)
-			variable.values = createNativeReference(modelVariable);
-		else if (modelVariable.type().equals(RESOURCE) && modelVariable.values().get(0).toString().startsWith("$"))
-			variable.values = StashHelper.buildResourceValue(modelVariable.values(), modelVariable.file());
-		else variable.values = getValue(modelVariable);
+		variable.name = prop.name();
+		if (prop.isReference() && !(prop.values().get(0) instanceof Expression))
+			variable.values = buildReferenceValues(prop.values());
+		else if (prop.values().get(0) instanceof Expression)
+			variable.values = createNativeReference(prop);
+		else if (prop.type().equals(RESOURCE) && prop.values().get(0).toString().startsWith("$"))
+			variable.values = StashHelper.buildResourceValue(prop.values(), prop.source().getPath());
+		else variable.values = getValue(prop);
 		return variable;
 	}
 
-	private Variable createVariableFromParameter(Parameter parameter) {
+	private Variable createVariableFromParameter(PropertyDescription parameter) {
 		final Variable variable = new Variable();
 		variable.name = parameter.name();
-		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
+		if (parameter.definition().isReference()) variable.values = buildReferenceValues(parameter.values());
 		else if (parameter.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(parameter);
 		else if (parameter.type().equals(RESOURCE) && parameter.values().get(0).toString().startsWith("$"))
-			variable.values = StashHelper.buildResourceValue(parameter.values(), parameter.file());
+			variable.values = StashHelper.buildResourceValue(parameter.values(), parameter.source().getPath());
 		else variable.values = getValue(parameter);
 		return variable;
 	}
 
 	//TODO change native package
-	private List<Object> createNativeReference(io.intino.tara.language.model.Variable variable) {
-		final String aPackage = NativeFormatter.calculatePackage(variable.container());
-		return new ArrayList<>(singletonList(reactivePrefix(variable) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(Format.firstUpperCase().format(variable.name())).toString() + "_" + variable.getUID()));
+	private List<Object> createNativeReference(Property property) {
+		final String aPackage = NativeFormatter.calculatePackage(property.container());
+		return new ArrayList<>(singletonList(reactivePrefix(property) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(Format.firstUpperCase().format(property.name())).toString() + "_" + property.getUID()));
 	}
 
-	private List<Object> createNativeReference(Parameter parameter) {
+	private List<Object> createNativeReference(PropertyDescription parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
 		return new ArrayList<>(singletonList(reactivePrefix(parameter) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(Format.firstUpperCase().format(parameter.name())).toString() + "_" + parameter.getUID()));
 	}
 
-	private String reactivePrefix(Valued variable) {
-		return variable.type().equals(FUNCTION) || variable.flags().contains(Reactive) ? "" : "$@";
+	private String reactivePrefix(Property prop) {
+		return prop.type().equals(FUNCTION) || prop.annotations().contains(Reactive) ? "" : "$@";
 	}
 
-	private List<Object> getValue(io.intino.tara.language.model.Variable variable) {
-		if (variable.values().get(0) instanceof EmptyMogram) return new ArrayList<>();
-		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ?
-				convert(variable) :
-				variable.rule() instanceof NativeRule ?
-						formatNativeReferenceOfVariable(variable.values()) :
-						variable.values());
+	private String reactivePrefix(PropertyDescription prop) {
+		return prop.type().equals(FUNCTION) || prop.definition().annotations().contains(Reactive) ? "" : "$@";
+	}
+
+	private List<Object> getValue(Property prop) {
+		if (prop.values().getFirst() instanceof Primitive.Reference r && r.isEmpty()) return new ArrayList<>();
+		return new ArrayList<>(hasToBeConverted(prop.values(), prop.type()) ?
+				convert(prop) :
+				(prop.rule(FunctionRule.class) != null ?
+						formatNativeReferenceOfVariable(prop.values()) :
+						prop.values()));
 	}
 
 	private List<Object> formatNativeReferenceOfVariable(List<Object> values) {
 		return values.stream().map(value -> "$@" + value.toString()).collect(Collectors.toList());
 	}
 
-	private List<Object> getValue(Parameter parameter) {
-		if (parameter.values().get(0) instanceof EmptyMogram) return new ArrayList<>();
+	private List<Object> getValue(PropertyDescription parameter) {
+		if (parameter.values().getFirst() instanceof Primitive.Reference r && r.isEmpty()) return new ArrayList<>();
 		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
 	}
 
@@ -255,28 +258,28 @@ public class StashCreator {
 	}
 
 	private List<Object> buildReferenceValues(List<Object> values) {
-		if (values.get(0) instanceof EmptyMogram) return new ArrayList<>();
+		if (values.getFirst() instanceof Primitive.Reference r && r.isEmpty()) return new ArrayList<>();
 		return values.stream().map(this::buildReferenceName).collect(Collectors.toList());
 	}
 
 	private String buildReferenceName(Object o) {
-		if (o instanceof Primitive.Reference && !((Reference) o).isToInstance())
-			return nodeStashQualifiedName(((Reference) o).reference());
-		else if (o instanceof io.intino.tara.language.model.Mogram)
-			return nodeStashQualifiedName((io.intino.tara.language.model.Mogram) o);
+		if (o instanceof Primitive.Reference r && !r.isToInstance())
+			return mogramStashQualifiedName(r.get().get());
+		else if (o instanceof Mogram)
+			return mogramStashQualifiedName((Mogram) o);
 		return StashHelper.buildInstanceReference(o);
 	}
 
-	private String nodeStashQualifiedName(io.intino.tara.language.model.Mogram node) {
-		return (((node).is(Instance)) ? getStash(node) + "#" : "") + ((MogramImpl) node).layerQn();
+	private String mogramStashQualifiedName(Mogram mogram) {
+		return (mogram.level() == M1 ? getStash(mogram) + "#" : "") + layerQn(mogram);
 	}
 
-	private String getStash(io.intino.tara.language.model.Mogram node) {
-		return test || level.compareLevelWith(Level.Model) == 0 ? getStashByNode(node) : outDSL;
+	private String getStash(Mogram mogram) {
+		return test || mogram.level() == M1 ? getStashByNode(mogram) : outDSL;
 	}
 
-	private String getStashByNode(io.intino.tara.language.model.Mogram node) {
-		final String file = new File(node.file()).getName();
+	private String getStashByNode(Mogram mogram) {
+		final String file = new File(mogram.source()).getName();
 		return file.substring(0, file.lastIndexOf("."));
 	}
 }

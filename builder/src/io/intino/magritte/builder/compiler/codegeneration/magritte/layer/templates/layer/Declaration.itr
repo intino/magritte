@@ -1,90 +1,71 @@
-def type(Variable & Word & multiple & owner & reactive) !type(outDefined | inherited) trigger(declaration)
+rule type(Variable, Word, multiple, owner, reactive) and not (type(outDefined) or type(inherited)) and trigger(declaration)
 	protected io.intino.magritte.framework.Expression<java.util.List<$type+FirstUpperCase>> $name+javaValidName;
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
-end
 
-def type(Variable & Word & multiple & owner) !type(outDefined | inherited) trigger(declaration)
+rule type(Variable, Word, multiple, owner) and not (type(outDefined) or type(inherited)) and trigger(declaration)
 	protected java.util.List<$type+FirstUpperCase> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
-end
 
-def type(Variable & Word & multiple & owner & OutDefined) !type(inherited) trigger(declaration)
+rule type(Variable, Word, multiple, owner, OutDefined) and not type(inherited) and trigger(declaration)
 	protected java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
-end
 
-def type(Variable & Word & owner & outDefined) !type(inherited) trigger(declaration)
+rule type(Variable, Word, owner, outDefined) and not type(inherited) and trigger(declaration)
 	protected $workingPackage+LowerCase.rules.$rule+externalWordClass $name+FirstLowerCase+javaValidName;
-end
 
-def type(Variable & Word & owner & reactive) !type(OutDefined | inherited) trigger(declaration)
+rule type(Variable, Word, owner, reactive) and not (type(OutDefined) or type(inherited)) and trigger(declaration)
 	protected io.intino.magritte.framework.Expression<$type+FirstUpperCase> $name+FirstLowerCase+javaValidName;
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
-end
 
-def type(Variable & Word & owner) !type(OutDefined | inherited) trigger(declaration)
+rule type(Variable, Word, owner) and not (type(OutDefined) or type(inherited)) and trigger(declaration)
 	protected $type+FirstUpperCase $name+FirstLowerCase+javaValidName;
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
-end
 
-def type(Variable & owner & concept & multiple) !type(inherited) !type(overriden) trigger(declaration)
+rule type(Variable, owner, concept, multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
 	protected java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
-end
 
-def type(Variable & reactive & owner & multiple) !type(inherited) !type(overriden) trigger(declaration)
+rule type(Variable, reactive, owner, multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
 	protected io.intino.magritte.framework.Expression<java.util.List<$type+fullType+reference>> $name+FirstLowerCase+javaValidName;
-end
 
-def type(Variable & reactive & owner & concept) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
+rule type(Variable, reactive, owner, concept) and not type(inherited) and not type(multiple) and not type(overriden) and trigger(declaration)
 	protected io.intino.magritte.framework.Expression<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName;
-end
 
-def type(Variable & reactive & owner) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
+rule type(Variable, reactive, owner) and not type(inherited) and not type(multiple) and not type(overriden) and trigger(declaration)
 	protected io.intino.magritte.framework.Expression<$type+fullType+reference> $name+FirstLowerCase+javaValidName;
-end
 
-def type(Variable & function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
+rule type(Variable, function) and type(owner) and not type(inherited) and not type(overriden) and trigger(declaration)
 	protected $workingPackage+LowerCase.functions.$rule+interfaceClass $name+FirstLowerCase+javaValidName;
-end
 
-def type(Variable & owner) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+rule type(Variable, owner) and not type(concept) and type(multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
 	protected java.util.List<$type+fullType+reference> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
-end
 
-def type(Variable & owner) !type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+rule type(Variable, owner) and not type(concept) and not type(multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
 	protected $type+reference+variableType $name+FirstLowerCase+javaValidName;
-end
 
-def type(aspect) !type(overriden) trigger(declaration)
+rule type(aspect) and not type(overriden) and trigger(declaration)
+	protected $qn _$name+javaValidName+FirstLowerCase;
+
+rule type(constraint) and trigger(declaration)
 	protected $qn+reference _$name+javaValidName+FirstLowerCase;
-end
 
-def type(constraint) trigger(declaration)
-	protected $qn+reference _$name+javaValidName+FirstLowerCase;
-end
-
-def type(Variable & owner) type(concept) !type(multiple | inherited | overriden | instance) trigger(declaration)
+rule type(Variable, owner) and type(concept) and not (type(multiple) or type(inherited) or type(overriden) or type(instance)) and trigger(declaration)
 	protected io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName;
-end
 
-def type(Node & owner & single) !type(inherited | instance | overriden) trigger(declaration)
+rule type(Node, owner, single) and not (type(inherited) or type(instance) or type(overriden)) and trigger(declaration)
 	protected $qn+reference $name+FirstLowerCase+javaValidName;
-end
 
-def type(Node & owner) !type(inherited | single | overriden | instance) trigger(declaration)
+rule type(Node, owner) and not (type(inherited) or type(single) or type(overriden) or type(instance)) and trigger(declaration)
 	protected java.util.List<$qn+reference> $name+javaValidName+FirstLowerCase~List = new java.util.ArrayList<>();
-end
 
-def type(Node) trigger(declaration)
-end
+rule type(Node) and trigger(declaration)

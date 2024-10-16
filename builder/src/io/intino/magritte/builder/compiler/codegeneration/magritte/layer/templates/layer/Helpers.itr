@@ -1,111 +1,83 @@
-def attribute(this:datex) trigger(variableType)
+rule attribute(this, datex) and trigger(variableType)
 	io.intino.magritte.framework.type.DateX
-end
 
-def attribute(this:instant) trigger(variableType)
+rule attribute(this, instant) and trigger(variableType)
 	java.time.Instant
-end
 
-def attribute(this:double) trigger(variableType)
+rule attribute(this, double) and trigger(variableType)
 	double
-end
 
-def attribute(this:integer) trigger(variableType)
+rule attribute(this, integer) and trigger(variableType)
 	int
-end
 
-def attribute(this:long) trigger(variableType)
+rule attribute(this, long) and trigger(variableType)
 	long
-end
 
-def attribute(this:object) trigger(variableType)
+rule attribute(this, object) and trigger(variableType)
 	java.lang.Object
-end
 
-def attribute(this:time) trigger(variableType)
+rule attribute(this, time) and trigger(variableType)
 	java.time.LocalTime
-end
 
-def attribute(this:type) trigger(variableType)
+rule attribute(this, type) and trigger(variableType)
 	Concept
-end
 
-def attribute(this:string) trigger(variableType)
+rule attribute(this, string) and trigger(variableType)
 	java.lang.String
-end
 
-def attribute(this:boolean) trigger(variableType)
+rule attribute(this, boolean) and trigger(variableType)
 	boolean
-end
 
-def attribute(this:resource) trigger(variableType)
+rule attribute(this, resource) and trigger(variableType)
 	java.net.URL
-end
 
-def attribute(this:integer) trigger(fulltype)
+rule attribute(this, integer) and trigger(fulltype)
 	java.lang.Integer
-end
 
-def attribute(this:long) trigger(fulltype)
+rule attribute(this, long) and trigger(fulltype)
 	java.lang.Long
-end
 
-def attribute(this:double) trigger(fulltype)
+rule attribute(this, double) and trigger(fulltype)
 	java.lang.Double
-end
 
-def attribute(this:resource) trigger(fulltype)
+rule attribute(this, resource) and trigger(fulltype)
 	java.net.URL
-end
 
-def attribute(this:boolean) trigger(fulltype)
+rule attribute(this, boolean) and trigger(fulltype)
 	java.lang.Boolean
-end
 
-def attribute(this:time) trigger(fulltype)
+rule attribute(this, time) and trigger(fulltype)
 	java.time.LocalTime
-end
 
-def attribute(this:string) trigger(fulltype)
+rule attribute(this, string) and trigger(fulltype)
 	java.lang.String
-end
 
-def attribute(this:date) trigger(fullType)
+rule attribute(this, date) and trigger(fullType)
 	io.intino.magritte.framework.types.Date
-end
 
-def attribute(this:instant) trigger(fullType)
+rule attribute(this, instant) and trigger(fullType)
 	java.time.Instant
-end
 
-def attribute(this:time) trigger(fullType)
+rule attribute(this, time) and trigger(fullType)
 	java.time.LocalTime
-end
 
-def attribute(this:type) trigger(fullType)
+rule attribute(this, type) and trigger(fullType)
 	Concept
-end
 
-def trigger(quoted)
+rule trigger(quoted)
 	"$this"
-end
 
-def type(nativerule) trigger(interfaceClass)
+rule type(nativerule) and trigger(interfaceClass)
 	$interfaceClass+javaValidName
-end
 
-def type(wordrule) trigger(externalWordClass)
+rule type(wordrule) and trigger(externalWordClass)
 	$aClass+javaValidName
-end
 
-def type(nativeCustomWordRule) trigger(externalWordClass)
+rule type(nativeCustomWordRule) and trigger(externalWordClass)
 	$source+javaValidName
-end
 
-def type(variablecustomrule | customrule) trigger(externalWordClass)
+rule (type(variablecustomrule) or type(customrule)) and trigger(externalWordClass)
 	$aClass+javaValidName
-end
 
-def type(customrule) trigger(name)
+rule type(customrule) and trigger(name)
 	$aClass+javaValidName
-end

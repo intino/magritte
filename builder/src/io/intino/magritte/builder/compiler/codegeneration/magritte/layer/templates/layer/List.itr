@@ -1,53 +1,39 @@
-def type(Variable & multiple & owner) !type(reactive | inherited | overriden | volatile) trigger(list)
+rule type(Variable, multiple, owner) and not (type(reactive) or type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", this.$name+FirstLowerCase+javaValidName);
-end
 
-def type(Variable & multiple & owner) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, multiple, owner) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", this.$name+FirstLowerCase+javaValidName != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.$name+FirstLowerCase+javaValidName)) : java.util.Collections.emptyList());
-end
 
-def type(Variable & reference & owner) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, reference, owner) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", this.$name+FirstLowerCase+javaValidName != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.$name+FirstLowerCase+javaValidName)) : java.util.Collections.emptyList());
-end
 
-def type(Variable & function & owner) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, function, owner) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", this.$name+FirstLowerCase+javaValidName != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.$name+FirstLowerCase+javaValidName)) : java.util.Collections.emptyList());
-end
 
-def type(Variable & owner) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, owner) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(this.$name+FirstLowerCase+javaValidName)));
-end
 
-def type(Variable & metaType & multiple) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, metaType, multiple) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName());
-end
 
-def type(Variable & metaType) type(function | reactive) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, metaType) and (type(function) or type(reactive)) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(io.intino.magritte.framework.utils.NativeExtractor.extract("$name", _$containerName+FirstLowerCase))));
-end
 
-def type(Variable & metaType) !type(inherited | overriden | volatile) trigger(list)
+rule type(Variable, metaType) and not (type(inherited) or type(overriden)) and trigger(list)
 	map.put("$name+FirstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName())));
-end
 
-def type(Node & single & owner) !type(inherited | overriden | instance) trigger(list)
+rule type(Node, single, owner) and not (type(inherited) or type(overriden) or type(instance)) and trigger(list)
 	if ($name+FirstLowerCase+javaValidName != null) nodes.add(this.$name+FirstLowerCase+javaValidName.core$$());
-end
 
-def type(Node & owner) !type(inherited | overriden | instance) trigger(list)
+rule type(Node, owner) and not (type(inherited) or type(overriden) or type(instance)) and trigger(list)
 	$name+toCamelCase+FirstLowerCase~List.stream().forEach(c -> nodes.add(c.core$$()));
-end
 
-def type(Node & single & owner) !type(inherited | overriden | instance) trigger(componentList)
+rule type(Node, single, owner) and not (type(inherited) or type(overriden) or type(instance)) and trigger(componentList)
 	if ($name+FirstLowerCase+javaValidName != null) components.add(this.$name+FirstLowerCase+javaValidName.core$$());
-end
 
-def type(Node & owner) !type(inherited | overriden | instance) trigger(componentList)
+rule type(Node, owner) and not (type(inherited) or type(overriden) or type(instance)) and trigger(componentList)
 	new java.util.ArrayList<>($name+toCamelCase+toCamelCase+FirstLowerCase~List).forEach(c -> components.add(c.core$$()));
-end
 
-def type(Node) trigger(list)
-end
+rule type(Node) and trigger(list)
 
-def type(Node) trigger(componentlist)
-end
+rule type(Node) and trigger(componentlist)

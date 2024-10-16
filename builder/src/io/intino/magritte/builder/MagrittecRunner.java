@@ -2,25 +2,18 @@ package io.intino.magritte.builder;
 
 import io.intino.builder.BuildConstants;
 import io.intino.magritte.builder.compiler.operations.LayerGenerationOperation;
-import io.intino.tara.builder.CompilationInfoExtractor;
 import io.intino.tara.builder.TaraCompilerRunner;
-import io.intino.tara.builder.core.CompilerConfiguration;
 import io.intino.tara.builder.core.errorcollection.TaraException;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static io.intino.builder.BuildConstants.MESSAGES_END;
 import static io.intino.builder.BuildConstants.MESSAGES_START;
-import static io.intino.builder.BuildConstants.Mode.Build;
-
 
 public class MagrittecRunner {
-
 	private static final Logger LOG = Logger.getGlobal();
 
 	private MagrittecRunner() {
@@ -33,12 +26,8 @@ public class MagrittecRunner {
 			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)
 				throw new TaraException("Error finding args file");
-			final CompilerConfiguration config = new CompilerConfiguration();
-			final Map<File, Boolean> sources = new LinkedHashMap<>();
-			CompilationInfoExtractor.getInfoFromArgsFile(argsFile, config, sources);
 			TaraCompilerRunner runner = new TaraCompilerRunner(verbose, List.of(LayerGenerationOperation.class));
-			if (sources.isEmpty() || !config.mode().equals(Build)) return;
-			runner.run(config, sources);
+			runner.run(argsFile);
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString() : e.getMessage());
 			e.printStackTrace();
