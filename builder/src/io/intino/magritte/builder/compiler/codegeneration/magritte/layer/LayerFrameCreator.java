@@ -16,7 +16,7 @@ import io.intino.tara.language.model.Variable;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,7 +87,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private void addNodeImports(FrameBuilder builder) {
-		Set<String> set = new HashSet<>(mogramAdapter.getImports());
+		Set<String> set = new LinkedHashSet<>(mogramAdapter.getImports());
 		set.addAll(variableAdapter.getImports());
 		if (!set.isEmpty()) builder.add(IMPORTS, set.toArray(new Object[0]));
 	}

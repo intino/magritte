@@ -133,7 +133,7 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private List<Mogram> collectChildren(Mogram parent) {
-		Set<Mogram> set = new HashSet<>();
+		Set<Mogram> set = new LinkedHashSet<>();
 		for (Mogram child : parent.children()) {
 			set.add(child);
 			set.addAll(collectChildren(child));
@@ -177,7 +177,7 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 
 
 	private Collection<Mogram> allowedFacets(Mogram node) {
-		Set<Mogram> nodes = new HashSet<>();
+		Set<Mogram> nodes = new LinkedHashSet<>();
 		for (Mogram aspectNode : node.components().stream().filter(Mogram::isFacet).toList()) {
 			if (aspectNode.isReference()) continue;
 			nodes.add(aspectNode);

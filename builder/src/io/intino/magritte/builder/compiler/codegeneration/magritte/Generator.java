@@ -38,7 +38,7 @@ public abstract class Generator implements TemplateTags {
 	protected final String outDsl;
 	protected final String workingPackage;
 	protected final String languageWorkingPackage;
-	protected Set<String> imports = new HashSet<>();
+	protected Set<String> imports = new LinkedHashSet<>();
 
 	public Generator(Language language, String outDsl, String workingPackage, String languageWorkingPackage) {
 		this.language = language;

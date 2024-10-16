@@ -12,7 +12,7 @@ import io.intino.tara.language.semantics.Constraint;
 import io.intino.tara.language.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,7 +70,7 @@ public final class TypesProvider implements TemplateTags {
 	}
 
 	public static Set<String> getTypes(Variable variable, Level type) {
-		Set<String> types = new HashSet<>();
+		Set<String> types = new LinkedHashSet<>();
 		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyMogram || variable.values().get(0) == null))
 			types.add((EMPTY));
@@ -92,7 +92,7 @@ public final class TypesProvider implements TemplateTags {
 	}
 
 	public static String[] getTypes(Constraint.Parameter parameter, boolean isRequired) {
-		Set<String> types = new HashSet<>();
+		Set<String> types = new LinkedHashSet<>();
 		types.add(parameter.getClass().getSimpleName());
 		types.add(VARIABLE);
 		if (parameter instanceof ReferenceParameter && !parameter.type().equals(Primitive.WORD)) types.add(REFERENCE);
@@ -105,7 +105,7 @@ public final class TypesProvider implements TemplateTags {
 	}
 
 	public static String[] getTypes(Parameter parameter) {
-		Set<String> types = new HashSet<>();
+		Set<String> types = new LinkedHashSet<>();
 		types.add(parameter.getClass().getSimpleName());
 		types.add(VARIABLE);
 		types.add(PARAMETER);

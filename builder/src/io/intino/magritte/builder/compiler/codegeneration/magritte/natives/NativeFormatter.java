@@ -245,7 +245,7 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForFunctionVariable(Variable variable, Object body, FrameBuilderContext context) {
 		final String signature = getSignature(variable);
 		context.add(PACKAGE, this.aPackage);
-		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
+		final Set<String> imports = new LinkedHashSet<>(((NativeRule) variable.rule()).imports());
 		imports.addAll(collectImports(variable));
 		if (!imports.isEmpty()) context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackage);
@@ -278,7 +278,7 @@ public class NativeFormatter implements TemplateTags {
 		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackageScope(parameter, workingPackage));
 		if (!context.contains(WORKING_PACKAGE)) context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(parameter)));
-		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
+		final Set<String> imports = new LinkedHashSet<String>(((NativeRule) parameter.rule()).imports());
 		imports.addAll(collectImports(parameter));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		context.add(SIGNATURE, signature);
@@ -300,7 +300,7 @@ public class NativeFormatter implements TemplateTags {
 		context.add(FILE, variable.file());
 		context.add(LINE, variable.line());
 		context.add(COLUMN, variable.column());
-		final Set<String> imports = new HashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new HashSet<>());
+		final Set<String> imports = new LinkedHashSet<>(variable.rule() != null ? ((NativeRule) variable.rule()).imports() : new LinkedHashSet<>());
 		imports.addAll(collectImports(variable));
 		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(variable)));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
@@ -320,7 +320,7 @@ public class NativeFormatter implements TemplateTags {
 		context.add(FILE, parameter.file());
 		context.add(LINE, parameter.line());
 		context.add(COLUMN, parameter.column());
-		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
+		final Set<String> imports = new LinkedHashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new LinkedHashSet<>());
 		imports.addAll(collectImports(parameter));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		context.add(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter));
