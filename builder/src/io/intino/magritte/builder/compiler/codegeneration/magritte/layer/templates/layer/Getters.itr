@@ -140,10 +140,6 @@ rule type(Node, target, single) and attribute(name) and not (type(owner) or type
 		return ($qn+reference) _$targetContainer+FirstLowerCase.$name+FirstLowerCase+javaValidName();
 	}
 
-
-
------ OWN GETTERS -----
-
 rule type(variable, reference, concept, multiple, reactive) and not (type(inherited) or type(overriden)) and trigger(getter)
 	public java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName() {
 		return java.util.Collections.unmodifiableList($name+FirstLowerCase+javaValidName);
@@ -153,7 +149,6 @@ rule type(variable, reference, concept, reactive) and not (type(inherited) or ty
 	public io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName() {
 		return this.$name+FirstLowerCase+javaValidName.value();
 	}
-
 
 rule type(variable, reference, concept, multiple) and not (type(inherited) or type(overriden)) and trigger(getter)
 	public java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName() {

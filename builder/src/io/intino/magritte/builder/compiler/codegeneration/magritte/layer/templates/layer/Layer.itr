@@ -27,42 +27,42 @@ rule type(Layer)
 
 	$node
 
-rule type(single, owner) and not (type(overriden) or type(instance)) and trigger(add)
+rule type(single, owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(add)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = node.as($qn+reference.class);
 
-rule type(owner) and not (type(overriden) or type(instance)) and trigger(add)
+rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(add)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.add(node.as($qn+reference.class));
 
 rule type(overriden) and trigger(add)
 
-rule type(single, owner) and not (type(overriden) or type(instance)) and trigger(remove)
+rule type(single, owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(remove)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = null;
 
-rule type(owner) and not (type(overriden) or type(instance)) and trigger(remove)
+rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(remove)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.remove(node.as($qn+reference.class));
 
 rule type(overriden) and trigger(remove)
 
-rule type(node) and not (type(aspect) or type(final) or type(instance) or type(abstract)) and trigger(new)
+rule type(node) and not (type(aspect) or type(final) or type(instance) or type(generalization)or type(inherited)) and trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
 
-rule type(node) and not (type(aspect) or type(single) or type(final) or type(instance) or type(abstract) or type(overriden)) and trigger(clear)
+rule type(node) and not (type(aspect) or type(single) or type(final) or type(instance) or type(generalization) or type(overriden)or type(inherited)) and trigger(clear)
 	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
 
-rule type(node, create) and not (type(aspect) or type(final) or type(instance)) and trigger(new)
+rule type(node, create) and not (type(aspect) or type(final) or type(instance)or type(inherited)) and trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
 
-rule type(node, create) and not (type(single) or type(final) or type(instance)) and trigger(clear)
+rule type(node, create) and not (type(single) or type(final) or type(instance) or type(inherited)) and trigger(clear)
 	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
@@ -72,7 +72,7 @@ rule type(node, owner) and trigger(new)
 
 rule type(node, owner) and trigger(clear)
 
-rule type(availableAspect) and not type(abstract) and attribute(variable) and trigger(availableAspect)
+rule type(availableAspect) and not type(generalization) and attribute(variable) and trigger(availableAspect)
 	public $qn as$name+FirstUpperCase() {
 		return a$$($qn+reference.class);
 	}
@@ -91,7 +91,7 @@ rule type(availableAspect) and not type(abstract) and attribute(variable) and tr
 		core$$().removeAspect($qn+reference.class);
 	}
 
-rule type(availableAspect) and not type(abstract) and trigger(availableAspect)
+rule type(availableAspect) and not type(generalization) and trigger(availableAspect)
 
 	public $qn+reference as$name+FirstUpperCase() {
 		io.intino.magritte.framework.Layer as = a$$($qn+reference.class);
@@ -129,7 +129,7 @@ rule type(constraint) and trigger(aspectAssign)
 rule trigger(decorable)
 	Abstract
 
-rule not type(target) and type(nodeimpl) and not type(instance) and trigger(Node)
+rule not type(target) and type(nodeimpl) and not type(instance) and not type(inherited) and trigger(Node)
 	public<< $inner>><< $abstract>> class $decorable<<$name+javaValidName+FirstUpperCase>><< extends $parent? extends io.intino.magritte.framework.Layer>><< implements $flag+tag...[, ]>> {
 		<<$variable+declaration...[$NL]>>
 		<<$node+declaration...[$NL]>>
@@ -239,7 +239,6 @@ rule not type(target) and type(nodeimpl) and not type(instance) and trigger(Node
 			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph) core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
 	}
-
 
 rule trigger(parentCreate)
 	extends $this.Create

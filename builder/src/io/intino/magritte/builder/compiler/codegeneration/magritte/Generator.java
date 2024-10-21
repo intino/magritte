@@ -14,12 +14,14 @@ import io.intino.tara.builder.utils.Format;
 import io.intino.tara.language.semantics.Constraint;
 import io.intino.tara.model.*;
 import io.intino.tara.model.rules.property.*;
+import io.intino.tara.processors.model.HasMogram;
 import io.intino.tara.processors.model.ReferenceProperty;
 import io.intino.tara.processors.parser.NativeExtractor;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter.getQn;
@@ -72,12 +74,6 @@ public abstract class Generator implements TemplateTags {
 		if ((context.contains(NODE)) && hasLists(mogram.parent().get())
 				|| (parent.facetPrescription() != null && !(parentTarget instanceof MogramRoot) && !parentTarget.components().isEmpty() && hasLists((Mogram) parentTarget)))
 			context.add("parentClearName", parentQN);
-	}
-
-	protected void addComponents(Mogram mogram, FrameBuilderContext context) {
-		mogram.components().stream().
-				filter(c -> !c.level().equals(Level.M1) && !c.isAnonymous()).
-				forEach(c -> context.add(NODE, FrameBuilder.from(context).append(c).add(OWNER).toFrame()));
 	}
 
 	protected Frame stashFrame(Stash stash) {
@@ -262,9 +258,53 @@ public abstract class Generator implements TemplateTags {
 		return engine;
 	}
 
+	protected Stream<Property> effectiveProperties(Mogram mogram) {
+		Map<String, Property> properties = new LinkedHashMap<>();
+		Mogram current = mogram.parent() != null ? mogram.parent().get() : null;
+		while (current != null) {
+			current.properties().forEach(p -> properties.put(p.name(), p));
+			current = current.parent() != null ? current.parent().get() : null;
+		}
+		ArrayList<Property> list = new ArrayList<>(properties.values());
+		Collections.reverse(list);
+		mogram.properties().stream().filter(property -> list.stream().noneMatch(p -> p.name().equals(property.name()))).forEach(list::add);
+		return list.stream();
+	}
+
+
+	protected Stream<Mogram> effectiveComponents(Mogram mogram) {
+		Map<String, Mogram> mograms = new LinkedHashMap<>();
+		Mogram current = mogram.parent() != null ? mogram.parent().get() : null;
+		while (current != null) {
+			current.components().forEach(m -> mograms.put(m.name(), m));
+			current.components().stream().flatMap(c -> c.children().stream()).forEach(c -> mograms.put(c.name(), c));
+			current = current.parent() != null ? current.parent().get() : null;
+		}
+		List<Mogram> list = new ArrayList<>(mograms.values());
+		Collections.reverse(list);
+		mogram.components().stream()
+				.filter(c -> list.stream().noneMatch(p -> p.name().equals(c.name())))
+				.forEach(list::add);
+		return list.stream();
+	}
+
+	protected Stream<HasMogram> effectiveReferenceComponents(Mogram mogram) {
+		Map<String, HasMogram> refs = new LinkedHashMap<>();
+		Mogram current = mogram.parent() != null ? mogram.parent().get() : null;
+		while (current != null) {
+			current.referenceComponents().forEach(r -> refs.put(r.target().get().name(), r));
+			current = current.parent() != null ? current.parent().get() : null;
+		}
+		List<HasMogram> list = new ArrayList<>(refs.values());
+		Collections.reverse(list);
+		mogram.referenceComponents().stream()
+				.filter(c -> list.stream().noneMatch(hs -> hs.target().get().name().equals(c.target().get().name())))
+				.forEach(list::add);
+		return list.stream();
+	}
 
 	private boolean hasLists(Mogram mogram) {
-		return mogram.components().stream().anyMatch(c -> !mogram.sizeOf(c).isSingle() && !c.is(Final));
+		return effectiveComponents(mogram).anyMatch(c -> !c.container().sizeOf(c).isSingle() && !c.is(Final));
 	}
 
 	//	private void addParent(FacetTarget target) {

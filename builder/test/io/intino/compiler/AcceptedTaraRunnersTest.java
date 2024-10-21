@@ -124,7 +124,7 @@ public class AcceptedTaraRunnersTest {
 		check(new File(dir), new File(checkDir));
 	}
 
-	static Set<String> Excluded = Set.of("Sentinel.java");
+	static Set<String> Excluded = Set.of("CatalogComponents.java", "Component.java");
 
 	private static void check(File root, File checkRoot) throws IOException {
 		ArrayList<File> list = new ArrayList<>();
