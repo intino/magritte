@@ -10,45 +10,27 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.intino.builder.BuildConstants.MESSAGES_END;
-import static io.intino.builder.BuildConstants.MESSAGES_START;
+import static io.intino.magritte.builder.Check.checkArgumentsNumber;
+import static io.intino.magritte.builder.Check.checkConfigurationFile;
 
 public class MagrittecRunner {
-	private static final Logger LOG = Logger.getGlobal();
+	static final Logger LOG = Logger.getGlobal();
 
 	private MagrittecRunner() {
 	}
 
 	public static void main(String[] args) {
-		final boolean verbose = args.length != 2 || Boolean.parseBoolean(args[1]);
-		if (verbose) System.out.println(BuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
 		try {
-			File argsFile;
-			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)
+			final boolean verbose = args.length != 2 || Boolean.parseBoolean(args[1]);
+			if (verbose) System.out.println(BuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
+			if (checkArgumentsNumber(args) || !checkConfigurationFile(args[0]))
 				throw new TaraException("Error finding args file");
 			TaraCompilerRunner runner = new TaraCompilerRunner(verbose, List.of(LayerGenerationOperation.class));
-			runner.run(argsFile);
+			runner.run(new File(args[0]));
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString() : e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-
-	private static File checkConfigurationFile(String arg) {
-		final File argsFile = new File(arg);
-		if (!argsFile.exists()) {
-			LOG.severe(MESSAGES_START + "Arguments file for Tara compiler not found" + MESSAGES_END);
-			return null;
-		}
-		return argsFile;
-	}
-
-	private static boolean checkArgumentsNumber(String[] args) {
-		if (args.length < 1) {
-			LOG.severe(MESSAGES_START + "There is no arguments for tara compiler" + MESSAGES_END);
-			return true;
-		}
-		return false;
 	}
 }
