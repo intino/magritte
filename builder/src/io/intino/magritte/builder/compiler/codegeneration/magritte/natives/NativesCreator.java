@@ -6,9 +6,11 @@ import io.intino.itrules.FrameBuilder;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.Generator;
 import io.intino.tara.Language;
 import io.intino.tara.builder.utils.Format;
-import io.intino.tara.model.*;
+import io.intino.tara.model.Mogram;
+import io.intino.tara.model.Primitive;
+import io.intino.tara.model.Property;
+import io.intino.tara.model.PropertyDescription;
 import io.intino.tara.processors.model.Model;
-import io.intino.tara.processors.model.MogramImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,23 +45,23 @@ public class NativesCreator {
 
 	public Map<String, String> create() {
 		List<PropertyDescription> parameters = new ArrayList<>();
-		List<Property> variables = new ArrayList<>();
+		List<Property> properties = new ArrayList<>();
 		for (Mogram mogram : model.mograms()) {
 			extractNativeParameters(mogram, parameters);
-			extractNativeProperties(mogram, variables);
+			extractNativeProperties(mogram, properties);
 		}
-		return createNativeClasses(parameters, variables);
+		return createNativeClasses(parameters, properties);
 	}
 
-	private Map<String, String> createNativeClasses(List<PropertyDescription> parameters, List<Property> variables) {
-		Map<String, String> destinyToOrigin = new HashMap<>();
+	private Map<String, String> createNativeClasses(List<PropertyDescription> parameters, List<Property> props) {
+		Map<String, String> destination2Origin = new HashMap<>();
 		Map<File, String> nativeCodes = new HashMap<>();
-		if (parameters.isEmpty() && variables.isEmpty()) return destinyToOrigin;
-		if (!parameters.isEmpty()) nativeCodes.putAll(createNativeParameterClasses(parameters, destinyToOrigin));
-		if (!variables.isEmpty()) nativeCodes.putAll(createNativeVariableClasses(variables, destinyToOrigin));
+		if (parameters.isEmpty() && props.isEmpty()) return destination2Origin;
+		if (!parameters.isEmpty()) nativeCodes.putAll(createNativeParameterClasses(parameters, destination2Origin));
+		if (!props.isEmpty()) nativeCodes.putAll(createNativePropertyClasses(props, destination2Origin));
 		for (Map.Entry<File, String> nativeCode : nativeCodes.entrySet())
 			writeJavaCode(nativeCode.getKey(), nativeCode.getValue());
-		return destinyToOrigin;
+		return destination2Origin;
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<PropertyDescription> parameters, Map<String, String> originToDestiny) {
@@ -73,7 +75,7 @@ public class NativesCreator {
 		return nativeCodes;
 	}
 
-	private Map<File, String> createNativeVariableClasses(List<Property> natives, Map<String, String> files) {
+	private Map<File, String> createNativePropertyClasses(List<Property> natives, Map<String, String> files) {
 		final Engine expressionsTemplate = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(prop -> {
@@ -84,11 +86,11 @@ public class NativesCreator {
 		return nativeCodes;
 	}
 
-	private void createNativeFrame(Map<String, String> originToDestiny, Engine engine, Map<File, String> nativeCodes, File destination, FrameBuilder append, Primitive type, String file2) {
-		final FrameBuilder frameBuilder = append.add("java");
+	private void createNativeFrame(Map<String, String> destination2Origin, Engine engine, Map<File, String> nativeCodes, File destination, FrameBuilder builder, Primitive type, String file2) {
+		final FrameBuilder frameBuilder = builder.add("java");
 		if (FUNCTION.equals(type)) frameBuilder.add(type.name());
 		nativeCodes.put(destination, engine.render(frameBuilder.toFrame()));
-		if (!originToDestiny.containsKey(file2)) originToDestiny.put(destination.getAbsolutePath(), file2);
+		if (!destination2Origin.containsKey(file2)) destination2Origin.put(destination.getAbsolutePath(), file2);
 	}
 
 	private Engine expressionsTemplate() {
@@ -122,21 +124,17 @@ public class NativesCreator {
 	}
 
 	private void extractNativeParameters(Mogram mogram, List<PropertyDescription> natives) {
-		if (mogram instanceof MogramReference || (mogram instanceof MogramImpl && mogram.container() instanceof MogramRoot))
-			return;
 		natives.addAll(mogram.parameters().stream().
 				filter(p -> FUNCTION.equals(p.type()) || isExpression(p)).toList());
-		for (Mogram component : mogram.mograms())
-			extractNativeParameters(component, natives);
+		for (Mogram inner : mogram.mograms())
+			extractNativeParameters(inner, natives);
 	}
 
 	private void extractNativeProperties(Mogram mogram, List<Property> natives) {
-		if (mogram instanceof MogramReference || (mogram instanceof MogramImpl && mogram.container() instanceof MogramRoot))
-			return;
 		natives.addAll(mogram.properties().stream()
 				.filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty())
 				.toList());
-		for (Mogram component : mogram.mograms()) extractNativeProperties(component, natives);
+		for (Mogram inner : mogram.mograms()) extractNativeProperties(inner, natives);
 	}
 
 	private boolean isExpression(Property valued) {

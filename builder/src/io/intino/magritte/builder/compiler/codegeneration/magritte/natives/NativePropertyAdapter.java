@@ -30,8 +30,8 @@ class NativePropertyAdapter extends Generator implements Adapter<Property>, Temp
 	}
 
 	private void createFrame(final Property prop, FrameBuilderContext context) {
-		if (!(prop.values().get(0) instanceof Primitive.Expression body)) return;
-		String value = body.get();
+//		if (!()) return;
+		String value = prop.values().get(0) instanceof Primitive.Expression body ? body.get() : prop.values().get(0).toString();
 		NativeFormatter formatter = new NativeFormatter(language, outDsl, subPackage, workingPackage, languageWorkingPackage, false, importsFile);
 		if (FUNCTION.equals(prop.type())) formatter.fillFrameForFunctionProperty(prop, value, context);
 		else formatter.fillFrameFunctionProperty(context, prop, value);
