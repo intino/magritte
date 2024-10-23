@@ -3,6 +3,7 @@ package io.intino.compiler;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
+import io.intino.magritte.builder.MagrittecRunner;
 import io.intino.tara.builder.utils.FileSystemUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,34 +22,8 @@ import java.util.Set;
 import static io.intino.magritte.builder.MagrittecRunner.main;
 
 @Ignore
-public class AcceptedTaraRunnersTest {
+public class AcceptedMagritteRunnersTest {
 	private String home;
-
-	@Test
-	public void name() throws IOException {
-		String dir = "/Users/oroncal/Library/Caches/JetBrains/IntelliJIdea2024.1/compile-server/tafat_71aee1a0/_temp_";
-		File file = new File(dir, "ideaTaraToCompile.txt");
-		while (true) {
-			if (file.exists() && file.length() > 0) {
-				System.out.println(Files.readString(file.toPath()));
-				return;
-			}
-		}
-	}
-
-	private static String temp(String filepath) {
-		try {
-			File file = new File(filepath);
-			String home = System.getProperty("user.home");
-			String text = Files.readString(file.toPath()).replace("$WORKSPACE", home + File.separator + "workspace").replace("$HOME", home);
-			Path temporalFile = Files.createTempFile(file.getName(), ".txt");
-			Files.writeString(temporalFile, text, StandardOpenOption.TRUNCATE_EXISTING);
-			temporalFile.toFile().deleteOnExit();
-			return temporalFile.toFile().getAbsolutePath();
-		} catch (IOException e) {
-			return null;
-		}
-	}
 
 	@Before
 	public void setUp() {
@@ -115,6 +90,22 @@ public class AcceptedTaraRunnersTest {
 		main(new String[]{temp(home + "sandbox/confFiles/ness/m2_2.txt")});
 	}
 
+
+	@Test
+	public void tafatM3Run() {
+		MagrittecRunner.main(new String[]{temp(home + "sandbox/confFiles/tafat/tafat-m3.txt")});
+	}
+
+	@Test
+	public void tafatM2Run() {
+		MagrittecRunner.main(new String[]{temp(home + "sandbox/confFiles/tafat/tafat-m2.txt")});
+	}
+
+	@Test
+	public void tafatM1Run() {
+		MagrittecRunner.main(new String[]{temp(home + "sandbox/confFiles/tafat/tafat-m1.txt")});
+	}
+
 	@Test
 	public void konos_M2() throws IOException {
 		String dir = "/Users/oroncal/workspace/infrastructure/magritte/test-playground/konos/konos/";
@@ -156,6 +147,21 @@ public class AcceptedTaraRunnersTest {
 	private static Path expected(File root, File checkRoot, File file) {
 		return Path.of(file.getAbsolutePath().replace(root.getAbsolutePath(), checkRoot.getAbsolutePath()));
 	}
+
+	private static String temp(String filepath) {
+		try {
+			File file = new File(filepath);
+			String home = System.getProperty("user.home");
+			String text = Files.readString(file.toPath()).replace("$WORKSPACE", home + File.separator + "workspace").replace("$HOME", home);
+			Path temporalFile = Files.createTempFile(file.getName(), ".txt");
+			Files.writeString(temporalFile, text, StandardOpenOption.TRUNCATE_EXISTING);
+			temporalFile.toFile().deleteOnExit();
+			return temporalFile.toFile().getAbsolutePath();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 
 	@Test
 	public void konos_M1() {

@@ -260,6 +260,7 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 		effectiveComponents(mogram)
 				.filter(c -> !c.level().equals(Level.M1) && !c.isAnonymous())
 				.forEach(c -> {
+					if (c.equals(mogram)) return;
 					FrameBuilder builder = FrameBuilder.from(context).append(c).add(OWNER);
 					if (!c.container().equals(mogram)) builder.add(INHERITED);
 					context.add(NODE, builder.toFrame());

@@ -187,7 +187,8 @@ public class StashCreator {
 	private Variable createVariableFromParameter(PropertyDescription parameter) {
 		final Variable variable = new Variable();
 		variable.name = parameter.name();
-		if (parameter.definition().isReference()) variable.values = buildReferenceValues(parameter.values());
+		if (parameter.definition() != null && parameter.definition().isReference())
+			variable.values = buildReferenceValues(parameter.values());
 		else if (parameter.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(parameter);
 		else if (parameter.type().equals(RESOURCE) && parameter.values().get(0).toString().startsWith("$"))
