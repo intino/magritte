@@ -93,6 +93,7 @@ public class AcceptedMagritteRunnersTest {
 
 	@Test
 	public void tafatM3Run() {
+		FileSystemUtils.removeDir(new File("/Users/oroncal/workspace/infrastructure/magritte/test-playground/tafat-accessor/tafat-accessor/gen/"));
 		MagrittecRunner.main(new String[]{temp(home + "sandbox/confFiles/tafat/tafat-m3.txt")});
 	}
 

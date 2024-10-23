@@ -1,6 +1,3 @@
-rule attribute(this, datex) and trigger(variableType)
-	io.intino.magritte.framework.type.DateX
-
 rule attribute(this, instant) and trigger(variableType)
 	java.time.Instant
 
@@ -68,6 +65,9 @@ rule trigger(quoted)
 	"$this"
 
 rule type(nativerule) and trigger(interfaceClass)
+	$interfaceClass+javaValidName
+
+rule trigger(interfaceClass)
 	$interfaceClass+javaValidName
 
 rule type(wordrule) and trigger(externalWordClass)

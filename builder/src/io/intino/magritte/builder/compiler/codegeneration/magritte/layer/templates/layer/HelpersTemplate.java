@@ -14,7 +14,6 @@ public class HelpersTemplate extends Template {
 
 	public List<Rule> ruleSet() {
 		List<Rule> rules = new ArrayList<>();
-		rules.add(rule().condition(all(attribute("", "datex"), trigger("variabletype"))).output(literal("io.intino.magritte.framework.type.DateX")));
 		rules.add(rule().condition(all(attribute("", "instant"), trigger("variabletype"))).output(literal("java.time.Instant")));
 		rules.add(rule().condition(all(attribute("", "double"), trigger("variabletype"))).output(literal("double")));
 		rules.add(rule().condition(all(attribute("", "integer"), trigger("variabletype"))).output(literal("int")));
@@ -38,6 +37,7 @@ public class HelpersTemplate extends Template {
 		rules.add(rule().condition(all(attribute("", "type"), trigger("fulltype"))).output(literal("Concept")));
 		rules.add(rule().condition(trigger("quoted")).output(literal("\"")).output(placeholder("")).output(literal("\"")));
 		rules.add(rule().condition(all(allTypes("nativerule"), trigger("interfaceclass"))).output(placeholder("interfaceClass", "javaValidName")));
+		rules.add(rule().condition(trigger("interfaceclass")).output(placeholder("interfaceClass", "javaValidName")));
 		rules.add(rule().condition(all(allTypes("wordrule"), trigger("externalwordclass"))).output(placeholder("aClass", "javaValidName")));
 		rules.add(rule().condition(all(allTypes("nativeCustomWordRule"), trigger("externalwordclass"))).output(placeholder("source", "javaValidName")));
 		rules.add(rule().condition(all(any(allTypes("variablecustomrule"), allTypes("customrule")), trigger("externalwordclass"))).output(placeholder("aClass", "javaValidName")));

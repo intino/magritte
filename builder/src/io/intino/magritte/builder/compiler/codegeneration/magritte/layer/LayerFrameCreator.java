@@ -26,14 +26,14 @@ public class LayerFrameCreator implements TemplateTags {
 	private final String outDsl;
 	private final String workingPackage;
 	private final MogramAdapter mogramAdapter;
-	private final LayerPropertyAdapter propertyAdapter;
+	private final PropertyAdapter propertyAdapter;
 	private Mogram initNode = null;
 
 	private LayerFrameCreator(String outDsl, Language language, String workingPackage, String languageWorkingPackage) {
 		this.outDsl = outDsl;
 		this.workingPackage = workingPackage;
 		this.adapters = new HashMap<>();
-		this.adapters.put(Property.class, propertyAdapter = new LayerPropertyAdapter(language, outDsl, workingPackage, languageWorkingPackage));
+		this.adapters.put(Property.class, propertyAdapter = new PropertyAdapter(language, outDsl, workingPackage, languageWorkingPackage));
 		this.adapters.put(Mogram.class, mogramAdapter = new MogramAdapter(outDsl, language, null, workingPackage, languageWorkingPackage));
 	}
 

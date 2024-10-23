@@ -304,7 +304,8 @@ public abstract class Generator implements TemplateTags {
 	}
 
 	private boolean hasLists(Mogram mogram) {
-		return effectiveComponents(mogram).anyMatch(c -> !c.container().sizeOf(c).isSingle() && !c.is(Final));
+		return effectiveComponents(mogram).anyMatch(c -> !c.container().sizeOf(c).isSingle() && !c.is(Final)) ||
+				effectiveReferenceComponents(mogram).anyMatch(c -> !c.container().sizeOf(c).isSingle() && !c.annotations().contains(Final));
 	}
 
 	//	private void addParent(FacetTarget target) {

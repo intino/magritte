@@ -20,9 +20,9 @@ import static io.intino.magritte.builder.compiler.codegeneration.magritte.NameFo
 import static io.intino.tara.model.Annotation.Reactive;
 
 
-class LayerPropertyAdapter extends Generator implements Adapter<Property>, TemplateTags {
+class PropertyAdapter extends Generator implements Adapter<Property>, TemplateTags {
 
-	LayerPropertyAdapter(Language language, String generatedLanguage, String workingPackage, String languageWorkingPackage) {
+	PropertyAdapter(Language language, String generatedLanguage, String workingPackage, String languageWorkingPackage) {
 		super(language, generatedLanguage, workingPackage, languageWorkingPackage);
 	}
 

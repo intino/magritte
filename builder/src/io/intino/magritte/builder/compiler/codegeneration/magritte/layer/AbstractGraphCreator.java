@@ -68,7 +68,7 @@ public class AbstractGraphCreator extends Generator implements TemplateTags {
 
 	private Frame frameOf(Property property) {
 		return new FrameBuilder(PROPERTY, property.type().getName())
-				.put(Property.class, new LayerPropertyAdapter(language, outDsl, workingPackage, languageWorkingPackage))
+				.put(Property.class, new PropertyAdapter(language, outDsl, workingPackage, languageWorkingPackage))
 				.append(property)
 				.toFrame();
 	}
