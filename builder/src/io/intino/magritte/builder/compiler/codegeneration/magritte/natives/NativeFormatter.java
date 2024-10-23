@@ -31,7 +31,6 @@ import static io.intino.tara.processors.Resolver.shortType;
 
 @SuppressWarnings("ALL")
 public class NativeFormatter implements TemplateTags {
-
 	private final String outDsl;
 	private final Language language;
 	private final String aPackage;
@@ -69,11 +68,11 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getSignature(PropertyDescription parameter) {
-		return parameter.rule(FunctionRule.class).signature();
+		return parameter.definition().rule(FunctionRule.class).signature();
 	}
 
 	public static String getInterface(PropertyDescription parameter) {
-		final FunctionRule rule = parameter.rule(FunctionRule.class);
+		final FunctionRule rule = parameter.definition().rule(FunctionRule.class);
 		if (rule.interfaceClass() == null)
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
 		return rule.interfaceClass();
@@ -272,7 +271,7 @@ public class NativeFormatter implements TemplateTags {
 		if (!context.contains(SCOPE)) context.add(SCOPE, workingPackageScope(parameter, workingPackage));
 		if (!context.contains(WORKING_PACKAGE)) context.add(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!context.contains(RULE.toLowerCase())) context.add(RULE, cleanQn(getInterface(parameter)));
-		final Set<String> imports = new HashSet<String>(((FunctionRule) parameter.rule(FunctionRule.class)).imports());
+		final Set<String> imports = new HashSet<String>(((FunctionRule) parameter.definition().rule(FunctionRule.class)).imports());
 		imports.addAll(collectImports(parameter));
 		context.add(IMPORTS, imports.toArray(new String[imports.size()]));
 		context.add(SIGNATURE, signature);
@@ -369,7 +368,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public String buildContainerPathOfExpression(Valued valued) {
-		return cleanQn(buildExpressionContainerPath(workingPackages.getOrDefault(language.languageName(), workingPackage), valued.container(), this.outDsl, m1 ? languageWorkingPackage : workingPackage));
+		return cleanQn(buildExpressionContainerPath(workingPackage, valued.container(), this.outDsl, workingPackage));
 	}
 
 	public Constraint.Property propertyConstraintOf(PropertyDescription parameter) {
