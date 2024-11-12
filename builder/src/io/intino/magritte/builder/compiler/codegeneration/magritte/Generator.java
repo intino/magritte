@@ -114,7 +114,9 @@ public abstract class Generator implements TemplateTags {
 		builder.append(rule);
 		if (rule instanceof PropertyCustomRule) {
 			FrameBuilder frameBuilder = new FrameBuilder("customRule");
-			frameBuilder.add(QN, cleanQn(((PropertyCustomRule) rule).qualifiedName()));
+			String qualifiedName = ((PropertyCustomRule) rule).qualifiedName();
+			if (qualifiedName == null) return frameBuilder;
+			frameBuilder.add(QN, cleanQn(qualifiedName));
 			frameBuilder.add("aClass", cleanQn(((PropertyCustomRule) rule).externalClass()));
 			if (((PropertyCustomRule) rule).isMetric()) {
 				frameBuilder.add(METRIC);
