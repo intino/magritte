@@ -1,43 +1,32 @@
-def type(aspect) type(overriden) trigger(init)
+rule type(aspect) and type(overriden) and trigger(init)
 	_$name+FirstLowerCase.core$$().load(_$name+FirstLowerCase, name, values);
-end
 
-def type(variable & word & multiple & outDefined & owner) !type(inherited | overriden | reactive) trigger(init)
+rule type(variable, word, multiple, outDefined, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.WordLoader.load(values, $workingPackage+LowerCase.rules.$rule+externalWordClass.class, this);
-end
 
-def type(variable & word & outDefined & owner) !type(inherited | overriden | reactive) trigger(init)
+rule type(variable, word, outDefined, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.WordLoader.load(values, $workingPackage+LowerCase.rules.$rule+externalWordClass.class, this).get(0);
-end
 
-def type(variable & word & multiple & owner) !type(inherited | overriden | reactive) trigger(init)
+rule type(variable, word, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.WordLoader.load(values, $type.class, this);
-end
 
-def type(variable & word & owner) !type(inherited | overriden | reactive) trigger(init)
+rule type(variable, word, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.WordLoader.load(values, $type.class, this).get(0);
-end
 
-def type(variable & reactive & owner) !type(inherited | overriden) trigger(init)
+rule type(variable, reactive, owner) and not (type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.FunctionLoader.load(values, this, io.intino.magritte.framework.Expression.class).get(0);
-end
 
-def type(variable & objectVariable & owner & multiple) !type(inherited | overriden) trigger(init)
+rule type(variable, objectVariable, owner, multiple) and not (type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ObjectLoader.load(values,$type+withoutGeneric.class, this);
-end
 
-def type(variable & objectVariable & owner) !type(inherited | overriden) trigger(init)
+rule type(variable, objectVariable, owner) and not (type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ObjectLoader.load(values,$type+withoutGeneric.class, this).get(0);
-end
 
-def type(variable & function & owner) !type(inherited | overriden) trigger(init)
+rule type(variable, function, owner) and not (type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.FunctionLoader.load(values, this, $workingPackage.functions.$rule+interfaceClass~.class).get(0);
-end
 
-def type(variable & owner & multiple) !type(inherited | overriden) trigger(init)
+rule type(variable, owner, multiple) and not (type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.$type~Loader.load(values, this);
-end
 
-def type(variable & owner) !type(multiple | concept | inherited | overriden) trigger(init)
+rule type(variable, owner) and not (type(multiple) or type(concept) or type(inherited) or type(overriden)) and trigger(init)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.$type~Loader.load(values, this).get(0);
-end

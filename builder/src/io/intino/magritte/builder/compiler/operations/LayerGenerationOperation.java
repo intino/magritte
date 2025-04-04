@@ -1,8 +1,8 @@
 package io.intino.magritte.builder.compiler.operations;
 
+import io.intino.itrules.Engine;
 import io.intino.itrules.Frame;
 import io.intino.itrules.FrameBuilder;
-import io.intino.itrules.Template;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.AbstractGraphCreator;
 import io.intino.magritte.builder.compiler.codegeneration.magritte.layer.GraphLoaderCreator;
@@ -43,15 +43,15 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private final CompilerConfiguration conf;
 	private final File srcFolder;
 	private final File outFolder;
-	private final Template template;
+	private final Engine templateEngine;
 	private final Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public LayerGenerationOperation(CompilationUnit compilationUnit) {
 		super(compilationUnit);
 		this.conf = compilationUnit.configuration();
 		this.outFolder = conf.getOutDirectory();
-		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().stream().filter(d -> !d.getName().equals("gen")).findFirst().orElse(conf.sourceDirectories().get(0));
-		this.template = Format.customize(new LayerTemplate());
+		this.srcFolder = conf.sourceDirectories().isEmpty() ? null : conf.sourceDirectories().stream().filter(d -> !d.getName().equals("gen")).findFirst().orElse(conf.sourceDirectories().getFirst());
+		this.templateEngine = Format.customize(new LayerTemplate());
 	}
 
 	@Override
@@ -246,7 +246,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String render(Map.Entry<String, Frame> layerFrame) {
-		return template.render(layerFrame.getValue());
+		return templateEngine.render(layerFrame.getValue());
 	}
 
 	private String prefix() {

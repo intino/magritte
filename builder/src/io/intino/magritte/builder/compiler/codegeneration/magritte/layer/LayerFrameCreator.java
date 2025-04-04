@@ -25,7 +25,7 @@ import static io.intino.tara.builder.utils.Format.javaValidName;
 
 
 public class LayerFrameCreator implements TemplateTags {
-	private final Map<Class, Adapter> adapters;
+	private final Map<Class<?>, Adapter> adapters;
 	private final String outDsl;
 	private final String workingPackage;
 	private final MogramAdapter mogramAdapter;

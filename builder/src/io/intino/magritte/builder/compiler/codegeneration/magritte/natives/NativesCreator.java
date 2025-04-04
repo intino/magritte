@@ -1,7 +1,7 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.natives;
 
+import io.intino.itrules.Engine;
 import io.intino.itrules.FrameBuilder;
-import io.intino.itrules.Template;
 import io.intino.tara.builder.core.CompilerConfiguration;
 import io.intino.tara.builder.model.Model;
 import io.intino.tara.builder.model.MogramImpl;
@@ -57,35 +57,35 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<Parameter> parameters, Map<String, String> originToDestiny) {
-		final Template expressionsTemplate = expressionsTemplate();
+		var engine = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
 			builder.put(Parameter.class, new NativeParameterAdapter(model.language(), outDSL, conf.model().level(), conf.workingPackage(), conf.model().language().generationPackage(), NativeFormatter.calculatePackage(p.container()), conf.getImportsCache()));
-			createNativeFrame(originToDestiny, expressionsTemplate, nativeCodes, calculateDestination(p), builder.append(p), p.type(), p.file());
+			createNativeFrame(originToDestiny, engine, nativeCodes, calculateDestination(p), builder.append(p), p.type(), p.file());
 		});
 		return nativeCodes;
 	}
 
 	private Map<File, String> createNativeVariableClasses(List<Variable> natives, Map<String, String> files) {
-		final Template expressionsTemplate = expressionsTemplate();
+		var engine = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
 			builder.put(Variable.class, new NativeVariableAdapter(model.language(), outDSL, conf.workingPackage(), conf.model().language().generationPackage(), NativeFormatter.calculatePackage(variable.container()), conf.getImportsCache()));
-			createNativeFrame(files, expressionsTemplate, nativeCodes, calculateDestination(variable), builder.append(variable), variable.type(), variable.file());
+			createNativeFrame(files, engine, nativeCodes, calculateDestination(variable), builder.append(variable), variable.type(), variable.file());
 		});
 		return nativeCodes;
 	}
 
-	private void createNativeFrame(Map<String, String> originToDestiny, Template expressionsTemplate, Map<File, String> nativeCodes, File destination, FrameBuilder append, Primitive type, String file2) {
+	private void createNativeFrame(Map<String, String> originToDestiny, Engine engine, Map<File, String> nativeCodes, File destination, FrameBuilder append, Primitive type, String file2) {
 		final FrameBuilder frameBuilder = append.add("java");
 		if (FUNCTION.equals(type)) frameBuilder.add(type.name());
-		nativeCodes.put(destination, expressionsTemplate.render(frameBuilder.toFrame()));
+		nativeCodes.put(destination, engine.render(frameBuilder.toFrame()));
 		if (!originToDestiny.containsKey(file2)) originToDestiny.put(destination.getAbsolutePath(), file2);
 	}
 
-	private Template expressionsTemplate() {
+	private Engine expressionsTemplate() {
 		return Format.customize(new ExpressionsTemplate());
 	}
 
@@ -133,10 +133,10 @@ public class NativesCreator {
 	}
 
 	private boolean isExpression(Variable valued) {
-		return !valued.values().isEmpty() && valued.values().get(0) instanceof Primitive.Expression || valued.flags().contains(Tag.Reactive);
+		return !valued.values().isEmpty() && valued.values().getFirst() instanceof Primitive.Expression || valued.flags().contains(Tag.Reactive);
 	}
 
 	private boolean isExpression(Parameter parameter) {
-		return !parameter.values().isEmpty() && parameter.values().get(0) instanceof Primitive.Expression || parameter.flags().contains(Tag.Reactive);
+		return !parameter.values().isEmpty() && parameter.values().getFirst() instanceof Primitive.Expression || parameter.flags().contains(Tag.Reactive);
 	}
 }
