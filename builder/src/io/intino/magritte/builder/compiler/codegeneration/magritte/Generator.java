@@ -294,12 +294,13 @@ public abstract class Generator implements TemplateTags {
 		Map<String, HasMogram> refs = new LinkedHashMap<>();
 		Mogram current = mogram.parent() != null ? mogram.parent().get() : null;
 		while (current != null) {
-			current.referenceComponents().forEach(r -> refs.put(r.target().get().name(), r));
+			current.referenceComponents().stream().map(r -> (HasMogram) r).forEach(r -> refs.put(r.target().get().name(), r));
 			current = current.parent() != null ? current.parent().get() : null;
 		}
 		List<HasMogram> list = new ArrayList<>(refs.values());
 		Collections.reverse(list);
 		mogram.referenceComponents().stream()
+				.map(r -> (HasMogram) r)
 				.filter(c -> list.stream().noneMatch(hs -> hs.target().get().name().equals(c.target().get().name())))
 				.forEach(list::add);
 		return list.stream();

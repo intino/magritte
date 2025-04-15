@@ -43,7 +43,7 @@ rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) 
 
 rule type(overriden) and trigger(remove)
 
-rule type(node) and not (type(aspect) or type(final) or type(instance) or type(generalization)or type(inherited)) and trigger(new)
+rule type(node) and not (type(aspect) or type(final) or type(instance) or type(generalization) or type(inherited)) and trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
@@ -55,7 +55,7 @@ rule type(node) and not (type(aspect) or type(single) or type(final) or type(ins
 		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
 
-rule type(node, create) and not (type(aspect) or type(final) or type(instance)or type(inherited)) and trigger(new)
+rule type(node, create) and not (type(aspect) or type(final) or type(instance) or type(inherited)) and trigger(new)
 	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]

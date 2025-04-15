@@ -1,13 +1,13 @@
-rule type(variable, Word, multiple, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
+rule type(variable, word, multiple, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	java.util.List<$qn.$type+FirstUpperCase> $name+javaValidWord
 
-rule type(variable, Word, multiple, OutDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
+rule type(variable, word, multiple, OutDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+FirstLowerCase
 
-rule type(variable, Word, outDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	$workingPackage+LowerCase.rules.$rule+externalWordClass $name+javaValidName+FirstLowerCase+javaValidWord
+rule type(variable, word, outDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
+	$workingPackage+lowerCase.rules.$rule+externalWordClass $name+javaValidName+FirstLowerCase+javaValidWord
 
-rule type(variable, Word, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
+rule type(variable, word, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	$qn+reference.$type+FirstUpperCase $name+javaValidWord
 
 rule type(variable, reactive, multiple, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)

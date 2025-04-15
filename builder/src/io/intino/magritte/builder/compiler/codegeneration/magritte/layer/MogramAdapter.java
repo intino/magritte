@@ -70,7 +70,7 @@ class MogramAdapter extends Generator implements Adapter<Mogram>, TemplateTags {
 	}
 
 	private void addReferences(Mogram mogram, FrameBuilderContext context) {
-		mogram.referenceComponents().forEach(r -> context.add(NODE, frameOf(r).add(OWNER).toFrame()));
+		mogram.referenceComponents().forEach(r -> context.add(NODE, frameOf((HasMogram) r).add(OWNER).toFrame()));
 	}
 
 	private FrameBuilder frameOf(HasMogram ref) {
