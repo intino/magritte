@@ -24,8 +24,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("unused")
 public class StashBuilder {
-	private final String dsl;
-	private final String dslVersion;
+	private final String dslCoors;
 	private final String module;
 	private final List<File> files;
 	private final Language language;
@@ -33,10 +32,9 @@ public class StashBuilder {
 	private final PrintStream stream;
 	private File workingDirectory;
 
-	public StashBuilder(List<File> files, String dsl, String dslVersion, String module, PrintStream stream) {
+	public StashBuilder(List<File> files, String dslCoors, String module, PrintStream stream) {
 		this.files = files;
-		this.dsl = dsl;
-		this.dslVersion = dslVersion;
+		this.dslCoors = dslCoors;
 		this.module = module;
 		this.stream = stream;
 		this.language = null;
@@ -51,9 +49,8 @@ public class StashBuilder {
 		this.files = new ArrayList<>(files.keySet());
 		this.charset = files.entrySet().iterator().next().getValue();
 		this.language = language;
-		this.dsl = language.languageName();
+		this.dslCoors = language.languageName();
 		this.stream = stream;
-		this.dslVersion = null;
 		this.module = module;
 		try {
 			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
@@ -79,14 +76,17 @@ public class StashBuilder {
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
 		configuration.dsl().level(Level.Model);
-		configuration.localRepository(new File(new File(java.lang.System.getProperty("user.home")), ".m2/repository"));
+		configuration.localRepository(new File(new File(System.getProperty("user.home")), ".m2/repository"));
 		configuration.outDirectory(workingDirectory);
 		configuration.resDirectory(workingDirectory);
 		configuration.module(module);
 		configuration.dsl().outDsl(module);
 		configuration.sourceEncoding(charset.name());
 		configuration.out(this.stream);
-		if (language == null) configuration.dsl().name(dsl).version(dslVersion);
+		if (language == null) {
+			String[] coors = dslCoors.split(":");
+			configuration.dsl().groupId(coors[0]).artifactId(coors[1]).version(coors[2]);
+		}
 		return configuration;
 	}
 }

@@ -74,7 +74,7 @@ public class StashCreator {
 	private void createConcept(Mogram mogram) {
 		if (mogram.facetPrescription() != null) stash.concepts.addAll(createFacetConcept(mogram));
 		else {
-			List<Mogram> nodeList = collectTypeComponents(mogram.components());
+			List<Mogram> components = collectTypeComponents(mogram.components());
 			Concept concept = Helper.newConcept(StashHelper.name(mogram, workingPackage),
 					mogram.is(Generalization),
 					mogram.level() == M3,
@@ -83,12 +83,12 @@ public class StashCreator {
 					className(mogram),
 					mogram.parent() != null ? Format.qualifiedName().format(layerQualifiedName(mogram.parent().get())).toString() : null,
 					StashHelper.collectTypes(mogram, this.language),
-					collectContents(nodeList),
+					collectContents(components),
 					propertiesOf(mogram),
 					parametersOf(mogram),
 					emptyList());
 			stash.concepts.add(concept);
-			for (Mogram component : mogram.components()) create(component, concept);
+			for (Mogram component : mogram.mograms()) create(component, concept);
 		}
 	}
 
