@@ -49,8 +49,11 @@ public class StashCreator {
 		this.resourceFolder = conf.resDirectory();
 		this.test = conf.test();
 		this.stash.language = language.languageName();
-		this.stash.path = new File(mograms.get(0).source()).getName().split("\\.")[0] + STASH;
+		this.stash.path = (mograms.stream().anyMatch(m -> m.level().ordinal() > M1.ordinal()) ?
+				outDSL :
+				new File(mograms.get(0).source()).getName().split("\\.")[0]) + STASH;
 	}
+
 
 	private static String toSystemIndependentName(String fileName) {
 		return fileName.replace('\\', '/');
@@ -82,7 +85,7 @@ public class StashCreator {
 					mogram.container() instanceof Model && !mogram.is(Annotation.Component),
 					className(mogram),
 					mogram.parent() != null ? Format.qualifiedName().format(layerQualifiedName(mogram.parent().get())).toString() : null,
-					StashHelper.collectTypes(mogram, this.language),
+					StashHelper.collectTypes(mogram),
 					collectContents(components),
 					propertiesOf(mogram),
 					parametersOf(mogram),
@@ -101,7 +104,7 @@ public class StashCreator {
 		concept.isAspect = true;
 		concept.name = StashHelper.name(facetMogram, workingPackage);
 		concept.className = facetClassName(facetMogram);
-		concept.types = StashHelper.collectTypes(facetMogram, language);
+		concept.types = StashHelper.collectTypes(facetMogram);
 		concept.parent = calculateParent(facetMogram);
 		concept.variables = propertiesOf(facetMogram);
 		concept.parameters = parametersOf(facetMogram);
@@ -153,22 +156,32 @@ public class StashCreator {
 	private Node createNode(Mogram node) {
 		Node instanceNode = new Node();
 		instanceNode.name = buildReferenceName(node);
-		instanceNode.layers.addAll(StashHelper.collectTypes(node, this.language));
+		instanceNode.layers.addAll(StashHelper.collectTypes(node));
 		instanceNode.variables.addAll(parametersOf(node));
 		instanceNode.nodes.addAll(createNodes(node.components()));
 		return instanceNode;
 	}
 
 	private boolean isNotEmpty(Valued v) {
-		return !v.values().isEmpty() && v.values().get(0) != null && !(v.values().get(0) instanceof EmptyMogram);
+		return !v.values().isEmpty() && v.values().getFirst() != null && isNotEmptyReference(v);
+	}
+
+	private static boolean isNotEmptyReference(Valued v) {
+		if (v.values().getFirst() instanceof Reference r && r.isEmpty()) return false;
+		return !(v.values().getFirst() instanceof EmptyMogram);
 	}
 
 	private List<Variable> propertiesOf(Mogram mogram) {
-		return mogram.properties().stream().filter(this::isNotEmpty).map(this::transformTaraVariableToStashVariable).collect(Collectors.toList());
+		return mogram.properties().stream()
+				.filter(this::isNotEmpty)
+				.map(this::transformTaraVariableToStashVariable).toList();
 	}
 
-	private List<Variable> parametersOf(Mogram node) {
-		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+	private List<Variable> parametersOf(Mogram mogram) {
+		return mogram.parameters().stream()
+				.filter(this::isNotEmpty)
+				.map(this::createVariableFromParameter)
+				.toList();
 	}
 
 	private Variable transformTaraVariableToStashVariable(Property prop) {

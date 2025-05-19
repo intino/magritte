@@ -1,9 +1,6 @@
 package io.intino.magritte.builder.compiler.codegeneration.magritte.stash;
 
 import io.intino.magritte.builder.compiler.codegeneration.magritte.NameFormatter;
-import io.intino.tara.Language;
-import io.intino.tara.language.semantics.Assumption;
-import io.intino.tara.model.Facet;
 import io.intino.tara.model.Mogram;
 import io.intino.tara.model.Primitive;
 
@@ -22,15 +19,14 @@ import static java.util.stream.Collectors.toList;
 public class StashHelper {
 	private static final String BLOB_KEY = "%";
 
-	static List<String> collectTypes(Mogram mogram, Language language) {
+	static List<String> collectTypes(Mogram mogram) {
 		List<String> types = new ArrayList<>();
-		types.addAll(mogram.types());
-		types.addAll(mogram.appliedFacets().stream().map(Facet::fullType).collect(toCollection(LinkedHashSet::new)));
-		return types.stream().map(type -> {
-			Assumption.StashNodeName nodeName = (Assumption.StashNodeName) language.assumptions(type).stream().
-					filter(a -> a instanceof Assumption.StashNodeName).findFirst().orElse(null);
-			return nodeName != null ? nodeName.stashNodeName() : type;
-		}).filter(Objects::nonNull).collect(toList());
+		types.addAll(mogram.metaMograms().stream().map(NameFormatter::layerQualifiedName).toList());
+		types.addAll(mogram.appliedFacets().stream().map(facet -> NameFormatter.layerQualifiedName(facet.definition().get())).collect(toCollection(LinkedHashSet::new)));
+		return types.stream()
+				.filter(Objects::nonNull)
+				.distinct()
+				.collect(toList());
 	}
 
 	public static String name(io.intino.tara.model.Mogram owner, String workingPackage) {
@@ -52,13 +48,14 @@ public class StashHelper {
 		return name.substring(0, name.lastIndexOf("."));
 	}
 
-
 	static String buildInstanceReference(Object o) {
-		return o instanceof Reference reference ? reference.path() + "#" + withDollarAndHashtag(reference.get().reference()) : "";
+		return o instanceof Reference reference ?
+				getPath(reference) + "#" + NameFormatter.layerQualifiedName(reference.get().get()) :
+				"";
 	}
 
-
-	private static String withDollarAndHashtag(String name) {
-		return name.replace(".", "$").replace(":", "#");
+	private static String getPath(Reference reference) {
+		String source = new File(reference.get().get().source()).getName();
+		return source.substring(0, source.lastIndexOf("."));
 	}
 }

@@ -18,3 +18,4 @@ test-gen
 .idea/codeStyles/codeStyleConfig.xml
 .idea/codeStyles/Project.xml
 test-playground
+test-playground/*

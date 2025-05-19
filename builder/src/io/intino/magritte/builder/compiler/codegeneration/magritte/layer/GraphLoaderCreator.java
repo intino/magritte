@@ -16,7 +16,6 @@ import io.intino.tara.processors.model.Model;
 import java.util.*;
 import java.util.logging.Logger;
 
-
 public class GraphLoaderCreator extends Generator implements TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
 	private final CompilerConfiguration conf;
