@@ -51,7 +51,7 @@ public class StashCreator {
 		this.stash.language = language.languageName();
 		this.stash.path = (mograms.stream().anyMatch(m -> m.level().ordinal() > M1.ordinal()) ?
 				outDSL :
-				new File(mograms.get(0).source()).getName().split("\\.")[0]) + STASH;
+				new File(mograms.getFirst().source()).getName().split("\\.")[0]) + STASH;
 	}
 
 
@@ -200,11 +200,11 @@ public class StashCreator {
 	private Variable createVariableFromParameter(PropertyDescription parameter) {
 		final Variable variable = new Variable();
 		variable.name = parameter.name();
-		if (parameter.definition() != null && parameter.definition().isReference())
+		if ((parameter.definition() != null && parameter.definition().isReference()) || parameter.type().equals(REFERENCE))
 			variable.values = buildReferenceValues(parameter.values());
-		else if (parameter.values().get(0) instanceof Expression)
+		else if (parameter.values().getFirst() instanceof Expression)
 			variable.values = createNativeReference(parameter);
-		else if (parameter.type().equals(RESOURCE) && parameter.values().get(0).toString().startsWith("$"))
+		else if (parameter.type().equals(RESOURCE) && parameter.values().getFirst().toString().startsWith("$"))
 			variable.values = StashHelper.buildResourceValue(parameter.values(), parameter.source().getPath());
 		else variable.values = getValue(parameter);
 		return variable;

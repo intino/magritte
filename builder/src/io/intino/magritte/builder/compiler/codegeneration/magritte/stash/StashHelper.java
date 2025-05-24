@@ -34,9 +34,9 @@ public class StashHelper {
 	}
 
 	static boolean hasToBeConverted(List<Object> values, Primitive type) {
-		if ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) return true;
+		if ((values.getFirst() instanceof String && !(type.equals(STRING))) || type.equals(WORD)) return true;
 		if (type.equals(INSTANT) || type.equals(RESOURCE)) return true;
-		return type.equals(LONG) && values.get(0) instanceof Integer;
+		return type.equals(LONG) && values.getFirst() instanceof Integer;
 	}
 
 	static List<Object> buildResourceValue(List<Object> values, String filePath) {
