@@ -8,22 +8,22 @@ rule type(variable, word, multiple, owner) and not (type(inherited) or type(over
 	if (name.equalsIgnoreCase("$name")) this.$name+javaValidName+FirstLowerCase = new java.util.ArrayList<>((java.util.List<$type>) values);
 
 rule type(variable, word) and type(outDefined) and not (type(inherited) or type(overriden) or type(reactive)) and type(owner) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($workingPackage+LowerCase.rules.$rule+externalWordClass) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = ($workingPackage+LowerCase.rules.$rule+externalWordClass) values.get(0);
 
 rule type(variable, word, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($type) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = ($type) values.get(0);
 
 rule type(variable, reactive, owner) and not (type(inherited) or type(overriden)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.FunctionLoader.load(values.get(0), this, io.intino.magritte.framework.Expression.class);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.FunctionLoader.load(values.get(0), this, io.intino.magritte.framework.Expression.class);
 
 rule type(variable, function, owner) and not (type(inherited) or type(overriden)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.FunctionLoader.load(values.get(0), this, $workingPackage.functions.$rule+interfaceClass.class);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.FunctionLoader.load(values.get(0), this, $workingPackage.functions.$rule+interfaceClass.class);
 
 rule type(variable, time, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((List<java.time.LocalTime>) values);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((List<java.time.LocalTime>) values);
 
 rule type(variable, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<$type+fullType>) values);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<$type+fullType>) values);
 
 rule type(variable, owner) and not (type(multiple) or type(concept) or type(inherited) or type(overriden) or type(reactive)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = ($type+fullType) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidWord = ($type+fullType) values.get(0);

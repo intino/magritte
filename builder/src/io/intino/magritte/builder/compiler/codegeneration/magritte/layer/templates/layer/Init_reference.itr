@@ -1,11 +1,11 @@
 rule type(variable, reference, multiple, concept) and not (type(inherited) or type(reactive)) and not type(overriden) and type(owner) and trigger(init)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ConceptLoader.load(values, this);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ConceptLoader.load(values, this);
 
 rule type(variable, reference, concept, owner) and not (type(inherited) or type(reactive) or type(overriden)) and trigger(init)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ConceptLoader.load(values, this).get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.ConceptLoader.load(values, this).get(0);
 
 rule type(variable, reference, multiple, owner) and not (type(concept) or type(reactive) or type(inherited) or type(overriden)) and trigger(init)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.NodeLoader.load(values,  $type+reference.class, this);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.NodeLoader.load(values,  $type+reference.class, this);
 
 rule type(variable, reference) and not (type(concept) or type(reactive)) and not type(inherited) and not type(overriden) and type(owner) and trigger(init)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.NodeLoader.load(values, $type+reference.class, this).get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord = io.intino.magritte.framework.loaders.NodeLoader.load(values, $type+reference.class, this).get(0);

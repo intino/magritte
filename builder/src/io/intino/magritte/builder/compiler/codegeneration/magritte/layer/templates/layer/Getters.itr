@@ -1,111 +1,111 @@
 rule type(Variable, word, outDefined, multiple, final) and not (type(inherited) or type(overriden) or type(owner)) and trigger(getter)
-	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+toCamelCase+FirstLowerCase+javaValidName() {
 		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+javaValidName());
 	}
 
 rule type(Variable, word, outDefined, multiple) and attribute(externalClass) and not (type(inherited) or type(overriden) or type(owner)) and trigger(getter)
-	public java.util.List<$workingPackage.rules.$externalClass> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$workingPackage.rules.$externalClass> $name+toCamelCase+FirstLowerCase+javaValidName() {
 		return _$containerName+FirstLowerCase.$name+javaValidName();
 	}
 
 rule type(Variable, word, outDefined, multiple) and not (type(inherited) or type(overriden) or type(owner) or type(concept)) and trigger(getter)
-	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+FirstLowerCase+javaValidName() {
+	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+toCamelCase+FirstLowerCase+javaValidName() {
 		return _$containerName+FirstLowerCase.$name+javaValidName();
 	}
 
 rule type(Variable, word, outDefined) and attribute(externalClass) and not (type(inherited) or type(overriden) or type(owner) or type(concept)) and trigger(getter)
-	public $workingPackage.rules.$externalClass $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $workingPackage.rules.$externalClass $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Variable, word, outDefined) and not (type(inherited) or type(overriden) or type(owner) or type(concept)) and trigger(getter)
-	public $workingPackage.rules.$rule+externalWordClass $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $workingPackage.rules.$rule+externalWordClass $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Variable, word, multiple) and (type(target) or type(metaType)) and not (type(owner) or type(concept)) and attribute(name) and trigger(getter)
-	public java.util.List<$qn+reference.$name+FirstUpperCase+javaValidName+reference> $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public java.util.List<$qn+reference.$name+FirstUpperCase+javaValidName+reference> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Variable, Word) and (type(target) or type(metaType)) and not (type(owner) or type(concept)) and attribute(name) and trigger(getter)
-	public $qn+reference.$name+FirstUpperCase+javaValidName+reference $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $qn+reference.$name+FirstUpperCase+javaValidName+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Variable, multiple, final) and (type(target) or type(metaType)) and not (type(owner) or type(concept)) and attribute(name) and trigger(getter)
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
-		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName());
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName());
 	}
 
-	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
+	public $type+lowercase+fullType $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName().get(index);
 	}
 
 rule type(Variable, reference) and (type(target) or type(metaType)) and attribute(name) and type(multiple) and trigger(getter)
-	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public java.util.List<$type+reference> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
-	public $type+reference $name+FirstLowerCase+javaValidName(int index) {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
+	public $type+reference $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName().get(index);
 	}
 
 rule type(Variable) and not (type(owner) or type(concept)) and (type(target) or type(metaType)) and attribute(name) and type(multiple) and trigger(getter)
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
-	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
+	public $type+lowercase+fullType $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName().get(index);
 	}
 
 rule type(Variable, function) and (type(target) or type(metaType)) and not (type(owner) and attribute(name)) and trigger(getter)
-	public $returnType $name+FirstLowerCase+javaValidName($parameters)<< throws $exception...[, ]>> {
-		$returnType+isReturn _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName($parameters+WithOutType);
+	public $returnType $name+toCamelCase+FirstLowerCase+javaValidName($parameters)<< throws $exception...[, ]>> {
+		$returnType+isReturn _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName($parameters+WithOutType);
 	}
 
 rule type(Variable, concept, multiple, target, final) and attribute(name) and not (type(inherited, owner)) and trigger(getter)
-	public java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName() {
-		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName());
+	public java.util.List<io.intino.magritte.framework.Concept> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList(_$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName());
 	}
 
-	public io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName(int index) {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
+	public io.intino.magritte.framework.Concept $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName().get(index);
 	}
 
 rule type(Variable, concept, multiple, target) and attribute(name) and not (type(inherited, owner)) and trigger(getter)
-	public java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public java.util.List<io.intino.magritte.framework.Concept> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
-	public io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName(int index) {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName().get(index);
+	public io.intino.magritte.framework.Concept $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName().get(index);
 	}
 
 rule type(Variable) and type(concept) and not (type(owner) and type(target) and attribute(name) and not type(inherited) and trigger(getter)
-	public io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public io.intino.magritte.framework.Concept $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Variable, target, reference) and not (type(owner) or type(concept)) and attribute(name) and trigger(getter)
-	public $type+reference $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $type+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Variable, target) and not (type(owner) or type(concept)) and attribute(name) and trigger(getter)
-	public $type+lowerCase+variableType $name+FirstLowerCase+javaValidName() {
-		return _$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $type+lowerCase+variableType $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Node, instance) and attribute(name) and trigger(getter)
-	public $conceptLayer+reference $name+FirstLowerCase+javaValidName() {
+	public $conceptLayer+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
 		return _metaType.$type+FirstLowerCase(o -> o.name$$().equals("$name")).get(0);
 	}
 
 rule type(Node, single, target) and attribute(name) and not (type(owner) or type(inherited) or type(instance)) and trigger(getter)
-	public $qn+reference $name+FirstLowerCase+javaValidName() {
-		return _$targetContainer+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return _$targetContainer+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(Node, target, final) and attribute(name) and not (type(owner) or type(inherited) or type(instance)) and trigger(getter)
@@ -136,43 +136,43 @@ rule type(Node, target) and attribute(name) and not (type(owner) or type(instanc
 	}
 
 rule type(Node, target, single) and attribute(name) and not (type(owner) or type(instance)) and trigger(getter)
-	public $qn+reference $name+FirstLowerCase+javaValidName() {
-		return ($qn+reference) _$targetContainer+FirstLowerCase.$name+FirstLowerCase+javaValidName();
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return ($qn+reference) _$targetContainer+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName();
 	}
 
 rule type(variable, reference, concept, multiple, reactive) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName() {
-		return java.util.Collections.unmodifiableList($name+FirstLowerCase+javaValidName);
+	public java.util.List<io.intino.magritte.framework.Concept> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList($name+toCamelCase+FirstLowerCase+javaValidName);
 	}
 
 rule type(variable, reference, concept, reactive) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName() {
-		return this.$name+FirstLowerCase+javaValidName.value();
+	public io.intino.magritte.framework.Concept $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return this.$name+toCamelCase+FirstLowerCase+javaValidName.value();
 	}
 
 rule type(variable, reference, concept, multiple) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName() {
-		return java.util.Collections.unmodifiableList($name+FirstLowerCase+javaValidName);
+	public java.util.List<io.intino.magritte.framework.Concept> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList($name+toCamelCase+FirstLowerCase+javaValidName);
 	}
 
 rule type(variable, reference, concept) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName() {
-		return this.$name+FirstLowerCase+javaValidName;
+	public io.intino.magritte.framework.Concept $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return this.$name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(variable, word, outDefined, multiple, final) and not (type(inherited) or type(overriden) or type(target) or type(overriden)) and trigger(getter)
-	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+FirstLowerCase+javaValidName() {
-		return java.util.Collections.unmodifiableList($name+FirstLowerCase+javaValidName);
+	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList($name+toCamelCase+FirstLowerCase+javaValidName);
 	}
 
 rule type(variable, word, outDefined, multiple) and not (type(inherited) or type(overriden) or type(target) or type(reactive)) and trigger(getter)
-	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public java.util.List<$workingPackage.rules.$rule+externalWordClass> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(variable, word, outDefined) and not (type(inherited) or type(reactive) or type(multiple)) and trigger(getter)
-	public $workingPackage.rules.$rule+externalWordClass $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public $workingPackage.rules.$rule+externalWordClass $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(variable, word, multiple, final) and not (type(target) or type(outDefined) or type(inherited) or type(overriden)) and trigger(getter)
@@ -181,28 +181,28 @@ rule type(variable, word, multiple, final) and not (type(target) or type(outDefi
 	}
 
 rule type(variable, word, multiple) and not (type(target) or type(outDefined) or type(inherited) or type(overriden) or type(reactive)) and trigger(getter)
-	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public java.util.List<$type+reference> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(variable, word) and not (type(outDefined) or type(inherited) or type(overriden) or type(reactive)) and trigger(getter)
-	public $type $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public $type $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(variable, reactive, multiple) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public java.util.List<$type+fullType+reference> $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName.value();
+	public java.util.List<$type+fullType+reference> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName.value();
 	}
 
 rule type(variable, reactive) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public $type+fullType+reference $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName.value();
+	public $type+fullType+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName.value();
 	}
 
 rule type(variable, function) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public $returnType $name+FirstLowerCase+javaValidName($parameters)<< throws $exception...[, ]>> {
-		$returnType+isReturn $name+FirstLowerCase+javaValidName.$methodName($parameters+WithoutType);
+	public $returnType $name+toCamelCase+FirstLowerCase+javaValidName($parameters)<< throws $exception...[, ]>> {
+		$returnType+isReturn $name+toCamelCase+FirstLowerCase+javaValidName.$methodName($parameters+WithoutType);
 	}
 
 rule not attribute(this, void) and trigger(isReturn)
@@ -211,70 +211,70 @@ rule not attribute(this, void) and trigger(isReturn)
 rule attribute(this, void) and trigger(isReturn)
 
 rule type(Variable, multiple, owner, reference) and not (type(inherited) or type(overriden) or type(outdefined)) and trigger(getter)
-	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public java.util.List<$type+reference> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
-	public $type+reference $name+FirstLowerCase+javaValidName(int index) {
-		return $name+FirstLowerCase+javaValidName.get(index);
+	public $type+reference $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+reference> predicate) {
-		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.List<$type+reference> $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+reference> predicate) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
 rule type(Variable, multiple, owner) and not (type(inherited) or type(overriden) or type(outdefined)) and trigger(getter)
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
-	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
-		return $name+FirstLowerCase+javaValidName.get(index);
+	public $type+lowercase+fullType $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
-		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
 rule type(Variable, multiple, owner, final) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
-		return java.util.Collections.unmodifiableList($name+FirstLowerCase+javaValidName);
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return java.util.Collections.unmodifiableList($name+toCamelCase+FirstLowerCase+javaValidName);
 	}
 
-	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
-		return $name+FirstLowerCase+javaValidName.get(index);
+	public $type+lowercase+fullType $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
-		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
 rule type(Variable, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(getter)
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
-	public $type+lowercase+fullType $name+FirstLowerCase+javaValidName(int index) {
-		return $name+FirstLowerCase+javaValidName.get(index);
+	public $type+lowercase+fullType $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName.get(index);
 	}
 
-	public java.util.List<$type+lowercase+fullType> $name+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
-		return $name+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.List<$type+lowercase+fullType> $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$type+lowercase+fullType> predicate) {
+		return $name+toCamelCase+FirstLowerCase+javaValidName().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
 rule type(variable, owner) and (type(reference) or type(objectVariable)) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(getter)
-	public $type+reference $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public $type+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(Variable, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(getter)
-	public $type+lowerCase+variableType $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public $type+lowerCase+variableType $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(Node, single, owner) and not (type(inherited) or type(overriden)) and trigger(getter)
-	public $qn+reference $name+FirstLowerCase+javaValidName() {
-		return $name+FirstLowerCase+javaValidName;
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName() {
+		return $name+toCamelCase+FirstLowerCase+javaValidName;
 	}
 
 rule type(Node, owner, overriden) and not type(single) and trigger(getter)
@@ -295,7 +295,7 @@ rule type(Node, owner, final) and not (type(single) or type(inherited) or type(o
 		return java.util.Collections.unmodifiableList($name+toCamelCase+FirstLowerCase~List);
 	}
 
-	public $qn+reference $name+FirstLowerCase+javaValidName(int index) {
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
 		return $name+toCamelCase+FirstLowerCase~List.get(index);
 	}
 
@@ -312,7 +312,7 @@ rule type(Node, owner) and not (type(single) or type(inherited) or type(override
 		return java.util.Collections.unmodifiableList($name+toCamelCase+FirstLowerCase~List);
 	}
 
-	public $qn+reference $name+FirstLowerCase+javaValidName(int index) {
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName(int index) {
 		return $name+toCamelCase+FirstLowerCase~List.get(index);
 	}
 

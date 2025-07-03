@@ -6,66 +6,66 @@ rule type(Variable, Word, multiple, owner, reactive) and not (type(outDefined) o
 	}
 
 rule type(Variable, Word, multiple, owner) and not (type(outDefined) or type(inherited)) and trigger(declaration)
-	protected java.util.List<$type+FirstUpperCase> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
+	protected java.util.List<$type+FirstUpperCase> $name+toCamelCase+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
 
 rule type(Variable, Word, multiple, owner, OutDefined) and not type(inherited) and trigger(declaration)
-	protected java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
+	protected java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+toCamelCase+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
 
 rule type(Variable, Word, owner, outDefined) and not type(inherited) and trigger(declaration)
-	protected $workingPackage+LowerCase.rules.$rule+externalWordClass $name+FirstLowerCase+javaValidName;
+	protected $workingPackage+LowerCase.rules.$rule+externalWordClass $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Variable, Word, owner, reactive) and not (type(OutDefined) or type(inherited)) and trigger(declaration)
-	protected io.intino.magritte.framework.Expression<$type+FirstUpperCase> $name+FirstLowerCase+javaValidName;
+	protected io.intino.magritte.framework.Expression<$type+FirstUpperCase> $name+toCamelCase+FirstLowerCase+javaValidName;
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
 
 rule type(Variable, Word, owner) and not (type(OutDefined) or type(inherited)) and trigger(declaration)
-	protected $type+FirstUpperCase $name+FirstLowerCase+javaValidName;
+	protected $type+FirstUpperCase $name+toCamelCase+FirstLowerCase+javaValidName;
 
 	public enum $name+FirstUpperCase+javaValidName {
 		$words...[, ];
 	}
 
 rule type(Variable, owner, concept, multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
-	protected java.util.List<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
+	protected java.util.List<io.intino.magritte.framework.Concept> $name+toCamelCase+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
 
 rule type(Variable, reactive, owner, multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
-	protected io.intino.magritte.framework.Expression<java.util.List<$type+fullType+reference>> $name+FirstLowerCase+javaValidName;
+	protected io.intino.magritte.framework.Expression<java.util.List<$type+fullType+reference>> $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Variable, reactive, owner, concept) and not type(inherited) and not type(multiple) and not type(overriden) and trigger(declaration)
-	protected io.intino.magritte.framework.Expression<io.intino.magritte.framework.Concept> $name+FirstLowerCase+javaValidName;
+	protected io.intino.magritte.framework.Expression<io.intino.magritte.framework.Concept> $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Variable, reactive, owner) and not type(inherited) and not type(multiple) and not type(overriden) and trigger(declaration)
-	protected io.intino.magritte.framework.Expression<$type+fullType+reference> $name+FirstLowerCase+javaValidName;
+	protected io.intino.magritte.framework.Expression<$type+fullType+reference> $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Variable, function) and type(owner) and not type(inherited) and not type(overriden) and trigger(declaration)
-	protected $workingPackage+LowerCase.functions.$rule+interfaceClass $name+FirstLowerCase+javaValidName;
+	protected $workingPackage+LowerCase.functions.$rule+interfaceClass $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Variable, owner) and not type(concept) and type(multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
-	protected java.util.List<$type+fullType+reference> $name+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
+	protected java.util.List<$type+fullType+reference> $name+toCamelCase+FirstLowerCase+javaValidName = new java.util.ArrayList<>();
 
 rule type(Variable, owner) and not type(concept) and not type(multiple) and not type(inherited) and not type(overriden) and trigger(declaration)
-	protected $type+reference+variableType $name+FirstLowerCase+javaValidName;
+	protected $type+reference+variableType $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(aspect) and not type(overriden) and trigger(declaration)
-	protected $qn _$name+javaValidName+FirstLowerCase;
+	protected $qn _$name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(constraint) and trigger(declaration)
-	protected $qn+reference _$name+javaValidName+FirstLowerCase;
+	protected $qn+reference _$name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Variable, owner) and type(concept) and not (type(multiple) or type(inherited) or type(overriden) or type(instance)) and trigger(declaration)
-	protected io.intino.magritte.framework.Concept $name+FirstLowerCase+javaValidName;
+	protected io.intino.magritte.framework.Concept $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Node, owner, single) and not (type(inherited) or type(instance) or type(overriden)) and trigger(declaration)
-	protected $qn+reference $name+FirstLowerCase+javaValidName;
+	protected $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule type(Node, owner) and not (type(inherited) or type(single) or type(overriden) or type(instance)) and trigger(declaration)
-	protected java.util.List<$qn+reference> $name+javaValidName+FirstLowerCase~List = new java.util.ArrayList<>();
+	protected java.util.List<$qn+reference> $name+toCamelCase+FirstLowerCase+javaValidName~List = new java.util.ArrayList<>();
 
 rule type(Node) and trigger(declaration)

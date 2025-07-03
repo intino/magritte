@@ -1,12 +1,12 @@
 rule type(variable, Concept, reference, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<io.intino.magritte.framework.Concept>) values);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidName = new java.util.ArrayList<>((java.util.List<io.intino.magritte.framework.Concept>) values);
 
 rule type(variable, Concept, reference, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = (io.intino.magritte.framework.Concept) values.get(0);
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidName = (io.intino.magritte.framework.Concept) values.get(0);
 
 rule type(variable, reference, multiple, owner) and not (type(inherited) or type(overriden) or type(reactive)) and trigger(set)
 	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+FirstLowerCase = ((java.util.List<java.lang.Object>) values).stream().
 		map(s -> graph().core$$().load(((io.intino.magritte.framework.Layer) s).core$$().id()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 
 rule type(variable, reference, owner) and not (type(inherited) or type(reactive) or type(overriden)) and trigger(set)
-	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+javaValidName+FirstLowerCase+javaValidWord = values.get(0) != null ? core$$().graph().load(((io.intino.magritte.framework.Layer) values.get(0)).core$$().id()).as($type+reference.class) : null;
+	if (name.equalsIgnoreCase("$name+FirstLowerCase")) this.$name+toCamelCase+FirstLowerCase+javaValidName = values.get(0) != null ? core$$().graph().load(((io.intino.magritte.framework.Layer) values.get(0)).core$$().id()).as($type+reference.class) : null;

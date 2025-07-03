@@ -1,47 +1,47 @@
 rule type(variable, word, outDefined, multiple) and attribute(externalClass) and not (type(inherited) or type(overriden) or type(owner) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$externalClass> values) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(values);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$externalClass> values) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(values);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(Variable, word, outDefined, multiple) and not (type(inherited) or type(overriden) or type(owner) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(values);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(values);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, word, outDefined) and attribute(externalClass) and not (type(inherited) or type(overriden) or type(owner) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($workingPackage.rules.$externalClass value) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($workingPackage.rules.$externalClass value) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(Variable, word, outDefined) and not (type(inherited) or type(overriden) or type(owner) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($workingPackage.rules.$rule+externalWordClass value) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($workingPackage.rules.$rule+externalWordClass value) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, word) and not (type(multiple) or type(owner) or type(reactive) or type(final) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($qn+reference.$name+FirstUpperCase+javaValidName+reference value) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($qn+reference.$name+FirstUpperCase+javaValidName+reference value) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, resource) and not (type(multiple) or type(owner) or type(reactive) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($type+variableType value, String destiny) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value, destiny);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($type+variableType value, String destiny) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value, destiny);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.io.InputStream stream, String destiny) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(stream, destiny);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(java.io.InputStream stream, String destiny) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(stream, destiny);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(Variable, reactive) and not (type(owner) or type(inherited) or type(overriden) or type(multiple) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(io.intino.magritte.framework.Expression<$type+fullType+reference> value) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(io.intino.magritte.framework.Expression<$type+fullType+reference> value) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
@@ -49,64 +49,64 @@ rule type(Variable, function) and not (type(owner) or type(inherited) or type(ov
 
 
 rule type(variable) and not (type(multiple) or type(owner) or type(function) or type(resource) or type(reactive) or type(final) or type(word)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($type+variableType value) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($type+variableType value) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, Concept) and not type(multiple) and not type(owner) and not type(function) and not type(reactive) and not type(final) and not type(Word) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(io.intino.magritte.framework.Concept value) {
-		this._$containerName+FirstLowerCase.$name+FirstLowerCase+javaValidName(value);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(io.intino.magritte.framework.Concept value) {
+		this._$containerName+FirstLowerCase.$name+toCamelCase+FirstLowerCase+javaValidName(value);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, word, outDefined) and not (type(target) or type(inherited) or type(overriden) or type(multiple) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
-		this.$name+FirstLowerCase+javaValidName = value;
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName = value;
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(Variable, word, outDefined, multiple) and not (type(target) or type(inherited) or type(overriden)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
-		this.$name+FirstLowerCase+javaValidName = values;
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName = values;
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, word) and not (type(target) or type(inherited) or type(overriden) or type(multiple) or type(final) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(<<$qn+reference.>>$name+FirstUpperCase+javaValidName+reference value) {
-		this.$name+FirstLowerCase+javaValidName = value;
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(<<$qn+reference.>>$name+FirstUpperCase+javaValidName+reference value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName = value;
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, resource) and not (type(target) or type(inherited) or type(overriden) or type(reactive) or type(multiple) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($type+fulltype+reference url, String destination) {
-		if (url == null) this.$name+FirstLowerCase+javaValidName = null;
-		else this.$name+FirstLowerCase+javaValidName = graph().core$$().save(url, destination, this.$name+FirstLowerCase+javaValidName, core$$());
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($type+fulltype+reference url, String destination) {
+		if (url == null) this.$name+toCamelCase+FirstLowerCase+javaValidName = null;
+		else this.$name+toCamelCase+FirstLowerCase+javaValidName = graph().core$$().save(url, destination, this.$name+toCamelCase+FirstLowerCase+javaValidName, core$$());
 		return ($container+FirstUpperCase+javaValidName) this;
     }
 
-    public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.io.InputStream stream, String destination) {
-		if (stream == null) this.$name+FirstLowerCase+javaValidName = null;
-		else this.$name+FirstLowerCase+javaValidName = graph().core$$().save(stream, destination, this.$name+FirstLowerCase+javaValidName, core$$());
+    public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(java.io.InputStream stream, String destination) {
+		if (stream == null) this.$name+toCamelCase+FirstLowerCase+javaValidName = null;
+		else this.$name+toCamelCase+FirstLowerCase+javaValidName = graph().core$$().save(stream, destination, this.$name+toCamelCase+FirstLowerCase+javaValidName, core$$());
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, resource, multiple) and not (type(target) or type(inherited) or type(overriden) or type(reactive) or type(final)) and trigger(setter)
 	public $container+FirstUpperCase+javaValidName add$name+FirstUpperCase($type+fulltype+reference url, String destination) {
 		$type+fulltype+reference newElement = graph().core$$().save(url, destination, null, core$$());
-		this.$name+FirstLowerCase+javaValidName.add(newElement);
+		this.$name+toCamelCase+FirstLowerCase+javaValidName.add(newElement);
     	return ($container+FirstUpperCase+javaValidName) this;
     }
 
     public $container+FirstUpperCase+javaValidName add$name+FirstUpperCase(java.io.InputStream stream, String destination) {
 		$type+fulltype+reference newElement = graph().core$$().save(stream, destination, null, core$$());
-		this.$name+FirstLowerCase+javaValidName.add(newElement);
+		this.$name+toCamelCase+FirstLowerCase+javaValidName.add(newElement);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
     public java.io.OutputStream add$name+FirstUpperCase+javaValidName(String destination) {
     	$type+fulltype+reference newElement = graph().core$$().save((java.io.InputStream)null, destination, null, core$$());
-    	this.$name+FirstLowerCase+javaValidName.add(newElement);
+    	this.$name+toCamelCase+FirstLowerCase+javaValidName.add(newElement);
     	try {
 			return newElement.openConnection().getOutputStream();
 		} catch(java.io.IOException e) {
@@ -116,32 +116,32 @@ rule type(variable, resource, multiple) and not (type(target) or type(inherited)
 	}
 
 rule type(Variable, reactive) and not (type(inherited) or type(overriden) or type(multiple) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(io.intino.magritte.framework.Expression<$type+fullType+reference> value) {
-		this.$name+FirstLowerCase+javaValidName = io.intino.magritte.framework.loaders.FunctionLoader.load(value, this, io.intino.magritte.framework.Expression.class);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(io.intino.magritte.framework.Expression<$type+fullType+reference> value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName = io.intino.magritte.framework.loaders.FunctionLoader.load(value, this, io.intino.magritte.framework.Expression.class);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(Variable, function) and not (type(inherited) or type(overriden) or type(multiple) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
-		this.$name+FirstLowerCase+javaValidName = io.intino.magritte.framework.loaders.FunctionLoader.load($name+FirstLowerCase+javaValidName, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName = io.intino.magritte.framework.loaders.FunctionLoader.load($name+toCamelCase+FirstLowerCase+javaValidName, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(Variable) and not (type(inherited) or type(overriden) or type(function) or type(reactive) or type(multiple) or type(final)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName($type+variableType value) {
-		this.$name+FirstLowerCase+javaValidName = value;
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName($type+variableType value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName = value;
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, reference, concept, multiple, owner) and not (type(final) or type(inherited) or type(overriden) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(java.util.List<io.intino.magritte.framework.Concept> value) {
-		this.$name+FirstLowerCase+javaValidName+FirstLowerCase = value;
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(java.util.List<io.intino.magritte.framework.Concept> value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName+FirstLowerCase = value;
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 
 rule type(variable, reference, concept, owner) and not (type(final) or type(inherited) or type(overriden) or type(multiple) or type(reactive)) and trigger(setter)
-	public $container+FirstUpperCase+javaValidName $name+FirstLowerCase+javaValidName(io.intino.magritte.framework.Concept value) {
-		this.$name+FirstLowerCase+javaValidName+FirstLowerCase = value;
+	public $container+FirstUpperCase+javaValidName $name+toCamelCase+FirstLowerCase+javaValidName(io.intino.magritte.framework.Concept value) {
+		this.$name+toCamelCase+FirstLowerCase+javaValidName+FirstLowerCase = value;
 		return ($container+FirstUpperCase+javaValidName) this;
 	}
 

@@ -28,7 +28,7 @@ rule type(Layer)
 	$node
 
 rule type(single, owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(add)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = node.as($qn+reference.class);
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase+javaValidName+javaValidName = node.as($qn+reference.class);
 
 rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(add)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.add(node.as($qn+reference.class));
@@ -36,7 +36,7 @@ rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) 
 rule type(overriden) and trigger(add)
 
 rule type(single, owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(remove)
-	if (node.is("$stashQn+noPackage+withDollar")) this.$name+FirstLowerCase+javaValidName = null;
+	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase+javaValidName+javaValidName = null;
 
 rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) and trigger(remove)
 	if (node.is("$stashQn+noPackage+withDollar")) this.$name+toCamelCase+FirstLowerCase~List.remove(node.as($qn+reference.class));
@@ -44,27 +44,27 @@ rule type(owner) and not (type(overriden) or type(instance) or type(inherited)) 
 rule type(overriden) and trigger(remove)
 
 rule type(node) and not (type(aspect) or type(final) or type(instance) or type(generalization) or type(inherited)) and trigger(new)
-	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
 
 rule type(node) and not (type(aspect) or type(single) or type(final) or type(instance) or type(generalization) or type(overriden)or type(inherited)) and trigger(clear)
-	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
-		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
+	public void $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>($name+toCamelCase+FirstLowerCase+javaValidName~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
 
 rule type(node, create) and not (type(aspect) or type(final) or type(instance) or type(inherited)) and trigger(new)
-	public $qn+reference $name+FirstLowerCase+javaValidName($variable+parameters...[, ]) {
+	public $qn+reference $name+toCamelCase+FirstLowerCase+javaValidName+javaValidName($variable+parameters...[, ]) {
 		$qn+reference newElement = core$$().graph().concept($qn+reference.class).createNode(this.name, core$$()).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
 
 rule type(node, create) and not (type(single) or type(final) or type(instance) or type(inherited)) and trigger(clear)
-	public void $name+FirstLowerCase+javaValidWord(java.util.function.Predicate<$qn+reference> filter) {
-		new java.util.ArrayList<>($name+FirstLowerCase~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
+	public void $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$qn+reference> filter) {
+		new java.util.ArrayList<>($name+toCamelCase+FirstLowerCase+javaValidName~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
 
 rule type(node, owner) and trigger(new)
@@ -121,10 +121,10 @@ rule type(core) and trigger(core)
 	}
 
 rule type(aspect) and not type(overriden) and trigger(aspectAssign)
-	if (layer instanceof $qn+reference) _$name+FirstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+toCamelCase+FirstLowerCase+javaValidName = ($qn+reference) layer;
 
 rule type(constraint) and trigger(aspectAssign)
-	if (layer instanceof $qn+reference) _$name+FirstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+toCamelCase+FirstLowerCase+javaValidName = ($qn+reference) layer;
 
 rule trigger(decorable)
 	Abstract
@@ -273,16 +273,16 @@ rule trigger(metaTypeSet)
 	core$$().set(_metaType, name, values);
 
 rule trigger(metaAspectLoad)
-	core$$().load(_$name+FirstLowerCase, name, values);
+	core$$().load(_$name+toCamelCase+FirstLowerCase+javaValidName, name, values);
 
 rule trigger(metaAspectSet)
-	core$$().set(_$name+FirstLowerCase, name, values);
+	core$$().set(_$name+toCamelCase+FirstLowerCase+javaValidName, name, values);
 
 rule trigger(metaType)
 	protected $this _metaType;
 
 rule trigger(metaAspect)
-	protected $type _$name+FirstLowerCase;
+	protected $type _$name+toCamelCase+FirstLowerCase+javaValidName;
 
 rule trigger(tag)
 	io.intino.magritte.framework.tags.$this+lowerCase+FirstUpperCase

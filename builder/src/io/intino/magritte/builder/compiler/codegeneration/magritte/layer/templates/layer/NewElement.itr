@@ -5,43 +5,43 @@ rule type(variable, word, multiple, OutDefined, required) and not attribute(valu
 	java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+FirstLowerCase
 
 rule type(variable, word, outDefined, required) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	$workingPackage+lowerCase.rules.$rule+externalWordClass $name+javaValidName+FirstLowerCase+javaValidWord
+	$workingPackage+lowerCase.rules.$rule+externalWordClass $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, word, required) and not type(outDefined) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
 	$qn+reference.$type+FirstUpperCase $name+javaValidWord
 
 rule type(variable, reactive, multiple, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	io.intino.magritte.framework.Expression<java.util.List<$type+fullType+reference>> $name+javaValidName+FirstLowerCase+javaValidWord
+	io.intino.magritte.framework.Expression<java.util.List<$type+fullType+reference>> $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, reactive, required) and not (type(multiple) or type(empty)) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	io.intino.magritte.framework.Expression<$type+fullType+reference> $name+javaValidName+FirstLowerCase+javaValidWord
+	io.intino.magritte.framework.Expression<$type+fullType+reference> $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, function, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	$workingPackage+LowerCase.functions.$rule+interfaceClass $name+javaValidName+FirstLowerCase+javaValidWord
+	$workingPackage+LowerCase.functions.$rule+interfaceClass $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, multiple, required) and not (type(concept) or type(empty)) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	java.util.List<$type+fullType+reference> $name+javaValidName+FirstLowerCase+javaValidWord
+	java.util.List<$type+fullType+reference> $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, resource, required) and not (type(concept) or type(empty) or type(multiple)) and trigger(parameters)
-	$type+reference+variableType $name+javaValidName+FirstLowerCase+javaValidWord
+	$type+reference+variableType $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, required) and not (type(concept) or type(empty) or type(multiple)) and not attribute(values) and not attribute(wordvalues) and trigger(parameters)
-	$type+reference+variableType $name+javaValidName+FirstLowerCase+javaValidWord
+	$type+reference+variableType $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, concept, multiple, required) and not type(empty) and not attribute(values) and trigger(parameters)
-	java.util.List<io.intino.magritte.framework.Concept> $name+javaValidName+FirstLowerCase+javaValidWord
+	java.util.List<io.intino.magritte.framework.Concept> $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, concept, required) and not (type(multiple) or type(empty)) and not attribute(values) and trigger(parameters)
-	io.intino.magritte.framework.Concept $name+javaValidName+FirstLowerCase+javaValidWord
+	io.intino.magritte.framework.Concept $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord
 
 rule type(variable, reactive, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(assign)
-	newElement.core$$().set(newElement, "$name+FirstLowerCase", java.util.Collections.singletonList($name+javaValidName+FirstLowerCase+javaValidWord));
+	newElement.core$$().set(newElement, "$name+FirstLowerCase", java.util.Collections.singletonList($name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord));
 
 rule type(variable, multiple, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(assign)
-	newElement.core$$().set(newElement, "$name+FirstLowerCase", $name+javaValidName+FirstLowerCase+javaValidWord);
+	newElement.core$$().set(newElement, "$name+FirstLowerCase", $name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord);
 
 rule type(variable, required) and not (type(multiple) or type(empty)) and not attribute(values) and not attribute(wordvalues) and trigger(assign)
-	newElement.core$$().set(newElement, "$name+FirstLowerCase", java.util.Collections.singletonList($name+javaValidName+FirstLowerCase+javaValidWord));
+	newElement.core$$().set(newElement, "$name+FirstLowerCase", java.util.Collections.singletonList($name+toCamelCase+javaValidName+FirstLowerCase+javaValidWord));
 
 rule type(variable, required) and not type(empty) and not attribute(values) and not attribute(wordvalues) and trigger(name)
 	$name+javaValidWord
