@@ -236,7 +236,7 @@ rule not type(target) and type(nodeimpl) and not type(instance) and not type(inh
 		<<$node...[$NL]>>
 
 		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph graph() {
-			return ($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph) core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
+			return core$$().graph().as($workingPackage+javaValidName+lowerCase.$generatedLanguage+javaValidName+FirstUpperCase~Graph.class);
 		}
 	}
 
