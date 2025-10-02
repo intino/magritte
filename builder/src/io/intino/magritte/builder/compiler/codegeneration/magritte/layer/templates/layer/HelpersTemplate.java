@@ -15,6 +15,7 @@ public class HelpersTemplate extends Template {
 	public List<Rule> ruleSet() {
 		List<Rule> rules = new ArrayList<>();
 		rules.add(rule().condition(all(attribute("", "instant"), trigger("variabletype"))).output(literal("java.time.Instant")));
+		rules.add(rule().condition(all(attribute("", "date"), trigger("variabletype"))).output(literal("java.time.LocalDate")));
 		rules.add(rule().condition(all(attribute("", "double"), trigger("variabletype"))).output(literal("double")));
 		rules.add(rule().condition(all(attribute("", "integer"), trigger("variabletype"))).output(literal("int")));
 		rules.add(rule().condition(all(attribute("", "long"), trigger("variabletype"))).output(literal("long")));
@@ -31,7 +32,7 @@ public class HelpersTemplate extends Template {
 		rules.add(rule().condition(all(attribute("", "boolean"), trigger("fulltype"))).output(literal("java.lang.Boolean")));
 		rules.add(rule().condition(all(attribute("", "time"), trigger("fulltype"))).output(literal("java.time.LocalTime")));
 		rules.add(rule().condition(all(attribute("", "string"), trigger("fulltype"))).output(literal("java.lang.String")));
-		rules.add(rule().condition(all(attribute("", "date"), trigger("fulltype"))).output(literal("io.intino.magritte.framework.types.Date")));
+		rules.add(rule().condition(all(attribute("", "date"), trigger("fulltype"))).output(literal("java.time.LocalDate")));
 		rules.add(rule().condition(all(attribute("", "instant"), trigger("fulltype"))).output(literal("java.time.Instant")));
 		rules.add(rule().condition(all(attribute("", "time"), trigger("fulltype"))).output(literal("java.time.LocalTime")));
 		rules.add(rule().condition(all(attribute("", "type"), trigger("fulltype"))).output(literal("Concept")));

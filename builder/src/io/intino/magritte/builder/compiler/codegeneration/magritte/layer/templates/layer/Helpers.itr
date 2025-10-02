@@ -1,6 +1,9 @@
 rule attribute(this, instant) and trigger(variableType)
 	java.time.Instant
 
+rule attribute(this, date) and trigger(variableType)
+	java.time.LocalDate
+
 rule attribute(this, double) and trigger(variableType)
 	double
 
@@ -50,7 +53,7 @@ rule attribute(this, string) and trigger(fulltype)
 	java.lang.String
 
 rule attribute(this, date) and trigger(fullType)
-	io.intino.magritte.framework.types.Date
+	java.time.LocalDate
 
 rule attribute(this, instant) and trigger(fullType)
 	java.time.Instant
