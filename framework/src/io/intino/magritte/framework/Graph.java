@@ -19,7 +19,7 @@ import static java.util.stream.Stream.of;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Graph {
-	public static final List<String> systemLanguages = List.of("Proteo", "Meta", "Metta");
+	public static final List<String> systemLanguages = List.of("proteo", "meta", "metta");
 	Model model;
 	Store store;
 	Map<String, Map<String, Node>> nodes = new HashMap<>();
@@ -402,7 +402,7 @@ public class Graph {
 	}
 
 	private boolean isMetaLanguage(String language) {
-		return systemLanguages.contains(language);
+		return systemLanguages.contains(language.toLowerCase());
 	}
 
 	private void doInit(String language) {
