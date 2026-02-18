@@ -62,7 +62,7 @@ public class AcceptedMagritteRunnersTest {
 
 	@Test
 	public void exampleM2() {
-		main(new String[]{temp(home + "sandbox/confFiles/example/m2.txt")});
+		main(new String[]{temp(home + "sandbox/confFiles/example/orfeo-m2.txt")});
 	}
 
 	@Test

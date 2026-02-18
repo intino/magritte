@@ -50,7 +50,7 @@ rule type(node) and not (type(aspect) or type(final) or type(instance) or type(g
 		return newElement;
 	}
 
-rule type(node) and not (type(aspect) or type(single) or type(final) or type(instance) or type(generalization) or type(overriden)or type(inherited)) and trigger(clear)
+rule type(node) and not (type(aspect) or type(single) or type(final) or type(instance) or type(overriden) or type(inherited)) and trigger(clear)
 	public void $name+toCamelCase+FirstLowerCase+javaValidName(java.util.function.Predicate<$qn+reference> filter) {
 		new java.util.ArrayList<>($name+toCamelCase+FirstLowerCase+javaValidName~List()).stream().filter(filter).forEach(io.intino.magritte.framework.Layer::delete$$);
 	}
