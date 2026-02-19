@@ -70,8 +70,8 @@ public abstract class Generator implements TemplateTags {
 		context.add(PARENT, parentQN);
 		if (context.contains(CREATE) || context.contains(NODE))
 			context.add(PARENT_SUPER, true).add("parentName", parentQN);
-		if ((context.contains(NODE)) && hasLists(parent))
-			//|| (parent.facetPrescription() != null && !(parent.facetPrescription().get() instanceof MogramRoot) && hasLists(parent.facetPrescription().get())))
+		if ((context.contains(NODE)) && hasLists(parent)
+				|| (parent.facetPrescription() != null && !(parent.facetPrescription().get() instanceof MogramRoot) && hasLists(parent.facetPrescription().get())))
 			context.add("parentClearName", parentQN);
 	}
 
