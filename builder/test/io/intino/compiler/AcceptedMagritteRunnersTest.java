@@ -65,6 +65,12 @@ public class AcceptedMagritteRunnersTest {
 		main(new String[]{temp(home + "sandbox/confFiles/example/orfeo-m2.txt")});
 	}
 
+
+	@Test
+	public void exampleKataM2() {
+		main(new String[]{temp(home + "sandbox/confFiles/example/kata-m2.txt")});
+	}
+
 	@Test
 	public void example_m2_2() {
 		main(new String[]{temp(home + "sandbox/confFiles/example/m2_2.txt")});
