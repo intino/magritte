@@ -76,7 +76,7 @@ public class AcceptedTaraRunnersTest {
 
 	@Test
 	public void exampleM1() {
-		main(new String[]{temp(home + "sandbox/confFiles/example/m1.txt")});
+		main(new String[]{temp(home + "sandbox/confFiles/visora/ui.txt")});
 	}
 
 	@Test
