@@ -98,7 +98,7 @@ rule type(graph)
 		}
 
 		public static io.intino.magritte.io.model.Stash[] _language() {
-			return new io.intino.magritte.io.model.Stash[]{<<$parentPackage.AbstractGraph._language()[0$>>, ]stash()};
+			return new io.intino.magritte.io.model.Stash[]{<<$parentPackage.AbstractGraph._language()[0], >>stash()};
 		}
 
 		private static io.intino.magritte.io.model.Stash stash() {

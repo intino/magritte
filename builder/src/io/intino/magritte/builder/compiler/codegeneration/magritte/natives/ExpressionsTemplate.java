@@ -17,14 +17,14 @@ public class ExpressionsTemplate extends Template {
 		rules.add(rule().condition(allTypes("native")).output(literal("package ")).output(placeholder("workingPackage", "lowercase", "javaValidName")).output(literal(".natives")).output(expression().output(literal(".")).output(placeholder("package", "lowercase", "javaValidName"))).output(literal(";\n\n")).output(expression().output(placeholder("imports").multiple("\n"))).output(literal("\n\n/**")).output(placeholder("qn")).output(literal("#")).output(placeholder("file")).output(literal("#")).output(placeholder("line")).output(literal("#")).output(placeholder("column")).output(literal("**/\npublic class ")).output(placeholder("name", "FirstUpperCase", "javaValidName")).output(literal("_")).output(placeholder("uid")).output(literal(" implements io.intino.magritte.framework.Expression<")).output(placeholder("type", "format")).output(literal("> {\n\tprivate ")).output(placeholder("nativeContainer", "reference")).output(literal(" self;\n\n\t@Override\n\tpublic ")).output(placeholder("type", "format")).output(literal(" value() {\n\t\t")).output(placeholder("body")).output(literal("\n\t}\n\n\t@Override\n\tpublic void self(io.intino.magritte.framework.Layer context) {\n\t\tself = (")).output(placeholder("nativeContainer", "reference")).output(literal(") context;\n\t}\n\n\t@Override\n\tpublic Class<? extends io.intino.magritte.framework.Layer> selfClass() {\n\t\treturn ")).output(placeholder("nativeContainer", "reference")).output(literal(".class;\n\t}\n}")));
 		rules.add(rule().condition(all(allTypes("list"), trigger("format"))).output(literal("java.util.List<")).output(placeholder("value", "javaType")).output(literal(">")));
 		rules.add(rule().condition(trigger("format")).output(placeholder("value", "javaType")));
-		rules.add(rule().condition(all(attribute("this:instant"), trigger("javatype"))).output(literal("java.time.Instant")));
-		rules.add(rule().condition(all(attribute("this:instant"), trigger("javatype"))).output(literal("java.time.Instant")));
-		rules.add(rule().condition(all(attribute("this:date"), trigger("javatype"))).output(literal("Date")));
-		rules.add(rule().condition(all(attribute("this:date"), trigger("javatype"))).output(literal("Date")));
-		rules.add(rule().condition(all(attribute("this:time"), trigger("javatype"))).output(literal("java.time.LocalTime")));
-		rules.add(rule().condition(all(attribute("this:time"), trigger("javatype"))).output(literal("java.time.LocalTime")));
-		rules.add(rule().condition(all(attribute("this:resource"), trigger("javatype"))).output(literal("java.net.URL")));
-		rules.add(rule().condition(all(attribute("this:resource"), trigger("javatype"))).output(literal("java.net.URL")));
+		rules.add(rule().condition(all(attribute("", "instant"), trigger("javatype"))).output(literal("java.time.Instant")));
+		rules.add(rule().condition(all(attribute("", "Instant"), trigger("javatype"))).output(literal("java.time.Instant")));
+		rules.add(rule().condition(all(attribute("", "Date"), trigger("javatype"))).output(literal("Date")));
+		rules.add(rule().condition(all(attribute("", "date"), trigger("javatype"))).output(literal("Date")));
+		rules.add(rule().condition(all(attribute("", "time"), trigger("javatype"))).output(literal("java.time.LocalTime")));
+		rules.add(rule().condition(all(attribute("", "Time"), trigger("javatype"))).output(literal("java.time.LocalTime")));
+		rules.add(rule().condition(all(attribute("", "Resource"), trigger("javatype"))).output(literal("java.net.URL")));
+		rules.add(rule().condition(all(attribute("", "resource"), trigger("javatype"))).output(literal("java.net.URL")));
 		rules.add(rule().condition(trigger("javatype")).output(placeholder("", "reference")));
 		return rules;
 	}

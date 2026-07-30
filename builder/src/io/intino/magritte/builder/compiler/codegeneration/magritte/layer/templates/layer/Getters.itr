@@ -210,10 +210,10 @@ rule type(variable, function) and not (type(inherited) or type(overriden)) and t
 		$returnType+isReturn $name+FirstLowerCase+javaValidName.$methodName($parameters+WithoutType);
 	}
 
-rule not attribute(this:void) and trigger(isReturn)
+rule not attribute(this, void) and trigger(isReturn)
 	return
 
-rule attribute(this:void) and trigger(isReturn)
+rule attribute(this, void) and trigger(isReturn)
 
 rule type(Variable, multiple, owner, reference) and not (type(inherited) or type(overriden) or type(outdefined)) and trigger(getter)
 	public java.util.List<$type+reference> $name+FirstLowerCase+javaValidName() {

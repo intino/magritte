@@ -1,67 +1,67 @@
-rule attribute(this:datex) and trigger(variableType)
+rule attribute(this, datex) and trigger(variableType)
 	io.intino.magritte.framework.type.DateX
 
-rule attribute(this:instant) and trigger(variableType)
+rule attribute(this, instant) and trigger(variableType)
 	java.time.Instant
 
-rule attribute(this:double) and trigger(variableType)
+rule attribute(this, double) and trigger(variableType)
 	double
 
-rule attribute(this:integer) and trigger(variableType)
+rule attribute(this, integer) and trigger(variableType)
 	int
 
-rule attribute(this:long) and trigger(variableType)
+rule attribute(this, long) and trigger(variableType)
 	long
 
-rule attribute(this:object) and trigger(variableType)
+rule attribute(this, object) and trigger(variableType)
 	java.lang.Object
 
-rule attribute(this:time) and trigger(variableType)
+rule attribute(this, time) and trigger(variableType)
 	java.time.LocalTime
 
-rule attribute(this:type) and trigger(variableType)
+rule attribute(this, type) and trigger(variableType)
 	Concept
 
-rule attribute(this:string) and trigger(variableType)
+rule attribute(this, string) and trigger(variableType)
 	java.lang.String
 
-rule attribute(this:boolean) and trigger(variableType)
+rule attribute(this, boolean) and trigger(variableType)
 	boolean
 
-rule attribute(this:resource) and trigger(variableType)
+rule attribute(this, resource) and trigger(variableType)
 	java.net.URL
 
-rule attribute(this:integer) and trigger(fulltype)
+rule attribute(this, integer) and trigger(fulltype)
 	java.lang.Integer
 
-rule attribute(this:long) and trigger(fulltype)
+rule attribute(this, long) and trigger(fulltype)
 	java.lang.Long
 
-rule attribute(this:double) and trigger(fulltype)
+rule attribute(this, double) and trigger(fulltype)
 	java.lang.Double
 
-rule attribute(this:resource) and trigger(fulltype)
+rule attribute(this, resource) and trigger(fulltype)
 	java.net.URL
 
-rule attribute(this:boolean) and trigger(fulltype)
+rule attribute(this, boolean) and trigger(fulltype)
 	java.lang.Boolean
 
-rule attribute(this:time) and trigger(fulltype)
+rule attribute(this, time) and trigger(fulltype)
 	java.time.LocalTime
 
-rule attribute(this:string) and trigger(fulltype)
+rule attribute(this, string) and trigger(fulltype)
 	java.lang.String
 
-rule attribute(this:date) and trigger(fullType)
+rule attribute(this, date) and trigger(fullType)
 	io.intino.magritte.framework.types.Date
 
-rule attribute(this:instant) and trigger(fullType)
+rule attribute(this, instant) and trigger(fullType)
 	java.time.Instant
 
-rule attribute(this:time) and trigger(fullType)
+rule attribute(this, time) and trigger(fullType)
 	java.time.LocalTime
 
-rule attribute(this:type) and trigger(fullType)
+rule attribute(this, type) and trigger(fullType)
 	Concept
 
 rule trigger(quoted)

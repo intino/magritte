@@ -54,28 +54,28 @@ rule type(list) and trigger(format)
 rule trigger(format)
 	$value+javaType
 
-rule attribute(this:instant) and trigger(javaType)
+rule attribute(this, instant) and trigger(javaType)
 	java.time.Instant
 
-rule attribute(this:Instant) and trigger(javaType)
+rule attribute(this, Instant) and trigger(javaType)
 	java.time.Instant
 
-rule attribute(this:Date) and trigger(javaType)
+rule attribute(this, Date) and trigger(javaType)
 	Date
 
-rule attribute(this:date) and trigger(javaType)
+rule attribute(this, date) and trigger(javaType)
 	Date
 
-rule attribute(this:time) and trigger(javaType)
+rule attribute(this, time) and trigger(javaType)
 	java.time.LocalTime
 
-rule attribute(this:Time) and trigger(javaType)
+rule attribute(this, Time) and trigger(javaType)
 	java.time.LocalTime
 
-rule attribute(this:Resource) and trigger(javaType)
+rule attribute(this, Resource) and trigger(javaType)
 	java.net.URL
 
-rule attribute(this:resource) and trigger(javaType)
+rule attribute(this, resource) and trigger(javaType)
 	java.net.URL
 
 rule trigger(javatype)

@@ -201,8 +201,8 @@ rule not type(target) and type(nodeimpl) and not type(instance) and trigger(Node
 		protected void sync$$(io.intino.magritte.framework.Layer layer) {
 			super.sync$$(layer);
 			$aspect+aspectAssign...[$NL~else ]
-			$constraint+aspectAssign...[$NL~else ]>>
-		}]
+			$constraint+aspectAssign...[$NL~else ]
+		}>>
 
 		<<public Create create() {
 			return new Create(null);
@@ -220,8 +220,8 @@ rule not type(target) and type(nodeimpl) and not type(instance) and trigger(Node
 			}
 
 			$node+new...[$NL$NL]
-			$create+new...[$NL$NL]>>
-		}]
+			$create+new...[$NL$NL]
+		}>>
 
 		<<public Clear clear() {
 			return new Clear();
@@ -254,15 +254,15 @@ rule type(metaAspect) and trigger(typeInit)
 rule trigger(typeInit)
 	$this
 
-rule attribute(this:true) and trigger(parentinit)
+rule attribute(this, true) and trigger(parentinit)
 	super(name);
 
-rule attribute(this:false) and trigger(parentinit)
+rule attribute(this, false) and trigger(parentinit)
 	this.name = name;
 
-rule attribute(this:true) and trigger(parentvariable)
+rule attribute(this, true) and trigger(parentvariable)
 
-rule attribute(this:false) and trigger(parentvariable)
+rule attribute(this, false) and trigger(parentvariable)
 	protected final java.lang.String name;
 
 rule trigger(metaTypeLoad)
@@ -291,8 +291,8 @@ rule attribute(Layer) and trigger(var)
 
 rule trigger(var)
 	super.variables$$()
-rule attribute(this:true) and trigger(inner)
+rule attribute(this, true) and trigger(inner)
 	static
 
-rule attribute(this:true) and trigger(abstract)
+rule attribute(this, true) and trigger(abstract)
 	abstract
